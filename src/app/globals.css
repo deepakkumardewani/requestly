@@ -5,6 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Method-driven dynamic accent color (RGB channels set via JS) */
+  --color-method-accent: rgb(
+    var(--method-accent-r) var(--method-accent-g) var(--method-accent-b)
+  );
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
@@ -48,6 +52,10 @@
 }
 
 :root {
+  /* Default method accent — GET (emerald) */
+  --method-accent-r: 52;
+  --method-accent-g: 211;
+  --method-accent-b: 153;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
