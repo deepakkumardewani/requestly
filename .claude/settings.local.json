@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bunx shadcn@latest add separator scroll-area badge input textarea label switch checkbox skeleton --yes)",
+      "Bash(bunx shadcn@latest add select tabs tooltip accordion card table --yes)",
+      "Bash(bunx shadcn@latest add dropdown-menu dialog sheet popover breadcrumb --yes)",
+      "Bash(bunx shadcn@latest add resizable command sonner --yes)",
+      "Bash(bun add:*)",
+      "Bash(bun run:*)",
+      "Bash(bun install:*)",
+      "Bash(node -e \"console.log\\(process.arch\\)\")",
+      "Bash(node -e \"const { Accordion } = require\\(''''./node_modules/@base-ui/react/accordion''''\\); console.log\\(Object.keys\\(Accordion\\)\\)\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(grep -E \"\\\\.\\(json|tsx?|md|css\\)$\")",
+      "Bash(grep -E \"\\\\.\\(config|json|css|md\\)$|^-\")"
+    ]
+  }
+}
