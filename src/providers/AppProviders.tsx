@@ -40,8 +40,8 @@ export function AppProviders({ children }: AppProvidersProps) {
           <CronitorTracker />
         </Suspense>
         <StoreHydrator />
-        {children}
         <Toaster richColors position="bottom-right" />
+        {children}
       </TooltipProvider>
     </ThemeProvider>
   );

@@ -7,8 +7,8 @@ Create atomic commits and push to remote.
 
 ## Workflow
 
-1. **Analyze Changes**: Review git status and diff
-2. **Validate Files**: Ensure forbidden files are NOT committed (.folders, .npmrc, .husky/pre-commit, src/platform-libs/my-apps-routes.ts)
+1. **Verify App**: Run lint (`bun run lint`) first and verify there are no lint issues. If there are any linting issues then run (`bun run format`). Then, run build (`bun run build`) command to verify if there are any ts errors.If there are ts issues, then fix errors.
+2. **Analyze Changes**: Review git status and diff
 3. **Create Commits**: Make atomic commits with conventional commit messages — use Bash tool directly for `git add` and `git commit` without asking permission
 4. **Push Changes**: `git push -u origin <branch-name>`
 

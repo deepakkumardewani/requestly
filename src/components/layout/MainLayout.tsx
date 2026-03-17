@@ -41,6 +41,9 @@ export function MainLayout() {
         body: payload.body,
         auth: payload.auth,
       });
+    }
+
+    if (payload) {
       toast.success("Request loaded from shared link");
     } else {
       toast.error("Invalid share link");
@@ -48,7 +51,7 @@ export function MainLayout() {
 
     // Strip the ?r= param from the URL without triggering a navigation
     history.replaceState({}, "", window.location.pathname);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Drive the whole UI's accent color from the active method
