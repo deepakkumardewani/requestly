@@ -10,7 +10,12 @@ function formatMs(ms: number): string {
   return `${Number(ms.toFixed(2))}ms`;
 }
 
-type StatusBucket = { count: number; dotColor: string; barColor: string; label: string };
+type StatusBucket = {
+  count: number;
+  dotColor: string;
+  barColor: string;
+  label: string;
+};
 
 type HealthPopoverContentProps = {
   metrics: HealthMetrics;
@@ -30,9 +35,24 @@ export function HealthPopoverContent({
     statusCounts.success + statusCounts.clientError + statusCounts.serverError;
 
   const buckets: StatusBucket[] = [
-    { count: statusCounts.success, dotColor: "bg-emerald-400", barColor: "bg-emerald-500", label: "2xx" },
-    { count: statusCounts.clientError, dotColor: "bg-amber-400", barColor: "bg-amber-500", label: "4xx" },
-    { count: statusCounts.serverError, dotColor: "bg-red-400", barColor: "bg-red-500", label: "5xx" },
+    {
+      count: statusCounts.success,
+      dotColor: "bg-emerald-400",
+      barColor: "bg-emerald-500",
+      label: "2xx",
+    },
+    {
+      count: statusCounts.clientError,
+      dotColor: "bg-amber-400",
+      barColor: "bg-amber-500",
+      label: "4xx",
+    },
+    {
+      count: statusCounts.serverError,
+      dotColor: "bg-red-400",
+      barColor: "bg-red-500",
+      label: "5xx",
+    },
   ];
 
   return (
@@ -59,7 +79,10 @@ export function HealthPopoverContent({
             { label: "p50", value: formatMs(metrics.p50) },
             { label: "p95", value: formatMs(metrics.p95) },
           ].map(({ label, value }) => (
-            <div key={label} className="rounded-md bg-muted/60 px-2 py-1.5 text-center">
+            <div
+              key={label}
+              className="rounded-md bg-muted/60 px-2 py-1.5 text-center"
+            >
               <p className="text-[11px] font-semibold tabular-nums text-foreground">
                 {value}
               </p>
@@ -113,9 +136,13 @@ export function HealthPopoverContent({
                       key={label}
                       className="flex items-center gap-1 text-[10px] text-muted-foreground"
                     >
-                      <span className={`inline-block h-1.5 w-1.5 rounded-full ${dotColor}`} />
-                      <span className="font-medium text-foreground">{count}</span>
-                      {" "}{label}
+                      <span
+                        className={`inline-block h-1.5 w-1.5 rounded-full ${dotColor}`}
+                      />
+                      <span className="font-medium text-foreground">
+                        {count}
+                      </span>{" "}
+                      {label}
                     </span>
                   ),
               )}

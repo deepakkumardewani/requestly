@@ -14,8 +14,15 @@ import {
 } from "@/components/ui/context-menu";
 
 export function TabBar() {
-  const { tabs, activeTabId, openTab, closeTab, closeOtherTabs, closeAllTabs, setActiveTab } =
-    useTabsStore();
+  const {
+    tabs,
+    activeTabId,
+    openTab,
+    closeTab,
+    closeOtherTabs,
+    closeAllTabs,
+    setActiveTab,
+  } = useTabsStore();
 
   return (
     <div className="flex h-9 min-h-9 items-center border-b border-border bg-sidebar overflow-hidden">

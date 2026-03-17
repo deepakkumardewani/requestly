@@ -22,7 +22,8 @@ export function PrettyViewer({ body, contentType = "" }: PrettyViewerProps) {
   }
 
   const isJson =
-    contentType.includes("json") || (() => {
+    contentType.includes("json") ||
+    (() => {
       try {
         JSON.parse(body);
         return true;

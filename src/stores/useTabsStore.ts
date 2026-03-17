@@ -80,8 +80,7 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
 
     let nextActiveId: string | null = activeTabId;
     if (activeTabId === tabId) {
-      nextActiveId =
-        remaining[idx]?.tabId ?? remaining[idx - 1]?.tabId ?? null;
+      nextActiveId = remaining[idx]?.tabId ?? remaining[idx - 1]?.tabId ?? null;
     }
 
     if (remaining.length === 0) {

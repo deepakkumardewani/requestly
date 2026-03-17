@@ -9,7 +9,9 @@ type EnvAutocompleteInputProps = React.ComponentProps<typeof Input>;
 
 // Returns the variable prefix being typed after {{ at the end of the string,
 // or null if the pattern isn't present.
-function getEnvPrefix(value: string): { prefix: string; triggerIndex: number } | null {
+function getEnvPrefix(
+  value: string,
+): { prefix: string; triggerIndex: number } | null {
   const match = value.match(/\{\{([\w.]*)$/);
   if (!match) return null;
   return { prefix: match[1], triggerIndex: match.index ?? 0 };
@@ -23,7 +25,8 @@ export const EnvAutocompleteInput = forwardRef<
   forwardedRef,
 ) {
   const localRef = useRef<HTMLInputElement>(null);
-  const inputRef = (forwardedRef as React.RefObject<HTMLInputElement>) ?? localRef;
+  const inputRef =
+    (forwardedRef as React.RefObject<HTMLInputElement>) ?? localRef;
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -53,7 +56,9 @@ export const EnvAutocompleteInput = forwardRef<
     const strValue = typeof value === "string" ? value : "";
     // Replace the trailing {{ partial with the completed variable
     const newValue = strValue.replace(/\{\{([\w.]*)$/, `{{${varName}}}`);
-    onChange?.({ target: { value: newValue } } as React.ChangeEvent<HTMLInputElement>);
+    onChange?.({
+      target: { value: newValue },
+    } as React.ChangeEvent<HTMLInputElement>);
     setSuggestions([]);
     requestAnimationFrame(() => {
       const input = (inputRef as React.RefObject<HTMLInputElement>).current;
@@ -125,9 +130,13 @@ export const EnvAutocompleteInput = forwardRef<
                   : "text-popover-foreground hover:bg-accent hover:text-accent-foreground",
               )}
             >
-              <span className="font-mono text-method-accent opacity-70">{"{{"}</span>
+              <span className="font-mono text-method-accent opacity-70">
+                {"{{"}
+              </span>
               <span>{name}</span>
-              <span className="ml-auto text-[10px] text-muted-foreground">env</span>
+              <span className="ml-auto text-[10px] text-muted-foreground">
+                env
+              </span>
             </li>
           ))}
         </ul>

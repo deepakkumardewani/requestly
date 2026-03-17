@@ -21,7 +21,11 @@ type HistoryActions = {
   clearHistory: () => void;
   hydrate: () => Promise<void>;
   getMetricsForKey: (method: string, url: string) => HealthMetrics | null;
-  getRecentTimesForKey: (method: string, url: string, limit: number) => number[];
+  getRecentTimesForKey: (
+    method: string,
+    url: string,
+    limit: number,
+  ) => number[];
 };
 
 async function persistEntry(entry: HistoryEntry) {

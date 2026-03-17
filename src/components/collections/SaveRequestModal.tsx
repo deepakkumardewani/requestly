@@ -134,9 +134,7 @@ export function SaveRequestModal({
           <Button
             onClick={handleSave}
             disabled={
-              isCreatingNew
-                ? !newCollectionName.trim()
-                : !selectedCollectionId
+              isCreatingNew ? !newCollectionName.trim() : !selectedCollectionId
             }
           >
             Save

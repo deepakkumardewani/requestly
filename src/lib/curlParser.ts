@@ -1,4 +1,10 @@
-import type { ParsedCurl, HttpMethod, KVPair, AuthConfig, BodyConfig } from "@/types";
+import type {
+  ParsedCurl,
+  HttpMethod,
+  KVPair,
+  AuthConfig,
+  BodyConfig,
+} from "@/types";
 import { generateId } from "@/lib/utils";
 import { HTTP_METHODS } from "@/lib/constants";
 
@@ -152,7 +158,10 @@ export function parseCurl(input: string): ParsedCurl {
       body = { type: "json", content: bodyContent };
     } else if (contentType.includes("application/x-www-form-urlencoded")) {
       body = { type: "urlencoded", content: bodyContent };
-    } else if (contentType.includes("text/xml") || contentType.includes("application/xml")) {
+    } else if (
+      contentType.includes("text/xml") ||
+      contentType.includes("application/xml")
+    ) {
       body = { type: "xml", content: bodyContent };
     } else {
       body = { type: "text", content: bodyContent };

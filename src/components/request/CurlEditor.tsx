@@ -40,7 +40,8 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
       setCurlInput("");
       toast.success("cURL imported successfully");
     } catch (err) {
-      const msg = err instanceof CurlParseError ? err.message : "Failed to parse cURL";
+      const msg =
+        err instanceof CurlParseError ? err.message : "Failed to parse cURL";
       setParseError(msg);
     }
   }
@@ -70,9 +71,7 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
             setParseError(null);
           }}
         />
-        {parseError && (
-          <p className="text-xs text-destructive">{parseError}</p>
-        )}
+        {parseError && <p className="text-xs text-destructive">{parseError}</p>}
         <Button
           size="sm"
           className="gap-1.5 bg-method-accent/10 text-method-accent hover:bg-method-accent/20"
@@ -83,7 +82,8 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
           Import
         </Button>
         <p className="text-[11px] text-muted-foreground">
-          Headers and parameters will be automatically parsed into the request fields.
+          Headers and parameters will be automatically parsed into the request
+          fields.
         </p>
       </div>
 
