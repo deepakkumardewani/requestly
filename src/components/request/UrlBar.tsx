@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Send, Loader2, Save, Copy, BookmarkPlus } from "lucide-react";
+import { Send, Loader2, Copy, BookmarkPlus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { MethodBadge } from "@/components/common/MethodBadge";
 import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
 import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
+import { ShareButton } from "./ShareButton";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useSendRequest } from "@/hooks/useSendRequest";
@@ -163,6 +164,8 @@ export function UrlBar({ tabId }: UrlBarProps) {
         >
           <Copy className="h-3.5 w-3.5" />
         </Button>
+
+        <ShareButton tabId={tabId} />
 
         <Button
           variant="outline"

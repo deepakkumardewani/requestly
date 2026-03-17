@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -11,16 +12,44 @@ import { useUIStore } from "@/stores/useUIStore";
 import { useMethodTheme } from "@/hooks/useMethodTheme";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { CommandPalette } from "@/components/common/CommandPalette";
+import { decodeShareLink } from "@/lib/shareLink";
+import { toast } from "sonner";
 import { LeftPanel } from "./LeftPanel";
 import { RightPanel } from "./RightPanel";
 
 export function MainLayout() {
-  const { tabs, activeTabId } = useTabsStore();
+  const { tabs, activeTabId, openTab } = useTabsStore();
   const { mobileSidebarOpen, toggleMobileSidebar, setLeftPanelWidth } =
     useUIStore();
 
   const activeTab = tabs.find((t) => t.tabId === activeTabId);
   const activeMethod = activeTab?.method ?? "GET";
+
+  // Hydrate a tab from a ?r= share link on first mount
+  useEffect(() => {
+    const raw = new URLSearchParams(window.location.search).get("r");
+    if (!raw) return;
+
+    const payload = decodeShareLink(raw);
+    if (payload) {
+      openTab({
+        name: `${payload.method} ${payload.url || "Shared Request"}`,
+        method: payload.method,
+        url: payload.url,
+        headers: payload.headers,
+        params: payload.params,
+        body: payload.body,
+        auth: payload.auth,
+      });
+      toast.success("Request loaded from shared link");
+    } else {
+      toast.error("Invalid share link");
+    }
+
+    // Strip the ?r= param from the URL without triggering a navigation
+    history.replaceState({}, "", window.location.pathname);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Drive the whole UI's accent color from the active method
   useMethodTheme(activeMethod);
