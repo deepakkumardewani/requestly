@@ -44,7 +44,7 @@ export function ParamsEditor({ tabId }: ParamsEditorProps) {
           <KVTable
             rows={pathParams}
             onChange={handlePathChange}
-            keyPlaceholder="Parameter"
+            keyPlaceholder="Key"
             valuePlaceholder="Value"
             readOnlyKeys
           />
@@ -54,7 +54,7 @@ export function ParamsEditor({ tabId }: ParamsEditorProps) {
       <KVTable
         rows={queryParams}
         onChange={handleQueryChange}
-        keyPlaceholder="Parameter"
+        keyPlaceholder="Key"
         valuePlaceholder="Value"
       />
     </div>

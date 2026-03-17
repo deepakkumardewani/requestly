@@ -59,7 +59,7 @@ export function KVTable({
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="grid grid-cols-[auto_1fr_1fr_auto] gap-1 border-b px-2 pb-1 text-[11px] font-medium text-muted-foreground">
+      <div className="grid grid-cols-[auto_1fr_1fr_auto] gap-1 border-b px-2 pb-1 text-[11px] font-medium text-foreground/75">
         <span className="w-4" />
         <span>{keyPlaceholder}</span>
         <span>{valuePlaceholder}</span>
