@@ -44,10 +44,20 @@ export function RawViewer({ body }: RawViewerProps) {
           {formatBytes(bytes)}
         </span>
         <div className="flex gap-1">
-          <Button variant="ghost" size="icon-sm" onClick={handleCopy} title="Copy">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleCopy}
+            title="Copy"
+          >
             <Copy className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon-sm" onClick={handleDownload} title="Download">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleDownload}
+            title="Download"
+          >
             <Download className="h-3.5 w-3.5" />
           </Button>
         </div>

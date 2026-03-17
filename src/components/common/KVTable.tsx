@@ -8,7 +8,8 @@ import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
 import { generateId } from "@/lib/utils";
 import type { KVPair } from "@/types";
 
-const VALUE_INPUT_CLASS = "h-7 border-0 bg-transparent px-1 shadow-none focus-visible:ring-1";
+const VALUE_INPUT_CLASS =
+  "h-7 border-0 bg-transparent px-1 shadow-none focus-visible:ring-1";
 
 type KVTableProps = {
   rows: KVPair[];

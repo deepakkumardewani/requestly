@@ -87,7 +87,9 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
       : contentType.includes("html")
         ? "html"
         : "txt";
-    const blob = new Blob([response!.body], { type: contentType || "text/plain" });
+    const blob = new Blob([response!.body], {
+      type: contentType || "text/plain",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -111,10 +113,20 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
           {formatBytes(response.size)}
         </span>
         <div className="ml-auto flex items-center gap-1">
-          <Button variant="ghost" size="icon-sm" onClick={handleCopy} title="Copy">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleCopy}
+            title="Copy"
+          >
             <Copy className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon-sm" onClick={handleDownload} title="Download">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleDownload}
+            title="Download"
+          >
             <Download className="h-3.5 w-3.5" />
           </Button>
           <Button
@@ -129,7 +141,10 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
       </div>
 
       {/* Response tabs */}
-      <Tabs defaultValue="pretty" className="flex flex-1 flex-col overflow-hidden">
+      <Tabs
+        defaultValue="pretty"
+        className="flex flex-1 flex-col overflow-hidden"
+      >
         <TabsList className="h-8 shrink-0 rounded-none border-b bg-transparent px-3 justify-start gap-0">
           {["pretty", "raw", "headers", "preview"].map((tab) => (
             <TabsTrigger

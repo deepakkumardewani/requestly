@@ -10,7 +10,10 @@ export const HTTP_METHODS: HttpMethod[] = [
   "OPTIONS",
 ];
 
-export const METHOD_PALETTE: Record<HttpMethod, { r: number; g: number; b: number }> = {
+export const METHOD_PALETTE: Record<
+  HttpMethod,
+  { r: number; g: number; b: number }
+> = {
   GET: { r: 52, g: 211, b: 153 },
   POST: { r: 96, g: 165, b: 250 },
   PUT: { r: 251, g: 191, b: 36 },

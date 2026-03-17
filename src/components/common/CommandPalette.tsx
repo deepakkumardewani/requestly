@@ -32,18 +32,17 @@ export function CommandPalette() {
   }
 
   return (
-    <CommandDialog open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen}>
+    <CommandDialog
+      open={commandPaletteOpen}
+      onOpenChange={setCommandPaletteOpen}
+    >
       <CommandInput placeholder="Search requests, actions..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
         {/* Actions */}
         <CommandGroup heading="Actions">
-          <CommandItem
-            onSelect={() =>
-              handleSelect(() => openTab())
-            }
-          >
+          <CommandItem onSelect={() => handleSelect(() => openTab())}>
             New Request
           </CommandItem>
           <CommandItem

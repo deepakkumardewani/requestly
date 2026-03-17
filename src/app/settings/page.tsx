@@ -53,12 +53,18 @@ const THEME_OPTIONS = [
 ] as const;
 
 export default function SettingsPage() {
-  const [activeSection, setActiveSection] = useState<SettingsSection>("appearance");
+  const [activeSection, setActiveSection] =
+    useState<SettingsSection>("appearance");
   const [clearHistoryOpen, setClearHistoryOpen] = useState(false);
 
   const { theme, setTheme } = useTheme();
-  const { sslVerify, followRedirects, proxyUrl, showHealthMonitor, setSetting } =
-    useSettingsStore();
+  const {
+    sslVerify,
+    followRedirects,
+    proxyUrl,
+    showHealthMonitor,
+    setSetting,
+  } = useSettingsStore();
   const { clearHistory } = useHistoryStore();
 
   return (
@@ -172,7 +178,12 @@ export default function SettingsPage() {
                   onClick={() => setTheme(value)}
                 >
                   <CardContent className="flex flex-col items-center gap-2 py-4">
-                    <Icon className={cn("h-6 w-6", theme === value && "text-method-accent")} />
+                    <Icon
+                      className={cn(
+                        "h-6 w-6",
+                        theme === value && "text-method-accent",
+                      )}
+                    />
                     <span className="text-xs font-medium">{label}</span>
                   </CardContent>
                 </Card>
@@ -240,8 +251,13 @@ export default function SettingsPage() {
                   const modifierLabel = isMac() ? "⌘" : "Ctrl";
                   const shortcut = `${modifierLabel}+${key}`;
                   return (
-                    <div key={action} className="flex items-center justify-between bg-background px-4 py-2.5">
-                      <span className="text-xs text-muted-foreground">{action}</span>
+                    <div
+                      key={action}
+                      className="flex items-center justify-between bg-background px-4 py-2.5"
+                    >
+                      <span className="text-xs text-muted-foreground">
+                        {action}
+                      </span>
                       <kbd className="rounded border bg-muted px-1.5 py-0.5 font-mono text-[10px]">
                         {shortcut}
                       </kbd>
@@ -261,10 +277,14 @@ export default function SettingsPage() {
             <DialogTitle>Clear History</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            This will permanently delete all request history. This action cannot be undone.
+            This will permanently delete all request history. This action cannot
+            be undone.
           </p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setClearHistoryOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setClearHistoryOpen(false)}
+            >
               Cancel
             </Button>
             <Button

@@ -20,7 +20,11 @@ import { useSendRequest } from "@/hooks/useSendRequest";
 import { generateCurl } from "@/lib/curlGenerator";
 import { parseCurl, CurlParseError } from "@/lib/curlParser";
 import { HTTP_METHODS } from "@/lib/constants";
-import { buildUrlWithParams, parseQueryString, parsePathParams } from "@/lib/utils";
+import {
+  buildUrlWithParams,
+  parseQueryString,
+  parsePathParams,
+} from "@/lib/utils";
 import { generateId } from "@/lib/utils";
 import type { HttpMethod } from "@/types";
 import { toast } from "sonner";
@@ -53,7 +57,15 @@ export function UrlBar({ tabId }: UrlBarProps) {
     const pathParamKeys = parsePathParams(url);
     const newPathParams = pathParamKeys.map((key) => {
       const existing = existingPathParams.find((ep) => ep.key === key);
-      return existing ?? { id: generateId(), key, value: "", enabled: true, type: "path" as const };
+      return (
+        existing ?? {
+          id: generateId(),
+          key,
+          value: "",
+          enabled: true,
+          type: "path" as const,
+        }
+      );
     });
 
     const parsedQueryParams = parseQueryString(url);
@@ -94,7 +106,8 @@ export function UrlBar({ tabId }: UrlBarProps) {
       });
     } catch (err) {
       toast.error("Failed to parse cURL", {
-        description: err instanceof CurlParseError ? err.message : "Invalid cURL command",
+        description:
+          err instanceof CurlParseError ? err.message : "Invalid cURL command",
       });
     }
   }
@@ -106,11 +119,21 @@ export function UrlBar({ tabId }: UrlBarProps) {
       ...tab,
       url: resolve(tab.url),
       params: tab.params.map((p) => ({ ...p, value: resolve(p.value) })),
-      headers: tab.headers.map((h) => ({ ...h, key: resolve(h.key), value: resolve(h.value) })),
+      headers: tab.headers.map((h) => ({
+        ...h,
+        key: resolve(h.key),
+        value: resolve(h.value),
+      })),
       body: {
         ...tab.body,
-        content: tab.body.content ? resolve(tab.body.content) : tab.body.content,
-        formData: tab.body.formData?.map((f) => ({ ...f, key: resolve(f.key), value: resolve(f.value) })),
+        content: tab.body.content
+          ? resolve(tab.body.content)
+          : tab.body.content,
+        formData: tab.body.formData?.map((f) => ({
+          ...f,
+          key: resolve(f.key),
+          value: resolve(f.value),
+        })),
       },
     };
     const curl = generateCurl(resolvedTab);

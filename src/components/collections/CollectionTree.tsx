@@ -23,8 +23,14 @@ import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 
 export function CollectionTree() {
-  const { collections, requests, createCollection, renameCollection, deleteCollection, addRequest } =
-    useCollectionsStore();
+  const {
+    collections,
+    requests,
+    createCollection,
+    renameCollection,
+    deleteCollection,
+    addRequest,
+  } = useCollectionsStore();
   const { activeTabId, tabs } = useTabsStore();
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -123,18 +129,26 @@ export function CollectionTree() {
                         onChange={(e) => setEditName(e.target.value)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            renameCollection(collection.id, editName.trim() || collection.name);
+                            renameCollection(
+                              collection.id,
+                              editName.trim() || collection.name,
+                            );
                             setEditingId(null);
                           }
                           if (e.key === "Escape") setEditingId(null);
                         }}
                         onBlur={() => {
-                          renameCollection(collection.id, editName.trim() || collection.name);
+                          renameCollection(
+                            collection.id,
+                            editName.trim() || collection.name,
+                          );
                           setEditingId(null);
                         }}
                       />
                     ) : (
-                      <span className="text-xs font-medium">{collection.name}</span>
+                      <span className="text-xs font-medium">
+                        {collection.name}
+                      </span>
                     )}
                     <span className="text-[10px] text-muted-foreground">
                       {collectionRequests.length}

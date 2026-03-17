@@ -51,7 +51,8 @@ export default function ImportPage() {
       toast.success("cURL imported — opened in new tab");
       router.push("/");
     } catch (err) {
-      const msg = err instanceof CurlParseError ? err.message : "Failed to parse cURL";
+      const msg =
+        err instanceof CurlParseError ? err.message : "Failed to parse cURL";
       setCurlError(msg);
     }
   }
@@ -65,21 +66,28 @@ export default function ImportPage() {
         const data = JSON.parse(text) as Record<string, unknown>;
 
         // Detect format
-        if (data.info && (data.info as Record<string, unknown>)._postman_schema) {
+        if (
+          data.info &&
+          (data.info as Record<string, unknown>)._postman_schema
+        ) {
           // Postman Collection v2.1
           importPostmanCollection(data);
         } else if (data.collections || data.requests) {
           // Requestly format
           importRequestlyCollection(data);
         } else {
-          throw new Error("Unrecognized format. Supports Requestly JSON and Postman Collection v2.1");
+          throw new Error(
+            "Unrecognized format. Supports Requestly JSON and Postman Collection v2.1",
+          );
         }
 
         setImportStatus("success");
         toast.success(`Imported "${file.name}" successfully`);
       } catch (err) {
         setImportStatus("error");
-        toast.error(err instanceof Error ? err.message : "Failed to import file");
+        toast.error(
+          err instanceof Error ? err.message : "Failed to import file",
+        );
       }
     };
     reader.readAsText(file);
@@ -87,18 +95,25 @@ export default function ImportPage() {
 
   function importPostmanCollection(data: Record<string, unknown>) {
     const info = data.info as Record<string, unknown>;
-    const collection = createCollection(String(info.name ?? "Imported Collection"));
+    const collection = createCollection(
+      String(info.name ?? "Imported Collection"),
+    );
     const items = data.item as Array<Record<string, unknown>>;
     for (const item of items ?? []) {
       const req = item.request as Record<string, unknown> | undefined;
       if (!req) continue;
-      const url = typeof req.url === "string" ? req.url : (req.url as Record<string, unknown>)?.raw as string ?? "";
+      const url =
+        typeof req.url === "string"
+          ? req.url
+          : (((req.url as Record<string, unknown>)?.raw as string) ?? "");
       addRequest(collection.id, {
         tabId: crypto.randomUUID(),
         requestId: null,
         name: String(item.name ?? "Request"),
         isDirty: false,
-        method: String(req.method ?? "GET") as ReturnType<typeof parseCurl>["method"],
+        method: String(req.method ?? "GET") as ReturnType<
+          typeof parseCurl
+        >["method"],
         url,
         params: [],
         headers: [],
@@ -111,17 +126,20 @@ export default function ImportPage() {
   }
 
   function importRequestlyCollection(data: Record<string, unknown>) {
-    const collections = data.collections as Array<Record<string, unknown>> ?? [];
+    const collections =
+      (data.collections as Array<Record<string, unknown>>) ?? [];
     for (const col of collections) {
       const collection = createCollection(String(col.name ?? "Imported"));
-      const requests = col.requests as Array<Record<string, unknown>> ?? [];
+      const requests = (col.requests as Array<Record<string, unknown>>) ?? [];
       for (const req of requests) {
         addRequest(collection.id, {
           tabId: crypto.randomUUID(),
           requestId: null,
           name: String(req.name ?? "Request"),
           isDirty: false,
-          method: String(req.method ?? "GET") as ReturnType<typeof parseCurl>["method"],
+          method: String(req.method ?? "GET") as ReturnType<
+            typeof parseCurl
+          >["method"],
           url: String(req.url ?? ""),
           params: [],
           headers: [],
@@ -241,7 +259,8 @@ export default function ImportPage() {
               Import Command
             </Button>
             <p className="text-xs text-muted-foreground">
-              Headers and parameters will be automatically parsed into the request fields.
+              Headers and parameters will be automatically parsed into the
+              request fields.
             </p>
           </TabsContent>
 
@@ -262,7 +281,9 @@ export default function ImportPage() {
                   toast.success("Collection imported");
                   setJsonInput("");
                 } catch (err) {
-                  toast.error(err instanceof Error ? err.message : "Invalid JSON");
+                  toast.error(
+                    err instanceof Error ? err.message : "Invalid JSON",
+                  );
                 }
               }}
               disabled={!jsonInput.trim()}

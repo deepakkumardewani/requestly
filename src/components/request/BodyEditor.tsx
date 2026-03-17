@@ -48,7 +48,7 @@ export function BodyEditor({ tabId }: BodyEditorProps) {
         content: body.content,
         formData:
           type === "form-data" || type === "urlencoded"
-            ? body.formData ?? []
+            ? (body.formData ?? [])
             : undefined,
       },
     });

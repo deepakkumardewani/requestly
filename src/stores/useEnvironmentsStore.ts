@@ -120,7 +120,9 @@ export const useEnvironmentsStore = create<
       const storedEnvId = localStorage.getItem(ACTIVE_ENV_STORAGE_KEY);
       // Only restore if the stored env still exists
       const activeEnvId =
-        storedEnvId && environments.some((e) => e.id === storedEnvId) ? storedEnvId : null;
+        storedEnvId && environments.some((e) => e.id === storedEnvId)
+          ? storedEnvId
+          : null;
       set({ environments, activeEnvId });
     } catch (error) {
       toast.error("Failed to load environments", {

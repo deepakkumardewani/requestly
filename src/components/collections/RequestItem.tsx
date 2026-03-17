@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal, Pencil, Copy, Trash2, FolderInput } from "lucide-react";
+import {
+  MoreHorizontal,
+  Pencil,
+  Copy,
+  Trash2,
+  FolderInput,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -104,9 +110,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
           onClick={(e) => e.stopPropagation()}
         />
       ) : (
-        <span className="flex-1 truncate text-xs">
-          {request.name}
-        </span>
+        <span className="flex-1 truncate text-xs">{request.name}</span>
       )}
 
       {showHealthMonitor && request.url && (
