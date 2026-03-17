@@ -31,6 +31,7 @@ export function HealthPopoverContent({
   statusCounts,
   onViewHistory,
 }: HealthPopoverContentProps) {
+  console.log("recentTimes", recentTimes);
   const total =
     statusCounts.success + statusCounts.clientError + statusCounts.serverError;
 
@@ -104,7 +105,7 @@ export function HealthPopoverContent({
                 values={recentTimes}
                 width={196}
                 height={36}
-                color="hsl(var(--method-accent))"
+                color="var(--color-method-accent)"
               />
             </div>
           </div>

@@ -37,7 +37,7 @@ export function SparklineChart({
     >
       <polyline
         fill="none"
-        stroke={color}
+        style={{ stroke: color }}
         strokeWidth="1.5"
         strokeLinejoin="round"
         strokeLinecap="round"
