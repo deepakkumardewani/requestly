@@ -123,6 +123,15 @@ export type AppSettings = {
   proxyUrl: string;
   sslVerify: boolean;
   followRedirects: boolean;
+  showHealthMonitor: boolean;
+};
+
+export type HealthMetrics = {
+  successRate: number;
+  p50: number;
+  p95: number;
+  lastStatus: number;
+  entryCount: number;
 };
 
 export type RequestError = {

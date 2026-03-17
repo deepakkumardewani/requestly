@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { MethodBadge } from "@/components/common/MethodBadge";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
+import { HealthDot } from "@/components/collections/HealthDot";
 import type { RequestModel } from "@/types";
 import { generateId } from "@/lib/utils";
 
@@ -28,6 +30,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
 
   const { tabs, openTab, setActiveTab } = useTabsStore();
   const { updateRequest, deleteRequest, addRequest } = useCollectionsStore();
+  const showHealthMonitor = useSettingsStore((s) => s.showHealthMonitor);
 
   function handleOpen() {
     if (isEditing) return;
@@ -104,6 +107,10 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
         <span className="flex-1 truncate text-xs">
           {request.name}
         </span>
+      )}
+
+      {showHealthMonitor && request.url && (
+        <HealthDot method={request.method} url={request.url} />
       )}
 
       <DropdownMenu>

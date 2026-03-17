@@ -2,9 +2,14 @@
 
 import { create } from "zustand";
 import { toast } from "sonner";
-import type { HistoryEntry } from "@/types";
+import type { HistoryEntry, HealthMetrics } from "@/types";
 import { MAX_HISTORY_ENTRIES } from "@/lib/constants";
 import { getDB } from "@/lib/idb";
+import {
+  healthKey,
+  getEntriesForKey,
+  computeHealthMetrics,
+} from "@/lib/healthMonitor";
 
 type HistoryState = {
   entries: HistoryEntry[];
@@ -15,6 +20,8 @@ type HistoryActions = {
   deleteEntry: (id: string) => void;
   clearHistory: () => void;
   hydrate: () => Promise<void>;
+  getMetricsForKey: (method: string, url: string) => HealthMetrics | null;
+  getRecentTimesForKey: (method: string, url: string, limit: number) => number[];
 };
 
 async function persistEntry(entry: HistoryEntry) {
@@ -87,6 +94,19 @@ export const useHistoryStore = create<HistoryState & HistoryActions>(
     clearHistory() {
       set({ entries: [] });
       clearHistoryFromDB();
+    },
+
+    getMetricsForKey(method, url) {
+      const key = healthKey(method, url);
+      const matched = getEntriesForKey(get().entries, key);
+      return computeHealthMetrics(matched);
+    },
+
+    getRecentTimesForKey(method, url, limit) {
+      const key = healthKey(method, url);
+      return getEntriesForKey(get().entries, key)
+        .slice(0, limit)
+        .map((e) => e.duration);
     },
 
     async hydrate() {
