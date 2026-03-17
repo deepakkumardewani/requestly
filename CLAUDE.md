@@ -4,6 +4,7 @@
 2. **Never write test cases** unless explicitly told to.
 3. **Never run the server** — it is always running.
 4. **Never summarize** — answer directly; no closing statements or recaps.
+5. Always use `bun` to install node modules.
 
 ## Research & Analysis
 
@@ -56,28 +57,10 @@ Folders | lowercase | components, utils
 - Constants used in multiple places belong in a single source of truth
 - Exception: a little duplication is better than a wrong abstraction — don't over-abstract prematurely
 
-## Review Preferences & Methodology
+## Plugins
 
-Review plans thoroughly before making code changes. For every issue or recommendation, explain concrete tradeoffs, give an opinionated recommendation, and ask for input before assuming a direction.
-
-## Date / Time Formats
-
-- Date: `mm/dd/yyyy` | Time: `HH:MM` (24-hour)
-
-**BEFORE STARTING A REVIEW**, ask which mode:
-
-1. **BIG CHANGE**: Interactive, one section at a time (Architecture → Code Quality → Performance), max 4 top issues per section.
-2. **SMALL CHANGE**: Interactive, ONE question per review section.
-
-**FOR EACH STAGE**: output explanation + pros/cons + opinionated recommendation, then use `AskUserQuestion`. Number issues, letter options. Recommended option is always first.
-
-Review sections:
-
-1. **Architecture** — system design, component boundaries, dependency graph, data flow, security.
-2. **Code Quality** — organization, DRY violations, error handling, technical debt, over/under-engineering.
-3. **Performance** — memory usage, caching opportunities, slow code paths.
-
-After each section, pause and ask for feedback before moving on.
+- use the frontend-design and ralph-loop plugins wherever and whenever necessary.
+- use the typescript-lsp server plugin to quickly check for typescript issues.
 
 ## Conditional Reference Table
 
