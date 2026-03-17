@@ -16,7 +16,8 @@
       "Bash(grep -E \"\\\\.\\(json|tsx?|md|css\\)$\")",
       "Bash(grep -E \"\\\\.\\(config|json|css|md\\)$|^-\")",
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
-      "Bash(History\" deep-link from the health popover:*)"
+      "Bash(History\" deep-link from the health popover:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
