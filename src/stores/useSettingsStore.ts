@@ -10,7 +10,10 @@ type SettingsState = AppSettings & {
 };
 
 type SettingsActions = {
-  setSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
+  setSetting: <K extends keyof AppSettings>(
+    key: K,
+    value: AppSettings[K],
+  ) => void;
   hydrate: () => Promise<void>;
 };
 
@@ -42,13 +45,13 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
 
     setSetting(key, value) {
       set({ [key]: value });
-      const { hydrated: _, ...settings } = get() as SettingsState & SettingsActions;
-      persistSettings({
-        theme: (get() as SettingsState).theme,
-        proxyUrl: (get() as SettingsState).proxyUrl,
-        sslVerify: (get() as SettingsState).sslVerify,
-        followRedirects: (get() as SettingsState).followRedirects,
-      });
+      const {
+        hydrated: _hydrated,
+        setSetting: _setSetting,
+        hydrate: _hydrate,
+        ...settings
+      } = get() as SettingsState & SettingsActions;
+      persistSettings(settings);
     },
 
     async hydrate() {
