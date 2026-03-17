@@ -14,6 +14,7 @@ import { MethodBadge } from "@/components/common/MethodBadge";
 import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
 import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useSendRequest } from "@/hooks/useSendRequest";
 import { generateCurl } from "@/lib/curlGenerator";
 import { parseCurl, CurlParseError } from "@/lib/curlParser";
@@ -31,6 +32,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
   const [saveModalOpen, setSaveModalOpen] = useState(false);
 
   const { tabs, updateTabState } = useTabsStore();
+  const resolveVariables = useEnvironmentsStore((s) => s.resolveVariables);
   const tab = tabs.find((t) => t.tabId === tabId);
   const { send, cancel, isLoading } = useSendRequest(tabId);
 
@@ -98,7 +100,19 @@ export function UrlBar({ tabId }: UrlBarProps) {
 
   async function handleCopyCurl() {
     if (!tab) return;
-    const curl = generateCurl(tab);
+    const resolve = resolveVariables;
+    const resolvedTab = {
+      ...tab,
+      url: resolve(tab.url),
+      params: tab.params.map((p) => ({ ...p, value: resolve(p.value) })),
+      headers: tab.headers.map((h) => ({ ...h, key: resolve(h.key), value: resolve(h.value) })),
+      body: {
+        ...tab.body,
+        content: tab.body.content ? resolve(tab.body.content) : tab.body.content,
+        formData: tab.body.formData?.map((f) => ({ ...f, key: resolve(f.key), value: resolve(f.value) })),
+      },
+    };
+    const curl = generateCurl(resolvedTab);
     try {
       await navigator.clipboard.writeText(curl);
       toast.success("cURL copied to clipboard");
