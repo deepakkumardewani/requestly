@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/common/EmptyState";
 import { HistoryItem } from "./HistoryItem";
 import { useHistoryStore } from "@/stores/useHistoryStore";
+import { useUIStore } from "@/stores/useUIStore";
+import { healthKey } from "@/lib/healthMonitor";
 
 type HistoryListProps = {
   compact?: boolean;
@@ -12,14 +14,20 @@ type HistoryListProps = {
 
 export function HistoryList({ compact = false }: HistoryListProps) {
   const entries = useHistoryStore((s) => s.entries);
-  const [filter, setFilter] = useState("");
+  const { historyFilter, setHistoryFilter } = useUIStore();
 
-  const filtered = filter
-    ? entries.filter(
-        (e) =>
-          e.url.toLowerCase().includes(filter.toLowerCase()) ||
-          e.method.toLowerCase().includes(filter.toLowerCase()),
-      )
+  const activeFilter = historyFilter ?? "";
+
+  const filtered = activeFilter
+    ? entries.filter((e) => {
+        const term = activeFilter.toLowerCase();
+        // Support both free-text search and normalised health key matching
+        return (
+          e.url.toLowerCase().includes(term) ||
+          e.method.toLowerCase().includes(term) ||
+          healthKey(e.method, e.url).toLowerCase().includes(term)
+        );
+      })
     : entries;
 
   const displayed = compact ? filtered.slice(0, 20) : filtered;
@@ -28,19 +36,35 @@ export function HistoryList({ compact = false }: HistoryListProps) {
     <div className="flex h-full flex-col">
       {!compact && (
         <div className="p-2">
-          <Input
-            className="h-7 text-xs"
-            placeholder="Filter history..."
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          />
+          <div className="relative">
+            <Input
+              className="h-7 pr-6 text-xs"
+              placeholder="Filter history..."
+              value={activeFilter}
+              onChange={(e) => setHistoryFilter(e.target.value || null)}
+            />
+            {activeFilter && (
+              <button
+                type="button"
+                className="absolute inset-y-0 right-1.5 flex items-center text-muted-foreground hover:text-foreground"
+                onClick={() => setHistoryFilter(null)}
+                aria-label="Clear filter"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </div>
         </div>
       )}
 
       {displayed.length === 0 ? (
         <EmptyState
-          title={filter ? "No matches" : "No history yet"}
-          description={filter ? "Try a different search" : "Sent requests will appear here"}
+          title={activeFilter ? "No matches" : "No history yet"}
+          description={
+            activeFilter
+              ? "Try a different search"
+              : "Sent requests will appear here"
+          }
           className="py-4"
         />
       ) : (

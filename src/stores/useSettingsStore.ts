@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   proxyUrl: "",
   sslVerify: true,
   followRedirects: true,
+  showHealthMonitor: true,
 };
 
 async function persistSettings(settings: AppSettings) {

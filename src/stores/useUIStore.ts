@@ -7,6 +7,7 @@ type UIState = {
   splitRatio: number;
   commandPaletteOpen: boolean;
   mobileSidebarOpen: boolean;
+  historyFilter: string | null;
 };
 
 type UIActions = {
@@ -15,6 +16,7 @@ type UIActions = {
   toggleCommandPalette: () => void;
   setCommandPaletteOpen: (open: boolean) => void;
   toggleMobileSidebar: () => void;
+  setHistoryFilter: (filter: string | null) => void;
 };
 
 export const useUIStore = create<UIState & UIActions>((set) => ({
@@ -22,6 +24,7 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
   splitRatio: 50,
   commandPaletteOpen: false,
   mobileSidebarOpen: false,
+  historyFilter: null,
 
   setLeftPanelWidth(width) {
     set({ leftPanelWidth: width });
@@ -41,5 +44,9 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
 
   toggleMobileSidebar() {
     set((state) => ({ mobileSidebarOpen: !state.mobileSidebarOpen }));
+  },
+
+  setHistoryFilter(filter) {
+    set({ historyFilter: filter });
   },
 }));

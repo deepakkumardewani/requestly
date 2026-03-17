@@ -57,7 +57,8 @@ export default function SettingsPage() {
   const [clearHistoryOpen, setClearHistoryOpen] = useState(false);
 
   const { theme, setTheme } = useTheme();
-  const { sslVerify, followRedirects, proxyUrl, setSetting } = useSettingsStore();
+  const { sslVerify, followRedirects, proxyUrl, showHealthMonitor, setSetting } =
+    useSettingsStore();
   const { clearHistory } = useHistoryStore();
 
   return (
@@ -111,6 +112,27 @@ export default function SettingsPage() {
         {activeSection === "general" && (
           <div className="max-w-lg space-y-6">
             <h2 className="text-base font-semibold">General</h2>
+
+            <div className="rounded-lg border p-4">
+              <h3 className="text-sm font-medium">Features</h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Toggle optional UI features
+              </p>
+              <div className="mt-3 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm">Health indicators</Label>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Show success rate and response time in collections
+                    </p>
+                  </div>
+                  <Switch
+                    checked={showHealthMonitor}
+                    onCheckedChange={(v) => setSetting("showHealthMonitor", v)}
+                  />
+                </div>
+              </div>
+            </div>
 
             <div className="rounded-lg border p-4">
               <h3 className="text-sm font-medium">Data Management</h3>
