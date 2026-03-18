@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { ResponseData, RequestError } from "@/types";
+import type { RequestError, ResponseData } from "@/types";
 
 type ResponseState = {
   responses: Record<string, ResponseData | null>;

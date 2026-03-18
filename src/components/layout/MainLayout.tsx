@@ -1,19 +1,19 @@
 "use client";
 
 import { useEffect } from "react";
+import { toast } from "sonner";
+import { CommandPalette } from "@/components/common/CommandPalette";
 import {
-  ResizablePanelGroup,
-  ResizablePanel,
   ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useMethodTheme } from "@/hooks/useMethodTheme";
+import { decodeShareLink } from "@/lib/shareLink";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
-import { useMethodTheme } from "@/hooks/useMethodTheme";
-import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
-import { CommandPalette } from "@/components/common/CommandPalette";
-import { decodeShareLink } from "@/lib/shareLink";
-import { toast } from "sonner";
 import { LeftPanel } from "./LeftPanel";
 import { RightPanel } from "./RightPanel";
 

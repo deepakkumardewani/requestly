@@ -1,6 +1,9 @@
 "use client";
 
 import { Copy } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -9,9 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { toast } from "sonner";
 
 type HeadersViewerProps = {
   headers: Record<string, string>;

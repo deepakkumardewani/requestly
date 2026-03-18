@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Copy, Import } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useTabsStore } from "@/stores/useTabsStore";
-import { parseCurl, CurlParseError } from "@/lib/curlParser";
 import { generateCurl } from "@/lib/curlGenerator";
-import { toast } from "sonner";
+import { CurlParseError, parseCurl } from "@/lib/curlParser";
+import { useTabsStore } from "@/stores/useTabsStore";
 
 type CurlEditorProps = {
   tabId: string;

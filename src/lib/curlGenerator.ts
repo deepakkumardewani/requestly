@@ -1,5 +1,5 @@
-import type { TabState } from "@/types";
 import { buildFinalUrl } from "@/lib/utils";
+import type { TabState } from "@/types";
 
 /**
  * Generates a formatted multi-line curl command from a tab's state.

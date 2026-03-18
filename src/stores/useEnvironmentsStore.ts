@@ -1,10 +1,10 @@
 "use client";
 
-import { create } from "zustand";
 import { toast } from "sonner";
-import type { EnvironmentModel, EnvVariable } from "@/types";
-import { generateId, interpolateVariables } from "@/lib/utils";
+import { create } from "zustand";
 import { getDB } from "@/lib/idb";
+import { generateId, interpolateVariables } from "@/lib/utils";
+import type { EnvironmentModel, EnvVariable } from "@/types";
 
 const ACTIVE_ENV_STORAGE_KEY = "requestly_active_env_id";
 

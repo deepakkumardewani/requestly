@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useUIStore } from "@/stores/useUIStore";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { useUIStore } from "@/stores/useUIStore";
 
 type ShortcutHandlers = {
   onSend?: () => void;

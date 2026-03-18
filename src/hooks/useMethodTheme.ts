@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import type { HttpMethod } from "@/types";
 import { METHOD_PALETTE } from "@/lib/constants";
+import type { HttpMethod } from "@/types";
 
 /**
  * Updates CSS variables on <html> to drive the method-specific accent color.

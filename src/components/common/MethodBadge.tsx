@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import { METHOD_BADGE_CLASSES } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import type { HttpMethod } from "@/types";
 
 type MethodBadgeProps = {

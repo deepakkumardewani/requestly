@@ -1,12 +1,12 @@
+import { HTTP_METHODS } from "@/lib/constants";
+import { generateId } from "@/lib/utils";
 import type {
-  ParsedCurl,
-  HttpMethod,
-  KVPair,
   AuthConfig,
   BodyConfig,
+  HttpMethod,
+  KVPair,
+  ParsedCurl,
 } from "@/types";
-import { generateId } from "@/lib/utils";
-import { HTTP_METHODS } from "@/lib/constants";
 
 export class CurlParseError extends Error {
   constructor(message: string) {

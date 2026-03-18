@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Monitor, Moon, Sun, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Monitor, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,9 +14,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
@@ -24,10 +22,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useSettingsStore } from "@/stores/useSettingsStore";
-import { useHistoryStore } from "@/stores/useHistoryStore";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { useHistoryStore } from "@/stores/useHistoryStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 
 type SettingsSection = "general" | "appearance" | "proxy" | "shortcuts";
 

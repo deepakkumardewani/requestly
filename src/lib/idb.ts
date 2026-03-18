@@ -1,11 +1,11 @@
-import { openDB, type IDBPDatabase } from "idb";
+import { type IDBPDatabase, openDB } from "idb";
 import type {
+  AppSettings,
   CollectionModel,
-  RequestModel,
   EnvironmentModel,
   HistoryEntry,
+  RequestModel,
   TabState,
-  AppSettings,
 } from "@/types";
 import { IDB_DB_NAME, IDB_VERSION } from "./constants";
 

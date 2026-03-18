@@ -1,17 +1,17 @@
 "use client";
 
 import { Plus, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { MethodBadge } from "@/components/common/MethodBadge";
-import { useTabsStore } from "@/stores/useTabsStore";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
-  ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
+  ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { cn } from "@/lib/utils";
+import { useTabsStore } from "@/stores/useTabsStore";
 
 export function TabBar() {
   const {

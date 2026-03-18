@@ -1,10 +1,10 @@
 "use client";
 
-import { create } from "zustand";
 import { toast } from "sonner";
-import type { CollectionModel, RequestModel, TabState } from "@/types";
-import { generateId } from "@/lib/utils";
+import { create } from "zustand";
 import { getDB } from "@/lib/idb";
+import { generateId } from "@/lib/utils";
+import type { CollectionModel, RequestModel, TabState } from "@/types";
 
 type CollectionsState = {
   collections: CollectionModel[];

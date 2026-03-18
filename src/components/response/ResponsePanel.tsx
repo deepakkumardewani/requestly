@@ -1,17 +1,18 @@
 "use client";
 
+import { Copy, Download, Send, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { Send, Copy, Download, Trash2 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
+import { EmptyState } from "@/components/common/EmptyState";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { StatusBadge } from "@/components/common/StatusBadge";
-import { EmptyState } from "@/components/common/EmptyState";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatBytes, formatDuration } from "@/lib/utils";
+import { useResponseStore } from "@/stores/useResponseStore";
 import { HeadersViewer } from "./HeadersViewer";
 import { PreviewFrame } from "./PreviewFrame";
-import { useResponseStore } from "@/stores/useResponseStore";
-import { formatDuration, formatBytes } from "@/lib/utils";
-import { toast } from "sonner";
+import { TransformPlayground } from "./TransformPlayground";
 
 const PrettyViewer = dynamic(
   () => import("./PrettyViewer").then((m) => ({ default: m.PrettyViewer })),
@@ -74,7 +75,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(response!.body);
+      await navigator.clipboard.writeText(response?.body ?? "");
       toast.success("Response copied");
     } catch {
       toast.error("Failed to copy");
@@ -87,7 +88,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
       : contentType.includes("html")
         ? "html"
         : "txt";
-    const blob = new Blob([response!.body], {
+    const blob = new Blob([response?.body ?? ""], {
       type: contentType || "text/plain",
     });
     const url = URL.createObjectURL(blob);
@@ -99,7 +100,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col overflow-hidden">
       {/* Meta row */}
       <div className="flex items-center gap-3 border-b px-3 py-1.5">
         <StatusBadge status={response.status} />
@@ -143,7 +144,8 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
       {/* Response tabs */}
       <Tabs
         defaultValue="pretty"
-        className="flex flex-1 flex-col overflow-hidden"
+        className="flex flex-col overflow-hidden"
+        style={{ flex: "1 1 0", minHeight: 0 }}
       >
         <TabsList className="h-8 shrink-0 rounded-none border-b bg-transparent px-3 justify-start gap-0">
           {["pretty", "raw", "headers", "preview"].map((tab) => (
@@ -177,6 +179,13 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
           </TabsContent>
         </div>
       </Tabs>
+
+      <TransformPlayground
+        tabId={tabId}
+        responseBody={response.body}
+        responseStatus={response.status}
+        responseHeaders={response.headers}
+      />
     </div>
   );
 }

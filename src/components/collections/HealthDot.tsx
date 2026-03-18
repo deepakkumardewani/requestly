@@ -1,22 +1,22 @@
 "use client";
 
 import { useMemo } from "react";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { HealthPopoverContent } from "./HealthPopover";
+import {
+  computeHealthMetrics,
+  getEntriesForKey,
+  HEALTH_WINDOW,
+  healthKey,
+} from "@/lib/healthMonitor";
 import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useUIStore } from "@/stores/useUIStore";
-import {
-  healthKey,
-  getEntriesForKey,
-  computeHealthMetrics,
-  HEALTH_WINDOW,
-} from "@/lib/healthMonitor";
 import type { HistoryEntry } from "@/types";
+import { HealthPopoverContent } from "./HealthPopover";
 
 const RECENT_TIMES_LIMIT = 20;
 

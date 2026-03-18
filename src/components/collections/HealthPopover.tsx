@@ -1,8 +1,8 @@
 "use client";
 
 import { ExternalLink } from "lucide-react";
-import { PopoverContent } from "@/components/ui/popover";
 import { SparklineChart } from "@/components/common/SparklineChart";
+import { PopoverContent } from "@/components/ui/popover";
 import type { HealthMetrics } from "@/types";
 
 // Strips unnecessary trailing zeros: 120.00 → "120", 1.23 → "1.23"

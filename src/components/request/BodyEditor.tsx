@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { KVTable } from "@/components/common/KVTable";
 import {
   Select,
   SelectContent,
@@ -9,11 +10,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { KVTable } from "@/components/common/KVTable";
-import { useTabsStore } from "@/stores/useTabsStore";
 import { useEnvVariableKeys } from "@/hooks/useEnvVariableKeys";
-import type { BodyType, KVPair } from "@/types";
 import { generateId } from "@/lib/utils";
+import { useTabsStore } from "@/stores/useTabsStore";
+import type { BodyType, KVPair } from "@/types";
 
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 

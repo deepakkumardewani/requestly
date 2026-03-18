@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Link } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ShareModal } from "./ShareModal";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { ShareModal } from "./ShareModal";
 
 type ShareButtonProps = {
   tabId: string;

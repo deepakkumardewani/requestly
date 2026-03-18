@@ -1,9 +1,9 @@
 import type {
+  AuthConfig,
+  KVPair,
+  RequestError,
   ResponseData,
   TabState,
-  RequestError,
-  KVPair,
-  AuthConfig,
 } from "@/types";
 
 type ResolvedRequest = {

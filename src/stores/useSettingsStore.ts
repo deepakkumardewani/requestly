@@ -1,9 +1,9 @@
 "use client";
 
-import { create } from "zustand";
 import { toast } from "sonner";
-import type { AppSettings } from "@/types";
+import { create } from "zustand";
 import { getDB } from "@/lib/idb";
+import type { AppSettings } from "@/types";
 
 type SettingsState = AppSettings & {
   hydrated: boolean;
@@ -45,13 +45,14 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
 
     setSetting(key, value) {
       set({ [key]: value });
-      const {
-        hydrated: _hydrated,
-        setSetting: _setSetting,
-        hydrate: _hydrate,
-        ...settings
-      } = get() as SettingsState & SettingsActions;
-      persistSettings(settings);
+      const s = get() as SettingsState;
+      persistSettings({
+        theme: s.theme,
+        proxyUrl: s.proxyUrl,
+        sslVerify: s.sslVerify,
+        followRedirects: s.followRedirects,
+        showHealthMonitor: s.showHealthMonitor,
+      });
     },
 
     async hydrate() {

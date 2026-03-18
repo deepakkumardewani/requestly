@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { Clock, FileText, Upload } from "lucide-react";
 import Link from "next/link";
-import { Upload, FileText, Clock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,15 +13,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { CurlParseError, parseCurl } from "@/lib/curlParser";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
-import { parseCurl, CurlParseError } from "@/lib/curlParser";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 type ImportStatus = "idle" | "dragging" | "processing" | "success" | "error";
 

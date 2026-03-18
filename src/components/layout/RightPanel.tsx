@@ -1,15 +1,15 @@
 "use client";
 
-import {
-  ResizablePanelGroup,
-  ResizablePanel,
-  ResizableHandle,
-} from "@/components/ui/resizable";
-import { useUIStore } from "@/stores/useUIStore";
-import { UrlBar } from "@/components/request/UrlBar";
 import { RequestTabs } from "@/components/request/RequestTabs";
+import { UrlBar } from "@/components/request/UrlBar";
 import { ResponsePanel } from "@/components/response/ResponsePanel";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { useUIStore } from "@/stores/useUIStore";
 import { TabBar } from "./TabBar";
 
 export function RightPanel() {

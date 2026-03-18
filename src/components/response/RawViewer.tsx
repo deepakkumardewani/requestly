@@ -1,11 +1,11 @@
 "use client";
 
 import { Copy, Download } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MAX_RESPONSE_DISPLAY_BYTES } from "@/lib/constants";
 import { formatBytes } from "@/lib/utils";
-import { toast } from "sonner";
 
 type RawViewerProps = {
   body: string;

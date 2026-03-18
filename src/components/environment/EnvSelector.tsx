@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { ChevronDown, Globe, Settings2 } from "lucide-react";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,

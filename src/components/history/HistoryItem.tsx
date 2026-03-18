@@ -2,9 +2,9 @@
 
 import { MethodBadge } from "@/components/common/MethodBadge";
 import { StatusBadge } from "@/components/common/StatusBadge";
+import { getRelativeTime, truncateUrl } from "@/lib/utils";
 import { useTabsStore } from "@/stores/useTabsStore";
 import type { HistoryEntry } from "@/types";
-import { truncateUrl, getRelativeTime } from "@/lib/utils";
 
 type HistoryItemProps = {
   entry: HistoryEntry;

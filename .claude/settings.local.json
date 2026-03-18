@@ -23,7 +23,34 @@
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
       "Bash(History\" deep-link from the health popover:*)",
       "Bash(History\" deep-link from the health popover:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(History\" deep-link from the health popover:*)",
+      "Skill(update-config)",
+      "Bash(claude mcp:*)",
+      "Bash(biome --version)",
+      "Bash(echo *)",
+      "Bash(npx tsc:*)",
+      "mcp__chrome-devtools__*",
+      "Bash(chmod +x /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/stop-check.sh)",
+      "Bash(bash .claude/hooks/stop-check.sh)",
+      "Bash(./node_modules/.bin/biome check:*)",
+      "Bash(./node_modules/.bin/tsc --noEmit --skipLibCheck)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/stop-check.sh",
+            "timeout": 120,
+            "statusMessage": "Formatting + typechecking...",
+            "asyncRewake": true
+          }
+        ]
+      }
     ]
   }
 }

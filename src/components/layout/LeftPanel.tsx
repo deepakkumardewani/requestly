@@ -1,19 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import { Plus, Settings } from "lucide-react";
+import Link from "next/link";
+import { CollectionTree } from "@/components/collections/CollectionTree";
+import { EnvSelector } from "@/components/environment/EnvSelector";
+import { HistoryList } from "@/components/history/HistoryList";
 import { Button } from "@/components/ui/button";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import {
-  ResizablePanelGroup,
-  ResizablePanel,
-  ResizableHandle,
-} from "@/components/ui/resizable";
 import { useTabsStore } from "@/stores/useTabsStore";
-import { EnvSelector } from "@/components/environment/EnvSelector";
-import { CollectionTree } from "@/components/collections/CollectionTree";
-import { HistoryList } from "@/components/history/HistoryList";
 
 export function LeftPanel() {
   const openTab = useTabsStore((s) => s.openTab);

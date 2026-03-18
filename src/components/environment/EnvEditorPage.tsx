@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -22,10 +23,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
-import type { EnvVariable, EnvironmentModel } from "@/types";
 import { generateId } from "@/lib/utils";
-import { toast } from "sonner";
+import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import type { EnvironmentModel, EnvVariable } from "@/types";
 
 export function EnvEditorPage() {
   const {

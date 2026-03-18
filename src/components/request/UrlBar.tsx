@@ -1,7 +1,12 @@
 "use client";
 
+import { BookmarkPlus, Copy, Loader2, Send } from "lucide-react";
 import { useState } from "react";
-import { Send, Loader2, Copy, BookmarkPlus } from "lucide-react";
+import { toast } from "sonner";
+import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
+import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
+import { MethodBadge } from "@/components/common/MethodBadge";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,25 +14,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { MethodBadge } from "@/components/common/MethodBadge";
-import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
-import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
-import { ShareButton } from "./ShareButton";
-import { useTabsStore } from "@/stores/useTabsStore";
-import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useSendRequest } from "@/hooks/useSendRequest";
-import { generateCurl } from "@/lib/curlGenerator";
-import { parseCurl, CurlParseError } from "@/lib/curlParser";
 import { HTTP_METHODS } from "@/lib/constants";
+import { generateCurl } from "@/lib/curlGenerator";
+import { CurlParseError, parseCurl } from "@/lib/curlParser";
 import {
   buildUrlWithParams,
-  parseQueryString,
+  generateId,
   parsePathParams,
+  parseQueryString,
 } from "@/lib/utils";
-import { generateId } from "@/lib/utils";
+import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import { useTabsStore } from "@/stores/useTabsStore";
 import type { HttpMethod } from "@/types";
-import { toast } from "sonner";
+import { ShareButton } from "./ShareButton";
 
 type UrlBarProps = {
   tabId: string;
