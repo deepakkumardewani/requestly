@@ -9,6 +9,7 @@ import { javascript } from "@codemirror/lang-javascript";
 import { json } from "@codemirror/lang-json";
 import { EditorState, Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
+import { placeholder as cmPlaceholder } from "@codemirror/view";
 import { basicSetup, EditorView } from "codemirror";
 import { useEffect, useRef } from "react";
 
@@ -19,6 +20,7 @@ type CodeEditorProps = {
   readOnly?: boolean;
   className?: string;
   envVariables?: string[];
+  placeholder?: string;
 };
 
 export default function CodeEditor({
@@ -28,6 +30,7 @@ export default function CodeEditor({
   readOnly = false,
   className,
   envVariables,
+  placeholder,
 }: CodeEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -99,6 +102,7 @@ export default function CodeEditor({
           },
         }),
         EditorState.readOnly.of(readOnly),
+        ...(placeholder ? [cmPlaceholder(placeholder)] : []),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             onChangeRef.current?.(update.state.doc.toString());
@@ -126,8 +130,8 @@ export default function CodeEditor({
       viewRef.current = null;
     };
     // envVariables intentionally excluded — updates flow through envVariablesRef
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, readOnly]);
+    // value intentionally excluded — synced without editor teardown via the effect below
+  }, [language, readOnly, placeholder]);
 
   // Sync external value changes without losing cursor position
   useEffect(() => {

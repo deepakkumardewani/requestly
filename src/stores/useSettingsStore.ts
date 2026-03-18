@@ -45,13 +45,13 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
 
     setSetting(key, value) {
       set({ [key]: value });
-      const { hydrated: _, ...settings } = get() as SettingsState &
-        SettingsActions;
+      const s = get() as SettingsState;
       persistSettings({
-        theme: (get() as SettingsState).theme,
-        proxyUrl: (get() as SettingsState).proxyUrl,
-        sslVerify: (get() as SettingsState).sslVerify,
-        followRedirects: (get() as SettingsState).followRedirects,
+        theme: s.theme,
+        proxyUrl: s.proxyUrl,
+        sslVerify: s.sslVerify,
+        followRedirects: s.followRedirects,
+        showHealthMonitor: s.showHealthMonitor,
       });
     },
 
