@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Copy, Import } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useTabsStore } from "@/stores/useTabsStore";
-import { parseCurl, CurlParseError } from "@/lib/curlParser";
 import { generateCurl } from "@/lib/curlGenerator";
-import { toast } from "sonner";
+import { CurlParseError, parseCurl } from "@/lib/curlParser";
+import { useTabsStore } from "@/stores/useTabsStore";
 
 type CurlEditorProps = {
   tabId: string;
@@ -40,7 +40,8 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
       setCurlInput("");
       toast.success("cURL imported successfully");
     } catch (err) {
-      const msg = err instanceof CurlParseError ? err.message : "Failed to parse cURL";
+      const msg =
+        err instanceof CurlParseError ? err.message : "Failed to parse cURL";
       setParseError(msg);
     }
   }
@@ -70,9 +71,7 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
             setParseError(null);
           }}
         />
-        {parseError && (
-          <p className="text-xs text-destructive">{parseError}</p>
-        )}
+        {parseError && <p className="text-xs text-destructive">{parseError}</p>}
         <Button
           size="sm"
           className="gap-1.5 bg-method-accent/10 text-method-accent hover:bg-method-accent/20"
@@ -83,7 +82,8 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
           Import
         </Button>
         <p className="text-[11px] text-muted-foreground">
-          Headers and parameters will be automatically parsed into the request fields.
+          Headers and parameters will be automatically parsed into the request
+          fields.
         </p>
       </div>
 

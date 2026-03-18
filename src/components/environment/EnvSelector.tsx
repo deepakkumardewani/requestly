@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { ChevronDown, Globe, Settings2 } from "lucide-react";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,9 +17,7 @@ export function EnvSelector() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        className="flex h-8 w-full items-center justify-between rounded-md border border-method-accent/20 bg-method-accent/5 px-2 text-xs hover:bg-method-accent/10"
-      >
+      <DropdownMenuTrigger className="flex h-8 w-full items-center justify-between rounded-md border border-method-accent/20 bg-method-accent/5 px-2 text-xs hover:bg-method-accent/10">
         <span className="flex items-center gap-1.5 truncate">
           <Globe className="h-3 w-3 shrink-0 text-method-accent" />
           <span className="truncate">

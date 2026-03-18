@@ -1,6 +1,12 @@
-import type { ParsedCurl, HttpMethod, KVPair, AuthConfig, BodyConfig } from "@/types";
-import { generateId } from "@/lib/utils";
 import { HTTP_METHODS } from "@/lib/constants";
+import { generateId } from "@/lib/utils";
+import type {
+  AuthConfig,
+  BodyConfig,
+  HttpMethod,
+  KVPair,
+  ParsedCurl,
+} from "@/types";
 
 export class CurlParseError extends Error {
   constructor(message: string) {
@@ -152,7 +158,10 @@ export function parseCurl(input: string): ParsedCurl {
       body = { type: "json", content: bodyContent };
     } else if (contentType.includes("application/x-www-form-urlencoded")) {
       body = { type: "urlencoded", content: bodyContent };
-    } else if (contentType.includes("text/xml") || contentType.includes("application/xml")) {
+    } else if (
+      contentType.includes("text/xml") ||
+      contentType.includes("application/xml")
+    ) {
       body = { type: "xml", content: bodyContent };
     } else {
       body = { type: "text", content: bodyContent };

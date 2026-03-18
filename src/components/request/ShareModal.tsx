@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Copy, Check, ChevronDown, AlertTriangle } from "lucide-react";
+import { AlertTriangle, Check, ChevronDown, Copy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { encodeShareLink } from "@/lib/shareLink";
 import type { TabState } from "@/types";
-import { toast } from "sonner";
 
 type ShareModalProps = {
   open: boolean;
@@ -103,8 +103,8 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
           <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-sm text-amber-600 dark:text-amber-400">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>
-              Headers and body are included in this link. Remove any API keys
-              or secrets before sharing.
+              Headers and body are included in this link. Remove any API keys or
+              secrets before sharing.
             </span>
           </div>
 
@@ -145,8 +145,7 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
                   {tab.body.type === "none" ? "none" : tab.body.type}
                 </li>
                 <li>
-                  <span className="text-foreground">Auth:</span>{" "}
-                  {tab.auth.type}
+                  <span className="text-foreground">Auth:</span> {tab.auth.type}
                 </li>
               </ul>
             )}

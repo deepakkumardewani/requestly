@@ -1,21 +1,28 @@
 "use client";
 
 import { Plus, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { MethodBadge } from "@/components/common/MethodBadge";
-import { useTabsStore } from "@/stores/useTabsStore";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
-  ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
+  ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { cn } from "@/lib/utils";
+import { useTabsStore } from "@/stores/useTabsStore";
 
 export function TabBar() {
-  const { tabs, activeTabId, openTab, closeTab, closeOtherTabs, closeAllTabs, setActiveTab } =
-    useTabsStore();
+  const {
+    tabs,
+    activeTabId,
+    openTab,
+    closeTab,
+    closeOtherTabs,
+    closeAllTabs,
+    setActiveTab,
+  } = useTabsStore();
 
   return (
     <div className="flex h-9 min-h-9 items-center border-b border-border bg-sidebar overflow-hidden">

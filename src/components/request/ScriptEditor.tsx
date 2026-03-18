@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTabsStore } from "@/stores/useTabsStore";
 import { useEnvVariableKeys } from "@/hooks/useEnvVariableKeys";
+import { useTabsStore } from "@/stores/useTabsStore";
 
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 

@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from "clsx";
+import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -32,12 +32,18 @@ export function parsePathParams(url: string): string[] {
   // Only look in the path portion (before ?)
   // Match :word but not :// (port/protocol colons are excluded since digits and / don't match [A-Za-z_])
   const pathPart = url.split("?")[0];
-  return (pathPart.match(/:([A-Za-z_][A-Za-z0-9_]*)/g) ?? []).map((m) => m.slice(1));
+  return (pathPart.match(/:([A-Za-z_][A-Za-z0-9_]*)/g) ?? []).map((m) =>
+    m.slice(1),
+  );
 }
 
-export function parseQueryString(url: string): Array<{ key: string; value: string }> {
+export function parseQueryString(
+  url: string,
+): Array<{ key: string; value: string }> {
   try {
-    const u = new URL(url.includes("://") ? url : `https://placeholder.com/${url}`);
+    const u = new URL(
+      url.includes("://") ? url : `https://placeholder.com/${url}`,
+    );
     return Array.from(u.searchParams.entries()).map(([key, value]) => ({
       key,
       value,
@@ -53,7 +59,12 @@ export function parseQueryString(url: string): Array<{ key: string; value: strin
  */
 export function buildFinalUrl(
   url: string,
-  params: Array<{ key: string; value: string; enabled: boolean; type?: "query" | "path" }>,
+  params: Array<{
+    key: string;
+    value: string;
+    enabled: boolean;
+    type?: "query" | "path";
+  }>,
 ): string {
   const enabled = params.filter((p) => p.enabled && p.key);
   const pathParams = enabled.filter((p) => p.type === "path");

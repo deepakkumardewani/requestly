@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { MethodBadge } from "@/components/common/MethodBadge";
 import {
   CommandDialog,
   CommandEmpty,
@@ -10,12 +11,11 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { MethodBadge } from "@/components/common/MethodBadge";
-import { useUIStore } from "@/stores/useUIStore";
+import { truncateUrl } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useTabsStore } from "@/stores/useTabsStore";
-import { truncateUrl } from "@/lib/utils";
+import { useUIStore } from "@/stores/useUIStore";
 
 export function CommandPalette() {
   const router = useRouter();
@@ -32,18 +32,17 @@ export function CommandPalette() {
   }
 
   return (
-    <CommandDialog open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen}>
+    <CommandDialog
+      open={commandPaletteOpen}
+      onOpenChange={setCommandPaletteOpen}
+    >
       <CommandInput placeholder="Search requests, actions..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
         {/* Actions */}
         <CommandGroup heading="Actions">
-          <CommandItem
-            onSelect={() =>
-              handleSelect(() => openTab())
-            }
-          >
+          <CommandItem onSelect={() => handleSelect(() => openTab())}>
             New Request
           </CommandItem>
           <CommandItem

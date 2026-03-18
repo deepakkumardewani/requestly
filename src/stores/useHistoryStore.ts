@@ -1,15 +1,15 @@
 "use client";
 
-import { create } from "zustand";
 import { toast } from "sonner";
-import type { HistoryEntry, HealthMetrics } from "@/types";
+import { create } from "zustand";
 import { MAX_HISTORY_ENTRIES } from "@/lib/constants";
-import { getDB } from "@/lib/idb";
 import {
-  healthKey,
-  getEntriesForKey,
   computeHealthMetrics,
+  getEntriesForKey,
+  healthKey,
 } from "@/lib/healthMonitor";
+import { getDB } from "@/lib/idb";
+import type { HealthMetrics, HistoryEntry } from "@/types";
 
 type HistoryState = {
   entries: HistoryEntry[];
@@ -21,7 +21,11 @@ type HistoryActions = {
   clearHistory: () => void;
   hydrate: () => Promise<void>;
   getMetricsForKey: (method: string, url: string) => HealthMetrics | null;
-  getRecentTimesForKey: (method: string, url: string, limit: number) => number[];
+  getRecentTimesForKey: (
+    method: string,
+    url: string,
+    limit: number,
+  ) => number[];
 };
 
 async function persistEntry(entry: HistoryEntry) {

@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useCronitor } from "@cronitorio/cronitor-rum-nextjs";
 import { ThemeProvider } from "next-themes";
+import { Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useSettingsStore } from "@/stores/useSettingsStore";
-import { useTabsStore } from "@/stores/useTabsStore";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
-import { useCronitor } from "@cronitorio/cronitor-rum-nextjs";
+import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useTabsStore } from "@/stores/useTabsStore";
 
 function StoreHydrator() {
   useEffect(() => {

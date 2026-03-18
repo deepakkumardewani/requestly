@@ -1,11 +1,11 @@
 "use client";
 
 import { Copy, Download } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MAX_RESPONSE_DISPLAY_BYTES } from "@/lib/constants";
 import { formatBytes } from "@/lib/utils";
-import { toast } from "sonner";
 
 type RawViewerProps = {
   body: string;
@@ -44,10 +44,20 @@ export function RawViewer({ body }: RawViewerProps) {
           {formatBytes(bytes)}
         </span>
         <div className="flex gap-1">
-          <Button variant="ghost" size="icon-sm" onClick={handleCopy} title="Copy">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleCopy}
+            title="Copy"
+          >
             <Copy className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon-sm" onClick={handleDownload} title="Download">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleDownload}
+            title="Download"
+          >
             <Download className="h-3.5 w-3.5" />
           </Button>
         </div>

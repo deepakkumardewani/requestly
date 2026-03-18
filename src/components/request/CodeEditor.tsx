@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { EditorView, basicSetup } from "codemirror";
-import { json } from "@codemirror/lang-json";
-import { javascript } from "@codemirror/lang-javascript";
-import { oneDark } from "@codemirror/theme-one-dark";
-import { EditorState, Prec } from "@codemirror/state";
+import type {
+  CompletionContext,
+  CompletionResult,
+} from "@codemirror/autocomplete";
 import { autocompletion, startCompletion } from "@codemirror/autocomplete";
-import type { CompletionContext, CompletionResult } from "@codemirror/autocomplete";
+import { javascript } from "@codemirror/lang-javascript";
+import { json } from "@codemirror/lang-json";
+import { EditorState, Prec } from "@codemirror/state";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { basicSetup, EditorView } from "codemirror";
+import { useEffect, useRef } from "react";
 
 type CodeEditorProps = {
   value: string;
@@ -47,7 +50,9 @@ export default function CodeEditor({
           : [];
 
     // Reads from ref so it's always current — no need to recreate the editor.
-    function envCompletionSource(context: CompletionContext): CompletionResult | null {
+    function envCompletionSource(
+      context: CompletionContext,
+    ): CompletionResult | null {
       const variables = envVariablesRef.current;
       if (variables.length === 0) return null;
 
@@ -81,11 +86,17 @@ export default function CodeEditor({
           : [languageExtension]),
         // Prec.highest ensures our config wins over basicSetup's autocompletion()
         Prec.highest(
-          autocompletion({ override: [envCompletionSource], activateOnTyping: true }),
+          autocompletion({
+            override: [envCompletionSource],
+            activateOnTyping: true,
+          }),
         ),
         EditorView.theme({
           "&": { height: "100%", fontSize: "14px" },
-          ".cm-scroller": { overflow: "auto", fontFamily: "var(--font-geist-mono, monospace)" },
+          ".cm-scroller": {
+            overflow: "auto",
+            fontFamily: "var(--font-geist-mono, monospace)",
+          },
         }),
         EditorState.readOnly.of(readOnly),
         EditorView.updateListener.of((update) => {

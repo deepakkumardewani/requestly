@@ -1,10 +1,10 @@
 "use client";
 
-import { create } from "zustand";
 import { toast } from "sonner";
-import type { TabState, HttpMethod, AuthConfig, BodyConfig } from "@/types";
-import { generateId } from "@/lib/utils";
+import { create } from "zustand";
 import { getDB } from "@/lib/idb";
+import { generateId } from "@/lib/utils";
+import type { AuthConfig, BodyConfig, HttpMethod, TabState } from "@/types";
 
 type TabsState = {
   tabs: TabState[];
@@ -80,8 +80,7 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
 
     let nextActiveId: string | null = activeTabId;
     if (activeTabId === tabId) {
-      nextActiveId =
-        remaining[idx]?.tabId ?? remaining[idx - 1]?.tabId ?? null;
+      nextActiveId = remaining[idx]?.tabId ?? remaining[idx - 1]?.tabId ?? null;
     }
 
     if (remaining.length === 0) {

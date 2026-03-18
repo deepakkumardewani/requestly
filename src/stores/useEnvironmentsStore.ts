@@ -1,10 +1,10 @@
 "use client";
 
-import { create } from "zustand";
 import { toast } from "sonner";
-import type { EnvironmentModel, EnvVariable } from "@/types";
-import { generateId, interpolateVariables } from "@/lib/utils";
+import { create } from "zustand";
 import { getDB } from "@/lib/idb";
+import { generateId, interpolateVariables } from "@/lib/utils";
+import type { EnvironmentModel, EnvVariable } from "@/types";
 
 const ACTIVE_ENV_STORAGE_KEY = "requestly_active_env_id";
 
@@ -120,7 +120,9 @@ export const useEnvironmentsStore = create<
       const storedEnvId = localStorage.getItem(ACTIVE_ENV_STORAGE_KEY);
       // Only restore if the stored env still exists
       const activeEnvId =
-        storedEnvId && environments.some((e) => e.id === storedEnvId) ? storedEnvId : null;
+        storedEnvId && environments.some((e) => e.id === storedEnvId)
+          ? storedEnvId
+          : null;
       set({ environments, activeEnvId });
     } catch (error) {
       toast.error("Failed to load environments", {

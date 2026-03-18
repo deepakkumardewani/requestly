@@ -1,16 +1,19 @@
 "use client";
 
-import { create } from "zustand";
 import { toast } from "sonner";
-import type { AppSettings } from "@/types";
+import { create } from "zustand";
 import { getDB } from "@/lib/idb";
+import type { AppSettings } from "@/types";
 
 type SettingsState = AppSettings & {
   hydrated: boolean;
 };
 
 type SettingsActions = {
-  setSetting: <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => void;
+  setSetting: <K extends keyof AppSettings>(
+    key: K,
+    value: AppSettings[K],
+  ) => void;
   hydrate: () => Promise<void>;
 };
 
@@ -42,7 +45,8 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
 
     setSetting(key, value) {
       set({ [key]: value });
-      const { hydrated: _, ...settings } = get() as SettingsState & SettingsActions;
+      const { hydrated: _, ...settings } = get() as SettingsState &
+        SettingsActions;
       persistSettings({
         theme: (get() as SettingsState).theme,
         proxyUrl: (get() as SettingsState).proxyUrl,

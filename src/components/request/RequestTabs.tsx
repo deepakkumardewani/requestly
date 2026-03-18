@@ -2,11 +2,11 @@
 
 import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ParamsEditor } from "./ParamsEditor";
-import { HeadersEditor } from "./HeadersEditor";
+import { useTabsStore } from "@/stores/useTabsStore";
 import { AuthEditor } from "./AuthEditor";
 import { CurlEditor } from "./CurlEditor";
-import { useTabsStore } from "@/stores/useTabsStore";
+import { HeadersEditor } from "./HeadersEditor";
+import { ParamsEditor } from "./ParamsEditor";
 
 const BodyEditor = dynamic(
   () => import("./BodyEditor").then((m) => ({ default: m.BodyEditor })),

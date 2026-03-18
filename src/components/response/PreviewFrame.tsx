@@ -4,7 +4,8 @@ type PreviewFrameProps = {
 };
 
 export function PreviewFrame({ body, contentType = "" }: PreviewFrameProps) {
-  const isHtml = contentType.includes("text/html") || body.trim().startsWith("<");
+  const isHtml =
+    contentType.includes("text/html") || body.trim().startsWith("<");
 
   if (!isHtml) {
     return (

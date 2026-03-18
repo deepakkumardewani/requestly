@@ -1,12 +1,12 @@
 "use client";
 
 import { X } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/common/EmptyState";
-import { HistoryItem } from "./HistoryItem";
+import { Input } from "@/components/ui/input";
+import { healthKey } from "@/lib/healthMonitor";
 import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useUIStore } from "@/stores/useUIStore";
-import { healthKey } from "@/lib/healthMonitor";
+import { HistoryItem } from "./HistoryItem";
 
 type HistoryListProps = {
   compact?: boolean;

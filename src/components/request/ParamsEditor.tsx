@@ -1,8 +1,8 @@
 "use client";
 
 import { KVTable } from "@/components/common/KVTable";
-import { useTabsStore } from "@/stores/useTabsStore";
 import { buildUrlWithParams } from "@/lib/utils";
+import { useTabsStore } from "@/stores/useTabsStore";
 import type { KVPair } from "@/types";
 
 type ParamsEditorProps = {

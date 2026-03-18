@@ -1,5 +1,7 @@
 "use client";
 
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -7,8 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useTabsStore } from "@/stores/useTabsStore";
 import type { AuthConfig, AuthType } from "@/types";
 
@@ -82,7 +82,9 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
             value={auth.token}
             placeholder="Bearer token..."
             onChange={(e) =>
-              updateTabState(tabId, { auth: { ...auth, token: e.target.value } })
+              updateTabState(tabId, {
+                auth: { ...auth, token: e.target.value },
+              })
             }
           />
         </div>

@@ -1,7 +1,16 @@
 "use client";
 
+import {
+  Copy,
+  FolderInput,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
-import { MoreHorizontal, Pencil, Copy, Trash2, FolderInput } from "lucide-react";
+import { HealthDot } from "@/components/collections/HealthDot";
+import { MethodBadge } from "@/components/common/MethodBadge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,15 +18,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MethodBadge } from "@/components/common/MethodBadge";
-import { useTabsStore } from "@/stores/useTabsStore";
+import { generateId } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
-import { HealthDot } from "@/components/collections/HealthDot";
+import { useTabsStore } from "@/stores/useTabsStore";
 import type { RequestModel } from "@/types";
-import { generateId } from "@/lib/utils";
 
 type RequestItemProps = {
   request: RequestModel;
@@ -104,9 +110,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
           onClick={(e) => e.stopPropagation()}
         />
       ) : (
-        <span className="flex-1 truncate text-xs">
-          {request.name}
-        </span>
+        <span className="flex-1 truncate text-xs">{request.name}</span>
       )}
 
       {showHealthMonitor && request.url && (

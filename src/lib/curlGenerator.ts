@@ -1,5 +1,5 @@
-import type { TabState } from "@/types";
 import { buildFinalUrl } from "@/lib/utils";
+import type { TabState } from "@/types";
 
 /**
  * Generates a formatted multi-line curl command from a tab's state.
@@ -42,7 +42,9 @@ export function generateCurl(tab: TabState, resolvedUrl?: string): string {
     const enabledFields = tab.body.formData.filter((f) => f.enabled && f.key);
     if (enabledFields.length > 0) {
       const data = enabledFields
-        .map((f) => `${encodeURIComponent(f.key)}=${encodeURIComponent(f.value)}`)
+        .map(
+          (f) => `${encodeURIComponent(f.key)}=${encodeURIComponent(f.value)}`,
+        )
         .join("&");
       lines.push(`  --data-urlencode '${data}'`);
     }

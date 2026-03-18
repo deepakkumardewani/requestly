@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -22,18 +23,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
-import type { EnvVariable, EnvironmentModel } from "@/types";
 import { generateId } from "@/lib/utils";
-import { toast } from "sonner";
+import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import type { EnvironmentModel, EnvVariable } from "@/types";
 
 export function EnvEditorPage() {
-  const { environments, activeEnvId, createEnv, updateEnv, deleteEnv, setActiveEnv } =
-    useEnvironmentsStore();
+  const {
+    environments,
+    activeEnvId,
+    createEnv,
+    updateEnv,
+    deleteEnv,
+    setActiveEnv,
+  } = useEnvironmentsStore();
 
   const [visibleSecrets, setVisibleSecrets] = useState<Set<string>>(new Set());
 
-  const activeEnv = environments.find((e) => e.id === activeEnvId) ?? environments[0];
+  const activeEnv =
+    environments.find((e) => e.id === activeEnvId) ?? environments[0];
 
   function toggleSecretVisibility(varId: string) {
     setVisibleSecrets((prev) => {
@@ -60,7 +67,13 @@ export function EnvEditorPage() {
     updateEnv(env.id, {
       variables: [
         ...env.variables,
-        { id: generateId(), key: "", initialValue: "", currentValue: "", isSecret: false },
+        {
+          id: generateId(),
+          key: "",
+          initialValue: "",
+          currentValue: "",
+          isSecret: false,
+        },
       ],
     });
   }
@@ -179,29 +192,43 @@ export function EnvEditorPage() {
                         value={variable.key}
                         placeholder="VARIABLE_NAME"
                         onChange={(e) =>
-                          updateVariable(activeEnv, variable.id, { key: e.target.value })
+                          updateVariable(activeEnv, variable.id, {
+                            key: e.target.value,
+                          })
                         }
                       />
                     </TableCell>
                     <TableCell className="py-1">
                       <Input
                         className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
-                        type={variable.isSecret && !visibleSecrets.has(variable.id) ? "password" : "text"}
+                        type={
+                          variable.isSecret && !visibleSecrets.has(variable.id)
+                            ? "password"
+                            : "text"
+                        }
                         value={variable.initialValue}
                         placeholder="Initial value"
                         onChange={(e) =>
-                          updateVariable(activeEnv, variable.id, { initialValue: e.target.value })
+                          updateVariable(activeEnv, variable.id, {
+                            initialValue: e.target.value,
+                          })
                         }
                       />
                     </TableCell>
                     <TableCell className="py-1">
                       <Input
                         className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
-                        type={variable.isSecret && !visibleSecrets.has(variable.id) ? "password" : "text"}
+                        type={
+                          variable.isSecret && !visibleSecrets.has(variable.id)
+                            ? "password"
+                            : "text"
+                        }
                         value={variable.currentValue}
                         placeholder="Current value"
                         onChange={(e) =>
-                          updateVariable(activeEnv, variable.id, { currentValue: e.target.value })
+                          updateVariable(activeEnv, variable.id, {
+                            currentValue: e.target.value,
+                          })
                         }
                       />
                     </TableCell>
@@ -211,7 +238,8 @@ export function EnvEditorPage() {
                         size="icon-xs"
                         onClick={() => toggleSecretVisibility(variable.id)}
                       >
-                        {variable.isSecret && !visibleSecrets.has(variable.id) ? (
+                        {variable.isSecret &&
+                        !visibleSecrets.has(variable.id) ? (
                           <EyeOff className="h-3.5 w-3.5" />
                         ) : (
                           <Eye className="h-3.5 w-3.5" />
@@ -246,8 +274,11 @@ export function EnvEditorPage() {
           <div className="mt-4 rounded-md bg-muted/50 p-3">
             <p className="text-xs font-medium">About Environment Variables</p>
             <p className="mt-1 text-[11px] text-muted-foreground">
-              Use <code className="rounded bg-muted px-1 text-method-accent">{"{{VARIABLE_NAME}}"}</code> in your
-              requests to substitute values from the active environment.
+              Use{" "}
+              <code className="rounded bg-muted px-1 text-method-accent">
+                {"{{VARIABLE_NAME}}"}
+              </code>{" "}
+              in your requests to substitute values from the active environment.
             </p>
           </div>
         </div>

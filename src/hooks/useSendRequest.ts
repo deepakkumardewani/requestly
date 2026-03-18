@@ -2,14 +2,14 @@
 
 import { useRef } from "react";
 import { toast } from "sonner";
-import { useTabsStore } from "@/stores/useTabsStore";
-import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
-import { useResponseStore } from "@/stores/useResponseStore";
-import { useHistoryStore } from "@/stores/useHistoryStore";
-import { useSettingsStore } from "@/stores/useSettingsStore";
 import { runRequest } from "@/lib/requestRunner";
+import { buildFinalUrl, generateId } from "@/lib/utils";
+import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import { useHistoryStore } from "@/stores/useHistoryStore";
+import { useResponseStore } from "@/stores/useResponseStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useTabsStore } from "@/stores/useTabsStore";
 import type { KVPair, RequestError } from "@/types";
-import { generateId, buildFinalUrl } from "@/lib/utils";
 
 export function useSendRequest(tabId: string) {
   const abortRef = useRef<AbortController | null>(null);

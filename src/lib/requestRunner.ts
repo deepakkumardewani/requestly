@@ -1,4 +1,10 @@
-import type { ResponseData, TabState, RequestError, KVPair, AuthConfig } from "@/types";
+import type {
+  AuthConfig,
+  KVPair,
+  RequestError,
+  ResponseData,
+  TabState,
+} from "@/types";
 
 type ResolvedRequest = {
   method: TabState["method"];
@@ -34,7 +40,10 @@ function buildHeaders(request: ResolvedRequest): Record<string, string> {
   } else if (request.auth.type === "basic") {
     const encoded = btoa(`${request.auth.username}:${request.auth.password}`);
     headers["Authorization"] = `Basic ${encoded}`;
-  } else if (request.auth.type === "api-key" && request.auth.addTo === "header") {
+  } else if (
+    request.auth.type === "api-key" &&
+    request.auth.addTo === "header"
+  ) {
     headers[request.auth.key] = request.auth.value;
   }
 
@@ -71,7 +80,9 @@ function buildBody(request: ResolvedRequest): string | null {
   return body.content || null;
 }
 
-export async function runRequest(request: ResolvedRequest): Promise<ResponseData> {
+export async function runRequest(
+  request: ResolvedRequest,
+): Promise<ResponseData> {
   const start = performance.now();
 
   const headers = buildHeaders(request);

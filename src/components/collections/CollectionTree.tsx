@@ -1,13 +1,15 @@
 "use client";
 
+import { FolderOpen, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Plus, MoreHorizontal, Pencil, Trash2, FolderOpen } from "lucide-react";
+import { EmptyState } from "@/components/common/EmptyState";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,16 +17,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { EmptyState } from "@/components/common/EmptyState";
-import { RequestItem } from "./RequestItem";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { RequestItem } from "./RequestItem";
 
 export function CollectionTree() {
-  const { collections, requests, createCollection, renameCollection, deleteCollection, addRequest } =
-    useCollectionsStore();
+  const {
+    collections,
+    requests,
+    createCollection,
+    renameCollection,
+    deleteCollection,
+    addRequest,
+  } = useCollectionsStore();
   const { activeTabId, tabs } = useTabsStore();
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -123,18 +129,26 @@ export function CollectionTree() {
                         onChange={(e) => setEditName(e.target.value)}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            renameCollection(collection.id, editName.trim() || collection.name);
+                            renameCollection(
+                              collection.id,
+                              editName.trim() || collection.name,
+                            );
                             setEditingId(null);
                           }
                           if (e.key === "Escape") setEditingId(null);
                         }}
                         onBlur={() => {
-                          renameCollection(collection.id, editName.trim() || collection.name);
+                          renameCollection(
+                            collection.id,
+                            editName.trim() || collection.name,
+                          );
                           setEditingId(null);
                         }}
                       />
                     ) : (
-                      <span className="text-xs font-medium">{collection.name}</span>
+                      <span className="text-xs font-medium">
+                        {collection.name}
+                      </span>
                     )}
                     <span className="text-[10px] text-muted-foreground">
                       {collectionRequests.length}

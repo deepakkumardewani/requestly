@@ -1,17 +1,22 @@
 "use client";
 
 import { useMemo } from "react";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { HealthPopoverContent } from "./HealthPopover";
+import {
+  computeHealthMetrics,
+  getEntriesForKey,
+  HEALTH_WINDOW,
+  healthKey,
+} from "@/lib/healthMonitor";
 import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useUIStore } from "@/stores/useUIStore";
-import { healthKey, getEntriesForKey, computeHealthMetrics, HEALTH_WINDOW } from "@/lib/healthMonitor";
 import type { HistoryEntry } from "@/types";
+import { HealthPopoverContent } from "./HealthPopover";
 
 const RECENT_TIMES_LIMIT = 20;
 
@@ -116,16 +121,33 @@ export function HealthDot({ method, url }: HealthDotProps) {
               <span
                 className={`inline-block h-1.5 w-1.5 shrink-0 rounded-full ${DOT_COLOR_CLASSES[dotColor]}`}
               />
-              <span className="font-medium">{metrics.successRate}% success</span>
+              <span className="font-medium">
+                {metrics.successRate}% success
+              </span>
               <span className="text-background/60">·</span>
-              <span className="text-background/70">{metrics.entryCount} requests</span>
+              <span className="text-background/70">
+                {metrics.entryCount} requests
+              </span>
             </div>
             <div className="flex gap-3 text-background/80">
-              <span>p50 <span className="font-medium text-background">{formatMs(metrics.p50)}</span></span>
-              <span>p95 <span className="font-medium text-background">{formatMs(metrics.p95)}</span></span>
+              <span>
+                p50{" "}
+                <span className="font-medium text-background">
+                  {formatMs(metrics.p50)}
+                </span>
+              </span>
+              <span>
+                p95{" "}
+                <span className="font-medium text-background">
+                  {formatMs(metrics.p95)}
+                </span>
+              </span>
             </div>
             <div className="text-background/70">
-              Last: <span className="font-medium text-background">{metrics.lastStatus}</span>
+              Last:{" "}
+              <span className="font-medium text-background">
+                {metrics.lastStatus}
+              </span>
             </div>
           </TooltipContent>
         </Tooltip>

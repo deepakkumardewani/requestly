@@ -1,7 +1,12 @@
 "use client";
 
+import { BookmarkPlus, Copy, Loader2, Send } from "lucide-react";
 import { useState } from "react";
-import { Send, Loader2, Copy, BookmarkPlus } from "lucide-react";
+import { toast } from "sonner";
+import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
+import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
+import { MethodBadge } from "@/components/common/MethodBadge";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,21 +14,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { MethodBadge } from "@/components/common/MethodBadge";
-import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
-import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
-import { ShareButton } from "./ShareButton";
-import { useTabsStore } from "@/stores/useTabsStore";
-import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useSendRequest } from "@/hooks/useSendRequest";
-import { generateCurl } from "@/lib/curlGenerator";
-import { parseCurl, CurlParseError } from "@/lib/curlParser";
 import { HTTP_METHODS } from "@/lib/constants";
-import { buildUrlWithParams, parseQueryString, parsePathParams } from "@/lib/utils";
-import { generateId } from "@/lib/utils";
+import { generateCurl } from "@/lib/curlGenerator";
+import { CurlParseError, parseCurl } from "@/lib/curlParser";
+import {
+  buildUrlWithParams,
+  generateId,
+  parsePathParams,
+  parseQueryString,
+} from "@/lib/utils";
+import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import { useTabsStore } from "@/stores/useTabsStore";
 import type { HttpMethod } from "@/types";
-import { toast } from "sonner";
+import { ShareButton } from "./ShareButton";
 
 type UrlBarProps = {
   tabId: string;
@@ -53,7 +57,15 @@ export function UrlBar({ tabId }: UrlBarProps) {
     const pathParamKeys = parsePathParams(url);
     const newPathParams = pathParamKeys.map((key) => {
       const existing = existingPathParams.find((ep) => ep.key === key);
-      return existing ?? { id: generateId(), key, value: "", enabled: true, type: "path" as const };
+      return (
+        existing ?? {
+          id: generateId(),
+          key,
+          value: "",
+          enabled: true,
+          type: "path" as const,
+        }
+      );
     });
 
     const parsedQueryParams = parseQueryString(url);
@@ -94,7 +106,8 @@ export function UrlBar({ tabId }: UrlBarProps) {
       });
     } catch (err) {
       toast.error("Failed to parse cURL", {
-        description: err instanceof CurlParseError ? err.message : "Invalid cURL command",
+        description:
+          err instanceof CurlParseError ? err.message : "Invalid cURL command",
       });
     }
   }
@@ -106,11 +119,21 @@ export function UrlBar({ tabId }: UrlBarProps) {
       ...tab,
       url: resolve(tab.url),
       params: tab.params.map((p) => ({ ...p, value: resolve(p.value) })),
-      headers: tab.headers.map((h) => ({ ...h, key: resolve(h.key), value: resolve(h.value) })),
+      headers: tab.headers.map((h) => ({
+        ...h,
+        key: resolve(h.key),
+        value: resolve(h.value),
+      })),
       body: {
         ...tab.body,
-        content: tab.body.content ? resolve(tab.body.content) : tab.body.content,
-        formData: tab.body.formData?.map((f) => ({ ...f, key: resolve(f.key), value: resolve(f.value) })),
+        content: tab.body.content
+          ? resolve(tab.body.content)
+          : tab.body.content,
+        formData: tab.body.formData?.map((f) => ({
+          ...f,
+          key: resolve(f.key),
+          value: resolve(f.value),
+        })),
       },
     };
     const curl = generateCurl(resolvedTab);
