@@ -34,7 +34,8 @@
       "Bash(chmod +x /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/stop-check.sh)",
       "Bash(bash .claude/hooks/stop-check.sh)",
       "Bash(./node_modules/.bin/biome check:*)",
-      "Bash(./node_modules/.bin/tsc --noEmit --skipLibCheck)"
+      "Bash(./node_modules/.bin/tsc --noEmit --skipLibCheck)",
+      "Bash(bunx biome:*)"
     ]
   },
   "hooks": {
