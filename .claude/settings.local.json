@@ -21,7 +21,25 @@
       "Bash(npm install:*)",
       "Bash(grep -E \"\\\\.\\(config|json|css|md\\)$|^-\")",
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
-      "Bash(History\" deep-link from the health popover:*)"
+      "Bash(History\" deep-link from the health popover:*)",
+      "Skill(update-config)",
+      "Bash(claude mcp:*)",
+      "Bash(biome --version)",
+      "Bash(echo *)"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/deepakdewani1/Documents/Programs/react/requestly && ./node_modules/.bin/biome check --write . 2>&1 | tail -5; ./node_modules/.bin/tsc --noEmit --skipLibCheck 2>&1 | head -30 || true",
+            "timeout": 120,
+            "statusMessage": "Running biome check + tsc..."
+          }
+        ]
+      }
     ]
   }
 }
