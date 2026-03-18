@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { MAX_RESPONSE_DISPLAY_BYTES } from "@/lib/constants";
-import { formatBytes } from "@/lib/utils";
 import { RawViewer } from "./RawViewer";
 
 const CodeEditor = dynamic(() => import("@/components/request/CodeEditor"), {

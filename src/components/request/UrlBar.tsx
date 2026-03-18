@@ -18,12 +18,7 @@ import { useSendRequest } from "@/hooks/useSendRequest";
 import { HTTP_METHODS } from "@/lib/constants";
 import { generateCurl } from "@/lib/curlGenerator";
 import { CurlParseError, parseCurl } from "@/lib/curlParser";
-import {
-  buildUrlWithParams,
-  generateId,
-  parsePathParams,
-  parseQueryString,
-} from "@/lib/utils";
+import { generateId, parsePathParams, parseQueryString } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import type { HttpMethod } from "@/types";

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { getDB } from "@/lib/idb";
 import { generateId, interpolateVariables } from "@/lib/utils";
-import type { EnvironmentModel, EnvVariable } from "@/types";
+import type { EnvironmentModel } from "@/types";
 
 const ACTIVE_ENV_STORAGE_KEY = "requestly_active_env_id";
 

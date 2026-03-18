@@ -47,18 +47,11 @@ export function TabBar() {
                   <span className="flex-1 truncate text-left">
                     {tab.name || "New Request"}
                   </span>
-                  <span
-                    role="button"
-                    tabIndex={0}
+                  <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       closeTab(tab.tabId);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.stopPropagation();
-                        closeTab(tab.tabId);
-                      }
                     }}
                     className={cn(
                       "flex h-4 w-4 items-center justify-center rounded transition-opacity",
@@ -69,7 +62,7 @@ export function TabBar() {
                     aria-label={`Close ${tab.name || "New Request"} tab`}
                   >
                     <X className="h-3 w-3" />
-                  </span>
+                  </button>
                   {/* Active tab bottom indicator */}
                   {isActive && (
                     <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-method-accent" />

@@ -9,9 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useEnvVariableKeys } from "@/hooks/useEnvVariableKeys";
-import { generateId } from "@/lib/utils";
 import { useTabsStore } from "@/stores/useTabsStore";
 import type { BodyType, KVPair } from "@/types";
 

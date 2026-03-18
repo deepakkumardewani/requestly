@@ -19,8 +19,7 @@ import { RightPanel } from "./RightPanel";
 
 export function MainLayout() {
   const { tabs, activeTabId, openTab } = useTabsStore();
-  const { mobileSidebarOpen, toggleMobileSidebar, setLeftPanelWidth } =
-    useUIStore();
+  const { mobileSidebarOpen, toggleMobileSidebar } = useUIStore();
 
   const activeTab = tabs.find((t) => t.tabId === activeTabId);
   const activeMethod = activeTab?.method ?? "GET";

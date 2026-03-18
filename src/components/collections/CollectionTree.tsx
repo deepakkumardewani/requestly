@@ -29,7 +29,6 @@ export function CollectionTree() {
     createCollection,
     renameCollection,
     deleteCollection,
-    addRequest,
   } = useCollectionsStore();
   const { activeTabId, tabs } = useTabsStore();
 

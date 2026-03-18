@@ -23,11 +23,12 @@ export function ParamsEditor({ tabId }: ParamsEditorProps) {
 
   if (!tab) return null;
 
+  const { url } = tab;
   const pathParams = tab.params.filter((p) => p.type === "path");
   const queryParams = tab.params.filter((p) => p.type !== "path");
 
   function handleQueryChange(updated: KVPair[]) {
-    const newUrl = buildUrlWithParams(tab!.url.split("?")[0], updated);
+    const newUrl = buildUrlWithParams(url, updated);
     updateTabState(tabId, { params: [...pathParams, ...updated], url: newUrl });
   }
 

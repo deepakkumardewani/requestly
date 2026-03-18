@@ -36,10 +36,10 @@ function buildHeaders(request: ResolvedRequest): Record<string, string> {
 
   // Auth headers
   if (request.auth.type === "bearer") {
-    headers["Authorization"] = `Bearer ${request.auth.token}`;
+    headers.Authorization = `Bearer ${request.auth.token}`;
   } else if (request.auth.type === "basic") {
     const encoded = btoa(`${request.auth.username}:${request.auth.password}`);
-    headers["Authorization"] = `Basic ${encoded}`;
+    headers.Authorization = `Basic ${encoded}`;
   } else if (
     request.auth.type === "api-key" &&
     request.auth.addTo === "header"
