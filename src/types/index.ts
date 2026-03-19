@@ -38,6 +38,10 @@ export type BodyConfig = {
   formData?: KVPair[];
 };
 
+export type BulkCloseAction =
+  | { kind: "others"; keepTabId: string }
+  | { kind: "all" };
+
 export type TabState = {
   tabId: string;
   requestId: string | null;
