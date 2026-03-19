@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/resizable";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
+import { RequestBreadcrumb } from "./RequestBreadcrumb";
 import { TabBar } from "./TabBar";
 
 export function RightPanel() {
@@ -20,6 +21,7 @@ export function RightPanel() {
 
   return (
     <div className="flex h-full flex-col">
+      <RequestBreadcrumb tabId={activeTabId} />
       <TabBar />
       <UrlBar tabId={activeTabId} />
       <ResizablePanelGroup

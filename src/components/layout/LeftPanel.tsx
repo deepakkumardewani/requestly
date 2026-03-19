@@ -13,10 +13,18 @@ import {
 } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { useUIStore } from "@/stores/useUIStore";
 
 export function LeftPanel() {
   const openTab = useTabsStore((s) => s.openTab);
+  const { setIsCreatingCollection } = useUIStore();
 
   return (
     <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
@@ -67,8 +75,20 @@ export function LeftPanel() {
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Collections
               </span>
+              <TooltipProvider delay={400}>
+                <Tooltip>
+                  <TooltipTrigger
+                    className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+                    aria-label="Add collection"
+                    onClick={() => setIsCreatingCollection(true)}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Add Collection</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
-            <ScrollArea className="flex-1 px-1">
+            <ScrollArea className="min-h-0 flex-1 px-1">
               <CollectionTree />
             </ScrollArea>
           </div>
@@ -84,7 +104,7 @@ export function LeftPanel() {
                 Recent
               </span>
             </div>
-            <ScrollArea className="flex-1 px-1">
+            <ScrollArea className="min-h-0 flex-1 px-1">
               <HistoryList compact />
             </ScrollArea>
           </div>
