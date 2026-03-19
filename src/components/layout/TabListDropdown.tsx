@@ -1,0 +1,135 @@
+"use client";
+
+import { ChevronDown, X } from "lucide-react";
+import { useState } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useCloseTabGuard } from "@/hooks/useCloseTabGuard";
+import { cn } from "@/lib/utils";
+import { useTabsStore } from "@/stores/useTabsStore";
+
+export function TabListDropdown() {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const { tabs, activeTabId, setActiveTab } = useTabsStore();
+  const { handleCloseTab, handleCloseAll } = useCloseTabGuard();
+
+  const filteredTabs = search.trim()
+    ? tabs.filter((t) =>
+        (t.name || "New Request").toLowerCase().includes(search.toLowerCase()),
+      )
+    : tabs;
+
+  function handleSelectTab(tabId: string) {
+    setActiveTab(tabId);
+    setOpen(false);
+  }
+
+  function handleOpenChange(next: boolean) {
+    setOpen(next);
+    if (!next) setSearch("");
+  }
+
+  return (
+    <Popover open={open} onOpenChange={handleOpenChange}>
+      <PopoverTrigger
+        className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+        aria-label="Show all tabs"
+        title="Show all tabs"
+      >
+        <ChevronDown className="h-4 w-4" />
+      </PopoverTrigger>
+
+      <PopoverContent align="end" sideOffset={4} className="w-72 p-0">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-border px-3 py-2">
+          <span className="text-xs font-medium text-muted-foreground">
+            Opened tabs · {tabs.length}
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 gap-1 px-2 text-xs text-muted-foreground hover:text-foreground"
+            onClick={() => {
+              handleCloseAll();
+              setOpen(false);
+            }}
+          >
+            <X className="h-3 w-3" />
+            Close all
+          </Button>
+        </div>
+
+        {/* Search */}
+        <div className="border-b border-border px-2 py-2">
+          <Input
+            placeholder="Search tabs"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="h-8 text-xs"
+            autoFocus
+          />
+        </div>
+
+        {/* Tab rows */}
+        <div className="max-h-80 overflow-y-auto">
+          {filteredTabs.length === 0 ? (
+            <p className="px-3 py-4 text-center text-xs text-muted-foreground">
+              No tabs found
+            </p>
+          ) : (
+            filteredTabs.map((tab) => {
+              const isActive = tab.tabId === activeTabId;
+              const name = tab.name || "New Request";
+
+              return (
+                <div
+                  key={tab.tabId}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleSelectTab(tab.tabId)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && handleSelectTab(tab.tabId)
+                  }
+                  className={cn(
+                    "group flex cursor-pointer items-center justify-between px-3 py-2 text-sm",
+                    isActive
+                      ? "bg-muted/60 text-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )}
+                >
+                  <span className="flex-1 truncate">{name}</span>
+
+                  {/* Status area: dot when dirty, close on hover */}
+                  <div className="relative ml-2 h-4 w-4 shrink-0">
+                    {tab.isDirty && (
+                      <span className="absolute inset-0 flex items-center justify-center transition-opacity group-hover:opacity-0">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      className="absolute inset-0 flex items-center justify-center rounded text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCloseTab(tab);
+                      }}
+                      aria-label={`Close ${name}`}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}

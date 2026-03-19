@@ -1,7 +1,17 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
-import { MethodBadge } from "@/components/common/MethodBadge";
+import { Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
@@ -10,8 +20,11 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import { cn } from "@/lib/utils";
+import { useCloseTabGuard } from "@/hooks/useCloseTabGuard";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { useUIStore } from "@/stores/useUIStore";
+import { Tab } from "./Tab";
+import { TabListDropdown } from "./TabListDropdown";
 
 export function TabBar() {
   const {
@@ -23,101 +36,207 @@ export function TabBar() {
     closeAllTabs,
     setActiveTab,
   } = useTabsStore();
+  const {
+    pendingCloseTabId,
+    setPendingCloseTabId,
+    pendingBulkClose,
+    setPendingBulkClose,
+  } = useUIStore();
+  const { handleCloseTab, handleCloseOthers, handleCloseAll } =
+    useCloseTabGuard();
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const prevTabCountRef = useRef(tabs.length);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  function checkOverflow() {
+    const el = scrollRef.current;
+    if (!el) return;
+    setIsOverflowing(el.scrollWidth > el.clientWidth);
+  }
+
+  // Scroll right when a new tab is added so the new tab is visible
+  useEffect(() => {
+    if (tabs.length > prevTabCountRef.current && scrollRef.current) {
+      scrollRef.current.scrollTo({
+        left: scrollRef.current.scrollWidth,
+        behavior: "smooth",
+      });
+    }
+    prevTabCountRef.current = tabs.length;
+    checkOverflow();
+  }, [tabs.length]);
+
+  // Re-check on container resize (e.g. window resize)
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(checkOverflow);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  function confirmBulkClose() {
+    if (!pendingBulkClose) return;
+    if (pendingBulkClose.kind === "others") {
+      closeOtherTabs(pendingBulkClose.keepTabId);
+    } else {
+      closeAllTabs();
+    }
+    setPendingBulkClose(null);
+  }
+
+  const dirtyOtherCount =
+    pendingBulkClose?.kind === "others"
+      ? tabs.filter((t) => t.tabId !== pendingBulkClose.keepTabId && t.isDirty)
+          .length
+      : tabs.filter((t) => t.isDirty).length;
 
   return (
-    <div className="flex h-9 min-h-9 items-center border-b border-border bg-sidebar overflow-hidden">
-      {/* Scrollable tab list + new tab button */}
-      <div className="flex flex-1 items-center overflow-x-auto overflow-y-hidden scrollbar-none">
-        {tabs.map((tab) => {
-          const isActive = tab.tabId === activeTabId;
-          return (
-            <ContextMenu key={tab.tabId}>
-              <ContextMenuTrigger>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab(tab.tabId)}
-                  className={cn(
-                    "group relative flex h-9 max-w-[200px] min-w-[100px] shrink-0 items-center gap-1.5 border-r border-border px-3 text-xs transition-colors",
-                    isActive
-                      ? "bg-background text-foreground"
-                      : "bg-sidebar text-muted-foreground hover:bg-muted hover:text-foreground",
-                  )}
-                >
-                  <MethodBadge method={tab.method} />
-                  <span className="flex-1 truncate text-left">
-                    {tab.name || "New Request"}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      closeTab(tab.tabId);
-                    }}
-                    className={cn(
-                      "flex h-4 w-4 items-center justify-center rounded transition-opacity",
-                      isActive
-                        ? "opacity-60 hover:opacity-100"
-                        : "opacity-0 group-hover:opacity-60 hover:!opacity-100",
-                    )}
-                    aria-label={`Close ${tab.name || "New Request"} tab`}
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                  {/* Active tab bottom indicator */}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-method-accent" />
-                  )}
-                </button>
-              </ContextMenuTrigger>
-              <ContextMenuContent>
-                <ContextMenuItem onClick={() => closeTab(tab.tabId)}>
-                  Close Tab
-                </ContextMenuItem>
-                <ContextMenuItem
-                  onClick={() => {
-                    openTab({
-                      name: tab.name,
-                      method: tab.method,
-                      url: tab.url,
-                      params: tab.params,
-                      headers: tab.headers,
-                      auth: tab.auth,
-                      body: tab.body,
-                      preScript: tab.preScript,
-                      postScript: tab.postScript,
-                      isDirty: false,
-                    });
-                  }}
-                >
-                  Duplicate Tab
-                </ContextMenuItem>
-                <ContextMenuSeparator />
-                <ContextMenuItem
-                  disabled={tabs.length <= 1}
-                  onClick={() => closeOtherTabs(tab.tabId)}
-                >
-                  Close Other Tabs
-                </ContextMenuItem>
-                <ContextMenuItem onClick={() => closeAllTabs()}>
-                  Close All Tabs
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
-          );
-        })}
+    <>
+      <div className="flex h-9 min-h-9 items-center border-b border-border bg-sidebar overflow-hidden">
+        {/* Scrollable tab list with right-edge fade */}
+        <div className="relative min-w-0 flex-1 overflow-hidden">
+          <div
+            ref={scrollRef}
+            className="flex items-center overflow-x-auto overflow-y-hidden scrollbar-none"
+          >
+            {tabs.map((tab) => {
+              const isActive = tab.tabId === activeTabId;
+              return (
+                <ContextMenu key={tab.tabId}>
+                  <ContextMenuTrigger>
+                    <Tab
+                      tab={tab}
+                      isActive={isActive}
+                      onSelect={() => setActiveTab(tab.tabId)}
+                      onClose={(e) => {
+                        e.stopPropagation();
+                        handleCloseTab(tab);
+                      }}
+                    />
+                  </ContextMenuTrigger>
+                  <ContextMenuContent>
+                    <ContextMenuItem onClick={() => handleCloseTab(tab)}>
+                      Close Tab
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                      onClick={() => {
+                        openTab({
+                          name: tab.name,
+                          method: tab.method,
+                          url: tab.url,
+                          params: tab.params,
+                          headers: tab.headers,
+                          auth: tab.auth,
+                          body: tab.body,
+                          preScript: tab.preScript,
+                          postScript: tab.postScript,
+                          isDirty: false,
+                        });
+                      }}
+                    >
+                      Duplicate Tab
+                    </ContextMenuItem>
+                    <ContextMenuSeparator />
+                    <ContextMenuItem
+                      disabled={tabs.length <= 1}
+                      onClick={() => handleCloseOthers(tab.tabId)}
+                    >
+                      Close Other Tabs
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={() => handleCloseAll()}>
+                      Close All Tabs
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
+              );
+            })}
 
-        {/* New tab button — sits right after last tab */}
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="mx-1 shrink-0"
-          onClick={() => openTab()}
-          aria-label="New Request"
-          title="New Request"
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
+            {/* Inline "+" — visible only when tabs fit without overflow */}
+            {!isOverflowing && (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => openTab()}
+                aria-label="New Request"
+                title="New Request"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+
+          {/* Fade mask to signal clipped tabs on the right */}
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-sidebar to-transparent" />
+        </div>
+
+        {/* Fixed right-side actions — "+" only shown here when overflowing */}
+        <div className="flex shrink-0 items-center gap-0.5 px-1">
+          {isOverflowing && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => openTab()}
+              aria-label="New Request"
+              title="New Request"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          )}
+          <TabListDropdown />
+        </div>
       </div>
-    </div>
+
+      {/* Single-tab close confirmation (also triggered via Ctrl+W / UI store) */}
+      <AlertDialog
+        open={!!pendingCloseTabId}
+        onOpenChange={(open) => !open && setPendingCloseTabId(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              This tab has unsaved changes. Close anyway?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingCloseTabId) closeTab(pendingCloseTabId);
+                setPendingCloseTabId(null);
+              }}
+            >
+              Close
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk close confirmation (Close Other Tabs / Close All Tabs) */}
+      <AlertDialog
+        open={!!pendingBulkClose}
+        onOpenChange={(open) => !open && setPendingBulkClose(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              {dirtyOtherCount === 1
+                ? "1 tab has unsaved changes."
+                : `${dirtyOtherCount} tabs have unsaved changes.`}{" "}
+              Close anyway?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmBulkClose}>
+              Close All
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
