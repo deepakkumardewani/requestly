@@ -43,8 +43,8 @@ export function HistoryItem({ entry }: HistoryItemProps) {
     >
       <MethodBadge method={entry.method} />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[11px]">{truncateUrl(entry.url, 40)}</p>
-        <p className="text-[10px] text-muted-foreground">
+        <p className="truncate text-xs">{truncateUrl(entry.url, 40)}</p>
+        <p className="text-[11px] text-muted-foreground">
           {getRelativeTime(entry.timestamp)}
         </p>
       </div>

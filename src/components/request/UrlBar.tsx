@@ -1,9 +1,7 @@
 "use client";
 
 import { BookmarkPlus, Copy, Loader2, Send } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
-import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
 import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
 import { MethodBadge } from "@/components/common/MethodBadge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSaveRequest } from "@/hooks/useSaveRequest";
 import { useSendRequest } from "@/hooks/useSendRequest";
 import { HTTP_METHODS } from "@/lib/constants";
 import { generateCurl } from "@/lib/curlGenerator";
@@ -29,8 +28,7 @@ type UrlBarProps = {
 };
 
 export function UrlBar({ tabId }: UrlBarProps) {
-  const [saveModalOpen, setSaveModalOpen] = useState(false);
-
+  const { save } = useSaveRequest();
   const { tabs, updateTabState } = useTabsStore();
   const resolveVariables = useEnvironmentsStore((s) => s.resolveVariables);
   const tab = tabs.find((t) => t.tabId === tabId);
@@ -189,7 +187,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
           variant="outline"
           size="sm"
           className="h-8 gap-1.5 text-xs"
-          onClick={() => setSaveModalOpen(true)}
+          onClick={save}
         >
           <BookmarkPlus className="h-3.5 w-3.5" />
           Save
@@ -213,14 +211,6 @@ export function UrlBar({ tabId }: UrlBarProps) {
           )}
         </Button>
       </div>
-
-      {saveModalOpen && (
-        <SaveRequestModal
-          open={saveModalOpen}
-          onOpenChange={setSaveModalOpen}
-          tab={tab}
-        />
-      )}
     </div>
   );
 }

@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { useUIStore } from "@/stores/useUIStore";
 import { RequestItem } from "./RequestItem";
 
 export function CollectionTree() {
@@ -32,9 +33,10 @@ export function CollectionTree() {
   } = useCollectionsStore();
   const { activeTabId, tabs } = useTabsStore();
 
+  const { isCreatingCollection, setIsCreatingCollection } = useUIStore();
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
-  const [isCreatingCollection, setIsCreatingCollection] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState("");
 
   const activeTab = tabs.find((t) => t.tabId === activeTabId);
@@ -115,9 +117,9 @@ export function CollectionTree() {
               value={collection.id}
               className="border-none"
             >
-              <div className="group flex items-center gap-1 px-2 hover:bg-muted rounded">
+              <div className="group flex items-center rounded px-2 hover:bg-muted">
                 <AccordionTrigger className="flex-1 py-1.5 hover:no-underline">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex min-w-0 flex-1 items-center gap-1.5">
                     <FolderOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                     {editingId === collection.id ? (
                       <Input
@@ -145,7 +147,7 @@ export function CollectionTree() {
                         }}
                       />
                     ) : (
-                      <span className="text-xs font-medium">
+                      <span className="text-sm font-medium">
                         {collection.name}
                       </span>
                     )}
@@ -153,35 +155,36 @@ export function CollectionTree() {
                       {collectionRequests.length}
                     </span>
                   </div>
-                </AccordionTrigger>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-muted"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MoreHorizontal className="h-3 w-3" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setEditName(collection.name);
-                        setEditingId(collection.id);
-                      }}
+                  {/* Dropdown sits before the auto-chevron so chevron ends up at far right */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-muted"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <Pencil className="mr-2 h-3.5 w-3.5" />
-                      Rename
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="text-destructive focus:text-destructive"
-                      onClick={() => deleteCollection(collection.id)}
-                    >
-                      <Trash2 className="mr-2 h-3.5 w-3.5" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      <MoreHorizontal className="h-3 w-3" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setEditName(collection.name);
+                          setEditingId(collection.id);
+                        }}
+                      >
+                        <Pencil className="mr-2 h-3.5 w-3.5" />
+                        Rename
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => deleteCollection(collection.id)}
+                      >
+                        <Trash2 className="mr-2 h-3.5 w-3.5" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </AccordionTrigger>
               </div>
 
               <AccordionContent className="pb-1 pl-3 pr-1">
@@ -205,18 +208,6 @@ export function CollectionTree() {
           );
         })}
       </Accordion>
-
-      <div className="px-2 pt-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full justify-start gap-1.5 text-xs text-muted-foreground"
-          onClick={() => setIsCreatingCollection(true)}
-        >
-          <Plus className="h-3 w-3" />
-          New Collection
-        </Button>
-      </div>
     </div>
   );
 }

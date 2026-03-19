@@ -33,7 +33,7 @@ export function HistoryList({ compact = false }: HistoryListProps) {
   const displayed = compact ? filtered.slice(0, 20) : filtered;
 
   return (
-    <div className="flex h-full flex-col">
+    <div className={`flex flex-col ${compact ? "" : "h-full"}`}>
       {!compact && (
         <div className="p-2">
           <div className="relative">

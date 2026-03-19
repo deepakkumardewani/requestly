@@ -108,7 +108,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
           onClick={(e) => e.stopPropagation()}
         />
       ) : (
-        <span className="flex-1 truncate text-xs">{request.name}</span>
+        <span className="flex-1 truncate text-sm">{request.name}</span>
       )}
 
       {showHealthMonitor && request.url && (
