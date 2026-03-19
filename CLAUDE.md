@@ -23,6 +23,10 @@ Functions/Variables | camelCase | fetchUserData, isModalOpen
 Constants | UPPER_SNAKE_CASE | API_URL, MAX_RETRIES
 Folders | lowercase | components, utils
 
+## Component Rules
+
+- Always check if a specific component is available in shadcn before creating a custom component
+
 ## Engineering Preferences
 
 - DRY — flag repetition aggressively.
@@ -30,6 +34,7 @@ Folders | lowercase | components, utils
 - Handle edge cases thoughtfully; thoughtfulness > speed.
 - "Engineered enough" — not fragile, not over-abstracted.
 - One responsibility per function/module; keep functions under ~30 lines
+- Extract inline JSX into a separate component file when it is considerably large (roughly 20+ lines of markup or has its own logic/state)
 - Fail fast: validate inputs early, return/throw at the top
 - No magic numbers or strings — use named constants
 
