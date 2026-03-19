@@ -4,6 +4,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Hide scrollbars while preserving scroll functionality */
+.scrollbar-none {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/WebKit */
+}
+
 @theme inline {
   /* Method-driven dynamic accent color (RGB channels set via JS) */
   --color-method-accent: rgb(
