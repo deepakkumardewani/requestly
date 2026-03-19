@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import type { BulkCloseAction } from "@/types";
 
 type UIState = {
   leftPanelWidth: number;
@@ -8,6 +9,10 @@ type UIState = {
   commandPaletteOpen: boolean;
   mobileSidebarOpen: boolean;
   historyFilter: string | null;
+  saveModalOpen: boolean;
+  pendingCloseTabId: string | null;
+  pendingBulkClose: BulkCloseAction | null;
+  isCreatingCollection: boolean;
 };
 
 type UIActions = {
@@ -17,6 +22,10 @@ type UIActions = {
   setCommandPaletteOpen: (open: boolean) => void;
   toggleMobileSidebar: () => void;
   setHistoryFilter: (filter: string | null) => void;
+  setSaveModalOpen: (open: boolean) => void;
+  setPendingCloseTabId: (id: string | null) => void;
+  setPendingBulkClose: (action: BulkCloseAction | null) => void;
+  setIsCreatingCollection: (value: boolean) => void;
 };
 
 export const useUIStore = create<UIState & UIActions>((set) => ({
@@ -25,6 +34,10 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
   commandPaletteOpen: false,
   mobileSidebarOpen: false,
   historyFilter: null,
+  saveModalOpen: false,
+  pendingCloseTabId: null,
+  pendingBulkClose: null,
+  isCreatingCollection: false,
 
   setLeftPanelWidth(width) {
     set({ leftPanelWidth: width });
@@ -48,5 +61,21 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
 
   setHistoryFilter(filter) {
     set({ historyFilter: filter });
+  },
+
+  setSaveModalOpen(open) {
+    set({ saveModalOpen: open });
+  },
+
+  setPendingCloseTabId(id) {
+    set({ pendingCloseTabId: id });
+  },
+
+  setPendingBulkClose(action) {
+    set({ pendingBulkClose: action });
+  },
+
+  setIsCreatingCollection(value) {
+    set({ isCreatingCollection: value });
   },
 }));

@@ -116,7 +116,7 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
   updateTabState(tabId, patch) {
     set((state) => ({
       tabs: state.tabs.map((t) =>
-        t.tabId === tabId ? { ...t, ...patch, isDirty: true } : t,
+        t.tabId === tabId ? { ...t, isDirty: true, ...patch } : t,
       ),
     }));
     persistTabs(get().tabs);
