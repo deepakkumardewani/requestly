@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Settings } from "lucide-react";
+import { GitCompare, Plus, Settings } from "lucide-react";
 import Link from "next/link";
 import { CollectionTree } from "@/components/collections/CollectionTree";
 import { EnvSelector } from "@/components/environment/EnvSelector";
@@ -37,11 +37,18 @@ export function LeftPanel() {
           </div>
           <span className="text-sm font-semibold">Requestly</span>
         </div>
-        <Link href="/settings">
-          <Button variant="ghost" size="icon-sm" aria-label="Settings">
-            <Settings className="h-4 w-4" />
-          </Button>
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link href="/json-compare">
+            <Button variant="ghost" size="icon-sm" aria-label="JSON Compare">
+              <GitCompare className="h-4 w-4" />
+            </Button>
+          </Link>
+          <Link href="/settings">
+            <Button variant="ghost" size="icon-sm" aria-label="Settings">
+              <Settings className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* New Request Button */}

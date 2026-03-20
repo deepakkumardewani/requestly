@@ -1,7 +1,8 @@
 "use client";
 
-import { Copy, Download, Send, Trash2 } from "lucide-react";
+import { Copy, Download, GitCompare, Send, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/common/EmptyState";
 import { StatusBadge } from "@/components/common/StatusBadge";
@@ -27,7 +28,10 @@ type ResponsePanelProps = {
   tabId: string;
 };
 
+const SESSION_STORAGE_SEED_KEY = "json-compare-seed-left";
+
 export function ResponsePanel({ tabId }: ResponsePanelProps) {
+  const router = useRouter();
   const { responses, loading, errors, clearResponse } = useResponseStore();
 
   const response = responses[tabId] ?? null;
@@ -82,6 +86,11 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
     }
   }
 
+  function handleCompare() {
+    sessionStorage.setItem(SESSION_STORAGE_SEED_KEY, response?.body ?? "");
+    router.push("/json-compare");
+  }
+
   function handleDownload() {
     const ext = contentType.includes("json")
       ? "json"
@@ -114,6 +123,14 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
           {formatBytes(response.size)}
         </span>
         <div className="ml-auto flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={handleCompare}
+            title="Compare in JSON Compare"
+          >
+            <GitCompare className="h-3.5 w-3.5" />
+          </Button>
           <Button
             variant="ghost"
             size="icon-sm"
