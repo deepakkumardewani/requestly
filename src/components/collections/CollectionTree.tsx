@@ -1,6 +1,7 @@
 "use client";
 
-import { FolderOpen, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { FolderOpen, GitBranch, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
 import {
@@ -38,6 +39,7 @@ export function CollectionTree() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [newCollectionName, setNewCollectionName] = useState("");
+  const router = useRouter();
 
   const activeTab = tabs.find((t) => t.tabId === activeTabId);
 
@@ -173,6 +175,14 @@ export function CollectionTree() {
                       >
                         <Pencil className="mr-2 h-3.5 w-3.5" />
                         Rename
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          router.push(`/chain/${collection.id}`)
+                        }
+                      >
+                        <GitBranch className="mr-2 h-3.5 w-3.5" />
+                        Chain View
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem

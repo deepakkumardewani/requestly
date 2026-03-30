@@ -749,7 +749,7 @@ All other features use native browser APIs, existing CodeMirror setup, or hand-r
 
 ### Task 10.1 — Define chain types (`types/chain.ts`)
 
-- [ ] Define:
+- [x] Define:
   ```ts
   type ChainEdge = {
     id: string
@@ -776,8 +776,8 @@ All other features use native browser APIs, existing CodeMirror setup, or hand-r
 
 ### Task 10.2 — Extend IndexedDB and `chainStore`
 
-- [ ] In `lib/idb.ts`: add `chainConfigs` object store (keyPath: `collectionId`); increment DB version
-- [ ] Create `store/chainStore.ts`:
+- [x] In `lib/idb.ts`: add `chainConfigs` object store (keyPath: `collectionId`); increment DB version
+- [x] Create `store/chainStore.ts`:
   - State: `configs: Record<collectionId, ChainConfig>`
   - Actions: `loadConfig(collectionId)`, `upsertEdge(collectionId, edge)`, `deleteEdge(collectionId, edgeId)`, `updateNodePosition(collectionId, requestId, pos)`, `clearEdges(collectionId)`
   - Persisted to `chainConfigs` IndexedDB store
@@ -786,64 +786,64 @@ All other features use native browser APIs, existing CodeMirror setup, or hand-r
 
 ### Task 10.3 — Chain canvas page (`app/chain/[collectionId]/page.tsx`)
 
-- [ ] `"use client"` page at `/chain/[collectionId]`
-- [ ] Load collection requests from `collectionsStore`
-- [ ] Load chain config from `chainStore.loadConfig(collectionId)`
-- [ ] Render `<ChainCanvas collectionId={collectionId} requests={requests} config={config} />`
-- [ ] Header bar: "← {collectionName}" back link + "Run Chain" button + title
+- [x] `"use client"` page at `/chain/[collectionId]`
+- [x] Load collection requests from `collectionsStore`
+- [x] Load chain config from `chainStore.loadConfig(collectionId)`
+- [x] Render `<ChainCanvas collectionId={collectionId} requests={requests} config={config} />`
+- [x] Header bar: "← {collectionName}" back link + "Run Chain" button + title
 
 ---
 
 ### Task 10.4 — Build `ChainCanvas` (`components/chain/ChainCanvas.tsx`)
 
-- [ ] Use `@xyflow/react` `ReactFlow` component
-- [ ] Initialize nodes from `requests` array; positions from `config.nodePositions` (default: auto-layout left-to-right)
-- [ ] Initialize edges from `config.edges`; render as React Flow edges with label showing `edge.sourceJsonPath`
-- [ ] On node drag end: call `chainStore.updateNodePosition`
-- [ ] On connect (new edge drawn): validate no circular dependency; open `ArrowConfigPanel` for the new edge
-- [ ] On edge click: open `ArrowConfigPanel` for that edge (to edit config)
-- [ ] On edge delete (backspace/delete key): call `chainStore.deleteEdge`
-- [ ] During run (`ChainRunState` prop):
+- [x] Use `@xyflow/react` `ReactFlow` component
+- [x] Initialize nodes from `requests` array; positions from `config.nodePositions` (default: auto-layout left-to-right)
+- [x] Initialize edges from `config.edges`; render as React Flow edges with label showing `edge.sourceJsonPath`
+- [x] On node drag end: call `chainStore.updateNodePosition`
+- [x] On connect (new edge drawn): validate no circular dependency; open `ArrowConfigPanel` for the new edge
+- [x] On edge click: open `ArrowConfigPanel` for that edge (to edit config)
+- [x] On edge delete (backspace/delete key): call `chainStore.deleteEdge`
+- [x] During run (`ChainRunState` prop):
   - Node border colour: idle=default, running=blue pulse (CSS), passed=emerald, failed=red, skipped=grey
   - Edge label: show extracted value once source completes; "✗" in red if extraction failed
-- [ ] MiniMap enabled; Controls (zoom in/out/fit) enabled
+- [x] MiniMap enabled; Controls (zoom in/out/fit) enabled
 
 ---
 
 ### Task 10.5 — Build `ChainNode` (`components/chain/ChainNode.tsx`)
 
-- [ ] React Flow custom node type
-- [ ] Display: method badge + request name + URL (truncated to 30 chars)
-- [ ] State indicator icon: idle (–), running (spinner), passed (✓), failed (✗), skipped (○)
-- [ ] Source handle: right side (outgoing connections)
-- [ ] Target handle: left side (incoming connections)
-- [ ] Border colour driven by `ChainNodeState` via prop
+- [x] React Flow custom node type
+- [x] Display: method badge + request name + URL (truncated to 30 chars)
+- [x] State indicator icon: idle (–), running (spinner), passed (✓), failed (✗), skipped (○)
+- [x] Source handle: right side (outgoing connections)
+- [x] Target handle: left side (incoming connections)
+- [x] Border colour driven by `ChainNodeState` via prop
 
 ---
 
 ### Task 10.6 — Build `ArrowConfigPanel` (`components/chain/ArrowConfigPanel.tsx`)
 
-- [ ] shadcn Sheet opened from the right
-- [ ] Shows: source request name → target request name in header
-- [ ] Fields:
+- [x] shadcn Sheet opened from the right
+- [x] Shows: source request name → target request name in header
+- [x] Fields:
   - "Extract from source response" — text input for JSONPath (e.g. `$.token`)
   - "Inject into target" — radio group: `URL param | Header | Body path`
   - If URL param: text input for param name
   - If Header: text input for header name
   - If Body path: text input for JSONPath target
-- [ ] "Save" button: calls `chainStore.upsertEdge`; closes panel
-- [ ] "Delete Edge" button (destructive, red): calls `chainStore.deleteEdge`; closes panel
-- [ ] Validation: JSONPath input must be non-empty; target key must be non-empty
+- [x] "Save" button: calls `chainStore.upsertEdge`; closes panel
+- [x] "Delete Edge" button (destructive, red): calls `chainStore.deleteEdge`; closes panel
+- [x] Validation: JSONPath input must be non-empty; target key must be non-empty
 
 ---
 
 ### Task 10.7 — Chain runner (`lib/chainRunner.ts`)
 
-- [ ] Implement `buildExecutionOrder(requests, edges): string[][]`
+- [x] Implement `buildExecutionOrder(requests, edges): string[]`
   - Topological sort (Kahn's algorithm) on request IDs using edges as directed graph
-  - Returns array of "layers" — requests in the same layer can theoretically run in order (run sequentially for simplicity in v1)
+  - Returns ordered array of request IDs — run sequentially in v1
   - Detects circular dependencies; throws `CircularDependencyError`
-- [ ] Implement `runChain(requests, edges, env, onUpdate, signal): Promise<void>`
+- [x] Implement `runChain(requests, edges, onUpdate, signal): Promise<void>`
   - Get execution order via `buildExecutionOrder`
   - For each requestId in order:
     - Check `signal.aborted` → mark remaining skipped
@@ -852,15 +852,15 @@ All other features use native browser APIs, existing CodeMirror setup, or hand-r
     - Build injections: for each incoming edge, get source response, run `JSONPath` extraction
       - If extraction fails: record `null`; mark as skipped
     - Apply injections to request (mutate URL param / header / body field)
-    - Fire request via `runRequestWithEnv`
+    - Fire request via `runRequest`
     - Call `onUpdate(requestId, passed ? 'passed' : 'failed', { response, extractedValues })`
 
 ---
 
 ### Task 10.8 — Wire "Chain View" into collection kebab
 
-- [ ] In `CollectionItem.tsx` kebab menu: add "Chain View" item
-- [ ] On click: `router.push('/chain/' + collectionId)`
+- [x] In `CollectionTree.tsx` kebab menu: add "Chain View" item
+- [x] On click: `router.push('/chain/' + collectionId)`
 
 ---
 
