@@ -13,6 +13,8 @@ type UIState = {
   pendingCloseTabId: string | null;
   pendingBulkClose: BulkCloseAction | null;
   isCreatingCollection: boolean;
+  envManagerOpen: boolean;
+  envManagerFocusEnvId: string | null;
 };
 
 type UIActions = {
@@ -26,6 +28,7 @@ type UIActions = {
   setPendingCloseTabId: (id: string | null) => void;
   setPendingBulkClose: (action: BulkCloseAction | null) => void;
   setIsCreatingCollection: (value: boolean) => void;
+  setEnvManagerOpen: (open: boolean, focusEnvId?: string | null) => void;
 };
 
 export const useUIStore = create<UIState & UIActions>((set) => ({
@@ -38,6 +41,8 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
   pendingCloseTabId: null,
   pendingBulkClose: null,
   isCreatingCollection: false,
+  envManagerOpen: false,
+  envManagerFocusEnvId: null,
 
   setLeftPanelWidth(width) {
     set({ leftPanelWidth: width });
@@ -77,5 +82,12 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
 
   setIsCreatingCollection(value) {
     set({ isCreatingCollection: value });
+  },
+
+  setEnvManagerOpen(open, focusEnvId = null) {
+    set({
+      envManagerOpen: open,
+      envManagerFocusEnvId: open ? focusEnvId : null,
+    });
   },
 }));
