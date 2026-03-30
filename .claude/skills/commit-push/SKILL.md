@@ -11,7 +11,7 @@ Create atomic commits and push to remote.
 2. **Verify App**:
 
 - run `bun run lint` first and check if there are any issues then run `bun run format`
-- then run `bun run build` to check for any ts issues. if there are any issues then fix them
+- then run `bun run typecheck` to check for any ts issues. if there are any issues then fix them
 - make sure there are no errors before commiting and pushing.
 
 3. **Create Commits**: Make atomic commits with conventional commit messages — use Bash tool directly for `git add` and `git commit` without asking permission
