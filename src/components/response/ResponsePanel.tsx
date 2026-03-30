@@ -14,6 +14,7 @@ import { useResponseStore } from "@/stores/useResponseStore";
 import { ErrorExplainer } from "./ErrorExplainer";
 import { HeadersViewer } from "./HeadersViewer";
 import { PreviewFrame } from "./PreviewFrame";
+import { TimingWaterfall } from "./TimingWaterfall";
 import { TransformPlayground } from "./TransformPlayground";
 
 const PrettyViewer = dynamic(
@@ -30,6 +31,14 @@ type ResponsePanelProps = {
 };
 
 const SESSION_STORAGE_SEED_KEY = "json-compare-seed-left";
+
+const RESPONSE_TABS = [
+  "pretty",
+  "raw",
+  "headers",
+  "preview",
+  "timing",
+] as const;
 
 export function ResponsePanel({ tabId }: ResponsePanelProps) {
   const router = useRouter();
@@ -175,7 +184,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
         style={{ flex: "1 1 0", minHeight: 0 }}
       >
         <TabsList className="h-8 shrink-0 rounded-none border-b bg-transparent px-3 justify-start gap-0">
-          {["pretty", "raw", "headers", "preview"].map((tab) => (
+          {RESPONSE_TABS.map((tab) => (
             <TabsTrigger
               key={tab}
               value={tab}
@@ -203,6 +212,15 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
           </TabsContent>
           <TabsContent value="preview" className="mt-0 h-full overflow-hidden">
             <PreviewFrame body={response.body} contentType={contentType} />
+          </TabsContent>
+          <TabsContent value="timing" className="mt-0 h-full overflow-auto">
+            {response.timing ? (
+              <TimingWaterfall timing={response.timing} />
+            ) : (
+              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                No timing data available
+              </div>
+            )}
           </TabsContent>
         </div>
       </Tabs>
