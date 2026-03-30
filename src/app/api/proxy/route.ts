@@ -41,6 +41,8 @@ export async function POST(req: Request): Promise<NextResponse> {
   }
 
   try {
+    const t0 = performance.now();
+
     const upstream = await fetch(url, {
       method: method.toUpperCase(),
       headers,
@@ -48,6 +50,8 @@ export async function POST(req: Request): Promise<NextResponse> {
       // Next.js fetch supports redirect option
       redirect: followRedirects ? "follow" : "manual",
     });
+
+    const ttfb = performance.now() - t0;
 
     // Guard against huge responses
     const contentLength = upstream.headers.get("content-length");
@@ -65,6 +69,8 @@ export async function POST(req: Request): Promise<NextResponse> {
     }
 
     const responseBody = await upstream.text();
+    const total = performance.now() - t0;
+    const download = total - ttfb;
 
     // Double-check actual size after reading
     if (
@@ -85,12 +91,21 @@ export async function POST(req: Request): Promise<NextResponse> {
       responseHeaders[key] = value;
     });
 
-    return NextResponse.json({
-      status: upstream.status,
-      statusText: upstream.statusText,
-      headers: responseHeaders,
-      body: responseBody,
-    });
+    return NextResponse.json(
+      {
+        status: upstream.status,
+        statusText: upstream.statusText,
+        headers: responseHeaders,
+        body: responseBody,
+      },
+      {
+        headers: {
+          "X-Timing-TTFB": String(Math.round(ttfb * 100) / 100),
+          "X-Timing-Download": String(Math.round(download * 100) / 100),
+          "X-Timing-Total": String(Math.round(total * 100) / 100),
+        },
+      },
+    );
   } catch (cause) {
     const message =
       cause instanceof Error ? cause.message : "Unknown network error";

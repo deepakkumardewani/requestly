@@ -1,3 +1,4 @@
+import { parseTimingHeaders } from "@/lib/timingParser";
 import type {
   AuthConfig,
   KVPair,
@@ -144,6 +145,13 @@ export async function runRequest(
   const duration = performance.now() - start;
   const size = new TextEncoder().encode(data.body).length;
 
+  // Collect proxy response headers to extract server-side timing
+  const proxyHeaders: Record<string, string> = {};
+  proxyResponse.headers.forEach((value, key) => {
+    proxyHeaders[key] = value;
+  });
+  const timing = parseTimingHeaders(proxyHeaders, duration);
+
   return {
     status: data.status,
     statusText: data.statusText,
@@ -154,5 +162,6 @@ export async function runRequest(
     url: request.url,
     method: request.method,
     timestamp: Date.now(),
+    timing,
   };
 }

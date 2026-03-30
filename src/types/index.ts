@@ -98,6 +98,15 @@ export type EnvironmentModel = {
   updatedAt: number;
 };
 
+export type TimingData = {
+  dns: number | null;
+  tcp: number | null;
+  tls: number | null;
+  ttfb: number;
+  download: number;
+  total: number;
+};
+
 export type ResponseData = {
   status: number;
   statusText: string;
@@ -108,6 +117,7 @@ export type ResponseData = {
   url: string;
   method: HttpMethod;
   timestamp: number;
+  timing?: TimingData;
 };
 
 export type HistoryEntry = {
