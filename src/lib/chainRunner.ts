@@ -100,6 +100,15 @@ function applyInjection(
   } else if (edge.targetField === "url") {
     const separator = req.url.includes("?") ? "&" : "?";
     req.url = `${req.url}${separator}${encodeURIComponent(edge.targetKey)}=${encodeURIComponent(value)}`;
+  } else if (edge.targetField === "path") {
+    // Use the user-overridden URL template if provided, otherwise req.url
+    const baseUrl = edge.targetUrl ?? req.url;
+    const placeholder = `:${edge.targetKey}`;
+    if (baseUrl.includes(placeholder)) {
+      req.url = baseUrl.replace(placeholder, encodeURIComponent(value));
+    } else {
+      req.url = `${baseUrl.replace(/\/$/, "")}/${encodeURIComponent(value)}`;
+    }
   } else if (edge.targetField === "body") {
     try {
       const bodyObj = JSON.parse(req.body.content ?? "{}");
@@ -160,10 +169,29 @@ export async function runChain(
     requests.map((r) => [r.id, r]),
   );
 
+  // Build edge sets for connectivity check
+  const connectedIds = new Set<string>();
+  for (const edge of edges) {
+    connectedIds.add(edge.sourceRequestId);
+    connectedIds.add(edge.targetRequestId);
+  }
+
+  // Mark disconnected nodes as skipped immediately (not part of any chain)
+  for (const req of requests) {
+    if (!connectedIds.has(req.id)) {
+      onUpdate(req.id, "skipped", {
+        error: "Node is not connected to the chain",
+      });
+    }
+  }
+
+  // Filter execution order to only connected nodes
+  const connectedOrder = order.filter((id) => connectedIds.has(id));
+
   // Track the run state: responses and extracted values per request
   const runState: ChainRunState = {};
 
-  for (const reqId of order) {
+  for (const reqId of connectedOrder) {
     if (signal.aborted) {
       // Mark remaining as skipped
       for (const remainingId of order.slice(order.indexOf(reqId))) {
@@ -182,12 +210,19 @@ export async function runChain(
     const incomingEdges = edges.filter((e) => e.targetRequestId === reqId);
     const hasDependencyFailure = incomingEdges.some((e) => {
       const srcState = runState[e.sourceRequestId];
-      return !srcState || srcState.state === "failed" || srcState.state === "skipped";
+      return (
+        !srcState || srcState.state === "failed" || srcState.state === "skipped"
+      );
     });
 
     if (hasDependencyFailure) {
-      onUpdate(reqId, "skipped", { error: "Dependency failed" });
-      runState[reqId] = { state: "skipped", extractedValues: {} };
+      const errMsg = "Dependency failed or skipped upstream";
+      onUpdate(reqId, "skipped", { error: errMsg });
+      runState[reqId] = {
+        state: "skipped",
+        extractedValues: {},
+        error: errMsg,
+      };
       continue;
     }
 
@@ -205,7 +240,10 @@ export async function runChain(
         continue;
       }
 
-      const extracted = extractJsonPath(sourceResponse.body, edge.sourceJsonPath);
+      const extracted = extractJsonPath(
+        sourceResponse.body,
+        edge.sourceJsonPath,
+      );
       extractedValues[edge.id] = extracted;
 
       if (extracted !== null) {
@@ -219,11 +257,12 @@ export async function runChain(
     );
 
     if (extractionFailed && incomingEdges.length > 0) {
+      const errMsg = "Could not extract value from source response";
       onUpdate(reqId, "skipped", {
         extractedValues,
-        error: "Dependency extraction failed",
+        error: errMsg,
       });
-      runState[reqId] = { state: "skipped", extractedValues };
+      runState[reqId] = { state: "skipped", extractedValues, error: errMsg };
       continue;
     }
 
@@ -238,12 +277,15 @@ export async function runChain(
 
       const passed = response.status >= 200 && response.status < 300;
       const state: ChainNodeState = passed ? "passed" : "failed";
+      const errorMsg = passed
+        ? undefined
+        : `HTTP ${response.status} ${response.statusText}`;
 
-      runState[reqId] = { state, extractedValues, response };
-      onUpdate(reqId, state, { response, extractedValues });
+      runState[reqId] = { state, extractedValues, response, error: errorMsg };
+      onUpdate(reqId, state, { response, extractedValues, error: errorMsg });
     } catch (err) {
       const error = err instanceof Error ? err.message : "Request failed";
-      runState[reqId] = { state: "failed", extractedValues };
+      runState[reqId] = { state: "failed", extractedValues, error };
       onUpdate(reqId, "failed", { extractedValues, error });
     }
   }

@@ -5,8 +5,9 @@ export type ChainEdge = {
   sourceRequestId: string;
   targetRequestId: string;
   sourceJsonPath: string; // e.g. "$.data.token"
-  targetField: "url" | "header" | "body";
+  targetField: "url" | "path" | "header" | "body";
   targetKey: string; // header name, URL param name, or body JSONPath
+  targetUrl?: string; // optional URL override (e.g. with :id placeholder)
 };
 
 export type ChainConfig = {
@@ -28,5 +29,6 @@ export type ChainRunState = Record<
     state: ChainNodeState;
     extractedValues: Record<string, string | null>;
     response?: ResponseData;
+    error?: string;
   }
 >;
