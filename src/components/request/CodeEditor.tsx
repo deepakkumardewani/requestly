@@ -5,17 +5,35 @@ import type {
   CompletionResult,
 } from "@codemirror/autocomplete";
 import { autocompletion, startCompletion } from "@codemirror/autocomplete";
+import { java } from "@codemirror/lang-java";
 import { javascript } from "@codemirror/lang-javascript";
 import { json } from "@codemirror/lang-json";
+import { php } from "@codemirror/lang-php";
+import { python } from "@codemirror/lang-python";
+import { StreamLanguage } from "@codemirror/language";
+import { csharp } from "@codemirror/legacy-modes/mode/clike";
+import { go } from "@codemirror/legacy-modes/mode/go";
+import { ruby } from "@codemirror/legacy-modes/mode/ruby";
 import { EditorState, Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { placeholder as cmPlaceholder } from "@codemirror/view";
 import { basicSetup, EditorView } from "codemirror";
 import { useEffect, useRef } from "react";
 
+export type CodeEditorLanguage =
+  | "json"
+  | "javascript"
+  | "text"
+  | "python"
+  | "go"
+  | "java"
+  | "php"
+  | "ruby"
+  | "csharp";
+
 type CodeEditorProps = {
   value: string;
-  language?: "json" | "javascript" | "text";
+  language?: CodeEditorLanguage;
   onChange?: (value: string) => void;
   readOnly?: boolean;
   className?: string;
@@ -45,12 +63,28 @@ export default function CodeEditor({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const languageExtension =
-      language === "json"
-        ? json()
-        : language === "javascript"
-          ? javascript()
-          : [];
+    const languageExtension = (() => {
+      switch (language) {
+        case "json":
+          return json();
+        case "javascript":
+          return javascript();
+        case "python":
+          return python();
+        case "java":
+          return java();
+        case "php":
+          return php({ plain: true });
+        case "go":
+          return StreamLanguage.define(go);
+        case "ruby":
+          return StreamLanguage.define(ruby);
+        case "csharp":
+          return StreamLanguage.define(csharp);
+        default:
+          return [];
+      }
+    })();
 
     // Reads from ref so it's always current — no need to recreate the editor.
     function envCompletionSource(

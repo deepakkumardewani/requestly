@@ -1,5 +1,6 @@
 "use client";
 
+import { CodeGenPanel } from "@/components/request/CodeGenPanel";
 import { RequestTabs } from "@/components/request/RequestTabs";
 import { UrlBar } from "@/components/request/UrlBar";
 import { ResponsePanel } from "@/components/response/ResponsePanel";
@@ -15,9 +16,11 @@ import { TabBar } from "./TabBar";
 
 export function RightPanel() {
   const { setSplitRatio } = useUIStore();
-  const { activeTabId } = useTabsStore();
+  const { activeTabId, tabs } = useTabsStore();
 
   if (!activeTabId) return null;
+
+  const activeTab = tabs.find((t) => t.tabId === activeTabId);
 
   return (
     <div className="flex h-full flex-col">
@@ -32,7 +35,12 @@ export function RightPanel() {
         }}
       >
         <ResizablePanel defaultSize="50%" minSize="20%">
-          <RequestTabs tabId={activeTabId} />
+          <div className="flex h-full flex-col overflow-hidden">
+            <div className="min-h-0 flex-1">
+              <RequestTabs tabId={activeTabId} />
+            </div>
+            {activeTab && <CodeGenPanel tab={activeTab} />}
+          </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize="50%" minSize="20%" maxSize="70%">

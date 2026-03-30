@@ -128,6 +128,8 @@ export type AppSettings = {
   sslVerify: boolean;
   followRedirects: boolean;
   showHealthMonitor: boolean;
+  showCodeGen: boolean;
+  codeGenLang: string;
 };
 
 export type HealthMetrics = {

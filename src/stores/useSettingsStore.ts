@@ -23,6 +23,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   sslVerify: true,
   followRedirects: true,
   showHealthMonitor: true,
+  showCodeGen: true,
+  codeGenLang: "cURL",
 };
 
 async function persistSettings(settings: AppSettings) {
@@ -52,6 +54,8 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
         sslVerify: s.sslVerify,
         followRedirects: s.followRedirects,
         showHealthMonitor: s.showHealthMonitor,
+        showCodeGen: s.showCodeGen,
+        codeGenLang: s.codeGenLang,
       });
     },
 

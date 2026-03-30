@@ -63,6 +63,7 @@ export default function SettingsPage() {
     followRedirects,
     proxyUrl,
     showHealthMonitor,
+    showCodeGen,
     setSetting,
   } = useSettingsStore();
   const { clearHistory } = useHistoryStore();
@@ -135,6 +136,19 @@ export default function SettingsPage() {
                   <Switch
                     checked={showHealthMonitor}
                     onCheckedChange={(v) => setSetting("showHealthMonitor", v)}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm">Code generation panel</Label>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Show code snippets for the current request (cURL, fetch,
+                      axios, Python, Go)
+                    </p>
+                  </div>
+                  <Switch
+                    checked={showCodeGen}
+                    onCheckedChange={(v) => setSetting("showCodeGen", v)}
                   />
                 </div>
               </div>
