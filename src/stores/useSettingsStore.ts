@@ -25,6 +25,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   showHealthMonitor: true,
   showCodeGen: true,
   codeGenLang: "cURL",
+  autoExpandExplainer: true,
 };
 
 async function persistSettings(settings: AppSettings) {
@@ -56,6 +57,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
         showHealthMonitor: s.showHealthMonitor,
         showCodeGen: s.showCodeGen,
         codeGenLang: s.codeGenLang,
+        autoExpandExplainer: s.autoExpandExplainer,
       });
     },
 

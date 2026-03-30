@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatBytes, formatDuration } from "@/lib/utils";
 import { useResponseStore } from "@/stores/useResponseStore";
+import { ErrorExplainer } from "./ErrorExplainer";
 import { HeadersViewer } from "./HeadersViewer";
 import { PreviewFrame } from "./PreviewFrame";
 import { TransformPlayground } from "./TransformPlayground";
@@ -157,6 +158,15 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
           </Button>
         </div>
       </div>
+
+      {/* Error explainer — only shown on 4xx/5xx */}
+      {response.status >= 400 && (
+        <ErrorExplainer
+          status={response.status}
+          body={response.body}
+          responseKey={response.timestamp}
+        />
+      )}
 
       {/* Response tabs */}
       <Tabs

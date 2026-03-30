@@ -184,43 +184,57 @@ export function CodeGenPanel({ tab }: CodeGenPanelProps) {
 
   return (
     <div className="border-t bg-background">
-      {/* Panel header */}
-      <div className="flex h-9 items-center justify-between px-3">
+      {/* Panel header — full row toggles expand; interactive controls stop propagation */}
+      <div
+        role="button"
+        tabIndex={0}
+        className="flex h-9 cursor-pointer items-center justify-between px-3"
+        onClick={() => setSetting("showCodeGen", !isExpanded)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setSetting("showCodeGen", !isExpanded);
+          }
+        }}
+      >
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
-            onClick={() => setSetting("showCodeGen", !isExpanded)}
-          >
+          <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
             {isExpanded ? (
               <ChevronDown className="h-3.5 w-3.5" />
             ) : (
               <ChevronRight className="h-3.5 w-3.5" />
             )}
             Code
-          </button>
+          </span>
 
           {isExpanded && (
-            <Select
-              value={activeLang}
-              onValueChange={(v) => handleLangChange(v as Language)}
-            >
-              <SelectTrigger className="h-6 w-24 border-none px-2 text-xs shadow-none focus:ring-0">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {LANGUAGES.map((lang) => (
-                  <SelectItem key={lang} value={lang} className="text-xs">
-                    {lang}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            // Stop propagation so selecting a language doesn't collapse the panel
+            <span onClick={(e) => e.stopPropagation()}>
+              <Select
+                value={activeLang}
+                onValueChange={(v) => handleLangChange(v as Language)}
+              >
+                <SelectTrigger className="h-6 w-24 border-none px-2 text-xs shadow-none focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {LANGUAGES.map((lang) => (
+                    <SelectItem key={lang} value={lang} className="text-xs">
+                      {lang}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </span>
           )}
         </div>
 
         {isExpanded && (
-          <div className="flex items-center gap-3">
+          // Stop propagation so Switch/CopyButton interactions don't collapse the panel
+          <div
+            className="flex items-center gap-3"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center gap-1.5">
               <Switch
                 id="resolve-vars"

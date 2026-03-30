@@ -130,6 +130,7 @@ export type AppSettings = {
   showHealthMonitor: boolean;
   showCodeGen: boolean;
   codeGenLang: string;
+  autoExpandExplainer: boolean;
 };
 
 export type HealthMetrics = {

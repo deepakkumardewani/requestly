@@ -64,6 +64,7 @@ export default function SettingsPage() {
     proxyUrl,
     showHealthMonitor,
     showCodeGen,
+    autoExpandExplainer,
     setSetting,
   } = useSettingsStore();
   const { clearHistory } = useHistoryStore();
@@ -149,6 +150,23 @@ export default function SettingsPage() {
                   <Switch
                     checked={showCodeGen}
                     onCheckedChange={(v) => setSetting("showCodeGen", v)}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm">
+                      Auto-expand error explainer
+                    </Label>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Automatically expand the "Why did this fail?" panel on
+                      4xx/5xx responses
+                    </p>
+                  </div>
+                  <Switch
+                    checked={autoExpandExplainer}
+                    onCheckedChange={(v) =>
+                      setSetting("autoExpandExplainer", v)
+                    }
                   />
                 </div>
               </div>
