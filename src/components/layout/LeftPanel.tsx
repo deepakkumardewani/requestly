@@ -3,6 +3,7 @@
 import { GitCompare, Plus, Settings } from "lucide-react";
 import Link from "next/link";
 import { CollectionTree } from "@/components/collections/CollectionTree";
+import { EnvManagerDialog } from "@/components/environment/EnvManagerDialog";
 import { EnvSelector } from "@/components/environment/EnvSelector";
 import { HistoryList } from "@/components/history/HistoryList";
 import { Button } from "@/components/ui/button";
@@ -27,96 +28,99 @@ export function LeftPanel() {
   const { setIsCreatingCollection } = useUIStore();
 
   return (
-    <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
-      {/* Header */}
-      <div className="flex items-center justify-between px-3 py-3">
-        <div className="flex items-center gap-2">
-          {/* Logo */}
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-method-accent/20">
-            <span className="text-sm font-bold text-method-accent">R</span>
+    <>
+      <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
+        {/* Header */}
+        <div className="flex items-center justify-between px-3 py-3">
+          <div className="flex items-center gap-2">
+            {/* Logo */}
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-method-accent/20">
+              <span className="text-sm font-bold text-method-accent">R</span>
+            </div>
+            <span className="text-sm font-semibold">Requestly</span>
           </div>
-          <span className="text-sm font-semibold">Requestly</span>
+          <div className="flex items-center gap-1">
+            <Link href="/json-compare">
+              <Button variant="ghost" size="icon-sm" aria-label="JSON Compare">
+                <GitCompare className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/settings">
+              <Button variant="ghost" size="icon-sm" aria-label="Settings">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
-        <div className="flex items-center gap-1">
-          <Link href="/json-compare">
-            <Button variant="ghost" size="icon-sm" aria-label="JSON Compare">
-              <GitCompare className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Link href="/settings">
-            <Button variant="ghost" size="icon-sm" aria-label="Settings">
-              <Settings className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </div>
 
-      {/* New Request Button */}
-      <div className="px-3 pb-2">
-        <Button
-          className="w-full justify-start gap-2"
-          size="sm"
-          onClick={() => openTab()}
+        {/* New Request Button */}
+        <div className="px-3 pb-2">
+          <Button
+            className="w-full justify-start gap-2"
+            size="sm"
+            onClick={() => openTab()}
+          >
+            <Plus className="h-4 w-4" />
+            New Request
+          </Button>
+        </div>
+
+        {/* Environment Selector */}
+        <div className="px-3 pb-2">
+          <EnvSelector />
+        </div>
+
+        <Separator />
+
+        {/* Resizable Collections + Recents */}
+        <ResizablePanelGroup
+          orientation="vertical"
+          className="flex-1 overflow-hidden"
         >
-          <Plus className="h-4 w-4" />
-          New Request
-        </Button>
-      </div>
-
-      {/* Environment Selector */}
-      <div className="px-3 pb-2">
-        <EnvSelector />
-      </div>
-
-      <Separator />
-
-      {/* Resizable Collections + Recents */}
-      <ResizablePanelGroup
-        orientation="vertical"
-        className="flex-1 overflow-hidden"
-      >
-        {/* Collections panel */}
-        <ResizablePanel defaultSize="50%" minSize="50%" maxSize="70%">
-          <div className="flex h-full flex-col overflow-hidden">
-            <div className="flex items-center justify-between px-3 py-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Collections
-              </span>
-              <TooltipProvider delay={400}>
-                <Tooltip>
-                  <TooltipTrigger
-                    className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
-                    aria-label="Add collection"
-                    onClick={() => setIsCreatingCollection(true)}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                  </TooltipTrigger>
-                  <TooltipContent side="right">Add Collection</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+          {/* Collections panel */}
+          <ResizablePanel defaultSize="50%" minSize="50%" maxSize="70%">
+            <div className="flex h-full flex-col overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Collections
+                </span>
+                <TooltipProvider delay={400}>
+                  <Tooltip>
+                    <TooltipTrigger
+                      className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+                      aria-label="Add collection"
+                      onClick={() => setIsCreatingCollection(true)}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">Add Collection</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <ScrollArea className="min-h-0 flex-1 px-1">
+                <CollectionTree />
+              </ScrollArea>
             </div>
-            <ScrollArea className="min-h-0 flex-1 px-1">
-              <CollectionTree />
-            </ScrollArea>
-          </div>
-        </ResizablePanel>
+          </ResizablePanel>
 
-        <ResizableHandle withHandle />
+          <ResizableHandle withHandle />
 
-        {/* Recents panel */}
-        <ResizablePanel defaultSize="50%" minSize="30%" maxSize="50%">
-          <div className="flex h-full flex-col overflow-hidden">
-            <div className="flex items-center justify-between border-t border-border px-3 py-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Recent
-              </span>
+          {/* Recents panel */}
+          <ResizablePanel defaultSize="50%" minSize="30%" maxSize="50%">
+            <div className="flex h-full flex-col overflow-hidden">
+              <div className="flex items-center justify-between border-t border-border px-3 py-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Recent
+                </span>
+              </div>
+              <ScrollArea className="min-h-0 flex-1 px-1">
+                <HistoryList compact />
+              </ScrollArea>
             </div>
-            <ScrollArea className="min-h-0 flex-1 px-1">
-              <HistoryList compact />
-            </ScrollArea>
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
+      <EnvManagerDialog />
+    </>
   );
 }

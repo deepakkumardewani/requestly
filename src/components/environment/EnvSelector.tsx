@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronDown, Globe, Settings2 } from "lucide-react";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import { useUIStore } from "@/stores/useUIStore";
 
 export function EnvSelector() {
   const { environments, activeEnvId, setActiveEnv } = useEnvironmentsStore();
+  const { setEnvManagerOpen } = useUIStore();
+
   const activeEnv = environments.find((e) => e.id === activeEnvId);
 
   return (
@@ -46,7 +48,7 @@ export function EnvSelector() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem render={<Link href="/environments" />}>
+        <DropdownMenuItem onClick={() => setEnvManagerOpen(true)}>
           <Settings2 className="h-3.5 w-3.5" />
           Manage Environments
         </DropdownMenuItem>

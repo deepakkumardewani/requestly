@@ -1,9 +1,5 @@
-import { EnvEditorPage } from "@/components/environment/EnvEditorPage";
+import { redirect } from "next/navigation";
 
 export default function EnvironmentsPage() {
-  return (
-    <div className="h-screen overflow-hidden">
-      <EnvEditorPage />
-    </div>
-  );
+  redirect("/");
 }
