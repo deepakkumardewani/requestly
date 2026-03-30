@@ -15,6 +15,7 @@
       "Bash(git -C:*)",
       "Bash(grep:*)",
       "Bash(cat:*)",
+      "Bash(git status && echo \"---DIFF---\" && git diff --stat HEAD)",
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
       "mcp__plugin_context-mode_context-mode__ctx_execute",
       "mcp__plugin_context-mode_context-mode__ctx_stats",

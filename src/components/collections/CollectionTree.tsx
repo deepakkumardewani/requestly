@@ -1,6 +1,13 @@
 "use client";
 
-import { FolderOpen, GitBranch, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  FolderOpen,
+  GitBranch,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
@@ -177,9 +184,7 @@ export function CollectionTree() {
                         Rename
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() =>
-                          router.push(`/chain/${collection.id}`)
-                        }
+                        onClick={() => router.push(`/chain/${collection.id}`)}
                       >
                         <GitBranch className="mr-2 h-3.5 w-3.5" />
                         Chain View

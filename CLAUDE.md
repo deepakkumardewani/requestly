@@ -98,8 +98,6 @@ After **every** feature / epic implementation, output a summary in the following
 
 ### Key design decisions
 - **Decision**: Explanation of why this approach was chosen over alternatives.
-- **Decision**: Any non-obvious trade-off or constraint respected.
-- **Decision**: Any deviation from the task spec and the rationale.
 ```
 
 ### Example — Epic 10 (use this as the canonical reference)
@@ -112,26 +110,13 @@ After **every** feature / epic implementation, output a summary in the following
 | File | Purpose |
 |---|---|
 | `src/types/chain.ts` | ChainEdge, ChainConfig, ChainNodeState, ChainRunState types |
-| `src/stores/useChainStore.ts` | Zustand store — loadConfig, upsertEdge, deleteEdge, updateNodePosition, clearEdges; persisted to IndexedDB |
-| `src/lib/chainRunner.ts` | buildExecutionOrder (Kahn's topological sort + circular-dep detection), runChain (JSONPath extraction, URL/header/body injection, abort support) |
-| `src/components/chain/ChainNode.tsx` | React Flow custom node — method badge, name/URL, state icon, colour-coded animated border |
-| `src/components/chain/ChainCanvas.tsx` | React Flow canvas — connect, edge-click, node-drag-end, edge-delete (Backspace/Delete), syncs run state visuals |
-| `src/components/chain/ArrowConfigPanel.tsx` | shadcn Sheet — JSONPath source, URL param/header/body target, validation, live preview, save/delete |
-| `src/app/chain/[collectionId]/page.tsx` | /chain/:collectionId page — header with back link, Run/Stop button, result summary, full-height canvas, empty state |
 
 ### Modified files
 
 | File | Change |
 |---|---|
 | `src/lib/idb.ts` | Added chainConfigs object store; bumped DB version 1 → 2 |
-| `src/components/collections/CollectionTree.tsx` | Added Chain View entry in collection kebab menu (router.push to /chain/:id) |
-| `features/requestly-new-features-TASKS.md` | All Tasks 10.1–10.8 marked [x] complete |
 
 ### Key design decisions
 - **jsonpath-plus (existing dep)**: Used for response value extraction — no new library needed; already in package.json.
-- **@xyflow/react installed via bun**: npm had a platform conflict with lightningcss-darwin-x64; bun handles it cleanly.
-- **3 injection target types**: URL query param, header, and body JSONPath — covers all real-world token-passing flows without requiring scripting.
-- **Circular dependency guard**: Kahn's algorithm detects cycles at run-time; all nodes are marked skipped with a clear message rather than hanging.
-- **Run state managed in page, not canvas**: ChainCanvas is stateless re: run — runState flows down as props, keeping the canvas a pure display component.
-- **DB version bump (1 → 2)**: IDB_VERSION defined locally in idb.ts to override the stale constant in constants.ts without breaking other consumers.
 ```

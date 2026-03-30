@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ArrowLeft,
-  GitBranch,
-  Play,
-  Square,
-  Trash2,
-} from "lucide-react";
+import { ArrowLeft, GitBranch, Play, Square, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { use, useCallback, useEffect, useRef, useState } from "react";
 import { ChainCanvas } from "@/components/chain/ChainCanvas";
