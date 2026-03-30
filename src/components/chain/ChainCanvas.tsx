@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  addEdge,
   Background,
   type Connection,
   Controls,
@@ -9,14 +10,14 @@ import {
   MiniMap,
   type Node,
   ReactFlow,
-  addEdge,
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useChainStore } from "@/stores/useChainStore";
 import { generateId } from "@/lib/utils";
+import { useChainStore } from "@/stores/useChainStore";
+import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import type { RequestModel } from "@/types";
 import type {
   ChainConfig,
@@ -26,6 +27,7 @@ import type {
 } from "@/types/chain";
 import { ArrowConfigPanel } from "./ArrowConfigPanel";
 import { ChainNode, type ChainNodeData } from "./ChainNode";
+import { NodeDetailsPanel } from "./NodeDetailsPanel";
 
 const NODE_TYPES = { chainNode: ChainNode };
 
@@ -33,25 +35,29 @@ function buildNodes(
   requests: RequestModel[],
   nodePositions: Record<string, { x: number; y: number }>,
   runState: ChainRunState,
+  onClickNode: (requestId: string) => void,
 ): Node<ChainNodeData>[] {
-  return requests.map((req, idx) => ({
-    id: req.id,
-    type: "chainNode",
-    position: nodePositions[req.id] ?? { x: idx * 280 + 40, y: 120 },
-    data: {
-      requestId: req.id,
-      name: req.name,
-      method: req.method,
-      url: req.url,
-      state: (runState[req.id]?.state ?? "idle") as ChainNodeState,
-    },
-  }));
+  return requests.map((req, idx) => {
+    const nodeState = runState[req.id];
+    return {
+      id: req.id,
+      type: "chainNode",
+      position: nodePositions[req.id] ?? { x: idx * 280 + 40, y: 120 },
+      data: {
+        requestId: req.id,
+        name: req.name,
+        method: req.method,
+        url: req.url,
+        state: (nodeState?.state ?? "idle") as ChainNodeState,
+        response: nodeState?.response,
+        extractedValues: nodeState?.extractedValues,
+        onClickNode,
+      },
+    };
+  });
 }
 
-function buildEdges(
-  chainEdges: ChainEdge[],
-  runState: ChainRunState,
-): Edge[] {
+function buildEdges(chainEdges: ChainEdge[], runState: ChainRunState): Edge[] {
   return chainEdges.map((e) => {
     const srcState = runState[e.sourceRequestId];
     const extracted = srcState?.extractedValues?.[e.id];
@@ -99,9 +105,19 @@ export function ChainCanvas({
   isRunning,
 }: ChainCanvasProps) {
   const { upsertEdge, deleteEdge, updateNodePosition } = useChainStore();
+  const { updateRequest } = useCollectionsStore();
+
+  // Node details panel state
+  const [nodeDetailOpen, setNodeDetailOpen] = useState(false);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+
+  const handleClickNode = useCallback((requestId: string) => {
+    setSelectedNodeId(requestId);
+    setNodeDetailOpen(true);
+  }, []);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<ChainNodeData>>(
-    buildNodes(requests, config.nodePositions, runState),
+    buildNodes(requests, config.nodePositions, runState, handleClickNode),
   );
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(
     buildEdges(config.edges, runState),
@@ -117,32 +133,31 @@ export function ChainCanvas({
 
   // Sync nodes when runState changes (update state indicators)
   useEffect(() => {
-    setNodes(buildNodes(requests, config.nodePositions, runState));
-  }, [runState, requests, config.nodePositions, setNodes]);
+    setNodes(
+      buildNodes(requests, config.nodePositions, runState, handleClickNode),
+    );
+  }, [runState, requests, config.nodePositions, setNodes, handleClickNode]);
 
   // Sync edges when config or runState changes
   useEffect(() => {
     setEdges(buildEdges(config.edges, runState));
   }, [config.edges, runState, setEdges]);
 
-  const onConnect = useCallback(
-    (connection: Connection) => {
-      if (!connection.source || !connection.target) return;
+  const onConnect = useCallback((connection: Connection) => {
+    if (!connection.source || !connection.target) return;
 
-      // Guard against self-loop
-      if (connection.source === connection.target) return;
+    // Guard against self-loop
+    if (connection.source === connection.target) return;
 
-      pendingConnectionRef.current = {
-        sourceId: connection.source,
-        targetId: connection.target,
-      };
+    pendingConnectionRef.current = {
+      sourceId: connection.source,
+      targetId: connection.target,
+    };
 
-      // Open config panel for a new edge
-      setPanelEdge(null);
-      setPanelOpen(true);
-    },
-    [],
-  );
+    // Open config panel for a new edge
+    setPanelEdge(null);
+    setPanelOpen(true);
+  }, []);
 
   const onEdgeClick: EdgeMouseHandler = useCallback(
     (_evt, edge) => {
@@ -157,19 +172,20 @@ export function ChainCanvas({
 
   const onNodeDragStop = useCallback(
     (_evt: React.MouseEvent, node: Node) => {
-      updateNodePosition(collectionId, node.id, node.position as { x: number; y: number });
+      updateNodePosition(
+        collectionId,
+        node.id,
+        node.position as { x: number; y: number },
+      );
     },
     [collectionId, updateNodePosition],
   );
 
-  const onKeyDown = useCallback(
-    (evt: React.KeyboardEvent) => {
-      if (evt.key === "Delete" || evt.key === "Backspace") {
-        // edges deletion handled by onEdgesChange via React Flow's built-in delete
-      }
-    },
-    [],
-  );
+  const onKeyDown = useCallback((evt: React.KeyboardEvent) => {
+    if (evt.key === "Delete" || evt.key === "Backspace") {
+      // edges deletion handled by onEdgesChange via React Flow's built-in delete
+    }
+  }, []);
 
   // Handle edge deletion via React Flow's built-in delete key
   const handleEdgesChange = useCallback(
@@ -216,17 +232,21 @@ export function ChainCanvas({
   };
 
   const sourceRequest = panelOpen
-    ? requests.find(
+    ? (requests.find(
         (r) =>
-          r.id === (pendingConnectionRef.current?.sourceId ?? panelEdge?.sourceRequestId),
-      ) ?? null
+          r.id ===
+          (pendingConnectionRef.current?.sourceId ??
+            panelEdge?.sourceRequestId),
+      ) ?? null)
     : null;
 
   const targetRequest = panelOpen
-    ? requests.find(
+    ? (requests.find(
         (r) =>
-          r.id === (pendingConnectionRef.current?.targetId ?? panelEdge?.targetRequestId),
-      ) ?? null
+          r.id ===
+          (pendingConnectionRef.current?.targetId ??
+            panelEdge?.targetRequestId),
+      ) ?? null)
     : null;
 
   return (
@@ -281,6 +301,36 @@ export function ChainCanvas({
         onSave={handleSaveEdge}
         onDelete={handleDeleteEdge}
       />
+
+      {/* Node click → details panel */}
+      {(() => {
+        const selReq = requests.find((r) => r.id === selectedNodeId) ?? null;
+        const selState = selectedNodeId ? runState[selectedNodeId] : null;
+        return (
+          <NodeDetailsPanel
+            open={nodeDetailOpen}
+            onClose={() => {
+              setNodeDetailOpen(false);
+              setSelectedNodeId(null);
+            }}
+            name={selReq?.name ?? ""}
+            method={selReq?.method ?? "GET"}
+            url={selReq?.url ?? ""}
+            state={selState?.state ?? "idle"}
+            response={selState?.response}
+            extractedValues={selState?.extractedValues}
+            error={selState?.error}
+            bodyContent={selReq?.body?.content ?? ""}
+            onSaveBody={(body) => {
+              if (selReq) {
+                updateRequest(selReq.id, {
+                  body: { ...selReq.body, content: body },
+                });
+              }
+            }}
+          />
+        );
+      })()}
     </div>
   );
 }

@@ -2,9 +2,15 @@
 
 import { Handle, Position } from "@xyflow/react";
 import { CheckCircle, Circle, Loader2, XCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { METHOD_BADGE_CLASSES } from "@/lib/constants";
-import type { HttpMethod } from "@/types";
+import { cn } from "@/lib/utils";
+import type { HttpMethod, ResponseData } from "@/types";
 import type { ChainNodeState } from "@/types/chain";
 
 export type ChainNodeData = {
@@ -13,6 +19,10 @@ export type ChainNodeData = {
   method: HttpMethod;
   url: string;
   state: ChainNodeState;
+  response?: ResponseData;
+  extractedValues?: Record<string, string | null>;
+  error?: string;
+  onClickNode?: (requestId: string) => void;
 };
 
 const STATE_BORDER: Record<ChainNodeState, string> = {
@@ -47,17 +57,23 @@ function StateIcon({ state }: { state: ChainNodeState }) {
 }
 
 export function ChainNode({ data }: { data: ChainNodeData }) {
-  const { method, name, url, state } = data;
-  const truncatedUrl =
-    url.length > 32 ? `${url.slice(0, 32)}…` : url;
+  const { method, name, url, state, requestId, onClickNode } = data;
+  const displayUrl = url.length > 100 ? `${url.slice(0, 100)}\u2026` : url;
+  const hasBody = ["POST", "PUT", "PATCH", "DELETE"].includes(
+    method.toUpperCase(),
+  );
+  const isClickable =
+    hasBody || state === "passed" || state === "failed" || state === "skipped";
 
   return (
     <div
       className={cn(
-        "relative min-w-[200px] max-w-[240px] rounded-lg border-2 p-3 shadow-lg transition-colors",
+        "relative min-w-[200px] max-w-[280px] rounded-lg border-2 p-3 shadow-lg transition-all",
         STATE_BORDER[state],
         STATE_BG[state],
+        isClickable && "cursor-pointer hover:brightness-110 hover:shadow-xl",
       )}
+      onClick={() => isClickable && onClickNode?.(requestId)}
     >
       {/* Incoming handle — left side */}
       <Handle
@@ -80,9 +96,27 @@ export function ChainNode({ data }: { data: ChainNodeData }) {
           <p className="truncate text-sm font-semibold text-foreground leading-tight">
             {name}
           </p>
-          <p className="mt-0.5 truncate text-[10px] text-muted-foreground font-mono">
-            {truncatedUrl}
-          </p>
+          {url.length > 100 ? (
+            <TooltipProvider delay={400}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground font-mono break-words cursor-default text-left">
+                    {displayUrl}
+                  </p>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  className="max-w-[320px] font-mono text-[10px] break-all"
+                >
+                  {url}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <p className="mt-0.5 text-[10px] text-muted-foreground font-mono break-words">
+              {displayUrl}
+            </p>
+          )}
         </div>
 
         <div className="shrink-0">
