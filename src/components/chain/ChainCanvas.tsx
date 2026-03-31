@@ -9,21 +9,26 @@ import {
   type EdgeMouseHandler,
   MiniMap,
   type Node,
+  type NodeMouseHandler,
   Panel,
   ReactFlow,
   useEdgesState,
   useNodesState,
+  useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Plus } from "lucide-react";
+import { LayoutGrid, Plus } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { computeAutoLayout } from "@/lib/chainLayout";
 import { generateId } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import type { RequestModel } from "@/types";
 import type { ChainEdge, ChainNodeState, ChainRunState } from "@/types/chain";
 import { ArrowConfigPanel } from "./ArrowConfigPanel";
 import { ChainNode, type ChainNodeData } from "./ChainNode";
+import { NodeContextMenu } from "./NodeContextMenu";
 import { NodeDetailsPanel } from "./NodeDetailsPanel";
 
 const NODE_TYPES = { chainNode: ChainNode };
@@ -90,6 +95,12 @@ function buildEdges(chainEdges: ChainEdge[], runState: ChainRunState): Edge[] {
   });
 }
 
+type ContextMenuState = {
+  x: number;
+  y: number;
+  requestId: string;
+};
+
 type ChainCanvasProps = {
   chainId: string;
   requests: RequestModel[];
@@ -103,7 +114,64 @@ type ChainCanvasProps = {
   onDeleteEdge: (edgeId: string) => void;
   onUpdateNodePosition: (nodeId: string, pos: { x: number; y: number }) => void;
   onRunNode?: (nodeId: string) => void;
+  onRunUpTo: (requestId: string) => void;
+  onRunFromHere: (requestId: string) => void;
+  onAddAfterNode: (requestId: string) => void;
 };
+
+// Inner component rendered inside ReactFlow context so useReactFlow is available.
+type AutoLayoutControlProps = {
+  nodes: Node<ChainNodeData>[];
+  edges: Edge[];
+  disabled: boolean;
+  onUpdateNodePosition: (nodeId: string, pos: { x: number; y: number }) => void;
+  setNodes: React.Dispatch<React.SetStateAction<Node<ChainNodeData>[]>>;
+};
+
+function AutoLayoutControl({
+  nodes,
+  edges,
+  disabled,
+  onUpdateNodePosition,
+  setNodes,
+}: AutoLayoutControlProps) {
+  const { fitView } = useReactFlow();
+
+  const handleAutoLayout = useCallback(() => {
+    const positions = computeAutoLayout(nodes, edges);
+
+    // Update visual positions immediately for snappy feedback
+    setNodes((prev) =>
+      prev.map((node) => ({
+        ...node,
+        position: positions[node.id] ?? node.position,
+      })),
+    );
+
+    // Persist each position to the store
+    for (const [id, pos] of Object.entries(positions)) {
+      onUpdateNodePosition(id, pos);
+    }
+
+    // fitView after React has flushed the position changes
+    requestAnimationFrame(() => fitView({ padding: 0.2 }));
+
+    toast.success("Layout applied");
+  }, [nodes, edges, setNodes, onUpdateNodePosition, fitView]);
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className="h-7 gap-1.5 text-xs bg-card"
+      onClick={handleAutoLayout}
+      disabled={disabled}
+    >
+      <LayoutGrid className="h-3.5 w-3.5" />
+      Auto Layout
+    </Button>
+  );
+}
 
 export function ChainCanvas({
   requests,
@@ -117,6 +185,9 @@ export function ChainCanvas({
   onDeleteEdge,
   onUpdateNodePosition,
   onRunNode,
+  onRunUpTo,
+  onRunFromHere,
+  onAddAfterNode,
 }: ChainCanvasProps) {
   const { updateRequest } = useCollectionsStore();
 
@@ -148,6 +219,8 @@ export function ChainCanvas({
     sourceId: string;
     targetId: string;
   } | null>(null);
+
+  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
 
   useEffect(() => {
     setNodes(
@@ -248,6 +321,15 @@ export function ChainCanvas({
     onDeleteEdge(edgeId);
   };
 
+  const onNodeContextMenu: NodeMouseHandler = useCallback((event, node) => {
+    event.preventDefault();
+    setContextMenu({ x: event.clientX, y: event.clientY, requestId: node.id });
+  }, []);
+
+  const onPaneClick = useCallback(() => {
+    setContextMenu(null);
+  }, []);
+
   const sourceRequest = panelOpen
     ? (requests.find(
         (r) =>
@@ -282,6 +364,8 @@ export function ChainCanvas({
         onConnect={onConnect}
         onEdgeClick={onEdgeClick}
         onNodeDragStop={onNodeDragStop}
+        onNodeContextMenu={onNodeContextMenu}
+        onPaneClick={onPaneClick}
         fitView
         fitViewOptions={{ padding: 0.2 }}
         deleteKeyCode={["Backspace", "Delete"]}
@@ -309,7 +393,7 @@ export function ChainCanvas({
           maskColor="rgba(0,0,0,0.4)"
         />
 
-        <Panel position="top-left" className="m-3">
+        <Panel position="top-left" className="m-3 flex gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -320,8 +404,28 @@ export function ChainCanvas({
             <Plus className="h-3.5 w-3.5" />
             Add API
           </Button>
+          <AutoLayoutControl
+            nodes={nodes}
+            edges={edges}
+            disabled={isRunning}
+            onUpdateNodePosition={onUpdateNodePosition}
+            setNodes={setNodes}
+          />
         </Panel>
       </ReactFlow>
+
+      {contextMenu && (
+        <NodeContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          requestId={contextMenu.requestId}
+          onClose={() => setContextMenu(null)}
+          onAddAfter={onAddAfterNode}
+          onRunUpTo={onRunUpTo}
+          onRunFromHere={onRunFromHere}
+          onDelete={onDeleteNode}
+        />
+      )}
 
       <ArrowConfigPanel
         open={panelOpen}
