@@ -274,7 +274,7 @@ All other features use `jsonpath-plus` (already installed), existing Zustand sto
 
 ### Task 4.1 — Define assertion types (`src/types/chain.ts`)
 
-- [ ] Add:
+- [x] Add:
   ```ts
   export type AssertionOperator =
     | 'eq' | 'neq'
@@ -292,11 +292,11 @@ All other features use `jsonpath-plus` (already installed), existing Zustand sto
     enabled: boolean
   }
   ```
-- [ ] Add `assertions?: ChainAssertion[]` to `ChainConfig` and `StandaloneChain` (keyed by `requestId`):
+- [x] Add `assertions?: ChainAssertion[]` to `ChainConfig` and `StandaloneChain` (keyed by `requestId`):
   ```ts
   nodeAssertions?: Record<string, ChainAssertion[]>
   ```
-- [ ] Add assertion result to `ChainRunState` per node:
+- [x] Add assertion result to `ChainRunState` per node:
   ```ts
   assertionResults?: Array<{ assertionId: string; passed: boolean; actual: string | null }>
   ```
@@ -305,46 +305,46 @@ All other features use `jsonpath-plus` (already installed), existing Zustand sto
 
 ### Task 4.2 — Build assertion evaluator (`src/lib/chainAssertions.ts`)
 
-- [ ] Implement `evaluateAssertion(assertion: ChainAssertion, response: ResponseData): { passed: boolean; actual: string | null }`:
+- [x] Implement `evaluateAssertion(assertion: ChainAssertion, response: ResponseData): { passed: boolean; actual: string | null }`:
   - Extract actual value based on `assertion.source` (status code as string, JSONPath via `jsonpath-plus`, header lookup)
   - Apply operator: `eq` (strict string equality), `contains` (substring), `gt`/`lt` (numeric), `exists` (actual !== null), `matches_regex` (RegExp test)
   - Return `{ passed, actual }`
-- [ ] Implement `evaluateAllAssertions(assertions: ChainAssertion[], response: ResponseData): AssertionResult[]`
-- [ ] Implement `assertionsSummary(results): { passed: number; failed: number; total: number }`
+- [x] Implement `evaluateAllAssertions(assertions: ChainAssertion[], response: ResponseData): AssertionResult[]`
+- [x] Implement `assertionsSummary(results): { passed: number; failed: number; total: number }`
 
 ---
 
 ### Task 4.3 — Integrate assertions into `chainRunner.ts`
 
-- [ ] Accept `nodeAssertions?: Record<string, ChainAssertion[]>` as parameter in `runChain`
-- [ ] After each node completes (passed/failed by status code): run `evaluateAllAssertions` for that node's assertions
-- [ ] If any assertion fails: override node state to `'failed'`; include `assertionResults` in `onUpdate` payload
-- [ ] If assertion evaluation itself throws (e.g. bad regex): treat as assertion failure; log structured error
+- [x] Accept `nodeAssertions?: Record<string, ChainAssertion[]>` as parameter in `runChain`
+- [x] After each node completes (passed/failed by status code): run `evaluateAllAssertions` for that node's assertions
+- [x] If any assertion fails: override node state to `'failed'`; include `assertionResults` in `onUpdate` payload
+- [x] If assertion evaluation itself throws (e.g. bad regex): treat as assertion failure; log structured error
 
 ---
 
 ### Task 4.4 — Build `NodeAssertionsPanel` component (`src/components/chain/NodeAssertionsPanel.tsx`)
 
-- [ ] Props: `{ requestId: string; assertions: ChainAssertion[]; onChange: (assertions: ChainAssertion[]) => void }`
-- [ ] "Add Assertion" button → appends a new blank `ChainAssertion` with a generated `id`
-- [ ] Per assertion row:
+- [x] Props: `{ requestId: string; assertions: ChainAssertion[]; onChange: (assertions: ChainAssertion[]) => void }`
+- [x] "Add Assertion" button → appends a new blank `ChainAssertion` with a generated `id`
+- [x] Per assertion row:
   - Source selector: `Status | JSONPath | Header` (shadcn `Select`)
   - Conditional source path input (hidden for Status)
   - Operator selector (shadcn `Select`, options filtered by source — e.g. `gt`/`lt` only shown for Status and numeric paths)
   - Expected value input (hidden for `exists`/`not_exists`)
   - Enable/disable toggle (shadcn `Switch`)
   - Delete row button (`Trash2` lucide icon)
-- [ ] Rows are reorderable via drag (use existing DnD pattern if present, otherwise simple up/down arrow buttons)
+- [x] Rows are reorderable via drag (use existing DnD pattern if present, otherwise simple up/down arrow buttons)
 
 ---
 
 ### Task 4.5 — Wire into `NodeDetailsPanel` and `ChainCanvas`
 
-- [ ] In `NodeDetailsPanel.tsx`: add an "Assertions" tab alongside the existing response tabs
+- [x] In `NodeDetailsPanel.tsx`: add an "Assertions" tab alongside the existing response tabs
   - Renders `<NodeAssertionsPanel>` in edit state (before run) and assertion results (after run)
   - After run: each assertion row shows a green ✓ or red ✗ badge + actual value received
-- [ ] In `ChainCanvas.tsx` / page: pass `nodeAssertions` from config into `runChain`; persist assertion edits via store `upsertNodeAssertions` action (add to stores)
-- [ ] In `useChainStore` / `useStandaloneChainStore`: add `upsertNodeAssertions(collectionId, requestId, assertions)` and `deleteNodeAssertions(collectionId, requestId)` actions
+- [x] In `ChainCanvas.tsx` / page: pass `nodeAssertions` from config into `runChain`; persist assertion edits via store `upsertNodeAssertions` action (add to stores)
+- [x] In `useChainStore` / `useStandaloneChainStore`: add `upsertNodeAssertions(collectionId, requestId, assertions)` and `deleteNodeAssertions(collectionId, requestId)` actions
 
 ---
 
