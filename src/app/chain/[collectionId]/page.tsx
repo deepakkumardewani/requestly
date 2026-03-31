@@ -3,53 +3,213 @@
 import { ArrowLeft, GitBranch, Play, Square, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { use, useCallback, useEffect, useRef, useState } from "react";
+import { ApiPickerDialog } from "@/components/chain/ApiPickerDialog";
 import { ChainCanvas } from "@/components/chain/ChainCanvas";
 import { Button } from "@/components/ui/button";
 import { runChain } from "@/lib/chainRunner";
 import { useChainStore } from "@/stores/useChainStore";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
-import type { ChainConfig, ChainRunState } from "@/types/chain";
+import { useHistoryStore } from "@/stores/useHistoryStore";
+import { useStandaloneChainStore } from "@/stores/useStandaloneChainStore";
+import type { RequestModel } from "@/types";
+import type {
+  ChainConfig,
+  ChainHistoryNode,
+  ChainRunState,
+  StandaloneChain,
+} from "@/types/chain";
 
 type Props = {
   params: Promise<{ collectionId: string }>;
 };
 
+function historyNodeToRequestModel(node: ChainHistoryNode): RequestModel {
+  return {
+    id: node.id,
+    collectionId: "", // signals "not a saved collection request"
+    name: node.name,
+    method: node.method,
+    url: node.url,
+    params: node.params,
+    headers: node.headers,
+    auth: node.auth,
+    body: node.body,
+    preScript: "",
+    postScript: "",
+    createdAt: 0,
+    updatedAt: 0,
+  };
+}
+
 export default function ChainPage({ params }: Props) {
-  const { collectionId } = use(params);
-  const { collections, requests, hydrate } = useCollectionsStore();
-  const { configs, loadConfig, clearEdges } = useChainStore();
+  const { collectionId: id } = use(params);
+
+  const {
+    collections,
+    requests: allRequests,
+    hydrate: hydrateCollections,
+  } = useCollectionsStore();
+  const { hydrate: hydrateHistory } = useHistoryStore();
+  const {
+    configs,
+    loadConfig,
+    clearEdges: clearCollectionEdges,
+    initNodeIds,
+    addNode: addCollectionNode,
+    removeNode: removeCollectionNode,
+    addHistoryNode: addCollectionHistoryNode,
+    removeHistoryNode: removeCollectionHistoryNode,
+    upsertEdge: upsertCollectionEdge,
+    deleteEdge: deleteCollectionEdge,
+    updateNodePosition: updateCollectionNodePosition,
+  } = useChainStore();
+  const {
+    chains: standaloneChains,
+    hydrate: hydrateStandaloneChains,
+    clearEdges: clearStandaloneEdges,
+    addNode: addStandaloneNode,
+    removeNode: removeStandaloneNode,
+    addHistoryNode: addStandaloneHistoryNode,
+    removeHistoryNode: removeStandaloneHistoryNode,
+    upsertEdge: upsertStandaloneEdge,
+    deleteEdge: deleteStandaloneEdge,
+    updateNodePosition: updateStandaloneNodePosition,
+  } = useStandaloneChainStore();
 
   const [runState, setRunState] = useState<ChainRunState>({});
   const [isRunning, setIsRunning] = useState(false);
+  const [apiPickerOpen, setApiPickerOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
-  // Hydrate collection data
+  // Mode detection
+  const collection = collections.find((c) => c.id === id);
+  const standaloneChain = standaloneChains[id] as StandaloneChain | undefined;
+  const isCollectionChain = !!collection;
+
   useEffect(() => {
-    hydrate();
-  }, [hydrate]);
+    hydrateCollections();
+    hydrateHistory();
+    hydrateStandaloneChains();
+    if (isCollectionChain) loadConfig(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
-  // Load chain config for this collection
+  // Backwards-compat migration: populate nodeIds when opening an old collection chain
+  const configLoaded = configs[id] !== undefined;
+  const collectionRequests = allRequests.filter((r) => r.collectionId === id);
   useEffect(() => {
-    loadConfig(collectionId);
-  }, [collectionId, loadConfig]);
+    if (!configLoaded || !isCollectionChain) return;
+    const config = configs[id];
+    if (config.nodeIds !== undefined) return;
+    initNodeIds(
+      id,
+      collectionRequests.map((r) => r.id),
+    );
+    // Intentionally minimal deps — fires once when config loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [configLoaded, id, isCollectionChain]);
 
-  const collection = collections.find((c) => c.id === collectionId);
-  const collectionRequests = requests.filter(
-    (r) => r.collectionId === collectionId,
-  );
-
-  const config: ChainConfig = configs[collectionId] ?? {
-    collectionId,
+  // Derive the unified config object (edges, nodePositions, nodeIds, historyNodes)
+  const collectionConfig: ChainConfig = configs[id] ?? {
+    collectionId: id,
     edges: [],
     nodePositions: {},
   };
 
+  const activeConfig = isCollectionChain ? collectionConfig : standaloneChain;
+
+  // Derive active requests for the canvas
+  const activeCollectionRequests = isCollectionChain
+    ? collectionConfig.nodeIds === undefined
+      ? collectionRequests
+      : collectionRequests.filter((r) =>
+          collectionConfig.nodeIds!.includes(r.id),
+        )
+    : allRequests.filter(
+        (r) => standaloneChain?.nodeIds.includes(r.id) ?? false,
+      );
+
+  const historyAsRequests = (activeConfig?.historyNodes ?? []).map(
+    historyNodeToRequestModel,
+  );
+
+  const chainRequests = [...activeCollectionRequests, ...historyAsRequests];
+
+  // Unified node/edge operation delegates
+  const handleAddNode = useCallback(
+    (requestId: string) => {
+      if (isCollectionChain) addCollectionNode(id, requestId);
+      else addStandaloneNode(id, requestId);
+    },
+    [id, isCollectionChain, addCollectionNode, addStandaloneNode],
+  );
+
+  const handleAddHistoryNode = useCallback(
+    (node: ChainHistoryNode) => {
+      if (isCollectionChain) addCollectionHistoryNode(id, node);
+      else addStandaloneHistoryNode(id, node);
+    },
+    [id, isCollectionChain, addCollectionHistoryNode, addStandaloneHistoryNode],
+  );
+
+  const handleDeleteNode = useCallback(
+    (nodeId: string) => {
+      const isHistoryNode = (activeConfig?.historyNodes ?? []).some(
+        (n) => n.id === nodeId,
+      );
+      if (isCollectionChain) {
+        if (isHistoryNode) removeCollectionHistoryNode(id, nodeId);
+        else removeCollectionNode(id, nodeId);
+      } else {
+        if (isHistoryNode) removeStandaloneHistoryNode(id, nodeId);
+        else removeStandaloneNode(id, nodeId);
+      }
+    },
+    [
+      id,
+      isCollectionChain,
+      activeConfig,
+      removeCollectionNode,
+      removeCollectionHistoryNode,
+      removeStandaloneNode,
+      removeStandaloneHistoryNode,
+    ],
+  );
+
+  const handleUpsertEdge = useCallback(
+    (edge: Parameters<typeof upsertCollectionEdge>[1]) => {
+      if (isCollectionChain) upsertCollectionEdge(id, edge);
+      else upsertStandaloneEdge(id, edge);
+    },
+    [id, isCollectionChain, upsertCollectionEdge, upsertStandaloneEdge],
+  );
+
+  const handleDeleteEdge = useCallback(
+    (edgeId: string) => {
+      if (isCollectionChain) deleteCollectionEdge(id, edgeId);
+      else deleteStandaloneEdge(id, edgeId);
+    },
+    [id, isCollectionChain, deleteCollectionEdge, deleteStandaloneEdge],
+  );
+
+  const handleUpdateNodePosition = useCallback(
+    (nodeId: string, pos: { x: number; y: number }) => {
+      if (isCollectionChain) updateCollectionNodePosition(id, nodeId, pos);
+      else updateStandaloneNodePosition(id, nodeId, pos);
+    },
+    [
+      id,
+      isCollectionChain,
+      updateCollectionNodePosition,
+      updateStandaloneNodePosition,
+    ],
+  );
+
   const handleRun = useCallback(async () => {
     if (isRunning) return;
 
-    // Reset run state
     const initial: ChainRunState = {};
-    for (const req of collectionRequests) {
+    for (const req of chainRequests) {
       initial[req.id] = { state: "idle", extractedValues: {} };
     }
     setRunState(initial);
@@ -60,8 +220,8 @@ export default function ChainPage({ params }: Props) {
 
     try {
       await runChain(
-        collectionRequests,
-        config.edges,
+        chainRequests,
+        activeConfig?.edges ?? [],
         (requestId, state, data) => {
           setRunState((prev) => ({
             ...prev,
@@ -78,16 +238,57 @@ export default function ChainPage({ params }: Props) {
       setIsRunning(false);
       abortRef.current = null;
     }
-  }, [isRunning, collectionRequests, config.edges]);
+  }, [isRunning, chainRequests, activeConfig]);
+
+  const handleRunSingleNode = useCallback(
+    async (requestId: string) => {
+      if (isRunning) return;
+      const req = chainRequests.find((r) => r.id === requestId);
+      if (!req) return;
+
+      setRunState((prev) => ({
+        ...prev,
+        [requestId]: { ...prev[requestId], state: "running" },
+      }));
+
+      try {
+        const controller = new AbortController();
+        // Run just this single request with no edges
+        await runChain(
+          [req],
+          [],
+          (id, state, data) => {
+            setRunState((prev) => ({
+              ...prev,
+              [id]: {
+                state,
+                extractedValues: data.extractedValues ?? {},
+                response: data.response,
+              },
+            }));
+          },
+          controller.signal,
+        );
+      } catch (err) {
+        console.error("Failed to run single node", err);
+        setRunState((prev) => ({
+          ...prev,
+          [requestId]: { ...prev[requestId], state: "failed" },
+        }));
+      }
+    },
+    [isRunning, chainRequests],
+  );
 
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
   }, []);
 
   const handleClearEdges = useCallback(() => {
-    clearEdges(collectionId);
+    if (isCollectionChain) clearCollectionEdges(id);
+    else clearStandaloneEdges(id);
     setRunState({});
-  }, [collectionId, clearEdges]);
+  }, [id, isCollectionChain, clearCollectionEdges, clearStandaloneEdges]);
 
   const passedCount = Object.values(runState).filter(
     (s) => s.state === "passed",
@@ -99,6 +300,19 @@ export default function ChainPage({ params }: Props) {
     (s) => s.state === "skipped",
   ).length;
   const hasRunResult = Object.keys(runState).length > 0;
+
+  const chainTitle = isCollectionChain
+    ? (collection?.name ?? "Chain View")
+    : (standaloneChain?.name ?? "Chain");
+
+  const alreadyAddedIds = new Set([
+    ...(collectionConfig.nodeIds ?? collectionRequests.map((r) => r.id)),
+    ...(standaloneChain?.nodeIds ?? []),
+    ...(activeConfig?.historyNodes ?? []).flatMap((n) => [
+      n.id,
+      n.historyEntryId,
+    ]),
+  ]);
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
@@ -116,12 +330,10 @@ export default function ChainPage({ params }: Props) {
 
         <div className="flex items-center gap-1.5">
           <GitBranch className="h-4 w-4 text-primary" />
-          <span className="text-sm font-semibold">
-            {collection?.name ?? "Chain View"}
-          </span>
+          <span className="text-sm font-semibold">{chainTitle}</span>
           <span className="text-xs text-muted-foreground">
-            — {collectionRequests.length} request
-            {collectionRequests.length !== 1 ? "s" : ""}
+            — {chainRequests.length} request
+            {chainRequests.length !== 1 ? "s" : ""}
           </span>
         </div>
 
@@ -175,7 +387,7 @@ export default function ChainPage({ params }: Props) {
               size="sm"
               className="h-7 gap-1.5 text-xs bg-primary hover:bg-primary/90"
               onClick={handleRun}
-              disabled={collectionRequests.length === 0}
+              disabled={chainRequests.length === 0}
             >
               <Play className="h-3 w-3 fill-current" />
               Run Chain
@@ -186,26 +398,41 @@ export default function ChainPage({ params }: Props) {
 
       {/* Canvas */}
       <div className="flex-1 overflow-hidden">
-        {collectionRequests.length === 0 ? (
+        {chainRequests.length === 0 ? (
           <div className="flex h-full items-center justify-center">
             <div className="text-center">
               <GitBranch className="mx-auto h-12 w-12 text-muted-foreground/30 mb-3" />
               <p className="text-sm font-medium text-muted-foreground">
-                No requests in this collection
+                No APIs in this chain
               </p>
               <p className="text-xs text-muted-foreground/60 mt-1">
-                Add requests to the collection first, then return here to chain
-                them.
+                Use the Add API button to add requests from your collections or
+                history.
               </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-4 gap-1.5 text-xs"
+                onClick={() => setApiPickerOpen(true)}
+              >
+                Add API
+              </Button>
             </div>
           </div>
         ) : (
           <ChainCanvas
-            collectionId={collectionId}
-            requests={collectionRequests}
-            config={config}
+            chainId={id}
+            requests={chainRequests}
+            edges={activeConfig?.edges ?? []}
+            nodePositions={activeConfig?.nodePositions ?? {}}
             runState={runState}
             isRunning={isRunning}
+            onAddApiClick={() => setApiPickerOpen(true)}
+            onDeleteNode={handleDeleteNode}
+            onUpsertEdge={handleUpsertEdge}
+            onDeleteEdge={handleDeleteEdge}
+            onUpdateNodePosition={handleUpdateNodePosition}
+            onRunNode={handleRunSingleNode}
           />
         )}
       </div>
@@ -218,6 +445,14 @@ export default function ChainPage({ params }: Props) {
           to remove edges
         </p>
       </div>
+
+      <ApiPickerDialog
+        open={apiPickerOpen}
+        onClose={() => setApiPickerOpen(false)}
+        onAddRequest={handleAddNode}
+        onAddHistoryNode={handleAddHistoryNode}
+        alreadyAddedIds={alreadyAddedIds}
+      />
     </div>
   );
 }

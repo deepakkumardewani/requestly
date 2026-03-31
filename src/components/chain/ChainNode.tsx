@@ -1,7 +1,7 @@
 "use client";
 
 import { Handle, Position } from "@xyflow/react";
-import { CheckCircle, Circle, Loader2, XCircle } from "lucide-react";
+import { CheckCircle, Circle, Loader2, Play, X, XCircle } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -23,6 +23,8 @@ export type ChainNodeData = {
   extractedValues?: Record<string, string | null>;
   error?: string;
   onClickNode?: (requestId: string) => void;
+  onDeleteNode?: (nodeId: string) => void;
+  onRunNode?: (nodeId: string) => void;
 };
 
 const STATE_BORDER: Record<ChainNodeState, string> = {
@@ -57,24 +59,44 @@ function StateIcon({ state }: { state: ChainNodeState }) {
 }
 
 export function ChainNode({ data }: { data: ChainNodeData }) {
-  const { method, name, url, state, requestId, onClickNode } = data;
+  const {
+    method,
+    name,
+    url,
+    state,
+    requestId,
+    onClickNode,
+    onDeleteNode,
+    onRunNode,
+  } = data;
   const displayUrl = url.length > 100 ? `${url.slice(0, 100)}\u2026` : url;
-  const hasBody = ["POST", "PUT", "PATCH", "DELETE"].includes(
-    method.toUpperCase(),
-  );
-  const isClickable =
-    hasBody || state === "passed" || state === "failed" || state === "skipped";
+  const isClickable = true;
 
   return (
     <div
       className={cn(
-        "relative min-w-[200px] max-w-[280px] rounded-lg border-2 p-3 shadow-lg transition-all",
+        "group relative min-w-[200px] max-w-[280px] rounded-lg border-2 p-3 shadow-lg transition-all",
         STATE_BORDER[state],
         STATE_BG[state],
         isClickable && "cursor-pointer hover:brightness-110 hover:shadow-xl",
       )}
       onClick={() => isClickable && onClickNode?.(requestId)}
     >
+      {/* Delete button — top-right, only visible on hover */}
+      {onDeleteNode && (
+        <button
+          type="button"
+          className="absolute -top-2 -right-2 hidden h-5 w-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground group-hover:flex z-10"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteNode(requestId);
+          }}
+          title="Remove from chain"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      )}
+
       {/* Incoming handle — left side */}
       <Handle
         type="target"
@@ -119,8 +141,21 @@ export function ChainNode({ data }: { data: ChainNodeData }) {
           )}
         </div>
 
-        <div className="shrink-0">
-          <StateIcon state={state} />
+        <div className="shrink-0 flex items-center gap-1.5 -mt-1">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRunNode?.(requestId);
+            }}
+            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-primary transition-colors focus:outline-none"
+            title="Run independently"
+          >
+            <Play className="h-3.5 w-3.5 fill-current" />
+          </button>
+          <div className="mt-1">
+            <StateIcon state={state} />
+          </div>
         </div>
       </div>
 

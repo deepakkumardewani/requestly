@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,8 +17,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { generateId } from "@/lib/utils";
-import type { RequestModel } from "@/types";
-import type { ChainEdge } from "@/types/chain";
+import type { RequestModel, ResponseData } from "@/types";
+import type { ChainEdge, ChainNodeState } from "@/types/chain";
 
 type TargetField = "url" | "path" | "header" | "body";
 
@@ -24,6 +30,9 @@ type ArrowConfigPanelProps = {
   existingEdge: ChainEdge | null;
   onSave: (edge: ChainEdge) => void;
   onDelete: (edgeId: string) => void;
+  sourceRunState?: ChainNodeState;
+  sourceResponse?: ResponseData;
+  onRunSource?: (requestId: string) => void;
 };
 
 // Extract a display variable name from a JSONPath, e.g. "$.data.token" → "token"
@@ -40,7 +49,11 @@ export function ArrowConfigPanel({
   existingEdge,
   onSave,
   onDelete,
+  sourceRunState,
+  sourceResponse,
+  onRunSource,
 }: ArrowConfigPanelProps) {
+  const [viewerOpen, setViewerOpen] = useState(false);
   const [sourceJsonPath, setSourceJsonPath] = useState(
     existingEdge?.sourceJsonPath ?? "$.token",
   );
@@ -356,35 +369,100 @@ export function ArrowConfigPanel({
         </div>
 
         {/* Footer — anchored at bottom, separated by border, clear action hierarchy */}
-        <div className="shrink-0 border-t border-border px-5 py-4 flex gap-2">
-          {existingEdge && (
+        <div className="shrink-0 border-t border-border px-5 py-4 flex flex-col gap-3">
+          {/* Action to run source API */}
+          <div className="flex items-center gap-2">
             <Button
-              variant="destructive"
+              variant="secondary"
               size="sm"
-              onClick={handleDelete}
+              className="flex-1 text-xs"
+              onClick={() => {
+                if (sourceRequest?.id) {
+                  onRunSource?.(sourceRequest.id);
+                  setViewerOpen(true);
+                }
+              }}
+              disabled={sourceRunState === "running" || !sourceRequest}
+            >
+              {sourceRunState === "running" ? "Running..." : "Run Source API"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 text-xs"
+              onClick={() => setViewerOpen(true)}
+              disabled={!sourceResponse}
+            >
+              View Response
+            </Button>
+          </div>
+
+          <div className="flex gap-2">
+            {existingEdge && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDelete}
+                className="flex-1"
+              >
+                Delete Config
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
               className="flex-1"
             >
-              Delete
+              Cancel
             </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="flex-1"
-          >
-            Cancel
-          </Button>
-          <Button
-            size="sm"
-            onClick={handleSave}
-            disabled={!isValid}
-            className="flex-[2]"
-          >
-            Save
-          </Button>
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={!isValid}
+              className="flex-[2]"
+            >
+              Save
+            </Button>
+          </div>
         </div>
       </SheetContent>
+
+      <Dialog open={viewerOpen} onOpenChange={setViewerOpen}>
+        <DialogContent className="max-w-4xl w-[90vw] max-h-[85vh] flex flex-col p-0">
+          <DialogHeader className="px-5 pt-5 pb-3 border-b border-border shrink-0 bg-muted/20">
+            <DialogTitle className="text-base">
+              Response: {sourceRequest?.name}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-auto bg-card p-5 font-mono text-xs">
+            {sourceRunState === "running" ? (
+              <div className="text-muted-foreground flex items-center gap-2 animate-pulse">
+                <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                Running request...
+              </div>
+            ) : sourceResponse ? (
+              <pre className="text-foreground whitespace-pre-wrap">
+                {(() => {
+                  try {
+                    return JSON.stringify(
+                      JSON.parse(sourceResponse.body),
+                      null,
+                      2,
+                    );
+                  } catch {
+                    return sourceResponse.body;
+                  }
+                })()}
+              </pre>
+            ) : (
+              <div className="text-muted-foreground">
+                No response yet. Run the API first.
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Sheet>
   );
 }

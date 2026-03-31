@@ -9,22 +9,19 @@ import {
   type EdgeMouseHandler,
   MiniMap,
   type Node,
+  Panel,
   ReactFlow,
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { generateId } from "@/lib/utils";
-import { useChainStore } from "@/stores/useChainStore";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import type { RequestModel } from "@/types";
-import type {
-  ChainConfig,
-  ChainEdge,
-  ChainNodeState,
-  ChainRunState,
-} from "@/types/chain";
+import type { ChainEdge, ChainNodeState, ChainRunState } from "@/types/chain";
 import { ArrowConfigPanel } from "./ArrowConfigPanel";
 import { ChainNode, type ChainNodeData } from "./ChainNode";
 import { NodeDetailsPanel } from "./NodeDetailsPanel";
@@ -36,6 +33,8 @@ function buildNodes(
   nodePositions: Record<string, { x: number; y: number }>,
   runState: ChainRunState,
   onClickNode: (requestId: string) => void,
+  onDeleteNode: (nodeId: string) => void,
+  onRunNode?: (nodeId: string) => void,
 ): Node<ChainNodeData>[] {
   return requests.map((req, idx) => {
     const nodeState = runState[req.id];
@@ -52,6 +51,8 @@ function buildNodes(
         response: nodeState?.response,
         extractedValues: nodeState?.extractedValues,
         onClickNode,
+        onDeleteNode,
+        onRunNode,
       },
     };
   });
@@ -90,24 +91,35 @@ function buildEdges(chainEdges: ChainEdge[], runState: ChainRunState): Edge[] {
 }
 
 type ChainCanvasProps = {
-  collectionId: string;
+  chainId: string;
   requests: RequestModel[];
-  config: ChainConfig;
+  edges: ChainEdge[];
+  nodePositions: Record<string, { x: number; y: number }>;
   runState: ChainRunState;
   isRunning: boolean;
+  onAddApiClick: () => void;
+  onDeleteNode: (nodeId: string) => void;
+  onUpsertEdge: (edge: ChainEdge) => void;
+  onDeleteEdge: (edgeId: string) => void;
+  onUpdateNodePosition: (nodeId: string, pos: { x: number; y: number }) => void;
+  onRunNode?: (nodeId: string) => void;
 };
 
 export function ChainCanvas({
-  collectionId,
   requests,
-  config,
+  edges: chainEdges,
+  nodePositions,
   runState,
   isRunning,
+  onAddApiClick,
+  onDeleteNode,
+  onUpsertEdge,
+  onDeleteEdge,
+  onUpdateNodePosition,
+  onRunNode,
 }: ChainCanvasProps) {
-  const { upsertEdge, deleteEdge, updateNodePosition } = useChainStore();
   const { updateRequest } = useCollectionsStore();
 
-  // Node details panel state
   const [nodeDetailOpen, setNodeDetailOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
@@ -117,13 +129,19 @@ export function ChainCanvas({
   }, []);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node<ChainNodeData>>(
-    buildNodes(requests, config.nodePositions, runState, handleClickNode),
+    buildNodes(
+      requests,
+      nodePositions,
+      runState,
+      handleClickNode,
+      onDeleteNode,
+      onRunNode,
+    ),
   );
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(
-    buildEdges(config.edges, runState),
+    buildEdges(chainEdges, runState),
   );
 
-  // Panel state
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelEdge, setPanelEdge] = useState<ChainEdge | null>(null);
   const pendingConnectionRef = useRef<{
@@ -131,22 +149,33 @@ export function ChainCanvas({
     targetId: string;
   } | null>(null);
 
-  // Sync nodes when runState changes (update state indicators)
   useEffect(() => {
     setNodes(
-      buildNodes(requests, config.nodePositions, runState, handleClickNode),
+      buildNodes(
+        requests,
+        nodePositions,
+        runState,
+        handleClickNode,
+        onDeleteNode,
+        onRunNode,
+      ),
     );
-  }, [runState, requests, config.nodePositions, setNodes, handleClickNode]);
+  }, [
+    runState,
+    requests,
+    nodePositions,
+    setNodes,
+    handleClickNode,
+    onDeleteNode,
+    onRunNode,
+  ]);
 
-  // Sync edges when config or runState changes
   useEffect(() => {
-    setEdges(buildEdges(config.edges, runState));
-  }, [config.edges, runState, setEdges]);
+    setEdges(buildEdges(chainEdges, runState));
+  }, [chainEdges, runState, setEdges]);
 
   const onConnect = useCallback((connection: Connection) => {
     if (!connection.source || !connection.target) return;
-
-    // Guard against self-loop
     if (connection.source === connection.target) return;
 
     pendingConnectionRef.current = {
@@ -154,50 +183,38 @@ export function ChainCanvas({
       targetId: connection.target,
     };
 
-    // Open config panel for a new edge
     setPanelEdge(null);
     setPanelOpen(true);
   }, []);
 
   const onEdgeClick: EdgeMouseHandler = useCallback(
     (_evt, edge) => {
-      const chainEdge = config.edges.find((e) => e.id === edge.id);
+      const chainEdge = chainEdges.find((e) => e.id === edge.id);
       if (chainEdge) {
         setPanelEdge(chainEdge);
         setPanelOpen(true);
       }
     },
-    [config.edges],
+    [chainEdges],
   );
 
   const onNodeDragStop = useCallback(
     (_evt: React.MouseEvent, node: Node) => {
-      updateNodePosition(
-        collectionId,
-        node.id,
-        node.position as { x: number; y: number },
-      );
+      onUpdateNodePosition(node.id, node.position as { x: number; y: number });
     },
-    [collectionId, updateNodePosition],
+    [onUpdateNodePosition],
   );
 
-  const onKeyDown = useCallback((evt: React.KeyboardEvent) => {
-    if (evt.key === "Delete" || evt.key === "Backspace") {
-      // edges deletion handled by onEdgesChange via React Flow's built-in delete
-    }
-  }, []);
-
-  // Handle edge deletion via React Flow's built-in delete key
   const handleEdgesChange = useCallback(
     (changes: Parameters<typeof onEdgesChange>[0]) => {
       onEdgesChange(changes);
       for (const change of changes) {
         if (change.type === "remove") {
-          deleteEdge(collectionId, change.id);
+          onDeleteEdge(change.id);
         }
       }
     },
-    [collectionId, deleteEdge, onEdgesChange],
+    [onDeleteEdge, onEdgesChange],
   );
 
   const handleSaveEdge = (edge: ChainEdge) => {
@@ -208,7 +225,7 @@ export function ChainCanvas({
         sourceRequestId: pendingConnectionRef.current.sourceId,
         targetRequestId: pendingConnectionRef.current.targetId,
       };
-      upsertEdge(collectionId, newEdge);
+      onUpsertEdge(newEdge);
       pendingConnectionRef.current = null;
       setEdges((eds) =>
         addEdge(
@@ -223,12 +240,12 @@ export function ChainCanvas({
         ),
       );
     } else if (panelEdge) {
-      upsertEdge(collectionId, edge);
+      onUpsertEdge(edge);
     }
   };
 
   const handleDeleteEdge = (edgeId: string) => {
-    deleteEdge(collectionId, edgeId);
+    onDeleteEdge(edgeId);
   };
 
   const sourceRequest = panelOpen
@@ -249,8 +266,13 @@ export function ChainCanvas({
       ) ?? null)
     : null;
 
+  const selectedRequest = requests.find((r) => r.id === selectedNodeId) ?? null;
+  const selectedState = selectedNodeId ? runState[selectedNodeId] : null;
+  // History nodes have collectionId = "" — body edits don't persist for them
+  const canSaveBody = selectedRequest && selectedRequest.collectionId !== "";
+
   return (
-    <div className="h-full w-full" onKeyDown={onKeyDown}>
+    <div className="h-full w-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -286,6 +308,19 @@ export function ChainCanvas({
           className="!bg-card !border-border !rounded-lg"
           maskColor="rgba(0,0,0,0.4)"
         />
+
+        <Panel position="top-left" className="m-3">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 gap-1.5 text-xs bg-card"
+            onClick={onAddApiClick}
+            disabled={isRunning}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add API
+          </Button>
+        </Panel>
       </ReactFlow>
 
       <ArrowConfigPanel
@@ -298,39 +333,41 @@ export function ChainCanvas({
         sourceRequest={sourceRequest}
         targetRequest={targetRequest}
         existingEdge={panelEdge}
+        sourceRunState={
+          sourceRequest ? runState[sourceRequest.id]?.state : undefined
+        }
+        sourceResponse={
+          sourceRequest ? runState[sourceRequest.id]?.response : undefined
+        }
+        onRunSource={onRunNode}
         onSave={handleSaveEdge}
         onDelete={handleDeleteEdge}
       />
 
-      {/* Node click → details panel */}
-      {(() => {
-        const selReq = requests.find((r) => r.id === selectedNodeId) ?? null;
-        const selState = selectedNodeId ? runState[selectedNodeId] : null;
-        return (
-          <NodeDetailsPanel
-            open={nodeDetailOpen}
-            onClose={() => {
-              setNodeDetailOpen(false);
-              setSelectedNodeId(null);
-            }}
-            name={selReq?.name ?? ""}
-            method={selReq?.method ?? "GET"}
-            url={selReq?.url ?? ""}
-            state={selState?.state ?? "idle"}
-            response={selState?.response}
-            extractedValues={selState?.extractedValues}
-            error={selState?.error}
-            bodyContent={selReq?.body?.content ?? ""}
-            onSaveBody={(body) => {
-              if (selReq) {
-                updateRequest(selReq.id, {
-                  body: { ...selReq.body, content: body },
+      <NodeDetailsPanel
+        open={nodeDetailOpen}
+        onClose={() => {
+          setNodeDetailOpen(false);
+          setSelectedNodeId(null);
+        }}
+        name={selectedRequest?.name ?? ""}
+        method={selectedRequest?.method ?? "GET"}
+        url={selectedRequest?.url ?? ""}
+        state={selectedState?.state ?? "idle"}
+        response={selectedState?.response}
+        extractedValues={selectedState?.extractedValues}
+        error={selectedState?.error}
+        bodyContent={selectedRequest?.body?.content ?? ""}
+        onSaveBody={
+          canSaveBody
+            ? (body) => {
+                updateRequest(selectedRequest.id, {
+                  body: { ...selectedRequest.body, content: body },
                 });
               }
-            }}
-          />
-        );
-      })()}
+            : undefined
+        }
+      />
     </div>
   );
 }
