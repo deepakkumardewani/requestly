@@ -26,6 +26,21 @@ Folders | lowercase | components, utils
 ## Component Rules
 
 - Always check if a specific component is available in shadcn before creating a custom component
+- Always use shadcn components instead of creating custom components
+- Always use shadcn tooltips
+- Always use % for size instead of integers
+
+```tsx
+<ResizablePanelGroup orientation="horizontal">
+  <ResizablePanel defaultSize="20%" minSize="10%" maxSize="90%">
+    <LeftPanel />
+  </ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel defaultSize="80%" minSize="80%">
+    <RightPanel />
+  </ResizablePanel>
+</ResizablePanelGroup>
+```
 
 ## Engineering Preferences
 
