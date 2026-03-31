@@ -189,7 +189,7 @@ All other features use `jsonpath-plus` (already installed), existing Zustand sto
 
 ### Task 3.1 — Auto-Layout utility (`src/lib/chainLayout.ts`)
 
-- [ ] Import `dagre` and define:
+- [x] Import `dagre` and define:
   ```ts
   export function computeAutoLayout(
     nodes: Node[],
@@ -198,24 +198,24 @@ All other features use `jsonpath-plus` (already installed), existing Zustand sto
     nodeHeight = 80
   ): Record<string, { x: number; y: number }>
   ```
-- [ ] Create a `dagre.graphlib.Graph`; set `rankdir: 'LR'` (left-to-right) and `nodesep: 60`, `ranksep: 100`
-- [ ] Add each node and each edge; call `dagre.layout(g)`
-- [ ] Return a map of `requestId → { x, y }` using `g.node(id)` centered positions
-- [ ] Export a `DEFAULT_LAYOUT_OPTIONS` constant for the above defaults
+- [x] Create a `dagre.graphlib.Graph`; set `rankdir: 'LR'` (left-to-right) and `nodesep: 60`, `ranksep: 100`
+- [x] Add each node and each edge; call `dagre.layout(g)`
+- [x] Return a map of `requestId → { x, y }` using `g.node(id)` centered positions
+- [x] Export a `DEFAULT_LAYOUT_OPTIONS` constant for the above defaults
 
 ---
 
 ### Task 3.2 — Auto-Layout button in `ChainCanvas`
 
-- [ ] Add an "Auto Layout" button (shadcn `Button` variant outline, `LayoutGrid` lucide icon) to the canvas toolbar
-- [ ] On click: call `computeAutoLayout(nodes, edges)`; call `onUpdateNodePosition` for each returned position; call `fitView()` via `useReactFlow`
-- [ ] Show a brief toast: `"Layout applied"` using the existing toast utility
+- [x] Add an "Auto Layout" button (shadcn `Button` variant outline, `LayoutGrid` lucide icon) to the canvas toolbar
+- [x] On click: call `computeAutoLayout(nodes, edges)`; call `onUpdateNodePosition` for each returned position; call `fitView()` via `useReactFlow`
+- [x] Show a brief toast: `"Layout applied"` using the existing toast utility
 
 ---
 
 ### Task 3.3 — Build `NodeContextMenu` component (`src/components/chain/NodeContextMenu.tsx`)
 
-- [ ] Props:
+- [x] Props:
   ```ts
   type NodeContextMenuProps = {
     x: number
@@ -227,8 +227,8 @@ All other features use `jsonpath-plus` (already installed), existing Zustand sto
     onRunFromHere: (requestId: string) => void
   }
   ```
-- [ ] Render as a fixed-position popover/menu using shadcn `DropdownMenu` content (portal-rendered)
-- [ ] Menu items:
+- [x] Render as a fixed-position popover/menu using shadcn `DropdownMenu` content (portal-rendered)
+- [x] Menu items:
   - `"Add API after this"` — fires `onAddAfter`
   - `"Run up to here"` — fires `onRunUpTo`
   - `"Run from here"` — fires `onRunFromHere`
@@ -238,17 +238,17 @@ All other features use `jsonpath-plus` (already installed), existing Zustand sto
 
 ### Task 3.4 — Wire context menu into `ChainCanvas`
 
-- [ ] Add `onNodeContextMenu` handler on `<ReactFlow>`:
+- [x] Add `onNodeContextMenu` handler on `<ReactFlow>`:
   - Store `{ x, y, requestId }` in local state
   - Render `<NodeContextMenu>` when state is set; clear on close or click-away
-- [ ] Implement `handleRunUpTo(requestId)`:
+- [x] Implement `handleRunUpTo(requestId)`:
   - Determine execution order via `buildExecutionOrder`
   - Slice the order array up to and including `requestId`
   - Call `runChain` with only those nodes
-- [ ] Implement `handleRunFromHere(requestId)`:
+- [x] Implement `handleRunFromHere(requestId)`:
   - Slice the order array from `requestId` onward
   - Reset `runState` for those nodes only; call `runChain` with that subset
-- [ ] Implement `handleAddAfter(requestId)`:
+- [x] Implement `handleAddAfter(requestId)`:
   - Open `ApiPickerDialog`; on pick, add new node at a position offset 320px right of current node
 
 ---
