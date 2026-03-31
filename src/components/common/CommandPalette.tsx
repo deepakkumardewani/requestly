@@ -61,6 +61,11 @@ export function CommandPalette() {
             Open Settings
           </CommandItem>
           <CommandItem
+            onSelect={() => handleSelect(() => router.push("/transform"))}
+          >
+            Transform Playground
+          </CommandItem>
+          <CommandItem
             onSelect={() => handleSelect(() => router.push("/json-compare"))}
           >
             Compare JSON

@@ -165,6 +165,19 @@ export function CollectionTree() {
                     </span>
                   </div>
 
+                  {/* Direct chain button — visible on hover */}
+                  <button
+                    type="button"
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-muted transition-opacity"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/chain/${collection.id}`);
+                    }}
+                    title="Open chain view"
+                  >
+                    <GitBranch className="h-3 w-3 text-muted-foreground" />
+                  </button>
+
                   {/* Dropdown sits before the auto-chevron so chevron ends up at far right */}
                   <DropdownMenu>
                     <DropdownMenuTrigger
