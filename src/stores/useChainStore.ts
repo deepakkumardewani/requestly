@@ -3,8 +3,7 @@
 import { toast } from "sonner";
 import { create } from "zustand";
 import { getDB } from "@/lib/idb";
-import { generateId } from "@/lib/utils";
-import type { ChainConfig, ChainEdge } from "@/types/chain";
+import type { ChainConfig, ChainEdge, ChainHistoryNode } from "@/types/chain";
 
 type ChainState = {
   configs: Record<string, ChainConfig>;
@@ -20,6 +19,12 @@ type ChainActions = {
     pos: { x: number; y: number },
   ) => void;
   clearEdges: (collectionId: string) => void;
+  /** One-time migration: sets nodeIds only when undefined. No-op if already set. */
+  initNodeIds: (collectionId: string, requestIds: string[]) => void;
+  addNode: (collectionId: string, requestId: string) => void;
+  removeNode: (collectionId: string, requestId: string) => void;
+  addHistoryNode: (collectionId: string, node: ChainHistoryNode) => void;
+  removeHistoryNode: (collectionId: string, nodeId: string) => void;
 };
 
 function getOrCreateConfig(
@@ -48,7 +53,7 @@ async function persistConfig(config: ChainConfig) {
   }
 }
 
-export const useChainStore = create<ChainState & ChainActions>((set, get) => ({
+export const useChainStore = create<ChainState & ChainActions>((set) => ({
   configs: {},
 
   async loadConfig(collectionId) {
@@ -123,6 +128,71 @@ export const useChainStore = create<ChainState & ChainActions>((set, get) => ({
     set((state) => {
       const config = getOrCreateConfig(state.configs, collectionId);
       const updated = { ...config, edges: [] };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  initNodeIds(collectionId, requestIds) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      if (config.nodeIds !== undefined) return state; // already initialized
+      const updated = { ...config, nodeIds: requestIds };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  addNode(collectionId, requestId) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const nodeIds = config.nodeIds ?? [];
+      if (nodeIds.includes(requestId)) return state; // deduplicate
+      const updated = { ...config, nodeIds: [...nodeIds, requestId] };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  removeNode(collectionId, requestId) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const updated = {
+        ...config,
+        nodeIds: (config.nodeIds ?? []).filter((id) => id !== requestId),
+        // Remove orphaned edges referencing this node
+        edges: config.edges.filter(
+          (e) =>
+            e.sourceRequestId !== requestId && e.targetRequestId !== requestId,
+        ),
+      };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  addHistoryNode(collectionId, node) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const historyNodes = config.historyNodes ?? [];
+      const updated = { ...config, historyNodes: [...historyNodes, node] };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  removeHistoryNode(collectionId, nodeId) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const updated = {
+        ...config,
+        historyNodes: (config.historyNodes ?? []).filter(
+          (n) => n.id !== nodeId,
+        ),
+        edges: config.edges.filter(
+          (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
+        ),
+      };
       persistConfig(updated);
       return { configs: { ...state.configs, [collectionId]: updated } };
     });
