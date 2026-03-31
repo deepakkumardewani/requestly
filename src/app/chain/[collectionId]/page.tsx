@@ -6,7 +6,7 @@ import { use, useCallback, useEffect, useRef, useState } from "react";
 import { ApiPickerDialog } from "@/components/chain/ApiPickerDialog";
 import { ChainCanvas } from "@/components/chain/ChainCanvas";
 import { Button } from "@/components/ui/button";
-import { runChain } from "@/lib/chainRunner";
+import { buildExecutionOrder, runChain } from "@/lib/chainRunner";
 import { useChainStore } from "@/stores/useChainStore";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
@@ -14,6 +14,7 @@ import { useStandaloneChainStore } from "@/stores/useStandaloneChainStore";
 import type { RequestModel } from "@/types";
 import type {
   ChainConfig,
+  ChainEdge,
   ChainHistoryNode,
   ChainRunState,
   StandaloneChain,
@@ -79,6 +80,8 @@ export default function ChainPage({ params }: Props) {
   const [runState, setRunState] = useState<ChainRunState>({});
   const [isRunning, setIsRunning] = useState(false);
   const [apiPickerOpen, setApiPickerOpen] = useState(false);
+  // Tracks which node triggered "Add API after this" so the new node can be positioned relative to it
+  const [addAfterNodeId, setAddAfterNodeId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   // Mode detection
@@ -204,6 +207,121 @@ export default function ChainPage({ params }: Props) {
       updateStandaloneNodePosition,
     ],
   );
+
+  const handleRunSubset = useCallback(
+    async (subsetRequests: RequestModel[], subsetEdges: ChainEdge[]) => {
+      if (isRunning) return;
+      setIsRunning(true);
+      const controller = new AbortController();
+      abortRef.current = controller;
+      try {
+        await runChain(
+          subsetRequests,
+          subsetEdges,
+          (reqId, state, data) => {
+            setRunState((prev) => ({
+              ...prev,
+              [reqId]: {
+                state,
+                extractedValues: data.extractedValues ?? {},
+                response: data.response,
+              },
+            }));
+          },
+          controller.signal,
+        );
+      } finally {
+        setIsRunning(false);
+        abortRef.current = null;
+      }
+    },
+    [isRunning],
+  );
+
+  const handleRunUpTo = useCallback(
+    async (requestId: string) => {
+      if (isRunning) return;
+      let order: string[];
+      try {
+        order = buildExecutionOrder(chainRequests, activeConfig?.edges ?? []);
+      } catch {
+        return;
+      }
+      const idx = order.indexOf(requestId);
+      if (idx === -1) return;
+      const subsetIds = new Set(order.slice(0, idx + 1));
+      const subsetRequests = chainRequests.filter((r) => subsetIds.has(r.id));
+      const subsetEdges = (activeConfig?.edges ?? []).filter(
+        (e) =>
+          subsetIds.has(e.sourceRequestId) && subsetIds.has(e.targetRequestId),
+      );
+      const initial: ChainRunState = {};
+      for (const req of subsetRequests) {
+        initial[req.id] = { state: "idle", extractedValues: {} };
+      }
+      setRunState(initial);
+      await handleRunSubset(subsetRequests, subsetEdges);
+    },
+    [isRunning, chainRequests, activeConfig, handleRunSubset],
+  );
+
+  const handleRunFromHere = useCallback(
+    async (requestId: string) => {
+      if (isRunning) return;
+      let order: string[];
+      try {
+        order = buildExecutionOrder(chainRequests, activeConfig?.edges ?? []);
+      } catch {
+        return;
+      }
+      const idx = order.indexOf(requestId);
+      if (idx === -1) return;
+      const subsetIds = new Set(order.slice(idx));
+      const subsetRequests = chainRequests.filter((r) => subsetIds.has(r.id));
+      const subsetEdges = (activeConfig?.edges ?? []).filter(
+        (e) =>
+          subsetIds.has(e.sourceRequestId) && subsetIds.has(e.targetRequestId),
+      );
+      // Reset only the subset nodes; keep earlier nodes' state intact
+      setRunState((prev) => {
+        const next = { ...prev };
+        for (const id of subsetIds) {
+          next[id] = { state: "idle", extractedValues: {} };
+        }
+        return next;
+      });
+      await handleRunSubset(subsetRequests, subsetEdges);
+    },
+    [isRunning, chainRequests, activeConfig, handleRunSubset],
+  );
+
+  const handleAddAfterNode = useCallback((requestId: string) => {
+    setAddAfterNodeId(requestId);
+    setApiPickerOpen(true);
+  }, []);
+
+  // Wraps handleAddNode to also position the new node 320px right of the source
+  const handlePickerAddRequest = useCallback(
+    (requestId: string) => {
+      handleAddNode(requestId);
+      if (addAfterNodeId !== null) {
+        const sourcePos = (activeConfig?.nodePositions ?? {})[addAfterNodeId];
+        if (sourcePos) {
+          handleUpdateNodePosition(requestId, {
+            x: sourcePos.x + 320,
+            y: sourcePos.y,
+          });
+        }
+        setAddAfterNodeId(null);
+      }
+    },
+    [addAfterNodeId, handleAddNode, handleUpdateNodePosition, activeConfig],
+  );
+
+  const handlePickerClose = useCallback(() => {
+    setApiPickerOpen(false);
+    setAddAfterNodeId(null);
+  }, []);
 
   const handleRun = useCallback(async () => {
     if (isRunning) return;
@@ -433,6 +551,9 @@ export default function ChainPage({ params }: Props) {
             onDeleteEdge={handleDeleteEdge}
             onUpdateNodePosition={handleUpdateNodePosition}
             onRunNode={handleRunSingleNode}
+            onRunUpTo={handleRunUpTo}
+            onRunFromHere={handleRunFromHere}
+            onAddAfterNode={handleAddAfterNode}
           />
         )}
       </div>
@@ -448,8 +569,8 @@ export default function ChainPage({ params }: Props) {
 
       <ApiPickerDialog
         open={apiPickerOpen}
-        onClose={() => setApiPickerOpen(false)}
-        onAddRequest={handleAddNode}
+        onClose={handlePickerClose}
+        onAddRequest={handlePickerAddRequest}
         onAddHistoryNode={handleAddHistoryNode}
         alreadyAddedIds={alreadyAddedIds}
       />
