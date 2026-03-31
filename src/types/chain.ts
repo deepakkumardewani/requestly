@@ -29,6 +29,44 @@ export type ChainHistoryNode = {
   body: BodyConfig;
 };
 
+export type AssertionOperator =
+  | "eq"
+  | "neq"
+  | "contains"
+  | "not_contains"
+  | "gt"
+  | "lt"
+  | "exists"
+  | "not_exists"
+  | "matches_regex";
+
+export const ASSERTION_OPERATOR_LABELS: Record<AssertionOperator, string> = {
+  eq: "equals",
+  neq: "not equals",
+  contains: "contains",
+  not_contains: "not contains",
+  gt: "greater than",
+  lt: "less than",
+  exists: "exists",
+  not_exists: "not exists",
+  matches_regex: "matches regex",
+};
+
+export type ChainAssertion = {
+  id: string;
+  source: "status" | "jsonpath" | "header";
+  sourcePath?: string; // JSONPath expression or header name
+  operator: AssertionOperator;
+  expectedValue?: string; // not required for exists/not_exists
+  enabled: boolean;
+};
+
+export type AssertionResult = {
+  assertionId: string;
+  passed: boolean;
+  actual: string | null;
+};
+
 export type ChainConfig = {
   collectionId: string;
   edges: ChainEdge[];
@@ -36,6 +74,7 @@ export type ChainConfig = {
   /** Explicit list of collection request IDs in this chain. undefined = legacy (show all). */
   nodeIds?: string[];
   historyNodes?: ChainHistoryNode[];
+  nodeAssertions?: Record<string, ChainAssertion[]>;
 };
 
 /** A named chain not tied to any specific collection. */
@@ -47,6 +86,7 @@ export type StandaloneChain = {
   nodePositions: Record<string, { x: number; y: number }>;
   nodeIds: string[]; // always defined; starts empty
   historyNodes: ChainHistoryNode[];
+  nodeAssertions?: Record<string, ChainAssertion[]>;
 };
 
 export type ChainNodeState =
@@ -63,5 +103,6 @@ export type ChainRunState = Record<
     extractedValues: Record<string, string | null>;
     response?: ResponseData;
     error?: string;
+    assertionResults?: AssertionResult[];
   }
 >;

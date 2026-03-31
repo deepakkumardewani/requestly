@@ -5,6 +5,7 @@ import { create } from "zustand";
 import { getDB } from "@/lib/idb";
 import { generateId } from "@/lib/utils";
 import type {
+  ChainAssertion,
   ChainEdge,
   ChainHistoryNode,
   StandaloneChain,
@@ -31,6 +32,12 @@ type StandaloneChainActions = {
     pos: { x: number; y: number },
   ) => void;
   clearEdges: (chainId: string) => void;
+  upsertNodeAssertions: (
+    chainId: string,
+    requestId: string,
+    assertions: ChainAssertion[],
+  ) => void;
+  deleteNodeAssertions: (chainId: string, requestId: string) => void;
 };
 
 async function persistChain(chain: StandaloneChain) {
@@ -228,6 +235,32 @@ export const useStandaloneChainStore = create<
     set((state) => {
       const chain = getOrCreate(state.chains, chainId);
       const updated = { ...chain, edges: [] };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  upsertNodeAssertions(chainId, requestId, assertions) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const updated = {
+        ...chain,
+        nodeAssertions: {
+          ...(chain.nodeAssertions ?? {}),
+          [requestId]: assertions,
+        },
+      };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  deleteNodeAssertions(chainId, requestId) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const nodeAssertions = { ...(chain.nodeAssertions ?? {}) };
+      delete nodeAssertions[requestId];
+      const updated = { ...chain, nodeAssertions };
       persistChain(updated);
       return { chains: { ...state.chains, [chainId]: updated } };
     });

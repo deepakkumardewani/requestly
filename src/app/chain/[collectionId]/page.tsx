@@ -13,6 +13,7 @@ import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useStandaloneChainStore } from "@/stores/useStandaloneChainStore";
 import type { RequestModel } from "@/types";
 import type {
+  ChainAssertion,
   ChainConfig,
   ChainEdge,
   ChainHistoryNode,
@@ -63,6 +64,7 @@ export default function ChainPage({ params }: Props) {
     upsertEdge: upsertCollectionEdge,
     deleteEdge: deleteCollectionEdge,
     updateNodePosition: updateCollectionNodePosition,
+    upsertNodeAssertions: upsertCollectionNodeAssertions,
   } = useChainStore();
   const {
     chains: standaloneChains,
@@ -75,6 +77,7 @@ export default function ChainPage({ params }: Props) {
     upsertEdge: upsertStandaloneEdge,
     deleteEdge: deleteStandaloneEdge,
     updateNodePosition: updateStandaloneNodePosition,
+    upsertNodeAssertions: upsertStandaloneNodeAssertions,
   } = useStandaloneChainStore();
 
   const [runState, setRunState] = useState<ChainRunState>({});
@@ -225,17 +228,19 @@ export default function ChainPage({ params }: Props) {
                 state,
                 extractedValues: data.extractedValues ?? {},
                 response: data.response,
+                assertionResults: data.assertionResults,
               },
             }));
           },
           controller.signal,
+          activeConfig?.nodeAssertions,
         );
       } finally {
         setIsRunning(false);
         abortRef.current = null;
       }
     },
-    [isRunning],
+    [isRunning, activeConfig?.nodeAssertions],
   );
 
   const handleRunUpTo = useCallback(
@@ -295,6 +300,20 @@ export default function ChainPage({ params }: Props) {
     [isRunning, chainRequests, activeConfig, handleRunSubset],
   );
 
+  const handleUpsertNodeAssertions = useCallback(
+    (requestId: string, assertions: ChainAssertion[]) => {
+      if (isCollectionChain)
+        upsertCollectionNodeAssertions(id, requestId, assertions);
+      else upsertStandaloneNodeAssertions(id, requestId, assertions);
+    },
+    [
+      id,
+      isCollectionChain,
+      upsertCollectionNodeAssertions,
+      upsertStandaloneNodeAssertions,
+    ],
+  );
+
   const handleAddAfterNode = useCallback((requestId: string) => {
     setAddAfterNodeId(requestId);
     setApiPickerOpen(true);
@@ -305,7 +324,7 @@ export default function ChainPage({ params }: Props) {
     (requestId: string) => {
       handleAddNode(requestId);
       if (addAfterNodeId !== null) {
-        const sourcePos = (activeConfig?.nodePositions ?? {})[addAfterNodeId];
+        const sourcePos = activeConfig?.nodePositions?.[addAfterNodeId];
         if (sourcePos) {
           handleUpdateNodePosition(requestId, {
             x: sourcePos.x + 320,
@@ -347,10 +366,12 @@ export default function ChainPage({ params }: Props) {
               state,
               extractedValues: data.extractedValues ?? {},
               response: data.response,
+              assertionResults: data.assertionResults,
             },
           }));
         },
         controller.signal,
+        activeConfig?.nodeAssertions,
       );
     } finally {
       setIsRunning(false);
@@ -543,6 +564,7 @@ export default function ChainPage({ params }: Props) {
             requests={chainRequests}
             edges={activeConfig?.edges ?? []}
             nodePositions={activeConfig?.nodePositions ?? {}}
+            nodeAssertions={activeConfig?.nodeAssertions ?? {}}
             runState={runState}
             isRunning={isRunning}
             onAddApiClick={() => setApiPickerOpen(true)}
@@ -550,6 +572,7 @@ export default function ChainPage({ params }: Props) {
             onUpsertEdge={handleUpsertEdge}
             onDeleteEdge={handleDeleteEdge}
             onUpdateNodePosition={handleUpdateNodePosition}
+            onUpsertNodeAssertions={handleUpsertNodeAssertions}
             onRunNode={handleRunSingleNode}
             onRunUpTo={handleRunUpTo}
             onRunFromHere={handleRunFromHere}

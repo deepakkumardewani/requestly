@@ -25,7 +25,12 @@ import { computeAutoLayout } from "@/lib/chainLayout";
 import { generateId } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import type { RequestModel } from "@/types";
-import type { ChainEdge, ChainNodeState, ChainRunState } from "@/types/chain";
+import type {
+  ChainAssertion,
+  ChainEdge,
+  ChainNodeState,
+  ChainRunState,
+} from "@/types/chain";
 import { ArrowConfigPanel } from "./ArrowConfigPanel";
 import { ChainNode, type ChainNodeData } from "./ChainNode";
 import { NodeContextMenu } from "./NodeContextMenu";
@@ -106,6 +111,7 @@ type ChainCanvasProps = {
   requests: RequestModel[];
   edges: ChainEdge[];
   nodePositions: Record<string, { x: number; y: number }>;
+  nodeAssertions: Record<string, ChainAssertion[]>;
   runState: ChainRunState;
   isRunning: boolean;
   onAddApiClick: () => void;
@@ -113,6 +119,10 @@ type ChainCanvasProps = {
   onUpsertEdge: (edge: ChainEdge) => void;
   onDeleteEdge: (edgeId: string) => void;
   onUpdateNodePosition: (nodeId: string, pos: { x: number; y: number }) => void;
+  onUpsertNodeAssertions: (
+    requestId: string,
+    assertions: ChainAssertion[],
+  ) => void;
   onRunNode?: (nodeId: string) => void;
   onRunUpTo: (requestId: string) => void;
   onRunFromHere: (requestId: string) => void;
@@ -177,6 +187,7 @@ export function ChainCanvas({
   requests,
   edges: chainEdges,
   nodePositions,
+  nodeAssertions,
   runState,
   isRunning,
   onAddApiClick,
@@ -184,6 +195,7 @@ export function ChainCanvas({
   onUpsertEdge,
   onDeleteEdge,
   onUpdateNodePosition,
+  onUpsertNodeAssertions,
   onRunNode,
   onRunUpTo,
   onRunFromHere,
@@ -461,6 +473,15 @@ export function ChainCanvas({
         response={selectedState?.response}
         extractedValues={selectedState?.extractedValues}
         error={selectedState?.error}
+        assertionResults={selectedState?.assertionResults}
+        assertions={
+          selectedNodeId ? (nodeAssertions[selectedNodeId] ?? []) : []
+        }
+        onAssertionsChange={
+          selectedNodeId
+            ? (updated) => onUpsertNodeAssertions(selectedNodeId, updated)
+            : undefined
+        }
         bodyContent={selectedRequest?.body?.content ?? ""}
         onSaveBody={
           canSaveBody

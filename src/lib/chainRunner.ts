@@ -1,7 +1,14 @@
 import { JSONPath } from "jsonpath-plus";
+import { evaluateAllAssertions } from "@/lib/chainAssertions";
 import { runRequest } from "@/lib/requestRunner";
 import type { RequestModel } from "@/types";
-import type { ChainEdge, ChainNodeState, ChainRunState } from "@/types/chain";
+import type {
+  AssertionResult,
+  ChainAssertion,
+  ChainEdge,
+  ChainNodeState,
+  ChainRunState,
+} from "@/types/chain";
 
 export class CircularDependencyError extends Error {
   constructor() {
@@ -141,6 +148,7 @@ type OnUpdateFn = (
     response?: import("@/types").ResponseData;
     extractedValues?: Record<string, string | null>;
     error?: string;
+    assertionResults?: AssertionResult[];
   },
 ) => void;
 
@@ -152,6 +160,7 @@ export async function runChain(
   edges: ChainEdge[],
   onUpdate: OnUpdateFn,
   signal: AbortSignal,
+  nodeAssertions?: Record<string, ChainAssertion[]>,
 ): Promise<void> {
   let order: string[];
   try {
@@ -281,14 +290,42 @@ export async function runChain(
         auth: mutatedRequest.auth,
       });
 
-      const passed = response.status >= 200 && response.status < 300;
-      const state: ChainNodeState = passed ? "passed" : "failed";
-      const errorMsg = passed
+      const httpPassed = response.status >= 200 && response.status < 300;
+      const errorMsg = httpPassed
         ? undefined
         : `HTTP ${response.status} ${response.statusText}`;
 
-      runState[reqId] = { state, extractedValues, response, error: errorMsg };
-      onUpdate(reqId, state, { response, extractedValues, error: errorMsg });
+      // Evaluate assertions for this node
+      const assertions = nodeAssertions?.[reqId] ?? [];
+      const assertionResults =
+        assertions.length > 0
+          ? evaluateAllAssertions(assertions, response)
+          : undefined;
+
+      const assertionsFailed =
+        assertionResults?.some((r) => !r.passed) ?? false;
+
+      // A node fails if the HTTP status is non-2xx OR any assertion fails
+      const state: ChainNodeState =
+        httpPassed && !assertionsFailed ? "passed" : "failed";
+
+      const finalError =
+        errorMsg ??
+        (assertionsFailed ? "One or more assertions failed" : undefined);
+
+      runState[reqId] = {
+        state,
+        extractedValues,
+        response,
+        error: finalError,
+        assertionResults,
+      };
+      onUpdate(reqId, state, {
+        response,
+        extractedValues,
+        error: finalError,
+        assertionResults,
+      });
     } catch (err) {
       const error = err instanceof Error ? err.message : "Request failed";
       runState[reqId] = { state: "failed", extractedValues, error };

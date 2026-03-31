@@ -3,7 +3,12 @@
 import { toast } from "sonner";
 import { create } from "zustand";
 import { getDB } from "@/lib/idb";
-import type { ChainConfig, ChainEdge, ChainHistoryNode } from "@/types/chain";
+import type {
+  ChainAssertion,
+  ChainConfig,
+  ChainEdge,
+  ChainHistoryNode,
+} from "@/types/chain";
 
 type ChainState = {
   configs: Record<string, ChainConfig>;
@@ -25,6 +30,12 @@ type ChainActions = {
   removeNode: (collectionId: string, requestId: string) => void;
   addHistoryNode: (collectionId: string, node: ChainHistoryNode) => void;
   removeHistoryNode: (collectionId: string, nodeId: string) => void;
+  upsertNodeAssertions: (
+    collectionId: string,
+    requestId: string,
+    assertions: ChainAssertion[],
+  ) => void;
+  deleteNodeAssertions: (collectionId: string, requestId: string) => void;
 };
 
 function getOrCreateConfig(
@@ -193,6 +204,32 @@ export const useChainStore = create<ChainState & ChainActions>((set) => ({
           (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
         ),
       };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  upsertNodeAssertions(collectionId, requestId, assertions) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const updated = {
+        ...config,
+        nodeAssertions: {
+          ...(config.nodeAssertions ?? {}),
+          [requestId]: assertions,
+        },
+      };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  deleteNodeAssertions(collectionId, requestId) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const nodeAssertions = { ...(config.nodeAssertions ?? {}) };
+      delete nodeAssertions[requestId];
+      const updated = { ...config, nodeAssertions };
       persistConfig(updated);
       return { configs: { ...state.configs, [collectionId]: updated } };
     });

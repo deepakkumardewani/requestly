@@ -10,6 +10,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { NodeAssertionsPanel } from "@/components/chain/NodeAssertionsPanel";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -20,7 +21,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import type { ResponseData } from "@/types";
-import type { ChainNodeState } from "@/types/chain";
+import type {
+  AssertionResult,
+  ChainAssertion,
+  ChainNodeState,
+} from "@/types/chain";
+
+type ActiveTab = "details" | "assertions";
 
 type NodeDetailsPanelProps = {
   open: boolean;
@@ -32,6 +39,9 @@ type NodeDetailsPanelProps = {
   response?: ResponseData;
   extractedValues?: Record<string, string | null>;
   error?: string;
+  assertionResults?: AssertionResult[];
+  assertions?: ChainAssertion[];
+  onAssertionsChange?: (assertions: ChainAssertion[]) => void;
   /** Body content to edit (for POST/PUT/PATCH nodes) */
   bodyContent?: string;
   /** Called when user saves an edited body */
@@ -140,11 +150,21 @@ export function NodeDetailsPanel({
   response,
   extractedValues,
   error,
+  assertionResults,
+  assertions = [],
+  onAssertionsChange,
   bodyContent,
   onSaveBody,
 }: NodeDetailsPanelProps) {
   const hasExtractions =
     extractedValues && Object.keys(extractedValues).length > 0;
+
+  const [activeTab, setActiveTab] = useState<ActiveTab>("details");
+
+  // Reset to details tab whenever a different node is opened
+  useEffect(() => {
+    setActiveTab("details");
+  }, [name]);
 
   // Local editable body state
   const [editedBody, setEditedBody] = useState(bodyContent ?? "");
@@ -167,6 +187,9 @@ export function NodeDetailsPanel({
   }
 
   const isEmpty = !response && !error && !hasExtractions && !hasBodyEditor;
+
+  const failedAssertionCount =
+    assertionResults?.filter((r) => !r.passed).length ?? 0;
 
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
@@ -196,139 +219,197 @@ export function NodeDetailsPanel({
           </div>
         </SheetHeader>
 
+        {/* ── Tab bar ────────────────────────────────────── */}
+        <div className="flex shrink-0 border-b border-border px-5">
+          <button
+            type="button"
+            onClick={() => setActiveTab("details")}
+            className={cn(
+              "pb-2 pt-3 text-xs font-medium border-b-2 mr-4 transition-colors",
+              activeTab === "details"
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground",
+            )}
+          >
+            Details
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("assertions")}
+            className={cn(
+              "pb-2 pt-3 text-xs font-medium border-b-2 flex items-center gap-1.5 transition-colors",
+              activeTab === "assertions"
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground",
+            )}
+          >
+            Assertions
+            {assertions.length > 0 && (
+              <span
+                className={cn(
+                  "rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
+                  failedAssertionCount > 0
+                    ? "bg-red-500/20 text-red-400"
+                    : assertionResults !== undefined
+                      ? "bg-emerald-500/20 text-emerald-400"
+                      : "bg-muted text-muted-foreground",
+                )}
+              >
+                {assertions.length}
+              </span>
+            )}
+          </button>
+        </div>
+
         {/* ── Scrollable body ────────────────────────────── */}
         <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-7">
-          {/* ── Request body editor (POST/PUT/PATCH only) ───── */}
-          {hasBodyEditor && (
-            <section className="flex flex-col gap-3">
-              <SectionHeading>Request body</SectionHeading>
-              <Textarea
-                value={editedBody}
-                onChange={(e) => setEditedBody(e.target.value)}
-                className="font-mono text-xs min-h-[140px] resize-y bg-muted/20 border-border/50"
-                placeholder='{"key": "value"}'
-                spellCheck={false}
-              />
-              <Button
-                size="sm"
-                disabled={!bodyChanged}
-                onClick={() => onSaveBody?.(editedBody)}
-                className="self-end"
-              >
-                Save body
-              </Button>
-            </section>
-          )}
+          {activeTab === "assertions" ? (
+            <NodeAssertionsPanel
+              assertions={assertions}
+              assertionResults={assertionResults}
+              onChange={onAssertionsChange ?? (() => {})}
+            />
+          ) : (
+            <>
+              {/* ── Request body editor (POST/PUT/PATCH only) ───── */}
+              {hasBodyEditor && (
+                <section className="flex flex-col gap-3">
+                  <SectionHeading>Request body</SectionHeading>
+                  <Textarea
+                    value={editedBody}
+                    onChange={(e) => setEditedBody(e.target.value)}
+                    className="font-mono text-xs min-h-[140px] resize-y bg-muted/20 border-border/50"
+                    placeholder='{"key": "value"}'
+                    spellCheck={false}
+                  />
+                  <Button
+                    size="sm"
+                    disabled={!bodyChanged}
+                    onClick={() => onSaveBody?.(editedBody)}
+                    className="self-end"
+                  >
+                    Save body
+                  </Button>
+                </section>
+              )}
 
-          {/* ── Response section ──────────────────────────── */}
-          {response && (
-            <section className="flex flex-col gap-4">
-              <SectionHeading>Response</SectionHeading>
+              {/* ── Response section ──────────────────────────── */}
+              {response && (
+                <section className="flex flex-col gap-4">
+                  <SectionHeading>Response</SectionHeading>
 
-              {/* Status metric row — most important info, prominent */}
-              <div className="flex items-center gap-3">
-                <StatusBadge status={response.status} />
-                <span className="text-xs text-muted-foreground">
-                  {response.statusText}
-                </span>
-                <div className="ml-auto flex items-center gap-1 text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  <span className="text-xs font-mono tabular-nums">
-                    {response.duration}ms
-                  </span>
-                </div>
-              </div>
+                  {/* Status metric row — most important info, prominent */}
+                  <div className="flex items-center gap-3">
+                    <StatusBadge status={response.status} />
+                    <span className="text-xs text-muted-foreground">
+                      {response.statusText}
+                    </span>
+                    <div className="ml-auto flex items-center gap-1 text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      <span className="text-xs font-mono tabular-nums">
+                        {response.duration}ms
+                      </span>
+                    </div>
+                  </div>
 
-              {/* Headers sub-section — tight internal gap */}
-              {Object.keys(response.headers).length > 0 && (
-                <div className="flex flex-col gap-2">
-                  <p className="text-xs text-muted-foreground font-medium">
-                    Headers
-                  </p>
-                  <div className="rounded-md border border-border/50 bg-muted/20 px-3 py-2.5 flex flex-col gap-1.5 max-h-40 overflow-y-auto">
-                    {Object.entries(response.headers).map(([k, v]) => (
+                  {/* Headers sub-section — tight internal gap */}
+                  {Object.keys(response.headers).length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      <p className="text-xs text-muted-foreground font-medium">
+                        Headers
+                      </p>
+                      <div className="rounded-md border border-border/50 bg-muted/20 px-3 py-2.5 flex flex-col gap-1.5 max-h-40 overflow-y-auto">
+                        {Object.entries(response.headers).map(([k, v]) => (
+                          <div
+                            key={k}
+                            className="flex items-start gap-2 font-mono text-xs"
+                          >
+                            <span className="text-muted-foreground shrink-0">
+                              {k}:
+                            </span>
+                            <span className="text-foreground break-all">
+                              {v}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Body sub-section */}
+                  {prettyBody && (
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-muted-foreground font-medium">
+                          Response body
+                        </p>
+                        <CopyButton text={prettyBody} />
+                      </div>
+                      <pre className="rounded-md border border-border/50 bg-muted/20 px-3 py-2.5 text-xs font-mono text-foreground overflow-x-auto max-h-72 whitespace-pre-wrap break-all leading-relaxed">
+                        {prettyBody}
+                      </pre>
+                    </div>
+                  )}
+                </section>
+              )}
+
+              {/* ── Error section ─────────────────────────────── */}
+              {error && (
+                <section className="flex flex-col gap-3">
+                  <SectionHeading>Error</SectionHeading>
+                  <div className="rounded-md border border-red-500/30 bg-red-950/20 px-3 py-2.5">
+                    <p className="text-xs font-mono text-red-300 whitespace-pre-wrap break-all leading-relaxed">
+                      {error}
+                    </p>
+                  </div>
+                </section>
+              )}
+
+              {/* ── Extracted values section ───────────────────── */}
+              {hasExtractions && (
+                <section className="flex flex-col gap-3">
+                  <SectionHeading>Extracted values</SectionHeading>
+                  <div className="flex flex-col gap-1.5">
+                    {Object.entries(extractedValues).map(([jsonPath, val]) => (
                       <div
-                        key={k}
-                        className="flex items-start gap-2 font-mono text-xs"
+                        key={jsonPath}
+                        className="flex items-start gap-2 font-mono text-xs px-3 py-2 rounded-md border border-border/40 bg-muted/10"
                       >
-                        <span className="text-muted-foreground shrink-0">
-                          {k}:
+                        <span className="text-primary shrink-0">
+                          {jsonPath}
                         </span>
-                        <span className="text-foreground break-all">{v}</span>
+                        <span className="text-muted-foreground mx-0.5">=</span>
+                        {val === null ? (
+                          <span className="text-red-400 italic">not found</span>
+                        ) : (
+                          <span className="text-emerald-400 break-all">
+                            {val}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
+                </section>
+              )}
+
+              {/* ── Empty / skipped states ─────────────────────── */}
+              {isEmpty && state === "idle" && (
+                <div className="rounded-md border border-border/40 bg-muted/10 px-4 py-6 text-center">
+                  <p className="text-xs text-muted-foreground">
+                    Run the chain to see results for this node.
+                  </p>
                 </div>
               )}
 
-              {/* Body sub-section */}
-              {prettyBody && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground font-medium">
-                      Response body
-                    </p>
-                    <CopyButton text={prettyBody} />
-                  </div>
-                  <pre className="rounded-md border border-border/50 bg-muted/20 px-3 py-2.5 text-xs font-mono text-foreground overflow-x-auto max-h-72 whitespace-pre-wrap break-all leading-relaxed">
-                    {prettyBody}
-                  </pre>
+              {state === "skipped" && !error && (
+                <div className="rounded-md border border-zinc-700/40 bg-zinc-900/20 px-4 py-4 flex items-center gap-2.5">
+                  <SkipForward className="h-3.5 w-3.5 text-zinc-500 shrink-0" />
+                  <p className="text-xs text-zinc-500">
+                    This node was skipped — a dependency failed upstream.
+                  </p>
                 </div>
               )}
-            </section>
-          )}
-
-          {/* ── Error section ─────────────────────────────── */}
-          {error && (
-            <section className="flex flex-col gap-3">
-              <SectionHeading>Error</SectionHeading>
-              <div className="rounded-md border border-red-500/30 bg-red-950/20 px-3 py-2.5">
-                <p className="text-xs font-mono text-red-300 whitespace-pre-wrap break-all leading-relaxed">
-                  {error}
-                </p>
-              </div>
-            </section>
-          )}
-
-          {/* ── Extracted values section ───────────────────── */}
-          {hasExtractions && (
-            <section className="flex flex-col gap-3">
-              <SectionHeading>Extracted values</SectionHeading>
-              <div className="flex flex-col gap-1.5">
-                {Object.entries(extractedValues).map(([jsonPath, val]) => (
-                  <div
-                    key={jsonPath}
-                    className="flex items-start gap-2 font-mono text-xs px-3 py-2 rounded-md border border-border/40 bg-muted/10"
-                  >
-                    <span className="text-primary shrink-0">{jsonPath}</span>
-                    <span className="text-muted-foreground mx-0.5">=</span>
-                    {val === null ? (
-                      <span className="text-red-400 italic">not found</span>
-                    ) : (
-                      <span className="text-emerald-400 break-all">{val}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* ── Empty / skipped states ─────────────────────── */}
-          {isEmpty && state === "idle" && (
-            <div className="rounded-md border border-border/40 bg-muted/10 px-4 py-6 text-center">
-              <p className="text-xs text-muted-foreground">
-                Run the chain to see results for this node.
-              </p>
-            </div>
-          )}
-
-          {state === "skipped" && !error && (
-            <div className="rounded-md border border-zinc-700/40 bg-zinc-900/20 px-4 py-4 flex items-center gap-2.5">
-              <SkipForward className="h-3.5 w-3.5 text-zinc-500 shrink-0" />
-              <p className="text-xs text-zinc-500">
-                This node was skipped — a dependency failed upstream.
-              </p>
-            </div>
+            </>
           )}
         </div>
       </SheetContent>
