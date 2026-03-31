@@ -39,7 +39,8 @@ export function buildExecutionOrder(
   const order: string[] = [];
 
   while (queue.length > 0) {
-    const node = queue.shift()!;
+    const node = queue.shift();
+    if (!node) break;
     order.push(node);
     for (const neighbour of adjacency.get(node) ?? []) {
       const deg = (inDegree.get(neighbour) ?? 0) - 1;

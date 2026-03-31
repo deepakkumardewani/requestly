@@ -69,7 +69,6 @@ export function ArrowConfigPanel({
 
   // Reset when edge changes
   const edgeId = existingEdge?.id;
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional reset on id change
   useState(() => {
     if (edgeId) {
       setSourceJsonPath(existingEdge?.sourceJsonPath ?? "$.token");

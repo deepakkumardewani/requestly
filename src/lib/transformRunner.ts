@@ -24,7 +24,7 @@ export async function runJsonPath(
 
   let path = code.trim();
   if (path && !path.startsWith("$")) {
-    path = path.startsWith("[") ? "$" + path : "$." + path;
+    path = path.startsWith("[") ? `$${path}` : `$.${path}`;
   } else if (!path) {
     path = "$";
   }

@@ -123,7 +123,7 @@ export default function ChainPage({ params }: Props) {
     ? collectionConfig.nodeIds === undefined
       ? collectionRequests
       : collectionRequests.filter((r) =>
-          collectionConfig.nodeIds!.includes(r.id),
+          collectionConfig.nodeIds?.includes(r.id),
         )
     : allRequests.filter(
         (r) => standaloneChain?.nodeIds.includes(r.id) ?? false,
