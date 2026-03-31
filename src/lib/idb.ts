@@ -7,10 +7,10 @@ import type {
   RequestModel,
   TabState,
 } from "@/types";
-import type { ChainConfig } from "@/types/chain";
+import type { ChainConfig, StandaloneChain } from "@/types/chain";
 import { IDB_DB_NAME } from "./constants";
 
-const IDB_VERSION = 2;
+const IDB_VERSION = 3;
 
 type RequestlyDB = {
   collections: {
@@ -42,6 +42,10 @@ type RequestlyDB = {
   chainConfigs: {
     key: string;
     value: ChainConfig;
+  };
+  chains: {
+    key: string;
+    value: StandaloneChain;
   };
 };
 
@@ -85,6 +89,10 @@ export function getDB(): Promise<IDBPDatabase<RequestlyDB>> | null {
 
         if (!db.objectStoreNames.contains("chainConfigs")) {
           db.createObjectStore("chainConfigs", { keyPath: "collectionId" });
+        }
+
+        if (!db.objectStoreNames.contains("chains")) {
+          db.createObjectStore("chains", { keyPath: "id" });
         }
       },
     });

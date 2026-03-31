@@ -176,6 +176,11 @@ export async function runChain(
     connectedIds.add(edge.targetRequestId);
   }
 
+  // Allow independent runs: if running exactly 1 node with 0 edges, it is connected
+  if (requests.length === 1 && edges.length === 0) {
+    connectedIds.add(requests[0].id);
+  }
+
   // Mark disconnected nodes as skipped immediately (not part of any chain)
   for (const req of requests) {
     if (!connectedIds.has(req.id)) {
