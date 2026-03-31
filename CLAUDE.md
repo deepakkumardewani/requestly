@@ -28,6 +28,7 @@ Folders | lowercase | components, utils
 - Always check if a specific component is available in shadcn before creating a custom component
 - Always use shadcn components instead of creating custom components
 - Always use shadcn tooltips
+- This project uses @base-ui/react v1, not Radix UI. never use asChild as it doesn't exist.
 - Always use % for size instead of integers
 
 ```tsx
