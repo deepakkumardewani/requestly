@@ -1,18 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(bunx shadcn@latest add:*)",
-      "Bash(bun add:*)",
-      "Bash(bun run:*)",
-      "Bash(bun install:*)",
+      "Bash(bun:*)",
+      "Bash(bunx:*)",
       "Bash(node -e:*)",
 
       "Bash(git add:*)",
       "Bash(git commit:*)",
+      "Bash(git log:*)",
       "Bash(git push:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git -C:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(git show:*)",
       "Bash(echo:*)",
       "Bash(grep:*)",
       "Bash(cat:*)",
@@ -37,24 +42,7 @@
       "Bash(./node_modules/.bin/tsc --noEmit --skipLibCheck)",
       "Bash(bash /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/stop-check.sh)",
       "Bash(xargs cat:*)",
-      "Bash(bunx biome:*)",
-      "Bash(bunx shadcn@latest add alert-dialog --yes)"
-    ]
-  },
-  "hooks": {
-    "Stop": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/stop-check.sh",
-            "timeout": 120,
-            "statusMessage": "Formatting + typechecking...",
-            "asyncRewake": true
-          }
-        ]
-      }
+      "Bash(bunx biome:*)"
     ]
   }
 }

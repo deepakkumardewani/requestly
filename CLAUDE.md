@@ -95,7 +95,7 @@ Folders | lowercase | components, utils
 
 ## Feature Implementation
 
-- after complete a single task like 1.1, 1.2, etc, mark the task complete in the respective task.md file that you're working on.
+- After the implementation is done, show the complete task list that was done.
 - After the implementation is complete, never stop abruptly even if the last edit comes back clean with no errors.
 - At the end of **every** feature / epic implementation, output a summary in the following exact format. No exceptions.
 
