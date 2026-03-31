@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,9 +16,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { generateId } from "@/lib/utils";
 import type { RequestModel, ResponseData } from "@/types";
 import type { ChainEdge, ChainNodeState } from "@/types/chain";
+import { JsonPathExplorer } from "./JsonPathExplorer";
 
 type TargetField = "url" | "path" | "header" | "body";
 
@@ -57,6 +59,18 @@ export function ArrowConfigPanel({
   const [sourceJsonPath, setSourceJsonPath] = useState(
     existingEdge?.sourceJsonPath ?? "$.token",
   );
+
+  const parsedResponseBody = useMemo(() => {
+    if (!sourceResponse?.body) return null;
+    try {
+      const parsed = JSON.parse(sourceResponse.body);
+      return parsed !== null && typeof parsed === "object" ? parsed : null;
+    } catch {
+      return null;
+    }
+  }, [sourceResponse?.body]);
+
+  const defaultTab = parsedResponseBody ? "explorer" : "manual";
   const [targetField, setTargetField] = useState<TargetField>(
     existingEdge?.targetField ?? "header",
   );
@@ -195,22 +209,87 @@ export function ArrowConfigPanel({
               Extract from source response
             </Label>
             <p className="text-xs text-muted-foreground -mt-1.5">
-              JSONPath to pull a value from{" "}
+              Pull a value from{" "}
               <span className="font-medium text-foreground">
                 {sourceRequest?.name}
               </span>
               's response
             </p>
-            <Input
-              value={sourceJsonPath}
-              onChange={(e) => setSourceJsonPath(e.target.value)}
-              placeholder="$.token"
-              className="font-mono text-xs h-8"
-            />
-            <p className="text-xs text-muted-foreground">
-              e.g. <code className="text-primary font-mono">$.data.token</code>{" "}
-              or <code className="text-primary font-mono">$.user.id</code>
-            </p>
+
+            {!sourceResponse ? (
+              /* No response yet — prompt user to run */
+              <div className="rounded-md border border-border/50 bg-muted/20 px-4 py-3 flex flex-col gap-2">
+                <p className="text-xs text-muted-foreground">
+                  Run the source request first to use the visual explorer.
+                </p>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="text-xs self-start"
+                  onClick={() => onRunSource?.(sourceRequest?.id ?? "")}
+                  disabled={sourceRunState === "running" || !sourceRequest}
+                >
+                  {sourceRunState === "running"
+                    ? "Running..."
+                    : "Run Source API"}
+                </Button>
+              </div>
+            ) : (
+              <Tabs defaultValue={defaultTab}>
+                <TabsList className="h-7 text-xs">
+                  <TabsTrigger
+                    value="explorer"
+                    className="text-xs h-6 px-3"
+                    disabled={!parsedResponseBody}
+                  >
+                    Explorer
+                  </TabsTrigger>
+                  <TabsTrigger value="manual" className="text-xs h-6 px-3">
+                    Manual
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent
+                  value="explorer"
+                  className="mt-2 flex flex-col gap-2"
+                >
+                  {parsedResponseBody ? (
+                    <>
+                      <JsonPathExplorer
+                        data={parsedResponseBody}
+                        selectedPath={sourceJsonPath}
+                        onSelect={(path) => setSourceJsonPath(path)}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Click any value to select its path.
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">
+                      Response is not JSON — use the Manual tab to enter a
+                      JSONPath.
+                    </p>
+                  )}
+                </TabsContent>
+
+                <TabsContent
+                  value="manual"
+                  className="mt-2 flex flex-col gap-2"
+                >
+                  <Input
+                    value={sourceJsonPath}
+                    onChange={(e) => setSourceJsonPath(e.target.value)}
+                    placeholder="$.token"
+                    className="font-mono text-xs h-8"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    e.g.{" "}
+                    <code className="text-primary font-mono">$.data.token</code>{" "}
+                    or <code className="text-primary font-mono">$.user.id</code>
+                  </p>
+                </TabsContent>
+              </Tabs>
+            )}
           </div>
 
           {/* Thin connector — signals these two sections form a single flow */}
