@@ -1,5 +1,10 @@
 import { JSONPath } from "jsonpath-plus";
 import { evaluateAllAssertions } from "@/lib/chainAssertions";
+import {
+  buildVarValues,
+  evaluateCondition,
+  resolveDelay,
+} from "@/lib/chainControlFlow";
 import { runRequest } from "@/lib/requestRunner";
 import type { RequestModel } from "@/types";
 import type {
@@ -8,6 +13,9 @@ import type {
   ChainEdge,
   ChainNodeState,
   ChainRunState,
+  ConditionNodeConfig,
+  DelayNodeConfig,
+  EnvPromotion,
 } from "@/types/chain";
 
 export class CircularDependencyError extends Error {
@@ -18,14 +26,16 @@ export class CircularDependencyError extends Error {
 }
 
 /**
- * Topological sort (Kahn's algorithm) returning an ordered array of request IDs.
+ * Topological sort (Kahn's algorithm) returning an ordered array of node IDs.
+ * `extraNodeIds` adds delay/condition node IDs into the topology alongside API requests.
  * Throws CircularDependencyError if a cycle is detected.
  */
 export function buildExecutionOrder(
   requests: RequestModel[],
   edges: ChainEdge[],
+  extraNodeIds: string[] = [],
 ): string[] {
-  const ids = requests.map((r) => r.id);
+  const ids = [...requests.map((r) => r.id), ...extraNodeIds];
   const inDegree = new Map<string, number>();
   const adjacency = new Map<string, string[]>();
 
@@ -35,11 +45,11 @@ export function buildExecutionOrder(
   }
 
   for (const edge of edges) {
-    inDegree.set(
-      edge.targetRequestId,
-      (inDegree.get(edge.targetRequestId) ?? 0) + 1,
-    );
-    adjacency.get(edge.sourceRequestId)?.push(edge.targetRequestId);
+    const src = edge.sourceRequestId;
+    const tgt = edge.targetRequestId;
+    if (!inDegree.has(src) || !inDegree.has(tgt)) continue;
+    inDegree.set(tgt, (inDegree.get(tgt) ?? 0) + 1);
+    adjacency.get(src)?.push(tgt);
   }
 
   const queue = ids.filter((id) => (inDegree.get(id) ?? 0) === 0);
@@ -109,7 +119,6 @@ function applyInjection(
     const separator = req.url.includes("?") ? "&" : "?";
     req.url = `${req.url}${separator}${encodeURIComponent(edge.targetKey)}=${encodeURIComponent(value)}`;
   } else if (edge.targetField === "path") {
-    // Use the user-overridden URL template if provided, otherwise req.url
     const baseUrl = edge.targetUrl ?? req.url;
     const placeholder = `:${edge.targetKey}`;
     if (baseUrl.includes(placeholder)) {
@@ -120,8 +129,7 @@ function applyInjection(
   } else if (edge.targetField === "body") {
     try {
       const bodyObj = JSON.parse(req.body.content ?? "{}");
-      // Support simple dot-notation key for body injection
-      const key = edge.targetKey.replace(/^\$\./, ""); // strip $. prefix
+      const key = edge.targetKey.replace(/^\$\./, "");
       const keys = key.split(".");
       let obj = bodyObj;
       for (let i = 0; i < keys.length - 1; i++) {
@@ -133,7 +141,6 @@ function applyInjection(
       obj[keys[keys.length - 1]] = value;
       req.body = { ...req.body, content: JSON.stringify(bodyObj, null, 2) };
     } catch {
-      // If body is not JSON, append as-is
       req.body = { ...req.body, content: (req.body.content ?? "") + value };
     }
   }
@@ -142,18 +149,20 @@ function applyInjection(
 }
 
 type OnUpdateFn = (
-  requestId: string,
+  nodeId: string,
   state: ChainNodeState,
   data: {
     response?: import("@/types").ResponseData;
     extractedValues?: Record<string, string | null>;
     error?: string;
     assertionResults?: AssertionResult[];
+    activeBranchId?: string;
   },
 ) => void;
 
 /**
  * Run a full request chain in dependency order, calling onUpdate for each step.
+ * Delay and condition nodes are handled alongside API request nodes.
  */
 export async function runChain(
   requests: RequestModel[],
@@ -161,14 +170,30 @@ export async function runChain(
   onUpdate: OnUpdateFn,
   signal: AbortSignal,
   nodeAssertions?: Record<string, ChainAssertion[]>,
+  delayNodes?: DelayNodeConfig[],
+  conditionNodes?: ConditionNodeConfig[],
+  envPromotions?: EnvPromotion[],
+  onPromoteToEnv?: (envId: string, varName: string, value: string) => void,
 ): Promise<void> {
+  const delayNodeMap = new Map<string, DelayNodeConfig>(
+    (delayNodes ?? []).map((n) => [n.id, n]),
+  );
+  const conditionNodeMap = new Map<string, ConditionNodeConfig>(
+    (conditionNodes ?? []).map((n) => [n.id, n]),
+  );
+  const controlFlowIds = [
+    ...(delayNodes ?? []).map((n) => n.id),
+    ...(conditionNodes ?? []).map((n) => n.id),
+  ];
+
   let order: string[];
   try {
-    order = buildExecutionOrder(requests, edges);
+    order = buildExecutionOrder(requests, edges, controlFlowIds);
   } catch (err) {
     if (err instanceof CircularDependencyError) {
-      for (const req of requests) {
-        onUpdate(req.id, "skipped", { error: "Circular dependency detected" });
+      const allIds = [...requests.map((r) => r.id), ...controlFlowIds];
+      for (const id of allIds) {
+        onUpdate(id, "skipped", { error: "Circular dependency detected" });
       }
       return;
     }
@@ -179,37 +204,38 @@ export async function runChain(
     requests.map((r) => [r.id, r]),
   );
 
-  // Build edge sets for connectivity check
+  // Build connectivity set — any node referenced by an edge is connected
   const connectedIds = new Set<string>();
   for (const edge of edges) {
     connectedIds.add(edge.sourceRequestId);
     connectedIds.add(edge.targetRequestId);
   }
 
-  // Allow independent runs: if running exactly 1 node with 0 edges, it is connected
-  if (requests.length === 1 && edges.length === 0) {
+  // Single node with no edges runs independently
+  if (
+    requests.length === 1 &&
+    edges.length === 0 &&
+    controlFlowIds.length === 0
+  ) {
     connectedIds.add(requests[0].id);
   }
 
-  // Mark disconnected nodes as skipped immediately (not part of any chain)
-  for (const req of requests) {
-    if (!connectedIds.has(req.id)) {
-      onUpdate(req.id, "skipped", {
+  // Mark disconnected nodes as skipped
+  const allNodeIds = [...requests.map((r) => r.id), ...controlFlowIds];
+  for (const nodeId of allNodeIds) {
+    if (!connectedIds.has(nodeId)) {
+      onUpdate(nodeId, "skipped", {
         error: "Node is not connected to the chain",
       });
     }
   }
 
-  // Filter execution order to only connected nodes
   const connectedOrder = order.filter((id) => connectedIds.has(id));
-
-  // Track the run state: responses and extracted values per request
   const runState: ChainRunState = {};
 
-  for (const reqId of connectedOrder) {
+  for (const nodeId of connectedOrder) {
     if (signal.aborted) {
-      // Mark remaining as skipped
-      for (const remainingId of order.slice(order.indexOf(reqId))) {
+      for (const remainingId of order.slice(order.indexOf(nodeId))) {
         if (!runState[remainingId]) {
           onUpdate(remainingId, "skipped", { error: "Run stopped" });
           runState[remainingId] = { state: "skipped", extractedValues: {} };
@@ -218,22 +244,29 @@ export async function runChain(
       return;
     }
 
-    const request = requestMap.get(reqId);
-    if (!request) continue;
+    const incomingEdges = edges.filter((e) => e.targetRequestId === nodeId);
 
-    // Check if any source dependency failed -> skip this node
-    const incomingEdges = edges.filter((e) => e.targetRequestId === reqId);
+    // Check for upstream failure or branch mismatch
     const hasDependencyFailure = incomingEdges.some((e) => {
       const srcState = runState[e.sourceRequestId];
-      return (
-        !srcState || srcState.state === "failed" || srcState.state === "skipped"
-      );
+      if (
+        !srcState ||
+        srcState.state === "failed" ||
+        srcState.state === "skipped"
+      ) {
+        return true;
+      }
+      // For routing edges from condition nodes: check winning branch
+      if (e.branchId !== undefined && srcState.activeBranchId !== undefined) {
+        return srcState.activeBranchId !== e.branchId;
+      }
+      return false;
     });
 
     if (hasDependencyFailure) {
       const errMsg = "Dependency failed or skipped upstream";
-      onUpdate(reqId, "skipped", { error: errMsg });
-      runState[reqId] = {
+      onUpdate(nodeId, "skipped", { error: errMsg });
+      runState[nodeId] = {
         state: "skipped",
         extractedValues: {},
         error: errMsg,
@@ -241,13 +274,78 @@ export async function runChain(
       continue;
     }
 
-    onUpdate(reqId, "running", {});
+    // ── Delay node ────────────────────────────────────────────────────────────
+    const delayNode = delayNodeMap.get(nodeId);
+    if (delayNode) {
+      onUpdate(nodeId, "running", {});
+      try {
+        await resolveDelay(delayNode, signal);
+        runState[nodeId] = { state: "passed", extractedValues: {} };
+        onUpdate(nodeId, "passed", {});
+      } catch {
+        const isAborted = signal.aborted;
+        const state: ChainNodeState = isAborted ? "skipped" : "failed";
+        const error = isAborted ? "Run stopped" : "Delay interrupted";
+        runState[nodeId] = { state, extractedValues: {}, error };
+        onUpdate(nodeId, state, { error });
+      }
+      continue;
+    }
 
-    // Apply injections from all incoming edges
+    // ── Condition node ────────────────────────────────────────────────────────
+    const conditionNode = conditionNodeMap.get(nodeId);
+    if (conditionNode) {
+      onUpdate(nodeId, "running", {});
+
+      // Extract values from non-routing incoming edges
+      const extractedValues: Record<string, string | null> = {};
+      for (const edge of incomingEdges) {
+        if (edge.branchId) continue; // routing edge — no extraction needed
+        const srcState = runState[edge.sourceRequestId];
+        const response = srcState?.response;
+        if (!response) {
+          extractedValues[edge.id] = null;
+          continue;
+        }
+        extractedValues[edge.id] = extractJsonPath(
+          response.body,
+          edge.sourceJsonPath,
+        );
+      }
+
+      const varValues = buildVarValues(incomingEdges, extractedValues);
+      const winningBranchId = evaluateCondition(conditionNode, varValues);
+
+      if (winningBranchId === null) {
+        const error = "No branch matched";
+        runState[nodeId] = { state: "failed", extractedValues, error };
+        onUpdate(nodeId, "failed", { error });
+      } else {
+        runState[nodeId] = {
+          state: "passed",
+          extractedValues,
+          activeBranchId: winningBranchId,
+        };
+        onUpdate(nodeId, "passed", {
+          extractedValues,
+          activeBranchId: winningBranchId,
+        });
+      }
+      continue;
+    }
+
+    // ── API request node ──────────────────────────────────────────────────────
+    const request = requestMap.get(nodeId);
+    if (!request) continue;
+
+    onUpdate(nodeId, "running", {});
+
+    // Only extract from non-routing edges
+    const extractionEdges = incomingEdges.filter((e) => !e.branchId);
     let mutatedRequest = request;
     const extractedValues: Record<string, string | null> = {};
 
-    for (const edge of incomingEdges) {
+    for (const edge of extractionEdges) {
       const srcState = runState[edge.sourceRequestId];
       const sourceResponse = srcState?.response;
       if (!sourceResponse) {
@@ -263,21 +361,22 @@ export async function runChain(
 
       if (extracted !== null) {
         mutatedRequest = applyInjection(mutatedRequest, edge, extracted);
+        const promotion = envPromotions?.find((p) => p.edgeId === edge.id);
+        if (promotion) {
+          onPromoteToEnv?.(promotion.envId, promotion.envVarName, extracted);
+        }
       }
     }
 
-    // If any extraction failed, skip downstream and mark as skipped
-    const extractionFailed = incomingEdges.some(
+    // If any extraction failed, skip this node
+    const extractionFailed = extractionEdges.some(
       (e) => extractedValues[e.id] === null,
     );
 
-    if (extractionFailed && incomingEdges.length > 0) {
+    if (extractionFailed && extractionEdges.length > 0) {
       const errMsg = "Could not extract value from source response";
-      onUpdate(reqId, "skipped", {
-        extractedValues,
-        error: errMsg,
-      });
-      runState[reqId] = { state: "skipped", extractedValues, error: errMsg };
+      onUpdate(nodeId, "skipped", { extractedValues, error: errMsg });
+      runState[nodeId] = { state: "skipped", extractedValues, error: errMsg };
       continue;
     }
 
@@ -295,8 +394,7 @@ export async function runChain(
         ? undefined
         : `HTTP ${response.status} ${response.statusText}`;
 
-      // Evaluate assertions for this node
-      const assertions = nodeAssertions?.[reqId] ?? [];
+      const assertions = nodeAssertions?.[nodeId] ?? [];
       const assertionResults =
         assertions.length > 0
           ? evaluateAllAssertions(assertions, response)
@@ -304,8 +402,6 @@ export async function runChain(
 
       const assertionsFailed =
         assertionResults?.some((r) => !r.passed) ?? false;
-
-      // A node fails if the HTTP status is non-2xx OR any assertion fails
       const state: ChainNodeState =
         httpPassed && !assertionsFailed ? "passed" : "failed";
 
@@ -313,14 +409,14 @@ export async function runChain(
         errorMsg ??
         (assertionsFailed ? "One or more assertions failed" : undefined);
 
-      runState[reqId] = {
+      runState[nodeId] = {
         state,
         extractedValues,
         response,
         error: finalError,
         assertionResults,
       };
-      onUpdate(reqId, state, {
+      onUpdate(nodeId, state, {
         response,
         extractedValues,
         error: finalError,
@@ -328,8 +424,8 @@ export async function runChain(
       });
     } catch (err) {
       const error = err instanceof Error ? err.message : "Request failed";
-      runState[reqId] = { state: "failed", extractedValues, error };
-      onUpdate(reqId, "failed", { extractedValues, error });
+      runState[nodeId] = { state: "failed", extractedValues, error };
+      onUpdate(nodeId, "failed", { extractedValues, error });
     }
   }
 }

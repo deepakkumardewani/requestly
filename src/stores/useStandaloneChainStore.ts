@@ -8,6 +8,9 @@ import type {
   ChainAssertion,
   ChainEdge,
   ChainHistoryNode,
+  ConditionNodeConfig,
+  DelayNodeConfig,
+  EnvPromotion,
   StandaloneChain,
 } from "@/types/chain";
 
@@ -38,6 +41,12 @@ type StandaloneChainActions = {
     assertions: ChainAssertion[],
   ) => void;
   deleteNodeAssertions: (chainId: string, requestId: string) => void;
+  upsertDelayNode: (chainId: string, node: DelayNodeConfig) => void;
+  removeDelayNode: (chainId: string, nodeId: string) => void;
+  upsertConditionNode: (chainId: string, node: ConditionNodeConfig) => void;
+  removeConditionNode: (chainId: string, nodeId: string) => void;
+  upsertEnvPromotion: (chainId: string, promotion: EnvPromotion) => void;
+  deleteEnvPromotion: (chainId: string, edgeId: string) => void;
 };
 
 async function persistChain(chain: StandaloneChain) {
@@ -261,6 +270,97 @@ export const useStandaloneChainStore = create<
       const nodeAssertions = { ...(chain.nodeAssertions ?? {}) };
       delete nodeAssertions[requestId];
       const updated = { ...chain, nodeAssertions };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  upsertDelayNode(chainId, node) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const existing = chain.delayNodes ?? [];
+      const idx = existing.findIndex((n) => n.id === node.id);
+      const delayNodes =
+        idx >= 0
+          ? existing.map((n) => (n.id === node.id ? node : n))
+          : [...existing, node];
+      const updated = { ...chain, delayNodes };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  removeDelayNode(chainId, nodeId) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const updated = {
+        ...chain,
+        delayNodes: (chain.delayNodes ?? []).filter((n) => n.id !== nodeId),
+        edges: chain.edges.filter(
+          (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
+        ),
+      };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  upsertConditionNode(chainId, node) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const existing = chain.conditionNodes ?? [];
+      const idx = existing.findIndex((n) => n.id === node.id);
+      const conditionNodes =
+        idx >= 0
+          ? existing.map((n) => (n.id === node.id ? node : n))
+          : [...existing, node];
+      const updated = { ...chain, conditionNodes };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  removeConditionNode(chainId, nodeId) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const updated = {
+        ...chain,
+        conditionNodes: (chain.conditionNodes ?? []).filter(
+          (n) => n.id !== nodeId,
+        ),
+        edges: chain.edges.filter(
+          (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
+        ),
+      };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  upsertEnvPromotion(chainId, promotion) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const existing = chain.envPromotions ?? [];
+      const idx = existing.findIndex((p) => p.edgeId === promotion.edgeId);
+      const envPromotions =
+        idx >= 0
+          ? existing.map((p) => (p.edgeId === promotion.edgeId ? promotion : p))
+          : [...existing, promotion];
+      const updated = { ...chain, envPromotions };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  deleteEnvPromotion(chainId, edgeId) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const updated = {
+        ...chain,
+        envPromotions: (chain.envPromotions ?? []).filter(
+          (p) => p.edgeId !== edgeId,
+        ),
+      };
       persistChain(updated);
       return { chains: { ...state.chains, [chainId]: updated } };
     });

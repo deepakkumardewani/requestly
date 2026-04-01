@@ -8,6 +8,9 @@ import type {
   ChainConfig,
   ChainEdge,
   ChainHistoryNode,
+  ConditionNodeConfig,
+  DelayNodeConfig,
+  EnvPromotion,
 } from "@/types/chain";
 
 type ChainState = {
@@ -36,6 +39,15 @@ type ChainActions = {
     assertions: ChainAssertion[],
   ) => void;
   deleteNodeAssertions: (collectionId: string, requestId: string) => void;
+  upsertDelayNode: (collectionId: string, node: DelayNodeConfig) => void;
+  removeDelayNode: (collectionId: string, nodeId: string) => void;
+  upsertConditionNode: (
+    collectionId: string,
+    node: ConditionNodeConfig,
+  ) => void;
+  removeConditionNode: (collectionId: string, nodeId: string) => void;
+  upsertEnvPromotion: (collectionId: string, promotion: EnvPromotion) => void;
+  deleteEnvPromotion: (collectionId: string, edgeId: string) => void;
 };
 
 function getOrCreateConfig(
@@ -230,6 +242,97 @@ export const useChainStore = create<ChainState & ChainActions>((set) => ({
       const nodeAssertions = { ...(config.nodeAssertions ?? {}) };
       delete nodeAssertions[requestId];
       const updated = { ...config, nodeAssertions };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  upsertDelayNode(collectionId, node) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const existing = config.delayNodes ?? [];
+      const idx = existing.findIndex((n) => n.id === node.id);
+      const delayNodes =
+        idx >= 0
+          ? existing.map((n) => (n.id === node.id ? node : n))
+          : [...existing, node];
+      const updated = { ...config, delayNodes };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  removeDelayNode(collectionId, nodeId) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const updated = {
+        ...config,
+        delayNodes: (config.delayNodes ?? []).filter((n) => n.id !== nodeId),
+        edges: config.edges.filter(
+          (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
+        ),
+      };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  upsertConditionNode(collectionId, node) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const existing = config.conditionNodes ?? [];
+      const idx = existing.findIndex((n) => n.id === node.id);
+      const conditionNodes =
+        idx >= 0
+          ? existing.map((n) => (n.id === node.id ? node : n))
+          : [...existing, node];
+      const updated = { ...config, conditionNodes };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  removeConditionNode(collectionId, nodeId) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const updated = {
+        ...config,
+        conditionNodes: (config.conditionNodes ?? []).filter(
+          (n) => n.id !== nodeId,
+        ),
+        edges: config.edges.filter(
+          (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
+        ),
+      };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  upsertEnvPromotion(collectionId, promotion) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const existing = config.envPromotions ?? [];
+      const idx = existing.findIndex((p) => p.edgeId === promotion.edgeId);
+      const envPromotions =
+        idx >= 0
+          ? existing.map((p) => (p.edgeId === promotion.edgeId ? promotion : p))
+          : [...existing, promotion];
+      const updated = { ...config, envPromotions };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  deleteEnvPromotion(collectionId, edgeId) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const updated = {
+        ...config,
+        envPromotions: (config.envPromotions ?? []).filter(
+          (p) => p.edgeId !== edgeId,
+        ),
+      };
       persistConfig(updated);
       return { configs: { ...state.configs, [collectionId]: updated } };
     });
