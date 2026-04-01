@@ -59,6 +59,7 @@
 - Always use shadcn components instead of creating custom components
 - Always use shadcn tooltips
 - This project uses @base-ui/react v1, not Radix UI. never use asChild as it doesn't exist.
+- Always create separate components for the AlertDialog instead of using inline
 - Always use % for size instead of integers
 
 ```tsx
