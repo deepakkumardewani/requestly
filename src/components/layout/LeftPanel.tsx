@@ -9,6 +9,7 @@ import { EnvManagerDialog } from "@/components/environment/EnvManagerDialog";
 import { EnvSelector } from "@/components/environment/EnvSelector";
 import { HistoryList } from "@/components/history/HistoryList";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -22,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { modKey } from "@/lib/platform";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
 
@@ -99,14 +101,25 @@ export function LeftPanel() {
 
         {/* New Request Button */}
         <div className="px-3 pb-2">
-          <Button
-            className="w-full justify-start gap-2"
-            size="sm"
-            onClick={() => openTab()}
-          >
-            <Plus className="h-4 w-4" />
-            New Request
-          </Button>
+          <TooltipProvider delay={600}>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    className="w-full justify-start gap-2"
+                    size="sm"
+                    onClick={() => openTab()}
+                  />
+                }
+              >
+                <Plus className="h-4 w-4" />
+                New Request
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                New Request <Kbd>{modKey()}+N</Kbd>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Environment Selector */}
@@ -137,7 +150,9 @@ export function LeftPanel() {
                     >
                       <Plus className="h-3.5 w-3.5" />
                     </TooltipTrigger>
-                    <TooltipContent side="right">Add Collection</TooltipContent>
+                    <TooltipContent side="right">
+                      Add Collection <Kbd>{modKey()}+Shift+N</Kbd>
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>

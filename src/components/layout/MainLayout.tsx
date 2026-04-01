@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
@@ -22,6 +23,7 @@ import { RightPanel } from "./RightPanel";
 
 export function MainLayout() {
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
   const { openTab, tabs } = useTabsStore();
 
   const {
@@ -30,12 +32,23 @@ export function MainLayout() {
     saveModalOpen,
     setSaveModalOpen,
     setIsCreatingCollection,
+    setPendingBulkClose,
   } = useUIStore();
   const { save, activeTab } = useSaveRequest();
   const { handleCloseTab } = useCloseTabGuard();
+  const { closeAllTabs } = useTabsStore();
 
   function handleCloseActiveTab() {
     if (activeTab) handleCloseTab(activeTab);
+  }
+
+  function handleCloseAllTabs() {
+    const hasDirty = tabs.some((t) => t.isDirty);
+    if (hasDirty) {
+      setPendingBulkClose({ kind: "all" });
+    } else {
+      closeAllTabs();
+    }
   }
 
   const activeMethod = activeTab?.method ?? "GET";
@@ -92,7 +105,14 @@ export function MainLayout() {
   useKeyboardShortcuts({
     onSave: save,
     onCloseTab: handleCloseActiveTab,
+    onCloseAllTabs: handleCloseAllTabs,
+    onNewRequest: openTab,
     onNewCollection: () => setIsCreatingCollection(true),
+    onManageEnvironments: () => router.push("/environments"),
+    onOpenSettings: () => router.push("/settings"),
+    onImportCollection: () => router.push("/import"),
+    onTransformPlayground: () => router.push("/transform"),
+    onCompareJson: () => router.push("/json-compare"),
   });
 
   return (

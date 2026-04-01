@@ -13,17 +13,20 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { Kbd } from "@/components/ui/kbd";
 import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useCloseTabGuard } from "@/hooks/useCloseTabGuard";
+import { modKey } from "@/lib/platform";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
 import { Tab } from "./Tab";
+import { TabContextMenu } from "./TabContextMenu";
 import { TabListDropdown } from "./TabListDropdown";
 
 export function TabBar() {
@@ -42,8 +45,7 @@ export function TabBar() {
     pendingBulkClose,
     setPendingBulkClose,
   } = useUIStore();
-  const { handleCloseTab, handleCloseOthers, handleCloseAll } =
-    useCloseTabGuard();
+  const { handleCloseTab } = useCloseTabGuard();
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevTabCountRef = useRef(tabs.length);
@@ -116,54 +118,32 @@ export function TabBar() {
                       }}
                     />
                   </ContextMenuTrigger>
-                  <ContextMenuContent>
-                    <ContextMenuItem onClick={() => handleCloseTab(tab)}>
-                      Close Tab
-                    </ContextMenuItem>
-                    <ContextMenuItem
-                      onClick={() => {
-                        openTab({
-                          name: tab.name,
-                          method: tab.method,
-                          url: tab.url,
-                          params: tab.params,
-                          headers: tab.headers,
-                          auth: tab.auth,
-                          body: tab.body,
-                          preScript: tab.preScript,
-                          postScript: tab.postScript,
-                          isDirty: false,
-                        });
-                      }}
-                    >
-                      Duplicate Tab
-                    </ContextMenuItem>
-                    <ContextMenuSeparator />
-                    <ContextMenuItem
-                      disabled={tabs.length <= 1}
-                      onClick={() => handleCloseOthers(tab.tabId)}
-                    >
-                      Close Other Tabs
-                    </ContextMenuItem>
-                    <ContextMenuItem onClick={() => handleCloseAll()}>
-                      Close All Tabs
-                    </ContextMenuItem>
-                  </ContextMenuContent>
+                  <TabContextMenu tab={tab} />
                 </ContextMenu>
               );
             })}
 
             {/* Inline "+" — visible only when tabs fit without overflow */}
             {!isOverflowing && (
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => openTab()}
-                aria-label="New Request"
-                title="New Request"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
+              <TooltipProvider delay={400}>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => openTab()}
+                        aria-label="New Request"
+                      />
+                    }
+                  >
+                    <Plus className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    New Request <Kbd>{modKey()}+N</Kbd>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
 
@@ -174,15 +154,25 @@ export function TabBar() {
         {/* Fixed right-side actions — "+" only shown here when overflowing */}
         <div className="flex shrink-0 items-center gap-0.5 px-1">
           {isOverflowing && (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => openTab()}
-              aria-label="New Request"
-              title="New Request"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
+            <TooltipProvider delay={400}>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => openTab()}
+                      aria-label="New Request"
+                    />
+                  }
+                >
+                  <Plus className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  New Request <Kbd>{modKey()}+N</Kbd>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
           <TabListDropdown />
         </div>
