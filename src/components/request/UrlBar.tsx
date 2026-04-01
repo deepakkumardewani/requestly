@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
 import { MethodBadge } from "@/components/common/MethodBadge";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import {
   Select,
   SelectContent,
@@ -12,11 +13,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useSaveRequest } from "@/hooks/useSaveRequest";
 import { useSendRequest } from "@/hooks/useSendRequest";
 import { HTTP_METHODS } from "@/lib/constants";
 import { generateCurl } from "@/lib/curlGenerator";
 import { CurlParseError, parseCurl } from "@/lib/curlParser";
+import { modKey } from "@/lib/platform";
 import { generateId, parsePathParams, parseQueryString } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
@@ -172,44 +180,65 @@ export function UrlBar({ tabId }: UrlBarProps) {
 
       {/* Actions */}
       <div className="flex shrink-0 items-center gap-1">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onClick={handleCopyCurl}
-          title="Copy as cURL"
-        >
-          <Copy className="h-3.5 w-3.5" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button variant="ghost" size="icon-sm" onClick={handleCopyCurl}>
+              <Copy className="h-3.5 w-3.5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Copy as cURL</TooltipContent>
+        </Tooltip>
 
         <ShareButton tabId={tabId} />
 
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-8 gap-1.5 text-xs"
-          onClick={save}
-        >
-          <BookmarkPlus className="h-3.5 w-3.5" />
-          Save
-        </Button>
+        <TooltipProvider delay={600}>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 gap-1.5 text-xs"
+                  onClick={save}
+                  disabled={!!tab.requestId && !tab.isDirty}
+                />
+              }
+            >
+              <BookmarkPlus className="h-3.5 w-3.5" />
+              Save
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              Save <Kbd>{modKey()}+S</Kbd>
+            </TooltipContent>
+          </Tooltip>
 
-        <Button
-          size="sm"
-          className="h-8 min-w-[80px] gap-1.5 bg-method-accent text-[#0d1117] text-xs font-semibold hover:bg-method-accent/90"
-          onClick={isLoading ? cancel : send}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              Cancel
-            </>
-          ) : (
-            <>
-              <Send className="h-3.5 w-3.5" />
-              Send
-            </>
-          )}
-        </Button>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  size="sm"
+                  className="h-8 min-w-[80px] gap-1.5 bg-method-accent text-[#0d1117] text-xs font-semibold hover:bg-method-accent/90"
+                  onClick={isLoading ? cancel : send}
+                />
+              }
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Cancel
+                </>
+              ) : (
+                <>
+                  <Send className="h-3.5 w-3.5" />
+                  Send
+                </>
+              )}
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              Send <Kbd>{modKey()}+Enter</Kbd>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );
