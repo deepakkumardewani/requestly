@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { getDB } from "@/lib/idb";
 import { generateId } from "@/lib/utils";
+import { useTabsStore } from "@/stores/useTabsStore";
 import type { CollectionModel, RequestModel, TabState } from "@/types";
 
 type CollectionsState = {
@@ -114,6 +115,9 @@ export const useCollectionsStore = create<
     for (const r of requestsToDelete) {
       deleteRequestFromDB(r.id);
     }
+    useTabsStore
+      .getState()
+      .closeTabsForRequests(requestsToDelete.map((r) => r.id));
   },
 
   addRequest(collectionId, tab) {
@@ -152,6 +156,7 @@ export const useCollectionsStore = create<
       requests: state.requests.filter((r) => r.id !== id),
     }));
     deleteRequestFromDB(id);
+    useTabsStore.getState().closeTabsForRequest(id);
   },
 
   moveRequest(requestId, targetCollectionId) {

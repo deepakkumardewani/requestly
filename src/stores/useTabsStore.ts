@@ -16,6 +16,8 @@ type TabsActions = {
   closeTab: (tabId: string) => void;
   closeOtherTabs: (tabId: string) => void;
   closeAllTabs: () => void;
+  closeTabsForRequest: (requestId: string) => void;
+  closeTabsForRequests: (requestIds: string[]) => void;
   setActiveTab: (tabId: string) => void;
   updateTabState: (tabId: string, patch: Partial<TabState>) => void;
   hydrate: () => Promise<void>;
@@ -84,9 +86,8 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
     }
 
     if (remaining.length === 0) {
-      const emptyTab = createEmptyTab();
-      set({ tabs: [emptyTab], activeTabId: emptyTab.tabId });
-      persistTabs([emptyTab]);
+      set({ tabs: [], activeTabId: null });
+      persistTabs([]);
       return;
     }
 
@@ -96,17 +97,40 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
 
   closeOtherTabs(tabId) {
     const { tabs } = get();
-    const kept = tabs.filter((t) => t.tabId === tabId);
-    // kept should have exactly one tab; if the target was removed somehow, keep empty
-    const remaining = kept.length > 0 ? kept : [createEmptyTab()];
-    set({ tabs: remaining, activeTabId: remaining[0].tabId });
+    const remaining = tabs.filter((t) => t.tabId === tabId);
+    const nextActiveId = remaining[0]?.tabId ?? null;
+    set({ tabs: remaining, activeTabId: nextActiveId });
     persistTabs(remaining);
   },
 
   closeAllTabs() {
-    const emptyTab = createEmptyTab();
-    set({ tabs: [emptyTab], activeTabId: emptyTab.tabId });
-    persistTabs([emptyTab]);
+    set({ tabs: [], activeTabId: null });
+    persistTabs([]);
+  },
+
+  closeTabsForRequest(requestId) {
+    const { tabs, activeTabId } = get();
+    const remaining = tabs.filter((t) => t.requestId !== requestId);
+    const nextActiveId =
+      remaining.find((t) => t.tabId === activeTabId)?.tabId ??
+      remaining[0]?.tabId ??
+      null;
+    set({ tabs: remaining, activeTabId: nextActiveId });
+    persistTabs(remaining);
+  },
+
+  closeTabsForRequests(requestIds) {
+    const idSet = new Set(requestIds);
+    const { tabs, activeTabId } = get();
+    const remaining = tabs.filter(
+      (t) => !t.requestId || !idSet.has(t.requestId),
+    );
+    const nextActiveId =
+      remaining.find((t) => t.tabId === activeTabId)?.tabId ??
+      remaining[0]?.tabId ??
+      null;
+    set({ tabs: remaining, activeTabId: nextActiveId });
+    persistTabs(remaining);
   },
 
   setActiveTab(tabId) {
@@ -131,16 +155,13 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
       if (saved.length > 0) {
         set({ tabs: saved, activeTabId: saved[0].tabId });
       } else {
-        const emptyTab = createEmptyTab();
-        set({ tabs: [emptyTab], activeTabId: emptyTab.tabId });
-        persistTabs([emptyTab]);
+        set({ tabs: [], activeTabId: null });
       }
     } catch (error) {
       toast.error("Failed to load tabs", {
         description: error instanceof Error ? error.message : "Unknown error",
       });
-      const emptyTab = createEmptyTab();
-      set({ tabs: [emptyTab], activeTabId: emptyTab.tabId });
+      set({ tabs: [], activeTabId: null });
     }
   },
 }));
