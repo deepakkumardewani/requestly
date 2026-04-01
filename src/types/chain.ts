@@ -6,6 +6,29 @@ import type {
   ResponseData,
 } from "@/types";
 
+export type ChainNodeType = "api" | "delay" | "condition";
+
+export type DelayNodeConfig = {
+  id: string;
+  type: "delay";
+  delayMs: number; // e.g. 2000
+};
+
+export type ConditionBranch = {
+  id: string;
+  label: string; // e.g. "admin", "else"
+  expression: string; // e.g. "== 'admin'", empty string for else branch
+};
+
+export type ConditionNodeConfig = {
+  id: string;
+  type: "condition";
+  variable: string; // e.g. "{{role}}"
+  branches: ConditionBranch[];
+};
+
+export const CONTROL_FLOW_NODE_TYPES: ChainNodeType[] = ["delay", "condition"];
+
 export type ChainEdge = {
   id: string;
   sourceRequestId: string;
@@ -14,6 +37,8 @@ export type ChainEdge = {
   targetField: "url" | "path" | "header" | "body";
   targetKey: string; // header name, URL param name, or body JSONPath
   targetUrl?: string; // optional URL override (e.g. with :id placeholder)
+  /** Set on edges originating from a condition node — identifies the branch handle. */
+  branchId?: string;
 };
 
 /** Snapshot of a history-sourced node — not tied to any saved collection request. */
@@ -67,6 +92,12 @@ export type AssertionResult = {
   actual: string | null;
 };
 
+export type EnvPromotion = {
+  edgeId: string; // which edge's extracted value to promote
+  envId: string; // target environment id
+  envVarName: string; // key to write into the environment
+};
+
 export type ChainConfig = {
   collectionId: string;
   edges: ChainEdge[];
@@ -75,6 +106,9 @@ export type ChainConfig = {
   nodeIds?: string[];
   historyNodes?: ChainHistoryNode[];
   nodeAssertions?: Record<string, ChainAssertion[]>;
+  delayNodes?: DelayNodeConfig[];
+  conditionNodes?: ConditionNodeConfig[];
+  envPromotions?: EnvPromotion[];
 };
 
 /** A named chain not tied to any specific collection. */
@@ -87,6 +121,9 @@ export type StandaloneChain = {
   nodeIds: string[]; // always defined; starts empty
   historyNodes: ChainHistoryNode[];
   nodeAssertions?: Record<string, ChainAssertion[]>;
+  delayNodes?: DelayNodeConfig[];
+  conditionNodes?: ConditionNodeConfig[];
+  envPromotions?: EnvPromotion[];
 };
 
 export type ChainNodeState =
@@ -104,5 +141,7 @@ export type ChainRunState = Record<
     response?: ResponseData;
     error?: string;
     assertionResults?: AssertionResult[];
+    /** For condition nodes: the winning branch ID after evaluation. */
+    activeBranchId?: string;
   }
 >;
