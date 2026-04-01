@@ -1,32 +1,18 @@
 "use client";
 
-import Link from "next/link";
+import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import { TransformPage } from "@/components/transform/TransformPage";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
+const BREADCRUMB_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "Transform Playground" },
+];
 
 export default function TransformPage_() {
   return (
     <div className="flex h-screen flex-col bg-background">
-      {/* Breadcrumb header */}
       <div className="flex shrink-0 items-center border-b px-4 py-2">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink render={<Link href="/" />}>Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Transform Playground</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <AppBreadcrumb items={BREADCRUMB_ITEMS} />
       </div>
 
       {/* Main content */}

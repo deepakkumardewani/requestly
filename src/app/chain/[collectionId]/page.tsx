@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowLeft, GitBranch, Play, Square, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { GitBranch, Play, Square, Trash2 } from "lucide-react";
 import { use, useCallback, useEffect, useRef, useState } from "react";
 import { ApiPickerDialog } from "@/components/chain/ApiPickerDialog";
 import { ChainCanvas } from "@/components/chain/ChainCanvas";
+import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { buildExecutionOrder, runChain } from "@/lib/chainRunner";
 import { generateId } from "@/lib/utils";
@@ -654,24 +654,13 @@ export default function ChainPage({ params }: Props) {
     <div className="flex h-screen flex-col bg-background text-foreground">
       {/* Header */}
       <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-card px-4">
-        <Link
-          href="/"
-          className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="text-xs">Back</span>
-        </Link>
-
-        <div className="h-4 w-px bg-border" />
-
-        <div className="flex items-center gap-1.5">
-          <GitBranch className="h-4 w-4 text-primary" />
-          <span className="text-sm font-semibold">{chainTitle}</span>
-          <span className="text-xs text-muted-foreground">
-            — {chainRequests.length} request
-            {chainRequests.length !== 1 ? "s" : ""}
-          </span>
-        </div>
+        <AppBreadcrumb
+          items={[{ label: "Home", href: "/" }, { label: chainTitle }]}
+        />
+        <span className="text-xs text-muted-foreground ml-2">
+          — {chainRequests.length} request
+          {chainRequests.length !== 1 ? "s" : ""}
+        </span>
 
         <div className="flex-1" />
 
