@@ -1,25 +1,47 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/post-write-format.sh"
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
-      "Bash(bunx shadcn@latest add:*)",
-      "Bash(bun add:*)",
-      "Bash(bun run:*)",
-      "Bash(bun install:*)",
+      "Bash(bun:*)",
+      "Bash(bunx:*)",
       "Bash(node -e:*)",
 
       "Bash(git add:*)",
       "Bash(git commit:*)",
+      "Bash(git log:*)",
       "Bash(git push:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git -C:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(git show:*)",
+      "Bash(echo:*)",
       "Bash(grep:*)",
       "Bash(cat:*)",
+
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
       "mcp__plugin_context-mode_context-mode__ctx_execute",
       "mcp__plugin_context-mode_context-mode__ctx_stats",
       "Bash(npm install:*)",
       "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "mcp__chrome-devtools__*",
+
       "Bash(History\" deep-link from the health popover:*)",
       "Bash(npx tsc:*)",
       "Skill(update-config)",
@@ -27,31 +49,13 @@
       "Bash(biome --version)",
       "Bash(echo *)",
       "Bash(npx tsc:*)",
-      "mcp__chrome-devtools__*",
       "Bash(chmod +x /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/stop-check.sh)",
       "Bash(bash .claude/hooks/stop-check.sh)",
       "Bash(./node_modules/.bin/biome check:*)",
       "Bash(./node_modules/.bin/tsc --noEmit --skipLibCheck)",
-      "Bash(bunx biome:*)",
       "Bash(bash /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/stop-check.sh)",
       "Bash(xargs cat:*)",
-      "Bash(bunx shadcn@latest add alert-dialog --yes)"
-    ]
-  },
-  "hooks": {
-    "Stop": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /Users/deepakdewani1/Documents/Programs/react/requestly/.claude/hooks/stop-check.sh",
-            "timeout": 120,
-            "statusMessage": "Formatting + typechecking...",
-            "asyncRewake": true
-          }
-        ]
-      }
+      "Bash(bunx biome:*)"
     ]
   }
 }

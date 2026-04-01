@@ -1,10 +1,16 @@
 "use client";
 
 import { Handle, Position } from "@xyflow/react";
-import { CheckCircle, Circle, Loader2, XCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CheckCircle, Circle, Loader2, Play, X, XCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { METHOD_BADGE_CLASSES } from "@/lib/constants";
-import type { HttpMethod } from "@/types";
+import { cn } from "@/lib/utils";
+import type { HttpMethod, ResponseData } from "@/types";
 import type { ChainNodeState } from "@/types/chain";
 
 export type ChainNodeData = {
@@ -13,6 +19,12 @@ export type ChainNodeData = {
   method: HttpMethod;
   url: string;
   state: ChainNodeState;
+  response?: ResponseData;
+  extractedValues?: Record<string, string | null>;
+  error?: string;
+  onClickNode?: (requestId: string) => void;
+  onDeleteNode?: (nodeId: string) => void;
+  onRunNode?: (nodeId: string) => void;
 };
 
 const STATE_BORDER: Record<ChainNodeState, string> = {
@@ -47,18 +59,44 @@ function StateIcon({ state }: { state: ChainNodeState }) {
 }
 
 export function ChainNode({ data }: { data: ChainNodeData }) {
-  const { method, name, url, state } = data;
-  const truncatedUrl =
-    url.length > 32 ? `${url.slice(0, 32)}…` : url;
+  const {
+    method,
+    name,
+    url,
+    state,
+    requestId,
+    onClickNode,
+    onDeleteNode,
+    onRunNode,
+  } = data;
+  const displayUrl = url.length > 100 ? `${url.slice(0, 100)}\u2026` : url;
+  const isClickable = true;
 
   return (
     <div
       className={cn(
-        "relative min-w-[200px] max-w-[240px] rounded-lg border-2 p-3 shadow-lg transition-colors",
+        "group relative min-w-[200px] max-w-[280px] rounded-lg border-2 p-3 shadow-lg transition-all",
         STATE_BORDER[state],
         STATE_BG[state],
+        isClickable && "cursor-pointer hover:brightness-110 hover:shadow-xl",
       )}
+      onClick={() => isClickable && onClickNode?.(requestId)}
     >
+      {/* Delete button — top-right, only visible on hover */}
+      {onDeleteNode && (
+        <button
+          type="button"
+          className="absolute -top-2 -right-2 hidden h-5 w-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground group-hover:flex z-10"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteNode(requestId);
+          }}
+          title="Remove from chain"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      )}
+
       {/* Incoming handle — left side */}
       <Handle
         type="target"
@@ -80,13 +118,44 @@ export function ChainNode({ data }: { data: ChainNodeData }) {
           <p className="truncate text-sm font-semibold text-foreground leading-tight">
             {name}
           </p>
-          <p className="mt-0.5 truncate text-[10px] text-muted-foreground font-mono">
-            {truncatedUrl}
-          </p>
+          {url.length > 100 ? (
+            <TooltipProvider delay={400}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground font-mono break-words cursor-default text-left">
+                    {displayUrl}
+                  </p>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  className="max-w-[320px] font-mono text-[10px] break-all"
+                >
+                  {url}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <p className="mt-0.5 text-[10px] text-muted-foreground font-mono break-words">
+              {displayUrl}
+            </p>
+          )}
         </div>
 
-        <div className="shrink-0">
-          <StateIcon state={state} />
+        <div className="shrink-0 flex items-center gap-1.5 -mt-1">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRunNode?.(requestId);
+            }}
+            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-primary transition-colors focus:outline-none"
+            title="Run independently"
+          >
+            <Play className="h-3.5 w-3.5 fill-current" />
+          </button>
+          <div className="mt-1">
+            <StateIcon state={state} />
+          </div>
         </div>
       </div>
 

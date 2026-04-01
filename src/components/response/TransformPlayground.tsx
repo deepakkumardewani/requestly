@@ -27,9 +27,9 @@ const MODE_LABELS: Record<PlaygroundMode, string> = {
   js: "JavaScript",
 };
 
-const JSONPATH_PLACEHOLDER = "$.data[*].email";
+const JSONPATH_PLACEHOLDER = "data[*].email\n// ($. is auto-added)";
 const JS_PLACEHOLDER =
-  "// response.json, response.text, response.status, response.headers\nreturn response.json;";
+  "data[0].email\n// (return response.json. is auto-added)\n// Or custom map: return response.json.map(x => x);";
 
 export function TransformPlayground({
   tabId,

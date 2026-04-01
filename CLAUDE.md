@@ -1,31 +1,77 @@
+### 1. Plan Node Default
+
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan immediately – don't keep pushing
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity
+
+### 2. Subagent Strategy
+
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- For complex problems, throw more compute at it via subagents
+- One task per subagent for focused execution
+
+### 3. Self-Improvement Loop
+
+- After ANY correction from the user: update `tasks/lessons.md` with the pattern
+- Write rules for yourself that prevent the same mistake
+- Ruthlessly iterate on these lessons until mistake rate drops
+- Review lessons at session start for relevant project
+
+### 4. Verification Before Done
+
+- Never mark a task complete without proving it works
+- Ask yourself: "Would a staff engineer approve this?"
+
+### 5. Demand Elegance (Balanced)
+
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes – don't over-engineer
+- Challenge your own work before presenting it
+
+## Task Management
+
+1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
+2. **Verify Plan**: Check in before starting implementation
+3. **Track Progress**: Mark items complete as you go
+4. **Explain Changes**: High-level summary at each step
+5. **Document Results**: Add review section to `tasks/todo.md`
+6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+
+## Core Principles
+
+- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+
 ## IMPORTANT Behavioral Rules
 
 1. **Never commit** unless explicitly told to.
 2. **Never write test cases** unless explicitly told to.
 3. **Never run the server** — it is always running.
-4. **Never summarize** — answer directly; no closing statements or recaps.
-5. Always use `bun` to install node modules.
-
-## Research & Analysis
-
-- always use subagents for research and analysis tasks; never do them directly.
-
-## File & Component Names
-
-- File names should be in PascalCase for all components.
-- All components should be in PascalCase.
-
-Examples
-Element Type | Naming Convention | Example
-Component Files | PascalCase | UserProfileCard.jsx
-Utility Files | camelCase/kebab-case | formatDate.js or auth-provider.tsx
-Functions/Variables | camelCase | fetchUserData, isModalOpen
-Constants | UPPER_SNAKE_CASE | API_URL, MAX_RETRIES
-Folders | lowercase | components, utils
+4. Always use `bun` to install node modules.
+5. Always show summary at the end. See output styles below.
 
 ## Component Rules
 
 - Always check if a specific component is available in shadcn before creating a custom component
+- Always use shadcn components instead of creating custom components
+- Always use shadcn tooltips
+- This project uses @base-ui/react v1, not Radix UI. never use asChild as it doesn't exist.
+- Always use % for size instead of integers
+
+```tsx
+<ResizablePanelGroup orientation="horizontal">
+  <ResizablePanel defaultSize="20%" minSize="10%" maxSize="90%">
+    <LeftPanel />
+  </ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel defaultSize="80%" minSize="80%">
+    <RightPanel />
+  </ResizablePanel>
+</ResizablePanelGroup>
+```
 
 ## Engineering Preferences
 
@@ -77,9 +123,19 @@ Folders | lowercase | components, utils
 
 ---
 
-## Feature Implementation Summary
+## Summary Output
 
-After **every** feature / epic implementation, output a summary in the following exact format. No exceptions.
+- Show this output only after a small change.
+- Always output a summary of the changes made in the following exact format. No exceptions.
+- What was changed
+- Why it was changed
+
+## Feature Implementation
+
+- Show this output when there is a large change across multiple files.
+- After the implementation is done, show the complete task list that was done.
+- After the implementation is complete, never stop abruptly even if the last edit comes back clean with no errors.
+- At the end of **every** feature / epic implementation, output a summary in the following exact format. No exceptions.
 
 ```
 ✅ Epic N — <Feature Name> Implementation Summary
@@ -98,40 +154,4 @@ After **every** feature / epic implementation, output a summary in the following
 
 ### Key design decisions
 - **Decision**: Explanation of why this approach was chosen over alternatives.
-- **Decision**: Any non-obvious trade-off or constraint respected.
-- **Decision**: Any deviation from the task spec and the rationale.
-```
-
-### Example — Epic 10 (use this as the canonical reference)
-
-```
-✅ Epic 10 — Request Dependencies / Chaining UI Implementation Summary
-
-### New files created
-
-| File | Purpose |
-|---|---|
-| `src/types/chain.ts` | ChainEdge, ChainConfig, ChainNodeState, ChainRunState types |
-| `src/stores/useChainStore.ts` | Zustand store — loadConfig, upsertEdge, deleteEdge, updateNodePosition, clearEdges; persisted to IndexedDB |
-| `src/lib/chainRunner.ts` | buildExecutionOrder (Kahn's topological sort + circular-dep detection), runChain (JSONPath extraction, URL/header/body injection, abort support) |
-| `src/components/chain/ChainNode.tsx` | React Flow custom node — method badge, name/URL, state icon, colour-coded animated border |
-| `src/components/chain/ChainCanvas.tsx` | React Flow canvas — connect, edge-click, node-drag-end, edge-delete (Backspace/Delete), syncs run state visuals |
-| `src/components/chain/ArrowConfigPanel.tsx` | shadcn Sheet — JSONPath source, URL param/header/body target, validation, live preview, save/delete |
-| `src/app/chain/[collectionId]/page.tsx` | /chain/:collectionId page — header with back link, Run/Stop button, result summary, full-height canvas, empty state |
-
-### Modified files
-
-| File | Change |
-|---|---|
-| `src/lib/idb.ts` | Added chainConfigs object store; bumped DB version 1 → 2 |
-| `src/components/collections/CollectionTree.tsx` | Added Chain View entry in collection kebab menu (router.push to /chain/:id) |
-| `features/requestly-new-features-TASKS.md` | All Tasks 10.1–10.8 marked [x] complete |
-
-### Key design decisions
-- **jsonpath-plus (existing dep)**: Used for response value extraction — no new library needed; already in package.json.
-- **@xyflow/react installed via bun**: npm had a platform conflict with lightningcss-darwin-x64; bun handles it cleanly.
-- **3 injection target types**: URL query param, header, and body JSONPath — covers all real-world token-passing flows without requiring scripting.
-- **Circular dependency guard**: Kahn's algorithm detects cycles at run-time; all nodes are marked skipped with a clear message rather than hanging.
-- **Run state managed in page, not canvas**: ChainCanvas is stateless re: run — runState flows down as props, keeping the canvas a pure display component.
-- **DB version bump (1 → 2)**: IDB_VERSION defined locally in idb.ts to override the stale constant in constants.ts without breaking other consumers.
 ```

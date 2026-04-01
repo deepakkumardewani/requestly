@@ -1,12 +1,15 @@
 "use client";
 
-import { GitCompare, Plus, Settings } from "lucide-react";
+import { Braces, GitBranch, GitCompare, Plus, Settings } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { ChainList } from "@/components/chain/ChainList";
 import { CollectionTree } from "@/components/collections/CollectionTree";
 import { EnvManagerDialog } from "@/components/environment/EnvManagerDialog";
 import { EnvSelector } from "@/components/environment/EnvSelector";
 import { HistoryList } from "@/components/history/HistoryList";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -20,12 +23,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { modKey } from "@/lib/platform";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
 
 export function LeftPanel() {
   const openTab = useTabsStore((s) => s.openTab);
   const { setIsCreatingCollection } = useUIStore();
+  const [isCreatingChain, setIsCreatingChain] = useState(false);
 
   return (
     <>
@@ -40,29 +45,81 @@ export function LeftPanel() {
             <span className="text-sm font-semibold">Requestly</span>
           </div>
           <div className="flex items-center gap-1">
-            <Link href="/json-compare">
-              <Button variant="ghost" size="icon-sm" aria-label="JSON Compare">
-                <GitCompare className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/settings">
-              <Button variant="ghost" size="icon-sm" aria-label="Settings">
-                <Settings className="h-4 w-4" />
-              </Button>
-            </Link>
+            <TooltipProvider delay={400}>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="Transform Playground"
+                      render={<Link href="/transform" />}
+                    />
+                  }
+                >
+                  <Braces className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  Transform Playground
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="JSON Compare"
+                      render={<Link href="/json-compare" />}
+                    />
+                  }
+                >
+                  <GitCompare className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">JSON Compare</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="Settings"
+                      render={<Link href="/settings" />}
+                    />
+                  }
+                >
+                  <Settings className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Settings</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
 
         {/* New Request Button */}
         <div className="px-3 pb-2">
-          <Button
-            className="w-full justify-start gap-2"
-            size="sm"
-            onClick={() => openTab()}
-          >
-            <Plus className="h-4 w-4" />
-            New Request
-          </Button>
+          <TooltipProvider delay={600}>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    className="w-full justify-start gap-2"
+                    size="sm"
+                    onClick={() => openTab()}
+                  />
+                }
+              >
+                <Plus className="h-4 w-4" />
+                New Request
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                New Request <Kbd>{modKey()}+N</Kbd>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         {/* Environment Selector */}
@@ -78,7 +135,7 @@ export function LeftPanel() {
           className="flex-1 overflow-hidden"
         >
           {/* Collections panel */}
-          <ResizablePanel defaultSize="50%" minSize="50%" maxSize="70%">
+          <ResizablePanel defaultSize="50%" minSize="30%" maxSize="70%">
             <div className="flex h-full flex-col overflow-hidden">
               <div className="flex items-center justify-between px-3 py-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -93,7 +150,9 @@ export function LeftPanel() {
                     >
                       <Plus className="h-3.5 w-3.5" />
                     </TooltipTrigger>
-                    <TooltipContent side="right">Add Collection</TooltipContent>
+                    <TooltipContent side="right">
+                      Add Collection <Kbd>{modKey()}+Shift+N</Kbd>
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
@@ -105,8 +164,42 @@ export function LeftPanel() {
 
           <ResizableHandle withHandle />
 
+          {/* Chains panel */}
+          <ResizablePanel defaultSize="20%" minSize="15%" maxSize="40%">
+            <div className="flex h-full flex-col overflow-hidden">
+              <div className="flex items-center justify-between border-t border-border px-3 py-2">
+                <div className="flex items-center gap-1.5">
+                  <GitBranch className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Chains
+                  </span>
+                </div>
+                <TooltipProvider delay={400}>
+                  <Tooltip>
+                    <TooltipTrigger
+                      className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+                      aria-label="New chain"
+                      onClick={() => setIsCreatingChain(true)}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </TooltipTrigger>
+                    <TooltipContent side="right">New Chain</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <ScrollArea className="min-h-0 flex-1 px-1">
+                <ChainList
+                  isCreating={isCreatingChain}
+                  onCreatingDone={() => setIsCreatingChain(false)}
+                />
+              </ScrollArea>
+            </div>
+          </ResizablePanel>
+
+          <ResizableHandle withHandle />
+
           {/* Recents panel */}
-          <ResizablePanel defaultSize="50%" minSize="30%" maxSize="50%">
+          <ResizablePanel defaultSize="30%" minSize="20%" maxSize="50%">
             <div className="flex h-full flex-col overflow-hidden">
               <div className="flex items-center justify-between border-t border-border px-3 py-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">

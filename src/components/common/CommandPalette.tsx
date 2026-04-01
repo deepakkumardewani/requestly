@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  ArrowDownToLineIcon,
+  ArrowLeftRightIcon,
+  GlobeIcon,
+  PlusIcon,
+  SettingsIcon,
+  WandSparklesIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { MethodBadge } from "@/components/common/MethodBadge";
 import {
@@ -10,6 +18,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
+  CommandShortcut,
 } from "@/components/ui/command";
 import { truncateUrl } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
@@ -24,7 +33,16 @@ export function CommandPalette() {
   const { entries } = useHistoryStore();
   const openTab = useTabsStore((s) => s.openTab);
 
-  const recentHistory = entries.slice(0, 20);
+  // Deduplicate history by method+url, keeping the most recent occurrence
+  const uniqueHistory = entries
+    .reduce<typeof entries>((acc, entry) => {
+      const key = `${entry.method}:${entry.url}`;
+      if (!acc.some((e) => `${e.method}:${e.url}` === key)) {
+        acc.push(entry);
+      }
+      return acc;
+    }, [])
+    .slice(0, 20);
 
   function handleSelect(action: () => void) {
     setCommandPaletteOpen(false);
@@ -43,27 +61,44 @@ export function CommandPalette() {
         {/* Actions */}
         <CommandGroup heading="Actions">
           <CommandItem onSelect={() => handleSelect(() => openTab())}>
-            New Request
+            <PlusIcon />
+            <span>New Request</span>
+            <CommandShortcut>⌃N</CommandShortcut>
           </CommandItem>
           <CommandItem
             onSelect={() => handleSelect(() => router.push("/environments"))}
           >
-            Manage Environments
+            <GlobeIcon />
+            <span>Manage Environments</span>
+            <CommandShortcut>⌃E</CommandShortcut>
           </CommandItem>
           <CommandItem
             onSelect={() => handleSelect(() => router.push("/import"))}
           >
-            Import Collection
+            <ArrowDownToLineIcon />
+            <span>Import Collection</span>
+            <CommandShortcut>⌃I</CommandShortcut>
           </CommandItem>
           <CommandItem
             onSelect={() => handleSelect(() => router.push("/settings"))}
           >
-            Open Settings
+            <SettingsIcon />
+            <span>Open Settings</span>
+            <CommandShortcut>⌃,</CommandShortcut>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => handleSelect(() => router.push("/transform"))}
+          >
+            <WandSparklesIcon />
+            <span>Transform Playground</span>
+            <CommandShortcut>⌃⇧T</CommandShortcut>
           </CommandItem>
           <CommandItem
             onSelect={() => handleSelect(() => router.push("/json-compare"))}
           >
-            Compare JSON
+            <ArrowLeftRightIcon />
+            <span>Compare JSON</span>
+            <CommandShortcut>⌃J</CommandShortcut>
           </CommandItem>
         </CommandGroup>
 
@@ -111,11 +146,11 @@ export function CommandPalette() {
         )}
 
         {/* History */}
-        {recentHistory.length > 0 && (
+        {uniqueHistory.length > 0 && (
           <>
             <CommandSeparator />
             <CommandGroup heading="Recent History">
-              {recentHistory.map((entry) => (
+              {uniqueHistory.map((entry) => (
                 <CommandItem
                   key={entry.id}
                   onSelect={() =>

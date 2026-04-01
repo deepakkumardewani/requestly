@@ -22,9 +22,11 @@ export async function runJsonPath(
     return { error: JSONPATH_REQUIRES_JSON };
   }
 
-  const path = code.trim();
-  if (!path.startsWith("$")) {
-    return { error: 'Invalid JSONPath: expression must start with "$"' };
+  let path = code.trim();
+  if (path && !path.startsWith("$")) {
+    path = path.startsWith("[") ? `$${path}` : `$.${path}`;
+  } else if (!path) {
+    path = "$";
   }
 
   try {
@@ -55,8 +57,23 @@ export async function runJs(
     }, TIMEOUT_MS);
 
     try {
+      let jsCode = code.trim();
+
+      // Auto-prefix logic to save user from typing `return response.json.`
+      if (jsCode && !jsCode.includes("return") && !jsCode.includes(";")) {
+        if (jsCode.startsWith("[")) {
+          jsCode = `return response.json${jsCode};`;
+        } else if (jsCode.startsWith("response.")) {
+          jsCode = `return ${jsCode};`;
+        } else {
+          jsCode = `return response.json.${jsCode};`;
+        }
+      } else if (!jsCode) {
+        jsCode = `return response.json;`;
+      }
+
       // eslint-disable-next-line no-new-func
-      const fn = new Function("response", code);
+      const fn = new Function("response", jsCode);
       const result = fn(responseObj);
       clearTimeout(timer);
       resolve({ output: JSON.stringify(result, null, 2) });
