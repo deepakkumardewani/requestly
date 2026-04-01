@@ -10,7 +10,7 @@ import type {
 import type { ChainConfig } from "@/types/chain";
 import { IDB_DB_NAME } from "./constants";
 
-const IDB_VERSION = 2;
+const IDB_VERSION = 3;
 
 type RequestlyDB = {
   collections: {
