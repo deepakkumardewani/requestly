@@ -7,8 +7,10 @@ import { ApiPickerDialog } from "@/components/chain/ApiPickerDialog";
 import { ChainCanvas } from "@/components/chain/ChainCanvas";
 import { Button } from "@/components/ui/button";
 import { buildExecutionOrder, runChain } from "@/lib/chainRunner";
+import { generateId } from "@/lib/utils";
 import { useChainStore } from "@/stores/useChainStore";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
+import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useStandaloneChainStore } from "@/stores/useStandaloneChainStore";
 import type { RequestModel } from "@/types";
@@ -18,6 +20,9 @@ import type {
   ChainEdge,
   ChainHistoryNode,
   ChainRunState,
+  ConditionNodeConfig,
+  DelayNodeConfig,
+  EnvPromotion,
   StandaloneChain,
 } from "@/types/chain";
 
@@ -65,6 +70,12 @@ export default function ChainPage({ params }: Props) {
     deleteEdge: deleteCollectionEdge,
     updateNodePosition: updateCollectionNodePosition,
     upsertNodeAssertions: upsertCollectionNodeAssertions,
+    upsertDelayNode: upsertCollectionDelayNode,
+    removeDelayNode: removeCollectionDelayNode,
+    upsertConditionNode: upsertCollectionConditionNode,
+    removeConditionNode: removeCollectionConditionNode,
+    upsertEnvPromotion: upsertCollectionEnvPromotion,
+    deleteEnvPromotion: deleteCollectionEnvPromotion,
   } = useChainStore();
   const {
     chains: standaloneChains,
@@ -78,7 +89,15 @@ export default function ChainPage({ params }: Props) {
     deleteEdge: deleteStandaloneEdge,
     updateNodePosition: updateStandaloneNodePosition,
     upsertNodeAssertions: upsertStandaloneNodeAssertions,
+    upsertDelayNode: upsertStandaloneDelayNode,
+    removeDelayNode: removeStandaloneDelayNode,
+    upsertConditionNode: upsertStandaloneConditionNode,
+    removeConditionNode: removeStandaloneConditionNode,
+    upsertEnvPromotion: upsertStandaloneEnvPromotion,
+    deleteEnvPromotion: deleteStandaloneEnvPromotion,
   } = useStandaloneChainStore();
+
+  const { environments, updateEnv } = useEnvironmentsStore();
 
   const [runState, setRunState] = useState<ChainRunState>({});
   const [isRunning, setIsRunning] = useState(false);
@@ -160,10 +179,23 @@ export default function ChainPage({ params }: Props) {
 
   const handleDeleteNode = useCallback(
     (nodeId: string) => {
+      const isDelayNode = (activeConfig?.delayNodes ?? []).some(
+        (n) => n.id === nodeId,
+      );
+      const isConditionNode = (activeConfig?.conditionNodes ?? []).some(
+        (n) => n.id === nodeId,
+      );
       const isHistoryNode = (activeConfig?.historyNodes ?? []).some(
         (n) => n.id === nodeId,
       );
-      if (isCollectionChain) {
+
+      if (isDelayNode) {
+        if (isCollectionChain) removeCollectionDelayNode(id, nodeId);
+        else removeStandaloneDelayNode(id, nodeId);
+      } else if (isConditionNode) {
+        if (isCollectionChain) removeCollectionConditionNode(id, nodeId);
+        else removeStandaloneConditionNode(id, nodeId);
+      } else if (isCollectionChain) {
         if (isHistoryNode) removeCollectionHistoryNode(id, nodeId);
         else removeCollectionNode(id, nodeId);
       } else {
@@ -179,6 +211,49 @@ export default function ChainPage({ params }: Props) {
       removeCollectionHistoryNode,
       removeStandaloneNode,
       removeStandaloneHistoryNode,
+      removeCollectionDelayNode,
+      removeStandaloneDelayNode,
+      removeCollectionConditionNode,
+      removeStandaloneConditionNode,
+    ],
+  );
+
+  const handleUpsertDelayNode = useCallback(
+    (node: DelayNodeConfig) => {
+      if (isCollectionChain) upsertCollectionDelayNode(id, node);
+      else upsertStandaloneDelayNode(id, node);
+    },
+    [
+      id,
+      isCollectionChain,
+      upsertCollectionDelayNode,
+      upsertStandaloneDelayNode,
+    ],
+  );
+
+  const handleUpsertConditionNode = useCallback(
+    (node: ConditionNodeConfig) => {
+      if (isCollectionChain) upsertCollectionConditionNode(id, node);
+      else upsertStandaloneConditionNode(id, node);
+    },
+    [
+      id,
+      isCollectionChain,
+      upsertCollectionConditionNode,
+      upsertStandaloneConditionNode,
+    ],
+  );
+
+  const handleRemoveConditionNode = useCallback(
+    (nodeId: string) => {
+      if (isCollectionChain) removeCollectionConditionNode(id, nodeId);
+      else removeStandaloneConditionNode(id, nodeId);
+    },
+    [
+      id,
+      isCollectionChain,
+      removeCollectionConditionNode,
+      removeStandaloneConditionNode,
     ],
   );
 
@@ -211,8 +286,43 @@ export default function ChainPage({ params }: Props) {
     ],
   );
 
+  // Runtime callback — writes an extracted value into an environment variable.
+  // Uses currentValue so it doesn't permanently overwrite the saved initialValue.
+  const handlePromoteToEnv = useCallback(
+    (envId: string, varName: string, value: string) => {
+      const env = environments.find((e) => e.id === envId);
+      if (!env) return;
+      const existingIdx = env.variables.findIndex((v) => v.key === varName);
+      if (existingIdx >= 0) {
+        const updatedVars = env.variables.map((v, idx) =>
+          idx === existingIdx ? { ...v, currentValue: value } : v,
+        );
+        updateEnv(envId, { variables: updatedVars });
+      } else {
+        updateEnv(envId, {
+          variables: [
+            ...env.variables,
+            {
+              id: generateId(),
+              key: varName,
+              initialValue: value,
+              currentValue: value,
+              isSecret: false,
+            },
+          ],
+        });
+      }
+    },
+    [environments, updateEnv],
+  );
+
   const handleRunSubset = useCallback(
-    async (subsetRequests: RequestModel[], subsetEdges: ChainEdge[]) => {
+    async (
+      subsetRequests: RequestModel[],
+      subsetEdges: ChainEdge[],
+      subsetDelayNodes?: DelayNodeConfig[],
+      subsetConditionNodes?: ConditionNodeConfig[],
+    ) => {
       if (isRunning) return;
       setIsRunning(true);
       const controller = new AbortController();
@@ -221,34 +331,52 @@ export default function ChainPage({ params }: Props) {
         await runChain(
           subsetRequests,
           subsetEdges,
-          (reqId, state, data) => {
+          (nodeId, state, data) => {
             setRunState((prev) => ({
               ...prev,
-              [reqId]: {
+              [nodeId]: {
                 state,
                 extractedValues: data.extractedValues ?? {},
                 response: data.response,
                 assertionResults: data.assertionResults,
+                activeBranchId: data.activeBranchId,
               },
             }));
           },
           controller.signal,
           activeConfig?.nodeAssertions,
+          subsetDelayNodes,
+          subsetConditionNodes,
+          activeConfig?.envPromotions,
+          handlePromoteToEnv,
         );
       } finally {
         setIsRunning(false);
         abortRef.current = null;
       }
     },
-    [isRunning, activeConfig?.nodeAssertions],
+    [
+      isRunning,
+      activeConfig?.nodeAssertions,
+      activeConfig?.envPromotions,
+      handlePromoteToEnv,
+    ],
   );
 
   const handleRunUpTo = useCallback(
     async (requestId: string) => {
       if (isRunning) return;
+      const cfIds = [
+        ...(activeConfig?.delayNodes ?? []).map((n) => n.id),
+        ...(activeConfig?.conditionNodes ?? []).map((n) => n.id),
+      ];
       let order: string[];
       try {
-        order = buildExecutionOrder(chainRequests, activeConfig?.edges ?? []);
+        order = buildExecutionOrder(
+          chainRequests,
+          activeConfig?.edges ?? [],
+          cfIds,
+        );
       } catch {
         return;
       }
@@ -260,12 +388,23 @@ export default function ChainPage({ params }: Props) {
         (e) =>
           subsetIds.has(e.sourceRequestId) && subsetIds.has(e.targetRequestId),
       );
+      const subsetDelay = (activeConfig?.delayNodes ?? []).filter((n) =>
+        subsetIds.has(n.id),
+      );
+      const subsetCondition = (activeConfig?.conditionNodes ?? []).filter((n) =>
+        subsetIds.has(n.id),
+      );
       const initial: ChainRunState = {};
-      for (const req of subsetRequests) {
-        initial[req.id] = { state: "idle", extractedValues: {} };
+      for (const nodeId of subsetIds) {
+        initial[nodeId] = { state: "idle", extractedValues: {} };
       }
       setRunState(initial);
-      await handleRunSubset(subsetRequests, subsetEdges);
+      await handleRunSubset(
+        subsetRequests,
+        subsetEdges,
+        subsetDelay,
+        subsetCondition,
+      );
     },
     [isRunning, chainRequests, activeConfig, handleRunSubset],
   );
@@ -273,9 +412,17 @@ export default function ChainPage({ params }: Props) {
   const handleRunFromHere = useCallback(
     async (requestId: string) => {
       if (isRunning) return;
+      const cfIds = [
+        ...(activeConfig?.delayNodes ?? []).map((n) => n.id),
+        ...(activeConfig?.conditionNodes ?? []).map((n) => n.id),
+      ];
       let order: string[];
       try {
-        order = buildExecutionOrder(chainRequests, activeConfig?.edges ?? []);
+        order = buildExecutionOrder(
+          chainRequests,
+          activeConfig?.edges ?? [],
+          cfIds,
+        );
       } catch {
         return;
       }
@@ -287,15 +434,25 @@ export default function ChainPage({ params }: Props) {
         (e) =>
           subsetIds.has(e.sourceRequestId) && subsetIds.has(e.targetRequestId),
       );
-      // Reset only the subset nodes; keep earlier nodes' state intact
+      const subsetDelay = (activeConfig?.delayNodes ?? []).filter((n) =>
+        subsetIds.has(n.id),
+      );
+      const subsetCondition = (activeConfig?.conditionNodes ?? []).filter((n) =>
+        subsetIds.has(n.id),
+      );
       setRunState((prev) => {
         const next = { ...prev };
-        for (const id of subsetIds) {
-          next[id] = { state: "idle", extractedValues: {} };
+        for (const nodeId of subsetIds) {
+          next[nodeId] = { state: "idle", extractedValues: {} };
         }
         return next;
       });
-      await handleRunSubset(subsetRequests, subsetEdges);
+      await handleRunSubset(
+        subsetRequests,
+        subsetEdges,
+        subsetDelay,
+        subsetCondition,
+      );
     },
     [isRunning, chainRequests, activeConfig, handleRunSubset],
   );
@@ -318,6 +475,32 @@ export default function ChainPage({ params }: Props) {
     setAddAfterNodeId(requestId);
     setApiPickerOpen(true);
   }, []);
+
+  const handleUpsertEnvPromotion = useCallback(
+    (promotion: EnvPromotion) => {
+      if (isCollectionChain) upsertCollectionEnvPromotion(id, promotion);
+      else upsertStandaloneEnvPromotion(id, promotion);
+    },
+    [
+      id,
+      isCollectionChain,
+      upsertCollectionEnvPromotion,
+      upsertStandaloneEnvPromotion,
+    ],
+  );
+
+  const handleDeleteEnvPromotion = useCallback(
+    (edgeId: string) => {
+      if (isCollectionChain) deleteCollectionEnvPromotion(id, edgeId);
+      else deleteStandaloneEnvPromotion(id, edgeId);
+    },
+    [
+      id,
+      isCollectionChain,
+      deleteCollectionEnvPromotion,
+      deleteStandaloneEnvPromotion,
+    ],
+  );
 
   // Wraps handleAddNode to also position the new node 320px right of the source
   const handlePickerAddRequest = useCallback(
@@ -345,9 +528,18 @@ export default function ChainPage({ params }: Props) {
   const handleRun = useCallback(async () => {
     if (isRunning) return;
 
+    const delayNodes = activeConfig?.delayNodes ?? [];
+    const conditionNodes = activeConfig?.conditionNodes ?? [];
+
     const initial: ChainRunState = {};
     for (const req of chainRequests) {
       initial[req.id] = { state: "idle", extractedValues: {} };
+    }
+    for (const n of delayNodes) {
+      initial[n.id] = { state: "idle", extractedValues: {} };
+    }
+    for (const n of conditionNodes) {
+      initial[n.id] = { state: "idle", extractedValues: {} };
     }
     setRunState(initial);
     setIsRunning(true);
@@ -359,19 +551,24 @@ export default function ChainPage({ params }: Props) {
       await runChain(
         chainRequests,
         activeConfig?.edges ?? [],
-        (requestId, state, data) => {
+        (nodeId, state, data) => {
           setRunState((prev) => ({
             ...prev,
-            [requestId]: {
+            [nodeId]: {
               state,
               extractedValues: data.extractedValues ?? {},
               response: data.response,
               assertionResults: data.assertionResults,
+              activeBranchId: data.activeBranchId,
             },
           }));
         },
         controller.signal,
         activeConfig?.nodeAssertions,
+        delayNodes,
+        conditionNodes,
+        activeConfig?.envPromotions,
+        handlePromoteToEnv,
       );
     } finally {
       setIsRunning(false);
@@ -567,6 +764,8 @@ export default function ChainPage({ params }: Props) {
             nodeAssertions={activeConfig?.nodeAssertions ?? {}}
             runState={runState}
             isRunning={isRunning}
+            delayNodes={activeConfig?.delayNodes ?? []}
+            conditionNodes={activeConfig?.conditionNodes ?? []}
             onAddApiClick={() => setApiPickerOpen(true)}
             onDeleteNode={handleDeleteNode}
             onUpsertEdge={handleUpsertEdge}
@@ -577,6 +776,12 @@ export default function ChainPage({ params }: Props) {
             onRunUpTo={handleRunUpTo}
             onRunFromHere={handleRunFromHere}
             onAddAfterNode={handleAddAfterNode}
+            onUpsertDelayNode={handleUpsertDelayNode}
+            onUpsertConditionNode={handleUpsertConditionNode}
+            onRemoveConditionNode={handleRemoveConditionNode}
+            envPromotions={activeConfig?.envPromotions ?? []}
+            onSavePromotion={handleUpsertEnvPromotion}
+            onRemovePromotion={handleDeleteEnvPromotion}
           />
         )}
       </div>

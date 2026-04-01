@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NodeAssertionsPanel } from "@/components/chain/NodeAssertionsPanel";
+import { PromoteToEnvPopover } from "@/components/chain/PromoteToEnvPopover";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -24,8 +25,15 @@ import type { ResponseData } from "@/types";
 import type {
   AssertionResult,
   ChainAssertion,
+  ChainEdge,
   ChainNodeState,
+  EnvPromotion,
 } from "@/types/chain";
+
+function jsonPathToVarName(path: string): string {
+  const parts = path.replace(/^\$\.?/, "").split(".");
+  return parts[parts.length - 1] || "value";
+}
 
 type ActiveTab = "details" | "assertions";
 
@@ -46,6 +54,11 @@ type NodeDetailsPanelProps = {
   bodyContent?: string;
   /** Called when user saves an edited body */
   onSaveBody?: (body: string) => void;
+  /** Edges for this node — used to resolve jsonpath labels and var name suggestions */
+  edges?: ChainEdge[];
+  envPromotions?: EnvPromotion[];
+  onSavePromotion?: (promotion: EnvPromotion) => void;
+  onRemovePromotion?: (edgeId: string) => void;
 };
 
 function StatusBadge({ status }: { status: number }) {
@@ -155,6 +168,10 @@ export function NodeDetailsPanel({
   onAssertionsChange,
   bodyContent,
   onSaveBody,
+  edges,
+  envPromotions,
+  onSavePromotion,
+  onRemovePromotion,
 }: NodeDetailsPanelProps) {
   const hasExtractions =
     extractedValues && Object.keys(extractedValues).length > 0;
@@ -370,24 +387,44 @@ export function NodeDetailsPanel({
                 <section className="flex flex-col gap-3">
                   <SectionHeading>Extracted values</SectionHeading>
                   <div className="flex flex-col gap-1.5">
-                    {Object.entries(extractedValues).map(([jsonPath, val]) => (
-                      <div
-                        key={jsonPath}
-                        className="flex items-start gap-2 font-mono text-xs px-3 py-2 rounded-md border border-border/40 bg-muted/10"
-                      >
-                        <span className="text-primary shrink-0">
-                          {jsonPath}
-                        </span>
-                        <span className="text-muted-foreground mx-0.5">=</span>
-                        {val === null ? (
-                          <span className="text-red-400 italic">not found</span>
-                        ) : (
-                          <span className="text-emerald-400 break-all">
-                            {val}
+                    {Object.entries(extractedValues).map(([edgeId, val]) => {
+                      const edge = edges?.find((e) => e.id === edgeId);
+                      const label = edge?.sourceJsonPath ?? edgeId;
+                      const suggestedName = jsonPathToVarName(label);
+                      const existingPromotion = envPromotions?.find(
+                        (p) => p.edgeId === edgeId,
+                      );
+                      return (
+                        <div
+                          key={edgeId}
+                          className="flex items-center gap-2 font-mono text-xs px-3 py-2 rounded-md border border-border/40 bg-muted/10"
+                        >
+                          <span className="text-primary shrink-0">{label}</span>
+                          <span className="text-muted-foreground mx-0.5">
+                            =
                           </span>
-                        )}
-                      </div>
-                    ))}
+                          {val === null ? (
+                            <span className="text-red-400 italic flex-1">
+                              not found
+                            </span>
+                          ) : (
+                            <span className="text-emerald-400 break-all flex-1">
+                              {val}
+                            </span>
+                          )}
+                          {onSavePromotion && onRemovePromotion && (
+                            <PromoteToEnvPopover
+                              edgeId={edgeId}
+                              suggestedVarName={suggestedName}
+                              extractedValue={val}
+                              existingPromotion={existingPromotion}
+                              onSave={onSavePromotion}
+                              onRemove={onRemovePromotion}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </section>
               )}

@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { generateId } from "@/lib/utils";
+import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import type { RequestModel, ResponseData } from "@/types";
-import type { ChainEdge, ChainNodeState } from "@/types/chain";
+import type { ChainEdge, ChainNodeState, EnvPromotion } from "@/types/chain";
 import { JsonPathExplorer } from "./JsonPathExplorer";
 
 type TargetField = "url" | "path" | "header" | "body";
@@ -35,6 +36,7 @@ type ArrowConfigPanelProps = {
   sourceRunState?: ChainNodeState;
   sourceResponse?: ResponseData;
   onRunSource?: (requestId: string) => void;
+  envPromotions?: EnvPromotion[];
 };
 
 // Extract a display variable name from a JSONPath, e.g. "$.data.token" → "token"
@@ -54,7 +56,9 @@ export function ArrowConfigPanel({
   sourceRunState,
   sourceResponse,
   onRunSource,
+  envPromotions,
 }: ArrowConfigPanelProps) {
+  const { environments } = useEnvironmentsStore();
   const [viewerOpen, setViewerOpen] = useState(false);
   const [sourceJsonPath, setSourceJsonPath] = useState(
     existingEdge?.sourceJsonPath ?? "$.token",
@@ -502,6 +506,24 @@ export function ArrowConfigPanel({
             >
               Save
             </Button>
+            {existingEdge &&
+              (() => {
+                const promotion = envPromotions?.find(
+                  (p) => p.edgeId === existingEdge.id,
+                );
+                if (!promotion) return null;
+                const envName =
+                  environments.find((e) => e.id === promotion.envId)?.name ??
+                  promotion.envId;
+                return (
+                  <span
+                    className="inline-flex items-center self-center rounded border border-violet-500/30 bg-violet-500/20 px-1.5 py-0.5 text-[10px] font-medium text-violet-400"
+                    title={`Extracted value will be written to ${promotion.envVarName} in ${envName}`}
+                  >
+                    → ENV
+                  </span>
+                );
+              })()}
           </div>
         </div>
       </SheetContent>

@@ -1,18 +1,21 @@
 "use client";
 
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
-import { Play, PlayCircle, Plus, Trash2 } from "lucide-react";
+import { Play, PlayCircle, Plus, Settings2, Trash2 } from "lucide-react";
 import { useMemo } from "react";
+import type { ChainNodeType } from "@/types/chain";
 
 type NodeContextMenuProps = {
   x: number;
   y: number;
   requestId: string;
+  nodeType?: ChainNodeType;
   onClose: () => void;
   onAddAfter: (requestId: string) => void;
   onRunUpTo: (requestId: string) => void;
   onRunFromHere: (requestId: string) => void;
   onDelete: (requestId: string) => void;
+  onConfigure?: (nodeId: string) => void;
 };
 
 const ITEM_CLASS =
@@ -22,11 +25,13 @@ export function NodeContextMenu({
   x,
   y,
   requestId,
+  nodeType = "api",
   onClose,
   onAddAfter,
   onRunUpTo,
   onRunFromHere,
   onDelete,
+  onConfigure,
 }: NodeContextMenuProps) {
   // Virtual anchor at cursor coordinates — Base UI Positioner anchors to this
   const anchor = useMemo(
@@ -66,16 +71,31 @@ export function NodeContextMenu({
           sideOffset={4}
         >
           <MenuPrimitive.Popup className="z-50 min-w-48 origin-(--transform-origin) overflow-hidden rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 outline-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95">
-            <MenuPrimitive.Item
-              className={ITEM_CLASS}
-              onClick={() => {
-                onAddAfter(requestId);
-                onClose();
-              }}
-            >
-              <Plus className="h-4 w-4 shrink-0" />
-              Add API after this
-            </MenuPrimitive.Item>
+            {nodeType === "api" && (
+              <MenuPrimitive.Item
+                className={ITEM_CLASS}
+                onClick={() => {
+                  onAddAfter(requestId);
+                  onClose();
+                }}
+              >
+                <Plus className="h-4 w-4 shrink-0" />
+                Add API after this
+              </MenuPrimitive.Item>
+            )}
+
+            {nodeType === "condition" && onConfigure && (
+              <MenuPrimitive.Item
+                className={ITEM_CLASS}
+                onClick={() => {
+                  onConfigure(requestId);
+                  onClose();
+                }}
+              >
+                <Settings2 className="h-4 w-4 shrink-0" />
+                Configure
+              </MenuPrimitive.Item>
+            )}
 
             <MenuPrimitive.Item
               className={ITEM_CLASS}
