@@ -1,27 +1,57 @@
+### 1. Plan Node Default
+
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- If something goes sideways, STOP and re-plan immediately – don't keep pushing
+- Use plan mode for verification steps, not just building
+- Write detailed specs upfront to reduce ambiguity
+
+### 2. Subagent Strategy
+
+- Use subagents liberally to keep main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- For complex problems, throw more compute at it via subagents
+- One task per subagent for focused execution
+
+### 3. Self-Improvement Loop
+
+- After ANY correction from the user: update `tasks/lessons.md` with the pattern
+- Write rules for yourself that prevent the same mistake
+- Ruthlessly iterate on these lessons until mistake rate drops
+- Review lessons at session start for relevant project
+
+### 4. Verification Before Done
+
+- Never mark a task complete without proving it works
+- Ask yourself: "Would a staff engineer approve this?"
+
+### 5. Demand Elegance (Balanced)
+
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes – don't over-engineer
+- Challenge your own work before presenting it
+
+## Task Management
+
+1. **Plan First**: Write plan to `tasks/todo.md` with checkable items
+2. **Verify Plan**: Check in before starting implementation
+3. **Track Progress**: Mark items complete as you go
+4. **Explain Changes**: High-level summary at each step
+5. **Document Results**: Add review section to `tasks/todo.md`
+6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
+
+## Core Principles
+
+- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+
 ## IMPORTANT Behavioral Rules
 
 1. **Never commit** unless explicitly told to.
 2. **Never write test cases** unless explicitly told to.
 3. **Never run the server** — it is always running.
-4. **Never summarize** — answer directly; no closing statements or recaps.
-5. Always use `bun` to install node modules.
-
-## Research & Analysis
-
-- always use subagents for research and analysis tasks; never do them directly.
-
-## File & Component Names
-
-- File names should be in PascalCase for all components.
-- All components should be in PascalCase.
-
-Examples
-Element Type | Naming Convention | Example
-Component Files | PascalCase | UserProfileCard.jsx
-Utility Files | camelCase/kebab-case | formatDate.js or auth-provider.tsx
-Functions/Variables | camelCase | fetchUserData, isModalOpen
-Constants | UPPER_SNAKE_CASE | API_URL, MAX_RETRIES
-Folders | lowercase | components, utils
+4. Always use `bun` to install node modules.
+5. Always show summary at the end. See output styles below.
 
 ## Component Rules
 
@@ -93,8 +123,16 @@ Folders | lowercase | components, utils
 
 ---
 
+## Summary Output
+
+- Show this output only after a small change.
+- Always output a summary of the changes made in the following exact format. No exceptions.
+- What was changed
+- Why it was changed
+
 ## Feature Implementation
 
+- Show this output when there is a large change across multiple files.
 - After the implementation is done, show the complete task list that was done.
 - After the implementation is complete, never stop abruptly even if the last edit comes back clean with no errors.
 - At the end of **every** feature / epic implementation, output a summary in the following exact format. No exceptions.
@@ -116,25 +154,4 @@ Folders | lowercase | components, utils
 
 ### Key design decisions
 - **Decision**: Explanation of why this approach was chosen over alternatives.
-```
-
-### Example — Epic 10 (use this as the canonical reference)
-
-```
-✅ Epic 10 — Request Dependencies / Chaining UI Implementation Summary
-
-### New files created
-
-| File | Purpose |
-|---|---|
-| `src/types/chain.ts` | ChainEdge, ChainConfig, ChainNodeState, ChainRunState types |
-
-### Modified files
-
-| File | Change |
-|---|---|
-| `src/lib/idb.ts` | Added chainConfigs object store; bumped DB version 1 → 2 |
-
-### Key design decisions
-- **jsonpath-plus (existing dep)**: Used for response value extraction — no new library needed; already in package.json.
 ```
