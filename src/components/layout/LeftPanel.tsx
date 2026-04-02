@@ -1,44 +1,45 @@
 "use client";
 
-import { Braces, GitBranch, GitCompare, Plus, Settings } from "lucide-react";
+import {
+  Braces,
+  FolderOpen,
+  GitCompare,
+  History,
+  Settings,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { ChainList } from "@/components/chain/ChainList";
-import { CollectionTree } from "@/components/collections/CollectionTree";
 import { EnvManagerDialog } from "@/components/environment/EnvManagerDialog";
 import { EnvSelector } from "@/components/environment/EnvSelector";
 import { HistoryList } from "@/components/history/HistoryList";
 import { Button } from "@/components/ui/button";
-import { Kbd } from "@/components/ui/kbd";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { modKey } from "@/lib/platform";
-import { useTabsStore } from "@/stores/useTabsStore";
-import { useUIStore } from "@/stores/useUIStore";
+import { CreateNewDropdown } from "./CreateNewDropdown";
+import { SidebarMainTab } from "./SidebarMainTab";
+import { SidebarSearchInput, SidebarSearchResults } from "./SidebarSearch";
 
 export function LeftPanel() {
-  const openTab = useTabsStore((s) => s.openTab);
-  const { setIsCreatingCollection } = useUIStore();
   const [isCreatingChain, setIsCreatingChain] = useState(false);
+  const [query, setQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("collections");
+
+  function handleQueryChange(q: string) {
+    setQuery(q);
+  }
 
   return (
     <>
       <div className="flex h-full flex-col bg-sidebar text-sidebar-foreground">
         {/* Header */}
-        <div className="flex items-center justify-between px-3 py-3">
+        <div className="flex items-center justify-between px-3 pt-4 pb-2.5">
           <div className="flex items-center gap-2">
-            {/* Logo */}
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-method-accent/20">
               <span className="text-sm font-bold text-method-accent">R</span>
             </div>
@@ -99,120 +100,93 @@ export function LeftPanel() {
           </div>
         </div>
 
-        {/* New Request Button */}
-        <div className="px-3 pb-2">
-          <TooltipProvider delay={600}>
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    className="w-full justify-start gap-2"
-                    size="sm"
-                    onClick={() => openTab()}
-                  />
-                }
-              >
-                <Plus className="h-4 w-4" />
-                New Request
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                New Request <Kbd>{modKey()}+N</Kbd>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-
         {/* Environment Selector */}
-        <div className="px-3 pb-2">
+        <div className="px-3 pb-3">
           <EnvSelector />
         </div>
 
         <Separator />
 
-        {/* Resizable Collections + Recents */}
-        <ResizablePanelGroup
-          orientation="vertical"
-          className="flex-1 overflow-hidden"
+        {/* Tabs + Search + Content */}
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex min-h-0 flex-1 flex-col"
         >
-          {/* Collections panel */}
-          <ResizablePanel defaultSize="50%" minSize="30%" maxSize="70%">
-            <div className="flex h-full flex-col overflow-hidden">
-              <div className="flex items-center justify-between px-3 py-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Collections
-                </span>
-                <TooltipProvider delay={400}>
-                  <Tooltip>
-                    <TooltipTrigger
-                      className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
-                      aria-label="Add collection"
-                      onClick={() => setIsCreatingCollection(true)}
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                    </TooltipTrigger>
-                    <TooltipContent side="right">
-                      Add Collection <Kbd>{modKey()}+Shift+N</Kbd>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <ScrollArea className="min-h-0 flex-1 px-1">
-                <CollectionTree />
-              </ScrollArea>
-            </div>
-          </ResizablePanel>
+          {/* Tab Triggers */}
+          <div className="flex items-center justify-between px-3 pt-3 pb-2">
+            <TabsList variant="line" className="h-8 gap-0.5">
+              <TooltipProvider delay={400}>
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <TabsTrigger
+                        value="collections"
+                        className="h-8 w-8 px-0"
+                        aria-label="Collections"
+                      />
+                    }
+                  >
+                    <FolderOpen className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">Collections</TooltipContent>
+                </Tooltip>
 
-          <ResizableHandle withHandle />
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <TabsTrigger
+                        value="history"
+                        className="h-8 w-8 px-0"
+                        aria-label="History"
+                      />
+                    }
+                  >
+                    <History className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">History</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </TabsList>
+          </div>
 
-          {/* Chains panel */}
-          <ResizablePanel defaultSize="20%" minSize="15%" maxSize="40%">
-            <div className="flex h-full flex-col overflow-hidden">
-              <div className="flex items-center justify-between border-t border-border px-3 py-2">
-                <div className="flex items-center gap-1.5">
-                  <GitBranch className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Chains
-                  </span>
-                </div>
-                <TooltipProvider delay={400}>
-                  <Tooltip>
-                    <TooltipTrigger
-                      className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
-                      aria-label="New chain"
-                      onClick={() => setIsCreatingChain(true)}
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                    </TooltipTrigger>
-                    <TooltipContent side="right">New Chain</TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <ScrollArea className="min-h-0 flex-1 px-1">
-                <ChainList
-                  isCreating={isCreatingChain}
-                  onCreatingDone={() => setIsCreatingChain(false)}
+          {/* Search + Plus row */}
+          <div className="flex items-center gap-2 px-3 pb-2">
+            <SidebarSearchInput
+              query={query}
+              onQueryChange={handleQueryChange}
+            />
+            <CreateNewDropdown onNewChain={() => setIsCreatingChain(true)} />
+          </div>
+
+          {/* Content — on collections tab, query shows cross-resource search results;
+               on history tab, query filters history inline (no separate results view) */}
+          {query && activeTab === "collections" ? (
+            <SidebarSearchResults query={query} onClose={() => setQuery("")} />
+          ) : (
+            <>
+              <TabsContent
+                value="collections"
+                className="mt-0 min-h-0 flex-1 overflow-hidden"
+              >
+                <SidebarMainTab
+                  isCreatingChain={isCreatingChain}
+                  onCreatingChainDone={() => setIsCreatingChain(false)}
+                  onNewChain={() => setIsCreatingChain(true)}
                 />
-              </ScrollArea>
-            </div>
-          </ResizablePanel>
+              </TabsContent>
 
-          <ResizableHandle withHandle />
-
-          {/* Recents panel */}
-          <ResizablePanel defaultSize="30%" minSize="20%" maxSize="50%">
-            <div className="flex h-full flex-col overflow-hidden">
-              <div className="flex items-center justify-between border-t border-border px-3 py-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Recent
-                </span>
-              </div>
-              <ScrollArea className="min-h-0 flex-1 px-1">
-                <HistoryList compact />
-              </ScrollArea>
-            </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+              <TabsContent
+                value="history"
+                className="mt-0 min-h-0 flex-1 overflow-hidden"
+              >
+                <HistoryList filter={query || undefined} />
+              </TabsContent>
+            </>
+          )}
+        </Tabs>
       </div>
+
       <EnvManagerDialog />
     </>
   );
