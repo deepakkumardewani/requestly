@@ -27,27 +27,38 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
 function AccordionTrigger({
   className,
   children,
+  chevronLeft = false,
   ...props
-}: AccordionPrimitive.Trigger.Props) {
+}: AccordionPrimitive.Trigger.Props & { chevronLeft?: boolean }) {
+  const chevronIcons = (
+    <>
+      <ChevronDownIcon
+        data-slot="accordion-trigger-icon"
+        className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
+      />
+      <ChevronUpIcon
+        data-slot="accordion-trigger-icon"
+        className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
+      />
+    </>
+  );
+
   return (
     <AccordionPrimitive.Header className="flex w-full">
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group/accordion-trigger relative flex flex-1 items-center justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
+          "group/accordion-trigger relative flex flex-1 items-center justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
+          chevronLeft
+            ? "**:data-[slot=accordion-trigger-icon]:mr-1.5"
+            : "**:data-[slot=accordion-trigger-icon]:ml-auto",
           className,
         )}
         {...props}
       >
+        {chevronLeft && chevronIcons}
         {children}
-        <ChevronDownIcon
-          data-slot="accordion-trigger-icon"
-          className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
-        />
-        <ChevronUpIcon
-          data-slot="accordion-trigger-icon"
-          className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
-        />
+        {!chevronLeft && chevronIcons}
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );

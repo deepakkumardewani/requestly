@@ -1,8 +1,7 @@
 "use client";
 
-import { X } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
-import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { healthKey } from "@/lib/healthMonitor";
 import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useUIStore } from "@/stores/useUIStore";
@@ -10,13 +9,16 @@ import { HistoryItem } from "./HistoryItem";
 
 type HistoryListProps = {
   compact?: boolean;
+  /** When provided, overrides the internal filter input (e.g. main sidebar search bar). */
+  filter?: string;
 };
 
-export function HistoryList({ compact = false }: HistoryListProps) {
+export function HistoryList({ compact = false, filter }: HistoryListProps) {
   const entries = useHistoryStore((s) => s.entries);
-  const { historyFilter, setHistoryFilter } = useUIStore();
+  const { historyFilter } = useUIStore();
 
-  const activeFilter = historyFilter ?? "";
+  // External filter takes priority over the internal UIStore filter
+  const activeFilter = filter ?? historyFilter ?? "";
 
   const filtered = activeFilter
     ? entries.filter((e) => {
@@ -34,29 +36,6 @@ export function HistoryList({ compact = false }: HistoryListProps) {
 
   return (
     <div className={`flex flex-col ${compact ? "" : "h-full"}`}>
-      {!compact && (
-        <div className="p-2">
-          <div className="relative">
-            <Input
-              className="h-7 pr-6 text-xs"
-              placeholder="Filter history..."
-              value={activeFilter}
-              onChange={(e) => setHistoryFilter(e.target.value || null)}
-            />
-            {activeFilter && (
-              <button
-                type="button"
-                className="absolute inset-y-0 right-1.5 flex items-center text-muted-foreground hover:text-foreground"
-                onClick={() => setHistoryFilter(null)}
-                aria-label="Clear filter"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
       {displayed.length === 0 ? (
         <EmptyState
           title={activeFilter ? "No matches" : "No history yet"}
@@ -68,11 +47,13 @@ export function HistoryList({ compact = false }: HistoryListProps) {
           className="py-4"
         />
       ) : (
-        <div className="space-y-0.5 px-1 py-1">
-          {displayed.map((entry) => (
-            <HistoryItem key={entry.id} entry={entry} />
-          ))}
-        </div>
+        <ScrollArea className="h-full">
+          <div className="space-y-0.5 px-1 py-1">
+            {displayed.map((entry) => (
+              <HistoryItem key={entry.id} entry={entry} />
+            ))}
+          </div>
+        </ScrollArea>
       )}
     </div>
   );

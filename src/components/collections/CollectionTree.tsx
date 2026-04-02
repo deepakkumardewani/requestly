@@ -136,7 +136,10 @@ export function CollectionTree() {
               <ContextMenu>
                 <ContextMenuTrigger>
                   <div className="group flex items-center rounded px-2 hover:bg-muted cursor-pointer">
-                    <AccordionTrigger className="flex-1 py-1.5 hover:no-underline">
+                    <AccordionTrigger
+                      chevronLeft
+                      className="flex-1 py-1.5 hover:no-underline"
+                    >
                       <div className="flex min-w-0 flex-1 items-center gap-1.5">
                         <FolderOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                         {editingId === collection.id ? (
