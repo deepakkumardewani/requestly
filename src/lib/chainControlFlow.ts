@@ -1,4 +1,5 @@
 import type {
+  ChainEdge,
   ChainRunState,
   ConditionNodeConfig,
   DelayNodeConfig,
@@ -71,27 +72,26 @@ export function evaluateCondition(
  * Edges with a branchId (routing edges from condition nodes) are excluded.
  */
 export function buildVarValues(
-  incomingEdges: Array<{
-    id: string;
-    sourceJsonPath: string;
-    branchId?: string;
-  }>,
+  incomingEdges: ChainEdge[],
   extractedValues: Record<string, string | null>,
 ): Record<string, string> {
   const result: Record<string, string> = {};
   for (const edge of incomingEdges) {
     if (edge.branchId) continue; // routing edges carry no extracted value
-    const value = extractedValues[edge.id];
-    if (value === null || value === undefined) continue;
-    const rawPath = edge.sourceJsonPath;
-    // Extract last segment: "$.data.role" → "role"; "$.items[0]" → "items[0]"
-    const lastPart =
-      rawPath
-        .split(".")
-        .at(-1)
-        ?.replace(/['"[\]]/g, "")
-        .trim() ?? edge.id;
-    result[lastPart] = value;
+    for (const injection of edge.injections ?? []) {
+      const valueKey = `${edge.id}:${injection.sourceJsonPath}`;
+      const value = extractedValues[valueKey] ?? extractedValues[edge.id];
+      if (value === null || value === undefined) continue;
+      const rawPath = injection.sourceJsonPath;
+      // Extract last segment: "$.data.role" → "role"; "$.items[0]" → "items[0]"
+      const lastPart =
+        rawPath
+          .split(".")
+          .at(-1)
+          ?.replace(/['"[\]]/g, "")
+          .trim() ?? edge.id;
+      result[lastPart] = value;
+    }
   }
   return result;
 }

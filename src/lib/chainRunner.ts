@@ -11,10 +11,12 @@ import type {
   AssertionResult,
   ChainAssertion,
   ChainEdge,
+  ChainInjection,
   ChainNodeState,
   ChainRunState,
   ConditionNodeConfig,
   DelayNodeConfig,
+  DisplayNodeConfig,
   EnvPromotion,
 } from "@/types/chain";
 
@@ -94,42 +96,43 @@ function extractJsonPath(
 }
 
 /**
- * Apply a chain injection to a request, returning a mutated copy.
+ * Apply a single injection mapping to a request, returning a mutated copy.
  */
 function applyInjection(
   request: RequestModel,
-  edge: ChainEdge,
+  injection: ChainInjection,
   value: string,
+  targetUrl?: string,
 ): RequestModel {
   const req = JSON.parse(JSON.stringify(request)) as RequestModel; // deep clone
 
-  if (edge.targetField === "header") {
-    const existing = req.headers.find((h) => h.key === edge.targetKey);
+  if (injection.targetField === "header") {
+    const existing = req.headers.find((h) => h.key === injection.targetKey);
     if (existing) {
       existing.value = value;
     } else {
       req.headers.push({
         id: crypto.randomUUID(),
-        key: edge.targetKey,
+        key: injection.targetKey,
         value,
         enabled: true,
       });
     }
-  } else if (edge.targetField === "url") {
+  } else if (injection.targetField === "url") {
     const separator = req.url.includes("?") ? "&" : "?";
-    req.url = `${req.url}${separator}${encodeURIComponent(edge.targetKey)}=${encodeURIComponent(value)}`;
-  } else if (edge.targetField === "path") {
-    const baseUrl = edge.targetUrl ?? req.url;
-    const placeholder = `:${edge.targetKey}`;
+    req.url = `${req.url}${separator}${encodeURIComponent(injection.targetKey)}=${encodeURIComponent(value)}`;
+  } else if (injection.targetField === "path") {
+    const baseUrl = targetUrl ?? req.url;
+    const placeholder = `:${injection.targetKey}`;
     if (baseUrl.includes(placeholder)) {
       req.url = baseUrl.replace(placeholder, encodeURIComponent(value));
     } else {
       req.url = `${baseUrl.replace(/\/$/, "")}/${encodeURIComponent(value)}`;
     }
-  } else if (edge.targetField === "body") {
+  } else if (injection.targetField === "body") {
     try {
       const bodyObj = JSON.parse(req.body.content ?? "{}");
-      const key = edge.targetKey.replace(/^\$\./, "");
+      const key = injection.targetKey.replace(/^\$\./, "");
       const keys = key.split(".");
       let obj = bodyObj;
       for (let i = 0; i < keys.length - 1; i++) {
@@ -174,6 +177,7 @@ export async function runChain(
   conditionNodes?: ConditionNodeConfig[],
   envPromotions?: EnvPromotion[],
   onPromoteToEnv?: (envId: string, varName: string, value: string) => void,
+  displayNodes?: DisplayNodeConfig[],
 ): Promise<void> {
   const delayNodeMap = new Map<string, DelayNodeConfig>(
     (delayNodes ?? []).map((n) => [n.id, n]),
@@ -181,9 +185,13 @@ export async function runChain(
   const conditionNodeMap = new Map<string, ConditionNodeConfig>(
     (conditionNodes ?? []).map((n) => [n.id, n]),
   );
+  const displayNodeMap = new Map<string, DisplayNodeConfig>(
+    (displayNodes ?? []).map((n) => [n.id, n]),
+  );
   const controlFlowIds = [
     ...(delayNodes ?? []).map((n) => n.id),
     ...(conditionNodes ?? []).map((n) => n.id),
+    ...(displayNodes ?? []).map((n) => n.id),
   ];
 
   let order: string[];
@@ -204,36 +212,9 @@ export async function runChain(
     requests.map((r) => [r.id, r]),
   );
 
-  // Build connectivity set — any node referenced by an edge is connected
-  const connectedIds = new Set<string>();
-  for (const edge of edges) {
-    connectedIds.add(edge.sourceRequestId);
-    connectedIds.add(edge.targetRequestId);
-  }
-
-  // Single node with no edges runs independently
-  if (
-    requests.length === 1 &&
-    edges.length === 0 &&
-    controlFlowIds.length === 0
-  ) {
-    connectedIds.add(requests[0].id);
-  }
-
-  // Mark disconnected nodes as skipped
-  const allNodeIds = [...requests.map((r) => r.id), ...controlFlowIds];
-  for (const nodeId of allNodeIds) {
-    if (!connectedIds.has(nodeId)) {
-      onUpdate(nodeId, "skipped", {
-        error: "Node is not connected to the chain",
-      });
-    }
-  }
-
-  const connectedOrder = order.filter((id) => connectedIds.has(id));
   const runState: ChainRunState = {};
 
-  for (const nodeId of connectedOrder) {
+  for (const nodeId of order) {
     if (signal.aborted) {
       for (const remainingId of order.slice(order.indexOf(nodeId))) {
         if (!runState[remainingId]) {
@@ -249,13 +230,25 @@ export async function runChain(
     // Check for upstream failure or branch mismatch
     const hasDependencyFailure = incomingEdges.some((e) => {
       const srcState = runState[e.sourceRequestId];
-      if (
-        !srcState ||
-        srcState.state === "failed" ||
-        srcState.state === "skipped"
-      ) {
+      if (!srcState || srcState.state === "skipped") {
         return true;
       }
+
+      // Success handle: only follow if source passed
+      if (e.branchId === "success") {
+        return srcState.state !== "passed";
+      }
+
+      // Fail handle: only follow if source failed (failed is the expected path here)
+      if (e.branchId === "fail") {
+        return srcState.state !== "failed";
+      }
+
+      // A failed source blocks non-conditional downstream nodes
+      if (srcState.state === "failed") {
+        return true;
+      }
+
       // For routing edges from condition nodes: check winning branch
       if (e.branchId !== undefined && srcState.activeBranchId !== undefined) {
         return srcState.activeBranchId !== e.branchId;
@@ -307,10 +300,11 @@ export async function runChain(
           extractedValues[edge.id] = null;
           continue;
         }
-        extractedValues[edge.id] = extractJsonPath(
-          response.body,
-          edge.sourceJsonPath,
-        );
+        // For condition nodes, use the first injection's path to extract the variable to test
+        const condJsonPath = edge.injections?.[0]?.sourceJsonPath ?? "";
+        extractedValues[edge.id] = condJsonPath
+          ? extractJsonPath(response.body, condJsonPath)
+          : null;
       }
 
       const varValues = buildVarValues(incomingEdges, extractedValues);
@@ -334,6 +328,47 @@ export async function runChain(
       continue;
     }
 
+    // ── Display node ──────────────────────────────────────────────────────────
+    const displayNode = displayNodeMap.get(nodeId);
+    if (displayNode) {
+      onUpdate(nodeId, "running", {});
+
+      // Find the inbound edge to locate the source response
+      const inboundEdge = incomingEdges[0];
+      const sourceState = inboundEdge
+        ? runState[inboundEdge.sourceRequestId]
+        : undefined;
+      const sourceResponse = sourceState?.response;
+
+      if (!sourceResponse || !displayNode.sourceJsonPath) {
+        const error = !sourceResponse
+          ? "No response from source node"
+          : "Display node has no extraction path configured";
+        runState[nodeId] = { state: "failed", extractedValues: {}, error };
+        onUpdate(nodeId, "failed", { error });
+        continue;
+      }
+
+      const extracted = extractJsonPath(
+        sourceResponse.body,
+        displayNode.sourceJsonPath,
+      );
+      const extractedValues: Record<string, string | null> = {
+        [nodeId]: extracted,
+      };
+
+      if (extracted === null) {
+        const error = `Could not extract "${displayNode.sourceJsonPath}" from source response`;
+        runState[nodeId] = { state: "failed", extractedValues, error };
+        onUpdate(nodeId, "failed", { extractedValues, error });
+        continue;
+      }
+
+      runState[nodeId] = { state: "passed", extractedValues };
+      onUpdate(nodeId, "passed", { extractedValues });
+      continue;
+    }
+
     // ── API request node ──────────────────────────────────────────────────────
     const request = requestMap.get(nodeId);
     if (!request) continue;
@@ -347,24 +382,62 @@ export async function runChain(
 
     for (const edge of extractionEdges) {
       const srcState = runState[edge.sourceRequestId];
-      const sourceResponse = srcState?.response;
-      if (!sourceResponse) {
+      const sourceIsDisplay = displayNodeMap.has(edge.sourceRequestId);
+      const displayCfg = displayNodeMap.get(edge.sourceRequestId);
+
+      // DisplayNode edges use the display node's single injection config
+      const injections = displayCfg
+        ? [
+            {
+              sourceJsonPath: displayCfg.sourceJsonPath,
+              targetField: displayCfg.targetField,
+              targetKey: displayCfg.targetKey,
+            },
+          ]
+        : (edge.injections ?? []);
+
+      const sourceResponse = sourceIsDisplay ? null : srcState?.response;
+      if (!sourceIsDisplay && !sourceResponse) {
         extractedValues[edge.id] = null;
         continue;
       }
 
-      const extracted = extractJsonPath(
-        sourceResponse.body,
-        edge.sourceJsonPath,
-      );
-      extractedValues[edge.id] = extracted;
+      let edgeHadFailure = false;
 
-      if (extracted !== null) {
-        mutatedRequest = applyInjection(mutatedRequest, edge, extracted);
-        const promotion = envPromotions?.find((p) => p.edgeId === edge.id);
-        if (promotion) {
-          onPromoteToEnv?.(promotion.envId, promotion.envVarName, extracted);
+      for (const injection of injections) {
+        let extracted: string | null;
+        if (sourceIsDisplay) {
+          extracted = srcState?.extractedValues?.[edge.sourceRequestId] ?? null;
+        } else {
+          extracted = sourceResponse
+            ? extractJsonPath(sourceResponse.body, injection.sourceJsonPath)
+            : null;
         }
+
+        // Key per injection so we can track individual failures
+        const valueKey = `${edge.id}:${injection.sourceJsonPath}`;
+        extractedValues[valueKey] = extracted;
+        // Keep the top-level edge key for backward compat with failure check
+        if (extracted === null) {
+          edgeHadFailure = true;
+        }
+
+        if (extracted !== null) {
+          mutatedRequest = applyInjection(
+            mutatedRequest,
+            injection,
+            extracted,
+            displayCfg?.targetUrl ?? edge.targetUrl,
+          );
+          const promotion = envPromotions?.find((p) => p.edgeId === edge.id);
+          if (promotion) {
+            onPromoteToEnv?.(promotion.envId, promotion.envVarName, extracted);
+          }
+        }
+      }
+
+      if (edgeHadFailure) {
+        extractedValues[edge.id] = null;
       }
     }
 

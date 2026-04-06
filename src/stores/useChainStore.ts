@@ -10,8 +10,10 @@ import type {
   ChainHistoryNode,
   ConditionNodeConfig,
   DelayNodeConfig,
+  DisplayNodeConfig,
   EnvPromotion,
 } from "@/types/chain";
+import { migrateEdge } from "@/types/chain";
 
 type ChainState = {
   configs: Record<string, ChainConfig>;
@@ -32,6 +34,11 @@ type ChainActions = {
   addNode: (collectionId: string, requestId: string) => void;
   removeNode: (collectionId: string, requestId: string) => void;
   addHistoryNode: (collectionId: string, node: ChainHistoryNode) => void;
+  updateHistoryNode: (
+    collectionId: string,
+    nodeId: string,
+    patch: Partial<ChainHistoryNode>,
+  ) => void;
   removeHistoryNode: (collectionId: string, nodeId: string) => void;
   upsertNodeAssertions: (
     collectionId: string,
@@ -46,6 +53,8 @@ type ChainActions = {
     node: ConditionNodeConfig,
   ) => void;
   removeConditionNode: (collectionId: string, nodeId: string) => void;
+  upsertDisplayNode: (collectionId: string, node: DisplayNodeConfig) => void;
+  removeDisplayNode: (collectionId: string, nodeId: string) => void;
   upsertEnvPromotion: (collectionId: string, promotion: EnvPromotion) => void;
   deleteEnvPromotion: (collectionId: string, edgeId: string) => void;
 };
@@ -86,8 +95,12 @@ export const useChainStore = create<ChainState & ChainActions>((set) => ({
       const instance = await db;
       const config = await instance.get("chainConfigs", collectionId);
       if (config) {
+        const migrated = {
+          ...config,
+          edges: (config.edges ?? []).map(migrateEdge),
+        };
         set((state) => ({
-          configs: { ...state.configs, [collectionId]: config },
+          configs: { ...state.configs, [collectionId]: migrated },
         }));
       } else {
         // Init empty config
@@ -204,6 +217,20 @@ export const useChainStore = create<ChainState & ChainActions>((set) => ({
     });
   },
 
+  updateHistoryNode(collectionId, nodeId, patch) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const updated = {
+        ...config,
+        historyNodes: (config.historyNodes ?? []).map((n) =>
+          n.id === nodeId ? { ...n, ...patch } : n,
+        ),
+      };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
   removeHistoryNode(collectionId, nodeId) {
     set((state) => {
       const config = getOrCreateConfig(state.configs, collectionId);
@@ -298,6 +325,38 @@ export const useChainStore = create<ChainState & ChainActions>((set) => ({
       const updated = {
         ...config,
         conditionNodes: (config.conditionNodes ?? []).filter(
+          (n) => n.id !== nodeId,
+        ),
+        edges: config.edges.filter(
+          (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
+        ),
+      };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  upsertDisplayNode(collectionId, node) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const existing = config.displayNodes ?? [];
+      const idx = existing.findIndex((n) => n.id === node.id);
+      const displayNodes =
+        idx >= 0
+          ? existing.map((n) => (n.id === node.id ? node : n))
+          : [...existing, node];
+      const updated = { ...config, displayNodes };
+      persistConfig(updated);
+      return { configs: { ...state.configs, [collectionId]: updated } };
+    });
+  },
+
+  removeDisplayNode(collectionId, nodeId) {
+    set((state) => {
+      const config = getOrCreateConfig(state.configs, collectionId);
+      const updated = {
+        ...config,
+        displayNodes: (config.displayNodes ?? []).filter(
           (n) => n.id !== nodeId,
         ),
         edges: config.edges.filter(

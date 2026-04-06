@@ -2,7 +2,7 @@
 
 import { GitBranch, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
 import {
   DropdownMenu,
@@ -27,6 +27,13 @@ export function ChainList({ isCreating, onCreatingDone }: ChainListProps) {
   const [newChainName, setNewChainName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
+  const newChainInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isCreating) return;
+    const timer = setTimeout(() => newChainInputRef.current?.focus(), 150);
+    return () => clearTimeout(timer);
+  }, [isCreating]);
 
   const chainList = Object.values(chains).sort(
     (a, b) => b.createdAt - a.createdAt,
@@ -49,7 +56,7 @@ export function ChainList({ isCreating, onCreatingDone }: ChainListProps) {
       {isCreating && (
         <div className="px-2 pb-1">
           <Input
-            autoFocus
+            ref={newChainInputRef}
             className="h-7 text-xs"
             value={newChainName}
             placeholder="Chain name"

@@ -10,8 +10,6 @@ import {
   XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NodeAssertionsPanel } from "@/components/chain/NodeAssertionsPanel";
-import { PromoteToEnvPopover } from "@/components/chain/PromoteToEnvPopover";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -29,6 +27,8 @@ import type {
   ChainNodeState,
   EnvPromotion,
 } from "@/types/chain";
+import { PromoteToEnvPopover } from "../dialogs/PromoteToEnvPopover";
+import { NodeAssertionsPanel } from "./NodeAssertionsPanel";
 
 function jsonPathToVarName(path: string): string {
   const parts = path.replace(/^\$\.?/, "").split(".");
@@ -387,16 +387,26 @@ export function NodeDetailsPanel({
                 <section className="flex flex-col gap-3">
                   <SectionHeading>Extracted values</SectionHeading>
                   <div className="flex flex-col gap-1.5">
-                    {Object.entries(extractedValues).map(([edgeId, val]) => {
-                      const edge = edges?.find((e) => e.id === edgeId);
-                      const label = edge?.sourceJsonPath ?? edgeId;
+                    {Object.entries(extractedValues).map(([key, val]) => {
+                      // Key format: "edgeId:$.json.path" (new) or bare "edgeId" (legacy/failure)
+                      const colonDollarIdx = key.indexOf(":$");
+                      const edgeId =
+                        colonDollarIdx >= 0
+                          ? key.slice(0, colonDollarIdx)
+                          : key;
+                      const jsonPath =
+                        colonDollarIdx >= 0
+                          ? key.slice(colonDollarIdx + 1)
+                          : (edges?.find((e) => e.id === key)?.injections?.[0]
+                              ?.sourceJsonPath ?? key);
+                      const label = jsonPath;
                       const suggestedName = jsonPathToVarName(label);
                       const existingPromotion = envPromotions?.find(
                         (p) => p.edgeId === edgeId,
                       );
                       return (
                         <div
-                          key={edgeId}
+                          key={key}
                           className="flex items-center gap-2 font-mono text-xs px-3 py-2 rounded-md border border-border/40 bg-muted/10"
                         >
                           <span className="text-primary shrink-0">{label}</span>

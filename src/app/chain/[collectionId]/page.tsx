@@ -2,8 +2,8 @@
 
 import { GitBranch, Play, Square, Trash2 } from "lucide-react";
 import { use, useCallback, useEffect, useRef, useState } from "react";
-import { ApiPickerDialog } from "@/components/chain/ApiPickerDialog";
-import { ChainCanvas } from "@/components/chain/ChainCanvas";
+import { ChainCanvas } from "@/components/chain/canvas/ChainCanvas";
+import { ApiPickerDialog } from "@/components/chain/dialogs/ApiPickerDialog";
 import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { buildExecutionOrder, runChain } from "@/lib/chainRunner";
@@ -22,6 +22,7 @@ import type {
   ChainRunState,
   ConditionNodeConfig,
   DelayNodeConfig,
+  DisplayNodeConfig,
   EnvPromotion,
   StandaloneChain,
 } from "@/types/chain";
@@ -55,6 +56,8 @@ export default function ChainPage({ params }: Props) {
     collections,
     requests: allRequests,
     hydrate: hydrateCollections,
+    addRequest,
+    updateRequest,
   } = useCollectionsStore();
   const { hydrate: hydrateHistory } = useHistoryStore();
   const {
@@ -65,6 +68,7 @@ export default function ChainPage({ params }: Props) {
     addNode: addCollectionNode,
     removeNode: removeCollectionNode,
     addHistoryNode: addCollectionHistoryNode,
+    updateHistoryNode: updateCollectionHistoryNode,
     removeHistoryNode: removeCollectionHistoryNode,
     upsertEdge: upsertCollectionEdge,
     deleteEdge: deleteCollectionEdge,
@@ -76,6 +80,8 @@ export default function ChainPage({ params }: Props) {
     removeConditionNode: removeCollectionConditionNode,
     upsertEnvPromotion: upsertCollectionEnvPromotion,
     deleteEnvPromotion: deleteCollectionEnvPromotion,
+    upsertDisplayNode: upsertCollectionDisplayNode,
+    removeDisplayNode: removeCollectionDisplayNode,
   } = useChainStore();
   const {
     chains: standaloneChains,
@@ -84,6 +90,7 @@ export default function ChainPage({ params }: Props) {
     addNode: addStandaloneNode,
     removeNode: removeStandaloneNode,
     addHistoryNode: addStandaloneHistoryNode,
+    updateHistoryNode: updateStandaloneHistoryNode,
     removeHistoryNode: removeStandaloneHistoryNode,
     upsertEdge: upsertStandaloneEdge,
     deleteEdge: deleteStandaloneEdge,
@@ -95,6 +102,8 @@ export default function ChainPage({ params }: Props) {
     removeConditionNode: removeStandaloneConditionNode,
     upsertEnvPromotion: upsertStandaloneEnvPromotion,
     deleteEnvPromotion: deleteStandaloneEnvPromotion,
+    upsertDisplayNode: upsertStandaloneDisplayNode,
+    removeDisplayNode: removeStandaloneDisplayNode,
   } = useStandaloneChainStore();
 
   const { environments, updateEnv } = useEnvironmentsStore();
@@ -189,12 +198,19 @@ export default function ChainPage({ params }: Props) {
         (n) => n.id === nodeId,
       );
 
+      const isDisplayNode = (activeConfig?.displayNodes ?? []).some(
+        (n) => n.id === nodeId,
+      );
+
       if (isDelayNode) {
         if (isCollectionChain) removeCollectionDelayNode(id, nodeId);
         else removeStandaloneDelayNode(id, nodeId);
       } else if (isConditionNode) {
         if (isCollectionChain) removeCollectionConditionNode(id, nodeId);
         else removeStandaloneConditionNode(id, nodeId);
+      } else if (isDisplayNode) {
+        if (isCollectionChain) removeCollectionDisplayNode(id, nodeId);
+        else removeStandaloneDisplayNode(id, nodeId);
       } else if (isCollectionChain) {
         if (isHistoryNode) removeCollectionHistoryNode(id, nodeId);
         else removeCollectionNode(id, nodeId);
@@ -215,6 +231,39 @@ export default function ChainPage({ params }: Props) {
       removeStandaloneDelayNode,
       removeCollectionConditionNode,
       removeStandaloneConditionNode,
+      removeCollectionDisplayNode,
+      removeStandaloneDisplayNode,
+    ],
+  );
+
+  const handleDuplicateNode = useCallback(
+    (requestId: string) => {
+      const source = chainRequests.find((r) => r.id === requestId);
+      if (!source) return;
+      const newRequest = addRequest(source.collectionId || id, {
+        tabId: "",
+        requestId: null,
+        isDirty: false,
+        name: `${source.name} (copy)`,
+        method: source.method,
+        url: source.url,
+        params: source.params,
+        headers: source.headers,
+        auth: source.auth,
+        body: source.body,
+        preScript: source.preScript,
+        postScript: source.postScript,
+      });
+      if (isCollectionChain) addCollectionNode(id, newRequest.id);
+      else addStandaloneNode(id, newRequest.id);
+    },
+    [
+      chainRequests,
+      addRequest,
+      isCollectionChain,
+      id,
+      addCollectionNode,
+      addStandaloneNode,
     ],
   );
 
@@ -254,6 +303,19 @@ export default function ChainPage({ params }: Props) {
       isCollectionChain,
       removeCollectionConditionNode,
       removeStandaloneConditionNode,
+    ],
+  );
+
+  const handleUpsertDisplayNode = useCallback(
+    (node: DisplayNodeConfig) => {
+      if (isCollectionChain) upsertCollectionDisplayNode(id, node);
+      else upsertStandaloneDisplayNode(id, node);
+    },
+    [
+      id,
+      isCollectionChain,
+      upsertCollectionDisplayNode,
+      upsertStandaloneDisplayNode,
     ],
   );
 
@@ -322,6 +384,7 @@ export default function ChainPage({ params }: Props) {
       subsetEdges: ChainEdge[],
       subsetDelayNodes?: DelayNodeConfig[],
       subsetConditionNodes?: ConditionNodeConfig[],
+      subsetDisplayNodes?: DisplayNodeConfig[],
     ) => {
       if (isRunning) return;
       setIsRunning(true);
@@ -349,6 +412,7 @@ export default function ChainPage({ params }: Props) {
           subsetConditionNodes,
           activeConfig?.envPromotions,
           handlePromoteToEnv,
+          subsetDisplayNodes,
         );
       } finally {
         setIsRunning(false);
@@ -369,6 +433,7 @@ export default function ChainPage({ params }: Props) {
       const cfIds = [
         ...(activeConfig?.delayNodes ?? []).map((n) => n.id),
         ...(activeConfig?.conditionNodes ?? []).map((n) => n.id),
+        ...(activeConfig?.displayNodes ?? []).map((n) => n.id),
       ];
       let order: string[];
       try {
@@ -394,6 +459,9 @@ export default function ChainPage({ params }: Props) {
       const subsetCondition = (activeConfig?.conditionNodes ?? []).filter((n) =>
         subsetIds.has(n.id),
       );
+      const subsetDisplay = (activeConfig?.displayNodes ?? []).filter((n) =>
+        subsetIds.has(n.id),
+      );
       const initial: ChainRunState = {};
       for (const nodeId of subsetIds) {
         initial[nodeId] = { state: "idle", extractedValues: {} };
@@ -404,6 +472,7 @@ export default function ChainPage({ params }: Props) {
         subsetEdges,
         subsetDelay,
         subsetCondition,
+        subsetDisplay,
       );
     },
     [isRunning, chainRequests, activeConfig, handleRunSubset],
@@ -415,6 +484,7 @@ export default function ChainPage({ params }: Props) {
       const cfIds = [
         ...(activeConfig?.delayNodes ?? []).map((n) => n.id),
         ...(activeConfig?.conditionNodes ?? []).map((n) => n.id),
+        ...(activeConfig?.displayNodes ?? []).map((n) => n.id),
       ];
       let order: string[];
       try {
@@ -440,6 +510,9 @@ export default function ChainPage({ params }: Props) {
       const subsetCondition = (activeConfig?.conditionNodes ?? []).filter((n) =>
         subsetIds.has(n.id),
       );
+      const subsetDisplay = (activeConfig?.displayNodes ?? []).filter((n) =>
+        subsetIds.has(n.id),
+      );
       setRunState((prev) => {
         const next = { ...prev };
         for (const nodeId of subsetIds) {
@@ -452,6 +525,7 @@ export default function ChainPage({ params }: Props) {
         subsetEdges,
         subsetDelay,
         subsetCondition,
+        subsetDisplay,
       );
     },
     [isRunning, chainRequests, activeConfig, handleRunSubset],
@@ -530,6 +604,7 @@ export default function ChainPage({ params }: Props) {
 
     const delayNodes = activeConfig?.delayNodes ?? [];
     const conditionNodes = activeConfig?.conditionNodes ?? [];
+    const displayNodes = activeConfig?.displayNodes ?? [];
 
     const initial: ChainRunState = {};
     for (const req of chainRequests) {
@@ -539,6 +614,9 @@ export default function ChainPage({ params }: Props) {
       initial[n.id] = { state: "idle", extractedValues: {} };
     }
     for (const n of conditionNodes) {
+      initial[n.id] = { state: "idle", extractedValues: {} };
+    }
+    for (const n of displayNodes) {
       initial[n.id] = { state: "idle", extractedValues: {} };
     }
     setRunState(initial);
@@ -569,6 +647,7 @@ export default function ChainPage({ params }: Props) {
         conditionNodes,
         activeConfig?.envPromotions,
         handlePromoteToEnv,
+        displayNodes,
       );
     } finally {
       setIsRunning(false);
@@ -619,6 +698,28 @@ export default function ChainPage({ params }: Props) {
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
   }, []);
+
+  const handleSaveRequest = useCallback(
+    (nodeId: string, patch: Partial<RequestModel>) => {
+      const isHistoryNode = (activeConfig?.historyNodes ?? []).some(
+        (n) => n.id === nodeId,
+      );
+      if (isHistoryNode) {
+        if (isCollectionChain) updateCollectionHistoryNode(id, nodeId, patch);
+        else updateStandaloneHistoryNode(id, nodeId, patch);
+      } else {
+        updateRequest(nodeId, patch);
+      }
+    },
+    [
+      id,
+      isCollectionChain,
+      activeConfig,
+      updateRequest,
+      updateCollectionHistoryNode,
+      updateStandaloneHistoryNode,
+    ],
+  );
 
   const handleClearEdges = useCallback(() => {
     if (isCollectionChain) clearCollectionEdges(id);
@@ -757,6 +858,7 @@ export default function ChainPage({ params }: Props) {
             conditionNodes={activeConfig?.conditionNodes ?? []}
             onAddApiClick={() => setApiPickerOpen(true)}
             onDeleteNode={handleDeleteNode}
+            onDuplicateNode={handleDuplicateNode}
             onUpsertEdge={handleUpsertEdge}
             onDeleteEdge={handleDeleteEdge}
             onUpdateNodePosition={handleUpdateNodePosition}
@@ -768,9 +870,12 @@ export default function ChainPage({ params }: Props) {
             onUpsertDelayNode={handleUpsertDelayNode}
             onUpsertConditionNode={handleUpsertConditionNode}
             onRemoveConditionNode={handleRemoveConditionNode}
+            displayNodes={activeConfig?.displayNodes ?? []}
+            onUpsertDisplayNode={handleUpsertDisplayNode}
             envPromotions={activeConfig?.envPromotions ?? []}
             onSavePromotion={handleUpsertEnvPromotion}
             onRemovePromotion={handleDeleteEnvPromotion}
+            onSaveRequest={handleSaveRequest}
           />
         )}
       </div>
@@ -778,9 +883,9 @@ export default function ChainPage({ params }: Props) {
       {/* Bottom hint */}
       <div className="flex h-7 shrink-0 items-center justify-center border-t border-border bg-card/50">
         <p className="text-[10px] text-muted-foreground">
-          Drag nodes to reposition · Draw from right handle to left handle to
-          create a dependency · Click an edge to configure it · Delete/Backspace
-          to remove edges
+          Drag nodes to reposition · Draw from handle to handle to create
+          connections · Add a Display node to configure data extraction ·
+          Delete/Backspace to remove edges
         </p>
       </div>
 

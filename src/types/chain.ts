@@ -6,7 +6,7 @@ import type {
   ResponseData,
 } from "@/types";
 
-export type ChainNodeType = "api" | "delay" | "condition";
+export type ChainNodeType = "api" | "delay" | "condition" | "display";
 
 export type DelayNodeConfig = {
   id: string;
@@ -27,19 +27,60 @@ export type ConditionNodeConfig = {
   branches: ConditionBranch[];
 };
 
+export type DisplayNodeConfig = {
+  id: string;
+  type: "display";
+  sourceJsonPath: string; // e.g. "$.data.token"
+  targetField: "url" | "path" | "header" | "body";
+  targetKey: string; // header name, URL param, or body JSONPath
+  targetUrl?: string; // optional URL override for path injections
+};
+
 export const CONTROL_FLOW_NODE_TYPES: ChainNodeType[] = ["delay", "condition"];
+
+export type ChainInjection = {
+  sourceJsonPath: string; // e.g. "$.data.token"
+  targetField: "url" | "path" | "header" | "body";
+  targetKey: string; // header name, URL param name, or body JSONPath
+};
 
 export type ChainEdge = {
   id: string;
   sourceRequestId: string;
   targetRequestId: string;
-  sourceJsonPath: string; // e.g. "$.data.token"
-  targetField: "url" | "path" | "header" | "body";
-  targetKey: string; // header name, URL param name, or body JSONPath
-  targetUrl?: string; // optional URL override (e.g. with :id placeholder)
+  /** Shared URL template for path injections — contains :paramName placeholders. */
+  targetUrl?: string;
+  /** One or more extraction→injection mappings for this dependency. */
+  injections: ChainInjection[];
   /** Set on edges originating from a condition node — identifies the branch handle. */
   branchId?: string;
 };
+
+/** Coerce a legacy flat-shaped edge (pre-injections array) to the current shape. */
+export function migrateEdge(
+  raw: ChainEdge & {
+    sourceJsonPath?: string;
+    targetField?: string;
+    targetKey?: string;
+  },
+): ChainEdge {
+  if (raw.injections?.length) return raw as ChainEdge;
+  return {
+    id: raw.id,
+    sourceRequestId: raw.sourceRequestId,
+    targetRequestId: raw.targetRequestId,
+    targetUrl: raw.targetUrl,
+    branchId: raw.branchId,
+    injections: [
+      {
+        sourceJsonPath: raw.sourceJsonPath ?? "$.value",
+        targetField: (raw.targetField ??
+          "header") as ChainInjection["targetField"],
+        targetKey: raw.targetKey ?? "value",
+      },
+    ],
+  };
+}
 
 /** Snapshot of a history-sourced node — not tied to any saved collection request. */
 export type ChainHistoryNode = {
@@ -108,6 +149,7 @@ export type ChainConfig = {
   nodeAssertions?: Record<string, ChainAssertion[]>;
   delayNodes?: DelayNodeConfig[];
   conditionNodes?: ConditionNodeConfig[];
+  displayNodes?: DisplayNodeConfig[];
   envPromotions?: EnvPromotion[];
 };
 
@@ -123,6 +165,7 @@ export type StandaloneChain = {
   nodeAssertions?: Record<string, ChainAssertion[]>;
   delayNodes?: DelayNodeConfig[];
   conditionNodes?: ConditionNodeConfig[];
+  displayNodes?: DisplayNodeConfig[];
   envPromotions?: EnvPromotion[];
 };
 

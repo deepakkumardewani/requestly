@@ -10,9 +10,11 @@ import type {
   ChainHistoryNode,
   ConditionNodeConfig,
   DelayNodeConfig,
+  DisplayNodeConfig,
   EnvPromotion,
   StandaloneChain,
 } from "@/types/chain";
+import { migrateEdge } from "@/types/chain";
 
 type StandaloneChainState = {
   chains: Record<string, StandaloneChain>;
@@ -26,6 +28,11 @@ type StandaloneChainActions = {
   addNode: (chainId: string, requestId: string) => void;
   removeNode: (chainId: string, requestId: string) => void;
   addHistoryNode: (chainId: string, node: ChainHistoryNode) => void;
+  updateHistoryNode: (
+    chainId: string,
+    nodeId: string,
+    patch: Partial<ChainHistoryNode>,
+  ) => void;
   removeHistoryNode: (chainId: string, nodeId: string) => void;
   upsertEdge: (chainId: string, edge: ChainEdge) => void;
   deleteEdge: (chainId: string, edgeId: string) => void;
@@ -45,6 +52,8 @@ type StandaloneChainActions = {
   removeDelayNode: (chainId: string, nodeId: string) => void;
   upsertConditionNode: (chainId: string, node: ConditionNodeConfig) => void;
   removeConditionNode: (chainId: string, nodeId: string) => void;
+  upsertDisplayNode: (chainId: string, node: DisplayNodeConfig) => void;
+  removeDisplayNode: (chainId: string, nodeId: string) => void;
   upsertEnvPromotion: (chainId: string, promotion: EnvPromotion) => void;
   deleteEnvPromotion: (chainId: string, edgeId: string) => void;
 };
@@ -105,7 +114,10 @@ export const useStandaloneChainStore = create<
       const all = await instance.getAll("chains");
       const map: Record<string, StandaloneChain> = {};
       for (const chain of all) {
-        map[chain.id] = chain;
+        map[chain.id] = {
+          ...chain,
+          edges: (chain.edges ?? []).map(migrateEdge),
+        };
       }
       set({ chains: map });
     } catch (error) {
@@ -181,6 +193,20 @@ export const useStandaloneChainStore = create<
       const updated = {
         ...chain,
         historyNodes: [...chain.historyNodes, node],
+      };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  updateHistoryNode(chainId, nodeId, patch) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const updated = {
+        ...chain,
+        historyNodes: chain.historyNodes.map((n) =>
+          n.id === nodeId ? { ...n, ...patch } : n,
+        ),
       };
       persistChain(updated);
       return { chains: { ...state.chains, [chainId]: updated } };
@@ -328,6 +354,36 @@ export const useStandaloneChainStore = create<
         conditionNodes: (chain.conditionNodes ?? []).filter(
           (n) => n.id !== nodeId,
         ),
+        edges: chain.edges.filter(
+          (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
+        ),
+      };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  upsertDisplayNode(chainId, node) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const existing = chain.displayNodes ?? [];
+      const idx = existing.findIndex((n) => n.id === node.id);
+      const displayNodes =
+        idx >= 0
+          ? existing.map((n) => (n.id === node.id ? node : n))
+          : [...existing, node];
+      const updated = { ...chain, displayNodes };
+      persistChain(updated);
+      return { chains: { ...state.chains, [chainId]: updated } };
+    });
+  },
+
+  removeDisplayNode(chainId, nodeId) {
+    set((state) => {
+      const chain = getOrCreate(state.chains, chainId);
+      const updated = {
+        ...chain,
+        displayNodes: (chain.displayNodes ?? []).filter((n) => n.id !== nodeId),
         edges: chain.edges.filter(
           (e) => e.sourceRequestId !== nodeId && e.targetRequestId !== nodeId,
         ),
