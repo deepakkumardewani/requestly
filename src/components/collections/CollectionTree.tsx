@@ -9,7 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
 import {
   Accordion,
@@ -54,8 +54,17 @@ export function CollectionTree() {
   const [editName, setEditName] = useState("");
   const [newCollectionName, setNewCollectionName] = useState("");
   const router = useRouter();
+  const newCollectionInputRef = useRef<HTMLInputElement>(null);
 
   const activeTab = tabs.find((t) => t.tabId === activeTabId);
+
+  // autoFocus won't work when the accordion is animating open (overflow:hidden).
+  // Defer focus to after the animation completes.
+  useEffect(() => {
+    if (!isCreatingCollection) return;
+    const timer = setTimeout(() => newCollectionInputRef.current?.focus(), 150);
+    return () => clearTimeout(timer);
+  }, [isCreatingCollection]);
 
   if (collections.length === 0) {
     return (
@@ -78,7 +87,7 @@ export function CollectionTree() {
         />
         {isCreatingCollection && (
           <Input
-            autoFocus
+            ref={newCollectionInputRef}
             className="h-7 w-full text-xs"
             value={newCollectionName}
             placeholder="Collection name"
@@ -103,7 +112,7 @@ export function CollectionTree() {
       {isCreatingCollection && (
         <div className="px-2 pb-1">
           <Input
-            autoFocus
+            ref={newCollectionInputRef}
             className="h-7 text-xs"
             value={newCollectionName}
             placeholder="Collection name"

@@ -25,7 +25,7 @@ import { HTTP_METHODS } from "@/lib/constants";
 import { generateCurl } from "@/lib/curlGenerator";
 import { CurlParseError, parseCurl } from "@/lib/curlParser";
 import { modKey } from "@/lib/platform";
-import { generateId, parsePathParams, parseQueryString } from "@/lib/utils";
+import { syncParamsFromUrl } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import type { HttpMethod } from "@/types";
@@ -50,41 +50,11 @@ export function UrlBar({ tabId }: UrlBarProps) {
   }
 
   function handleUrlChange(url: string) {
-    const existingParams = tab?.params ?? [];
-    const existingPathParams = existingParams.filter((p) => p.type === "path");
-    const existingQueryParams = existingParams.filter((p) => p.type !== "path");
-
-    // Preserve existing values for path params already known
-    const pathParamKeys = parsePathParams(url);
-    const newPathParams = pathParamKeys.map((key) => {
-      const existing = existingPathParams.find((ep) => ep.key === key);
-      return (
-        existing ?? {
-          id: generateId(),
-          key,
-          value: "",
-          enabled: true,
-          type: "path" as const,
-        }
-      );
-    });
-
-    const parsedQueryParams = parseQueryString(url);
-    const newQueryParams = parsedQueryParams.map((p) => ({
-      id: generateId(),
-      key: p.key,
-      value: p.value,
-      enabled: true,
-      type: "query" as const,
-    }));
-
-    updateTabState(tabId, {
+    const { pathParams, queryParams } = syncParamsFromUrl(
       url,
-      params: [
-        ...newPathParams,
-        ...(newQueryParams.length > 0 ? newQueryParams : existingQueryParams),
-      ],
-    });
+      tab?.params ?? [],
+    );
+    updateTabState(tabId, { url, params: [...pathParams, ...queryParams] });
   }
 
   function handlePaste(e: React.ClipboardEvent<HTMLInputElement>) {

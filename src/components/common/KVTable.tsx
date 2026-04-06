@@ -19,6 +19,8 @@ type KVTableProps = {
   readOnly?: boolean;
   // Keys are derived from the URL (path params) — read-only, no delete/draft row
   readOnlyKeys?: boolean;
+  // Hide the enabled/disabled checkbox (used for path params where toggling makes no sense)
+  hideCheckbox?: boolean;
 };
 
 export function KVTable({
@@ -28,6 +30,7 @@ export function KVTable({
   valuePlaceholder = "Value",
   readOnly = false,
   readOnlyKeys = false,
+  hideCheckbox = false,
 }: KVTableProps) {
   const [draftKey, setDraftKey] = useState("");
   const [draftValue, setDraftValue] = useState("");
@@ -74,7 +77,7 @@ export function KVTable({
             key={row.id}
             className="grid grid-cols-[auto_1fr_1fr_auto] items-center gap-1 px-2 py-0.5"
           >
-            {!readOnly ? (
+            {!readOnly && !hideCheckbox ? (
               <Checkbox
                 className="h-3.5 w-3.5"
                 checked={row.enabled}

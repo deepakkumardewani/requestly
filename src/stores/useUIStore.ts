@@ -13,6 +13,7 @@ type UIState = {
   pendingCloseTabId: string | null;
   pendingBulkClose: BulkCloseAction | null;
   isCreatingCollection: boolean;
+  isCreatingEnv: boolean;
   envManagerOpen: boolean;
   envManagerFocusEnvId: string | null;
 };
@@ -28,6 +29,7 @@ type UIActions = {
   setPendingCloseTabId: (id: string | null) => void;
   setPendingBulkClose: (action: BulkCloseAction | null) => void;
   setIsCreatingCollection: (value: boolean) => void;
+  setIsCreatingEnv: (value: boolean) => void;
   setEnvManagerOpen: (open: boolean, focusEnvId?: string | null) => void;
 };
 
@@ -41,6 +43,7 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
   pendingCloseTabId: null,
   pendingBulkClose: null,
   isCreatingCollection: false,
+  isCreatingEnv: false,
   envManagerOpen: false,
   envManagerFocusEnvId: null,
 
@@ -82,6 +85,10 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
 
   setIsCreatingCollection(value) {
     set({ isCreatingCollection: value });
+  },
+
+  setIsCreatingEnv(value) {
+    set({ isCreatingEnv: value });
   },
 
   setEnvManagerOpen(open, focusEnvId = null) {

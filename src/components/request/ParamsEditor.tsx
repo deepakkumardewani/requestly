@@ -48,6 +48,7 @@ export function ParamsEditor({ tabId }: ParamsEditorProps) {
             keyPlaceholder="Key"
             valuePlaceholder="Value"
             readOnlyKeys
+            hideCheckbox
           />
         </>
       )}

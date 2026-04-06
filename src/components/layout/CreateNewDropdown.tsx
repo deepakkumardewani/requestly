@@ -27,7 +27,7 @@ type CreateNewDropdownProps = {
 
 export function CreateNewDropdown({ onNewChain }: CreateNewDropdownProps) {
   const openTab = useTabsStore((s) => s.openTab);
-  const { setIsCreatingCollection, setEnvManagerOpen } = useUIStore();
+  const { setIsCreatingCollection, setIsCreatingEnv } = useUIStore();
 
   return (
     <DropdownMenu>
@@ -63,7 +63,7 @@ export function CreateNewDropdown({ onNewChain }: CreateNewDropdownProps) {
           <FolderPlus className="mr-2 h-3.5 w-3.5" />
           Collection
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setEnvManagerOpen(true)}>
+        <DropdownMenuItem onClick={() => setIsCreatingEnv(true)}>
           <Globe2 className="mr-2 h-3.5 w-3.5" />
           Environment
         </DropdownMenuItem>

@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { KVPair } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -102,6 +103,47 @@ export function buildUrlWithParams(
   } catch {
     return baseUrl;
   }
+}
+
+/**
+ * Given a URL and existing params, derive updated path and query param arrays.
+ * - Path params: keys extracted from :param patterns, existing values preserved by key.
+ * - Query params: replaced from URL query string; kept unchanged when URL has no query string.
+ */
+export function syncParamsFromUrl(
+  url: string,
+  existingParams: KVPair[],
+): { pathParams: KVPair[]; queryParams: KVPair[] } {
+  const existingPathParams = existingParams.filter((p) => p.type === "path");
+  const existingQueryParams = existingParams.filter((p) => p.type !== "path");
+
+  const pathParams = parsePathParams(url).map((key) => {
+    const found = existingPathParams.find((p) => p.key === key);
+    return (
+      found ?? {
+        id: generateId(),
+        key,
+        value: "",
+        enabled: true,
+        type: "path" as const,
+      }
+    );
+  });
+
+  const parsed = parseQueryString(url);
+  // When URL has a query string, replace rows (no accumulation of partial keys).
+  // When URL has no query string, preserve existing rows typed into the table.
+  const queryParams =
+    parsed.length > 0
+      ? parsed.map((p) => {
+          const found = existingQueryParams.find((r) => r.key === p.key);
+          return found
+            ? { ...found, value: p.value }
+            : { id: generateId(), key: p.key, value: p.value, enabled: true };
+        })
+      : existingQueryParams;
+
+  return { pathParams, queryParams };
 }
 
 export function truncateUrl(url: string, maxLength = 60): string {

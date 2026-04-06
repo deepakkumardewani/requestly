@@ -4,6 +4,7 @@
 - If something goes sideways, STOP and re-plan immediately – don't keep pushing
 - Use plan mode for verification steps, not just building
 - Write detailed specs upfront to reduce ambiguity
+- Use the AskUserQuestion tool to ask questions if you're unclear of the requirements.
 
 ### 2. Subagent Strategy
 
@@ -130,6 +131,7 @@
 - Always output a summary of the changes made in the following exact format. No exceptions.
 - What was changed
 - Why it was changed
+- Give verification steps based on the user requirements that the user can manually test.
 
 ## Feature Implementation
 
@@ -155,4 +157,7 @@
 
 ### Key design decisions
 - **Decision**: Explanation of why this approach was chosen over alternatives.
+
+### Verification Steps
+- Give verification steps based on the user requirements that the user can manually test.
 ```
