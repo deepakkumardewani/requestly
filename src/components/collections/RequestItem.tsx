@@ -36,15 +36,23 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
   const [editName, setEditName] = useState(request.name);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
-  const { tabs, openTab, setActiveTab, updateTabState } = useTabsStore();
-  const { updateRequest, deleteRequest, addRequest } = useCollectionsStore();
+  const openTabForRequest = useTabsStore((s) =>
+    s.tabs.find((t) => t.requestId === request.id),
+  );
+  // Selecting actions individually: they're stable function references so
+  // these selectors never trigger a re-render when tab state changes.
+  const openTab = useTabsStore((s) => s.openTab);
+  const setActiveTab = useTabsStore((s) => s.setActiveTab);
+  const updateTabState = useTabsStore((s) => s.updateTabState);
+  const updateRequest = useCollectionsStore((s) => s.updateRequest);
+  const deleteRequest = useCollectionsStore((s) => s.deleteRequest);
+  const addRequest = useCollectionsStore((s) => s.addRequest);
   const showHealthMonitor = useSettingsStore((s) => s.showHealthMonitor);
 
   function handleOpen() {
     if (isEditing) return;
-    const existing = tabs.find((t) => t.requestId === request.id);
-    if (existing) {
-      setActiveTab(existing.tabId);
+    if (openTabForRequest) {
+      setActiveTab(openTabForRequest.tabId);
       return;
     }
     openTab({
@@ -67,11 +75,10 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
     if (trimmed && trimmed !== request.name) {
       updateRequest(request.id, { name: trimmed });
       // Sync the name on any open tab that references this request
-      const openTab = tabs.find((t) => t.requestId === request.id);
-      if (openTab) {
-        updateTabState(openTab.tabId, {
+      if (openTabForRequest) {
+        updateTabState(openTabForRequest.tabId, {
           name: trimmed,
-          isDirty: openTab.isDirty,
+          isDirty: openTabForRequest.isDirty,
         });
       }
     }

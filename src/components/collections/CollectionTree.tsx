@@ -36,7 +36,7 @@ import { Input } from "@/components/ui/input";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
-import { RequestItem } from "./RequestItem";
+import { VirtualizedRequestList } from "./VirtualizedRequestList";
 
 export function CollectionTree() {
   const {
@@ -46,7 +46,10 @@ export function CollectionTree() {
     renameCollection,
     deleteCollection,
   } = useCollectionsStore();
-  const { activeTabId, tabs } = useTabsStore();
+  const activeRequestId = useTabsStore((s) => {
+    const activeTab = s.tabs.find((t) => t.tabId === s.activeTabId);
+    return activeTab?.requestId ?? null;
+  });
 
   const { isCreatingCollection, setIsCreatingCollection } = useUIStore();
 
@@ -55,8 +58,6 @@ export function CollectionTree() {
   const [newCollectionName, setNewCollectionName] = useState("");
   const router = useRouter();
   const newCollectionInputRef = useRef<HTMLInputElement>(null);
-
-  const activeTab = tabs.find((t) => t.tabId === activeTabId);
 
   // autoFocus won't work when the accordion is animating open (overflow:hidden).
   // Defer focus to after the animation completes.
@@ -271,15 +272,10 @@ export function CollectionTree() {
                     No requests yet
                   </p>
                 ) : (
-                  <div className="space-y-0.5">
-                    {collectionRequests.map((req) => (
-                      <RequestItem
-                        key={req.id}
-                        request={req}
-                        isActive={activeTab?.requestId === req.id}
-                      />
-                    ))}
-                  </div>
+                  <VirtualizedRequestList
+                    requests={collectionRequests}
+                    activeRequestId={activeRequestId}
+                  />
                 )}
               </AccordionContent>
             </AccordionItem>
