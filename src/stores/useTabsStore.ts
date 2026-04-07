@@ -143,7 +143,8 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
         t.tabId === tabId ? { ...t, isDirty: true, ...patch } : t,
       ),
     }));
-    persistTabs(get().tabs);
+    // No persistence here — tabs are only written to DB on explicit Save
+    // (and on open/close to maintain the tab list across reloads).
   },
 
   async hydrate() {

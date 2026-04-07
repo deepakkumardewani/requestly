@@ -14,6 +14,10 @@ type CollectionsState = {
 
 type CollectionsActions = {
   createCollection: (name: string) => CollectionModel;
+  bulkImportCollection: (
+    collection: CollectionModel,
+    requests: RequestModel[],
+  ) => void;
   renameCollection: (id: string, name: string) => void;
   deleteCollection: (id: string) => void;
   addRequest: (collectionId: string, tab: TabState) => RequestModel;
@@ -91,6 +95,17 @@ export const useCollectionsStore = create<
     set((state) => ({ collections: [...state.collections, collection] }));
     persistCollection(collection);
     return collection;
+  },
+
+  bulkImportCollection(collection, requests) {
+    set((state) => ({
+      collections: [...state.collections, collection],
+      requests: [...state.requests, ...requests],
+    }));
+    persistCollection(collection);
+    for (const request of requests) {
+      persistRequest(request);
+    }
   },
 
   renameCollection(id, name) {

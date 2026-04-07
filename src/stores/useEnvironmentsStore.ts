@@ -15,6 +15,7 @@ type EnvironmentsState = {
 
 type EnvironmentsActions = {
   createEnv: (name: string) => EnvironmentModel;
+  importEnv: (env: EnvironmentModel) => void;
   updateEnv: (id: string, patch: Partial<EnvironmentModel>) => void;
   deleteEnv: (id: string) => void;
   setActiveEnv: (id: string | null) => void;
@@ -65,6 +66,11 @@ export const useEnvironmentsStore = create<
     set((state) => ({ environments: [...state.environments, env] }));
     persistEnv(env);
     return env;
+  },
+
+  importEnv(env) {
+    set((state) => ({ environments: [...state.environments, env] }));
+    persistEnv(env);
   },
 
   updateEnv(id, patch) {
