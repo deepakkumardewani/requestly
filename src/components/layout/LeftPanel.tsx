@@ -4,6 +4,7 @@ import {
   Braces,
   FolderOpen,
   GitCompare,
+  Globe,
   History,
   Settings,
 } from "lucide-react";
@@ -12,6 +13,7 @@ import { useState } from "react";
 import { EnvManagerDialog } from "@/components/environment/EnvManagerDialog";
 import { EnvSelector } from "@/components/environment/EnvSelector";
 import { HistoryList } from "@/components/history/HistoryList";
+import { HubTab } from "@/components/hub/HubTab";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -146,6 +148,21 @@ export function LeftPanel() {
                   </TooltipTrigger>
                   <TooltipContent side="bottom">History</TooltipContent>
                 </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <TabsTrigger
+                        value="hub"
+                        className="h-8 w-8 px-0"
+                        aria-label="API Hub"
+                      />
+                    }
+                  >
+                    <Globe className="h-4 w-4" />
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">API Hub</TooltipContent>
+                </Tooltip>
               </TooltipProvider>
             </TabsList>
           </div>
@@ -181,6 +198,13 @@ export function LeftPanel() {
                 className="mt-0 min-h-0 flex-1 overflow-hidden"
               >
                 <HistoryList filter={query || undefined} />
+              </TabsContent>
+
+              <TabsContent
+                value="hub"
+                className="mt-0 min-h-0 flex-1 overflow-hidden"
+              >
+                <HubTab />
               </TabsContent>
             </>
           )}
