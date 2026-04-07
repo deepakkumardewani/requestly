@@ -1,0 +1,11 @@
+{
+  "id": "1forge.com-default-env",
+  "name": "1Forge Finance",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://1forge.com/forex-quotes",
+      "secret": false
+    }
+  ]
+}
