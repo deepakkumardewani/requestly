@@ -14,6 +14,7 @@ import { EnvManagerDialog } from "@/components/environment/EnvManagerDialog";
 import { EnvSelector } from "@/components/environment/EnvSelector";
 import { HistoryList } from "@/components/history/HistoryList";
 import { HubTab } from "@/components/hub/HubTab";
+import { ImportDialog } from "@/components/import/ImportDialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,6 +30,7 @@ import { SidebarSearchInput, SidebarSearchResults } from "./SidebarSearch";
 
 export function LeftPanel() {
   const [isCreatingChain, setIsCreatingChain] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState("collections");
 
@@ -173,7 +175,10 @@ export function LeftPanel() {
               query={query}
               onQueryChange={handleQueryChange}
             />
-            <CreateNewDropdown onNewChain={() => setIsCreatingChain(true)} />
+            <CreateNewDropdown
+              onNewChain={() => setIsCreatingChain(true)}
+              onImport={() => setIsImportOpen(true)}
+            />
           </div>
 
           {/* Content — on collections tab, query shows cross-resource search results;
@@ -212,6 +217,10 @@ export function LeftPanel() {
       </div>
 
       <EnvManagerDialog />
+      <ImportDialog
+        open={isImportOpen}
+        onClose={() => setIsImportOpen(false)}
+      />
     </>
   );
 }

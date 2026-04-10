@@ -8,6 +8,7 @@ import {
   Globe,
   Globe2,
   Plus,
+  Upload,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,9 +24,13 @@ import { useUIStore } from "@/stores/useUIStore";
 
 type CreateNewDropdownProps = {
   onNewChain: () => void;
+  onImport: () => void;
 };
 
-export function CreateNewDropdown({ onNewChain }: CreateNewDropdownProps) {
+export function CreateNewDropdown({
+  onNewChain,
+  onImport,
+}: CreateNewDropdownProps) {
   const openTab = useTabsStore((s) => s.openTab);
   const { setIsCreatingCollection, setIsCreatingEnv } = useUIStore();
 
@@ -70,6 +75,13 @@ export function CreateNewDropdown({ onNewChain }: CreateNewDropdownProps) {
         <DropdownMenuItem onClick={onNewChain}>
           <GitBranch className="mr-2 h-3.5 w-3.5" />
           Chain
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem onClick={onImport}>
+          <Upload className="mr-2 h-3.5 w-3.5" />
+          Import
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
