@@ -78,6 +78,24 @@ function isHttpMethod(value: string): value is HttpMethod {
   return HTTP_METHODS.includes(value.toUpperCase() as HttpMethod);
 }
 
+// Flags that take no argument (boolean flags) — used to avoid consuming next token as their value
+const BOOLEAN_FLAGS = new Set([
+  "--location",
+  "-L",
+  "--silent",
+  "-s",
+  "--verbose",
+  "-v",
+  "--include",
+  "-i",
+  "--compressed",
+  "--no-keepalive",
+  "--insecure",
+  "-k",
+  "--fail",
+  "-f",
+]);
+
 export function parseCurl(input: string): ParsedCurl {
   const joined = joinContinuations(input.trim());
   const tokens = tokenize(joined);
@@ -91,6 +109,7 @@ export function parseCurl(input: string): ParsedCurl {
   const rawHeaders: Array<{ key: string; value: string }> = [];
   let bodyContent = "";
   let basicAuth: { username: string; password: string } | null = null;
+  const urlencodedParts: string[] = [];
 
   let i = 1;
   while (i < tokens.length) {
@@ -115,6 +134,9 @@ export function parseCurl(input: string): ParsedCurl {
     ) {
       i++;
       bodyContent = tokens[i] ?? "";
+    } else if (flag === "--data-urlencode") {
+      i++;
+      urlencodedParts.push(tokens[i] ?? "");
     } else if (flag === "-u" || flag === "--user") {
       i++;
       const parts = (tokens[i] ?? "").split(":");
@@ -122,11 +144,13 @@ export function parseCurl(input: string): ParsedCurl {
         username: parts[0] ?? "",
         password: parts[1] ?? "",
       };
+    } else if (BOOLEAN_FLAGS.has(flag)) {
+      // Boolean flags — consume no argument, just skip
     } else if (!flag.startsWith("-")) {
-      // Bare URL
-      url = flag;
+      // Bare URL (only set once — first bare token after "curl" is the URL)
+      if (!url) url = flag;
     }
-    // Skip unrecognized flags and their potential values
+    // Skip unrecognized flags with arguments — they will have consumed their own value next iteration
     i++;
   }
 
@@ -134,9 +158,11 @@ export function parseCurl(input: string): ParsedCurl {
     throw new CurlParseError("No URL found in cURL command");
   }
 
+  const hasBody = Boolean(bodyContent) || urlencodedParts.length > 0;
+
   // Infer method from body
   if (!method) {
-    method = bodyContent ? "POST" : "GET";
+    method = hasBody ? "POST" : "GET";
   }
 
   const headers: KVPair[] = rawHeaders.map((h) => ({
@@ -148,7 +174,25 @@ export function parseCurl(input: string): ParsedCurl {
 
   // Determine body config
   let body: BodyConfig = { type: "none", content: "" };
-  if (bodyContent) {
+
+  if (urlencodedParts.length > 0) {
+    // --data-urlencode flags → urlencoded formData KV pairs
+    const formData: KVPair[] = urlencodedParts.map((part) => {
+      const eqIdx = part.indexOf("=");
+      if (eqIdx === -1)
+        return { id: generateId(), key: part, value: "", enabled: true };
+      return {
+        id: generateId(),
+        key: part.slice(0, eqIdx),
+        value: part.slice(eqIdx + 1),
+        enabled: true,
+      };
+    });
+    const content = formData
+      .map((f) => `${encodeURIComponent(f.key)}=${encodeURIComponent(f.value)}`)
+      .join("&");
+    body = { type: "urlencoded", content, formData };
+  } else if (bodyContent) {
     const contentTypeHeader = rawHeaders.find(
       (h) => h.key.toLowerCase() === "content-type",
     );
