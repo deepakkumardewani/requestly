@@ -97,7 +97,7 @@ async function expandFirstCollection(page: Page) {
  * Hovers a collection row and opens its more-menu (⋯ button).
  * Returns the collection accordion-item locator so callers can filter.
  */
-async function openCollectionMenu(
+async function _openCollectionMenu(
   page: Page,
   collectionTestId: string,
 ): Promise<Locator> {

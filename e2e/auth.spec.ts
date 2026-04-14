@@ -110,7 +110,7 @@ test.describe("Request Authentication", () => {
     await expect(badge).toBeVisible({ timeout: 15000 });
     await expect(badge).toHaveText("200");
 
-    expect(payload.headers["Authorization"]).toBeUndefined();
+    expect(payload.headers.Authorization).toBeUndefined();
   });
 
   test("Send a request with Bearer token", async ({ page }) => {
@@ -127,7 +127,7 @@ test.describe("Request Authentication", () => {
     const badge = page.getByTestId("response-status-badge");
     await expect(badge).toBeVisible({ timeout: 15000 });
 
-    expect(payload.headers["Authorization"]).toBe(`Bearer ${token}`);
+    expect(payload.headers.Authorization).toBe(`Bearer ${token}`);
   });
 
   test("Send a request with Basic Auth", async ({ page }) => {
@@ -148,7 +148,7 @@ test.describe("Request Authentication", () => {
     const badge = page.getByTestId("response-status-badge");
     await expect(badge).toBeVisible({ timeout: 15000 });
 
-    expect(payload.headers["Authorization"]).toBe(`Basic ${expectedBase64}`);
+    expect(payload.headers.Authorization).toBe(`Basic ${expectedBase64}`);
   });
 
   test("Send a request with API Key in header", async ({ page }) => {
@@ -215,6 +215,6 @@ test.describe("Request Authentication", () => {
     const badge = page.getByTestId("response-status-badge");
     await expect(badge).toBeVisible({ timeout: 15000 });
 
-    expect(payload.headers["Authorization"]).toBeUndefined();
+    expect(payload.headers.Authorization).toBeUndefined();
   });
 });

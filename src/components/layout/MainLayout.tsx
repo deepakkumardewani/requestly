@@ -10,7 +10,6 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useCloseTabGuard } from "@/hooks/useCloseTabGuard";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useMethodTheme } from "@/hooks/useMethodTheme";
@@ -27,8 +26,6 @@ export function MainLayout() {
   const { openTab, tabs } = useTabsStore();
 
   const {
-    mobileSidebarOpen,
-    toggleMobileSidebar,
     saveModalOpen,
     setSaveModalOpen,
     setIsCreatingCollection,
