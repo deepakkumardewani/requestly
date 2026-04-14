@@ -16,6 +16,7 @@ type ConfirmDeleteDialogProps = {
   onOpenChange: (open: boolean) => void;
   title: string;
   description: string;
+  confirmLabel?: string;
   onConfirm: () => void;
 };
 
@@ -24,6 +25,7 @@ export function ConfirmDeleteDialog({
   onOpenChange,
   title,
   description,
+  confirmLabel = "Yes, delete",
   onConfirm,
 }: ConfirmDeleteDialogProps) {
   return (
@@ -39,7 +41,7 @@ export function ConfirmDeleteDialog({
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             onClick={onConfirm}
           >
-            Yes, delete request
+            {confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

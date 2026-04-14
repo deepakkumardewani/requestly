@@ -87,6 +87,7 @@ export function GeneralSection({
             size="sm"
             className="gap-2"
             onClick={onClearHistoryClick}
+            data-testid="clear-history-btn"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Clear History

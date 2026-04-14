@@ -1,10 +1,11 @@
 "use client";
 
-import { Globe2, Plus } from "lucide-react";
+import { Globe2, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { ChainList } from "@/components/chain/ChainList";
 import { CollectionTree } from "@/components/collections/CollectionTree";
+import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { EmptyState } from "@/components/common/EmptyState";
 import {
   Accordion,
@@ -13,16 +14,31 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useUIStore } from "@/stores/useUIStore";
 
 function EnvSidebarList() {
-  const { environments, activeEnvId, setActiveEnv, createEnv } =
+  const { environments, activeEnvId, setActiveEnv, createEnv, deleteEnv } =
     useEnvironmentsStore();
   const { setEnvManagerOpen, isCreatingEnv, setIsCreatingEnv } = useUIStore();
   const [newEnvName, setNewEnvName] = useState("");
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const newEnvInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -30,6 +46,16 @@ function EnvSidebarList() {
     const timer = setTimeout(() => newEnvInputRef.current?.focus(), 150);
     return () => clearTimeout(timer);
   }, [isCreatingEnv]);
+
+  function handleConfirmDelete(envId: string) {
+    if (activeEnvId === envId) setActiveEnv(null);
+    deleteEnv(envId);
+    setPendingDeleteId(null);
+  }
+
+  const pendingEnvName = environments.find(
+    (e) => e.id === pendingDeleteId,
+  )?.name;
 
   return (
     <div className="space-y-0.5 py-1">
@@ -69,27 +95,84 @@ function EnvSidebarList() {
         </div>
       ) : (
         environments.map((env) => (
-          <button
-            key={env.id}
-            type="button"
-            className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-left hover:bg-muted ${
-              env.id === activeEnvId ? "text-method-accent" : ""
-            }`}
-            onClick={() => {
-              setActiveEnv(env.id === activeEnvId ? null : env.id);
-              setEnvManagerOpen(true, env.id);
-            }}
-          >
-            <Globe2 className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-            <span className="truncate text-sm">{env.name}</span>
-            {env.id === activeEnvId && (
-              <span className="ml-auto text-[10px] font-medium text-method-accent">
-                active
-              </span>
-            )}
-          </button>
+          <ContextMenu key={env.id}>
+            <ContextMenuTrigger>
+              <div
+                className={`group flex w-full items-center gap-2 rounded px-2 py-1.5 text-left hover:bg-muted ${
+                  env.id === activeEnvId ? "text-method-accent" : ""
+                }`}
+                onClick={() => {
+                  setActiveEnv(env.id === activeEnvId ? null : env.id);
+                  setEnvManagerOpen(true, env.id);
+                }}
+              >
+                <Globe2 className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                <span className="flex-1 truncate text-sm">{env.name}</span>
+                {env.id === activeEnvId && (
+                  <span className="text-[10px] font-medium text-method-accent group-hover:hidden">
+                    active
+                  </span>
+                )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-white/20"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MoreHorizontal className="h-3 w-3" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEnvManagerOpen(true, env.id);
+                      }}
+                    >
+                      <Pencil className="mr-2 h-3.5 w-3.5" />
+                      Rename
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPendingDeleteId(env.id);
+                      }}
+                    >
+                      <Trash2 className="mr-2 h-3.5 w-3.5" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuItem onClick={() => setEnvManagerOpen(true, env.id)}>
+                <Pencil className="mr-2 h-3.5 w-3.5" />
+                Rename
+              </ContextMenuItem>
+              <ContextMenuSeparator />
+              <ContextMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={() => setPendingDeleteId(env.id)}
+              >
+                <Trash2 className="mr-2 h-3.5 w-3.5" />
+                Delete
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
         ))
       )}
+
+      <ConfirmDeleteDialog
+        open={pendingDeleteId !== null}
+        onOpenChange={(open) => !open && setPendingDeleteId(null)}
+        title="Delete Environment"
+        description={`"${pendingEnvName ?? "This environment"}" and all its variables will be permanently deleted.`}
+        confirmLabel="Yes, delete environment"
+        onConfirm={() =>
+          pendingDeleteId && handleConfirmDelete(pendingDeleteId)
+        }
+      />
     </div>
   );
 }

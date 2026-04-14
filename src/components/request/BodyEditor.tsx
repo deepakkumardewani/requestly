@@ -65,12 +65,20 @@ export function BodyEditor({ tabId }: BodyEditorProps) {
       <div className="flex items-center gap-2 border-b px-3 py-1.5">
         <span className="text-xs text-muted-foreground">Body:</span>
         <Select value={body.type} onValueChange={handleTypeChange}>
-          <SelectTrigger className="h-6 w-40 border-0 bg-transparent text-xs shadow-none focus:ring-0">
+          <SelectTrigger
+            data-testid="body-type-selector"
+            className="h-6 w-40 border-0 bg-transparent text-xs shadow-none focus:ring-0"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {BODY_TYPES.map((t) => (
-              <SelectItem key={t.value} value={t.value} className="text-xs">
+              <SelectItem
+                key={t.value}
+                value={t.value}
+                data-testid={`body-type-${t.value}`}
+                className="text-xs"
+              >
                 {t.label}
               </SelectItem>
             ))}
@@ -79,7 +87,7 @@ export function BodyEditor({ tabId }: BodyEditorProps) {
       </div>
 
       {/* Body content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto" data-testid="body-editor">
         {body.type === "none" && (
           <div className="flex h-full items-center justify-center">
             <p className="text-xs text-muted-foreground">

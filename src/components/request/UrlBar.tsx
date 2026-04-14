@@ -120,14 +120,21 @@ export function UrlBar({ tabId }: UrlBarProps) {
     <div className="flex items-center gap-2 border-b border-border bg-background px-3 py-2">
       {/* Method Selector */}
       <Select value={tab.method} onValueChange={handleMethodChange}>
-        <SelectTrigger className="h-8 w-[110px] shrink-0 border-method-accent/20 bg-method-accent/5 text-xs font-medium">
+        <SelectTrigger
+          data-testid="method-selector"
+          className="h-8 w-[110px] shrink-0 border-method-accent/20 bg-method-accent/5 text-xs font-medium"
+        >
           <SelectValue>
             <MethodBadge method={tab.method} />
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {HTTP_METHODS.map((m) => (
-            <SelectItem key={m} value={m}>
+            <SelectItem
+              key={m}
+              value={m}
+              data-testid={`method-${m.toLowerCase()}`}
+            >
               <MethodBadge method={m} />
             </SelectItem>
           ))}
@@ -140,6 +147,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
         placeholder="https://api.example.com/v1/users"
         onChange={(e) => handleUrlChange(e.target.value)}
         onPaste={handlePaste}
+        data-testid="url-input"
         onKeyDown={(e) => {
           if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
             e.preventDefault();
@@ -171,6 +179,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
                   className="h-8 gap-1.5 text-xs"
                   onClick={save}
                   disabled={!!tab.requestId && !tab.isDirty}
+                  data-testid="save-request-btn"
                 />
               }
             >
@@ -189,6 +198,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
                   size="sm"
                   className="h-8 min-w-[80px] gap-1.5 bg-method-accent text-[#0d1117] text-xs font-semibold hover:bg-method-accent/90"
                   onClick={isLoading ? cancel : send}
+                  data-testid="send-request-btn"
                 />
               }
             >

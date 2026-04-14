@@ -40,9 +40,16 @@ export function ShortcutsSection() {
 
       <div className="space-y-4">
         {SHORTCUT_GROUPS.map(({ label, shortcuts }) => (
-          <div key={label} className="rounded-lg border">
+          <div
+            key={label}
+            className="rounded-lg border"
+            data-testid="shortcut-group"
+          >
             <div className="border-b bg-muted/40 px-4 py-2">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <span
+                className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground"
+                data-testid="shortcut-group-label"
+              >
                 {label}
               </span>
             </div>

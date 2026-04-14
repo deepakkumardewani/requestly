@@ -60,12 +60,20 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
       <div className="space-y-1.5">
         <Label className="text-xs">Auth Type</Label>
         <Select value={auth.type} onValueChange={handleTypeChange}>
-          <SelectTrigger className="h-8 w-56 text-xs">
+          <SelectTrigger
+            className="h-8 w-56 text-xs"
+            data-testid="auth-type-selector"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {AUTH_TYPES.map((t) => (
-              <SelectItem key={t.value} value={t.value} className="text-xs">
+              <SelectItem
+                key={t.value}
+                value={t.value}
+                className="text-xs"
+                data-testid={`auth-type-${t.value}`}
+              >
                 {t.label}
               </SelectItem>
             ))}
@@ -79,6 +87,7 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
           <Input
             className="h-8 font-mono text-xs"
             type="password"
+            data-testid="auth-bearer-token"
             value={auth.token}
             placeholder="Bearer token..."
             onChange={(e) =>
@@ -96,6 +105,7 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
             <Label className="text-xs">Username</Label>
             <Input
               className="h-8 text-xs"
+              data-testid="auth-basic-username"
               value={auth.username}
               placeholder="username"
               onChange={(e) =>
@@ -110,6 +120,7 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
             <Input
               className="h-8 text-xs"
               type="password"
+              data-testid="auth-basic-password"
               value={auth.password}
               placeholder="password"
               onChange={(e) =>
@@ -129,6 +140,7 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
               <Label className="text-xs">Key Name</Label>
               <Input
                 className="h-8 text-xs"
+                data-testid="auth-apikey-name"
                 value={auth.key}
                 placeholder="X-API-Key"
                 onChange={(e) =>
@@ -143,6 +155,7 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
               <Input
                 className="h-8 font-mono text-xs"
                 type="password"
+                data-testid="auth-apikey-value"
                 value={auth.value}
                 placeholder="your-api-key"
                 onChange={(e) =>
@@ -165,14 +178,25 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
                 });
               }}
             >
-              <SelectTrigger className="h-8 w-40 text-xs">
+              <SelectTrigger
+                className="h-8 w-40 text-xs"
+                data-testid="auth-apikey-addto"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="header" className="text-xs">
+                <SelectItem
+                  value="header"
+                  className="text-xs"
+                  data-testid="auth-apikey-addto-header"
+                >
                   Header
                 </SelectItem>
-                <SelectItem value="query" className="text-xs">
+                <SelectItem
+                  value="query"
+                  className="text-xs"
+                  data-testid="auth-apikey-addto-query"
+                >
                   Query Param
                 </SelectItem>
               </SelectContent>

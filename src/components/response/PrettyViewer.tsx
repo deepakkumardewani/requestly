@@ -42,7 +42,7 @@ export function PrettyViewer({ body, contentType = "" }: PrettyViewerProps) {
   }
 
   return (
-    <div className="h-full">
+    <div className="h-full" data-testid="response-pretty-viewer">
       <CodeEditor
         value={displayBody}
         language={isJson ? "json" : "text"}

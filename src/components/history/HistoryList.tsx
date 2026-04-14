@@ -35,7 +35,10 @@ export function HistoryList({ compact = false, filter }: HistoryListProps) {
   const displayed = compact ? filtered.slice(0, 20) : filtered;
 
   return (
-    <div className={`flex flex-col ${compact ? "" : "h-full"}`}>
+    <div
+      data-testid="history-list"
+      className={`flex flex-col ${compact ? "" : "h-full"}`}
+    >
       {displayed.length === 0 ? (
         <EmptyState
           title={activeFilter ? "No matches" : "No history yet"}

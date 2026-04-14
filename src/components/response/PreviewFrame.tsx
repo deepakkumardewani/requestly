@@ -9,7 +9,10 @@ export function PreviewFrame({ body, contentType = "" }: PreviewFrameProps) {
 
   if (!isHtml) {
     return (
-      <div className="flex h-full items-center justify-center">
+      <div
+        className="flex h-full items-center justify-center"
+        data-testid="response-preview-not-html"
+      >
         <p className="text-xs text-muted-foreground">
           Preview is only available for HTML responses
         </p>
@@ -23,6 +26,7 @@ export function PreviewFrame({ body, contentType = "" }: PreviewFrameProps) {
       className="h-full w-full border-0 bg-white"
       sandbox="allow-scripts"
       srcDoc={body}
+      data-testid="response-preview-iframe"
     />
   );
 }

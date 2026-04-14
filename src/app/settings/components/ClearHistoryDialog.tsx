@@ -28,7 +28,11 @@ export function ClearHistoryDialog({ open, onOpenChange, onConfirm }: Props) {
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={onConfirm}>
+          <Button
+            variant="destructive"
+            onClick={onConfirm}
+            data-testid="confirm-clear-history-btn"
+          >
             Clear History
           </Button>
         </DialogFooter>

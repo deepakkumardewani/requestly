@@ -88,9 +88,10 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
               const masked =
                 variable.isSecret && !visibleSecrets.has(variable.id);
               return (
-                <TableRow key={variable.id}>
+                <TableRow key={variable.id} data-testid="var-row">
                   <TableCell className="py-1">
                     <Input
+                      data-testid="var-key-input"
                       className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
                       value={variable.key}
                       placeholder="VARIABLE_NAME"
@@ -101,6 +102,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                   </TableCell>
                   <TableCell className="py-1">
                     <Input
+                      data-testid="var-initial-value-input"
                       className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
                       type={masked ? "password" : "text"}
                       value={variable.initialValue}
@@ -114,6 +116,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                   </TableCell>
                   <TableCell className="py-1">
                     <Input
+                      data-testid="var-current-value-input"
                       className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
                       type={masked ? "password" : "text"}
                       value={variable.currentValue}
@@ -130,6 +133,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                   <TableCell className="py-1">
                     <div className="flex items-center justify-center gap-1.5">
                       <Checkbox
+                        data-testid="var-secret-checkbox"
                         checked={variable.isSecret}
                         onCheckedChange={(checked) => {
                           updateVariable(variable.id, {
@@ -148,6 +152,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                         <Button
                           variant="ghost"
                           size="icon-xs"
+                          data-testid="var-secret-toggle"
                           onClick={() => toggleSecretVisibility(variable.id)}
                         >
                           {visibleSecrets.has(variable.id) ? (
@@ -164,6 +169,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                     <Button
                       variant="ghost"
                       size="icon-xs"
+                      data-testid="var-delete-btn"
                       onClick={() => deleteVariable(variable.id)}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -179,6 +185,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
       <Button
         variant="outline"
         size="sm"
+        data-testid="add-variable-btn"
         className="mt-3 w-full border-dashed text-xs text-muted-foreground"
         onClick={addVariable}
       >

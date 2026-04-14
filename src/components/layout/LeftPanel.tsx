@@ -92,6 +92,7 @@ export function LeftPanel() {
                       variant="ghost"
                       size="icon-sm"
                       aria-label="Settings"
+                      data-testid="sidebar-settings-btn"
                       render={<Link href="/settings" />}
                     />
                   }
@@ -128,6 +129,7 @@ export function LeftPanel() {
                         value="collections"
                         className="h-8 w-8 px-0"
                         aria-label="Collections"
+                        data-testid="sidebar-tab-collections"
                       />
                     }
                   >
@@ -143,6 +145,7 @@ export function LeftPanel() {
                         value="history"
                         className="h-8 w-8 px-0"
                         aria-label="History"
+                        data-testid="sidebar-tab-history"
                       />
                     }
                   >

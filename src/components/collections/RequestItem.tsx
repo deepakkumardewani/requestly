@@ -108,6 +108,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
         <div
           role="button"
           tabIndex={0}
+          data-testid="request-item"
           className={`group flex items-center gap-2 rounded px-2 py-1.5 text-sm transition-colors cursor-pointer ${
             isActive
               ? "border-l-2 border-l-method-accent bg-method-accent/10 pl-[calc(0.5rem-2px)]"
@@ -145,11 +146,13 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
             <DropdownMenuTrigger
               className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-white/20"
               onClick={(e) => e.stopPropagation()}
+              data-testid="request-item-more-btn"
             >
               <MoreHorizontal className="h-3 w-3" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
+                data-testid="request-rename-btn"
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsEditing(true);
@@ -170,6 +173,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
+                data-testid="request-delete-btn"
                 onClick={(e) => {
                   e.stopPropagation();
                   setConfirmDeleteOpen(true);

@@ -38,7 +38,7 @@ export function RawViewer({ body }: RawViewerProps) {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col" data-testid="response-raw-viewer">
       <div className="flex items-center justify-between border-b px-3 py-1">
         <span className="text-[11px] text-muted-foreground">
           {formatBytes(bytes)}
@@ -73,7 +73,10 @@ export function RawViewer({ body }: RawViewerProps) {
       )}
 
       <ScrollArea className="flex-1">
-        <pre className="p-3 font-mono text-[11px] leading-relaxed whitespace-pre-wrap break-all">
+        <pre
+          className="p-3 font-mono text-[11px] leading-relaxed whitespace-pre-wrap break-all"
+          data-testid="response-raw-body"
+        >
           {displayBody}
         </pre>
       </ScrollArea>

@@ -31,6 +31,7 @@ export function ProxySection({
             </p>
           </div>
           <Switch
+            data-testid="ssl-verification-switch"
             checked={sslVerify}
             onCheckedChange={(v) => setSetting("sslVerify", v)}
           />
@@ -44,6 +45,7 @@ export function ProxySection({
             </p>
           </div>
           <Switch
+            data-testid="follow-redirects-switch"
             checked={followRedirects}
             onCheckedChange={(v) => setSetting("followRedirects", v)}
           />
@@ -56,6 +58,7 @@ export function ProxySection({
           Override the proxy server URL for all requests
         </p>
         <Input
+          data-testid="proxy-url-input"
           className="h-8 font-mono text-xs"
           value={proxyUrl}
           placeholder="http://127.0.0.1:8080"

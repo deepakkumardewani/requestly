@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { EmptyState } from "@/components/common/EmptyState";
 import {
   Accordion,
@@ -56,6 +57,7 @@ export function CollectionTree() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [newCollectionName, setNewCollectionName] = useState("");
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const router = useRouter();
   const newCollectionInputRef = useRef<HTMLInputElement>(null);
 
@@ -92,6 +94,7 @@ export function CollectionTree() {
             className="h-7 w-full text-xs"
             value={newCollectionName}
             placeholder="Collection name"
+            data-testid="new-collection-name-input"
             onChange={(e) => setNewCollectionName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && newCollectionName.trim()) {
@@ -117,6 +120,7 @@ export function CollectionTree() {
             className="h-7 text-xs"
             value={newCollectionName}
             placeholder="Collection name"
+            data-testid="new-collection-name-input"
             onChange={(e) => setNewCollectionName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && newCollectionName.trim()) {
@@ -142,6 +146,7 @@ export function CollectionTree() {
               key={collection.id}
               value={collection.id}
               className="border-none"
+              data-testid={`collection-item-${collection.id}`}
             >
               <ContextMenu>
                 <ContextMenuTrigger>
@@ -157,6 +162,7 @@ export function CollectionTree() {
                             autoFocus
                             className="h-5 py-0 text-xs"
                             value={editName}
+                            data-testid="collection-rename-input"
                             onClick={(e) => e.stopPropagation()}
                             onChange={(e) => setEditName(e.target.value)}
                             onKeyDown={(e) => {
@@ -178,7 +184,10 @@ export function CollectionTree() {
                             }}
                           />
                         ) : (
-                          <span className="text-sm font-medium">
+                          <span
+                            className="text-sm font-medium"
+                            data-testid={`collection-name-${collection.id}`}
+                          >
                             {collection.name}
                           </span>
                         )}
@@ -205,11 +214,13 @@ export function CollectionTree() {
                         <DropdownMenuTrigger
                           className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-white/20"
                           onClick={(e) => e.stopPropagation()}
+                          data-testid={`collection-more-btn-${collection.id}`}
                         >
                           <MoreHorizontal className="h-3 w-3" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
+                            data-testid="collection-rename-btn"
                             onClick={() => {
                               setEditName(collection.name);
                               setEditingId(collection.id);
@@ -229,7 +240,8 @@ export function CollectionTree() {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             className="text-destructive focus:text-destructive"
-                            onClick={() => deleteCollection(collection.id)}
+                            data-testid="collection-delete-btn"
+                            onClick={() => setPendingDeleteId(collection.id)}
                           >
                             <Trash2 className="mr-2 h-3.5 w-3.5" />
                             Delete
@@ -258,7 +270,7 @@ export function CollectionTree() {
                   <ContextMenuSeparator />
                   <ContextMenuItem
                     className="text-destructive focus:text-destructive"
-                    onClick={() => deleteCollection(collection.id)}
+                    onClick={() => setPendingDeleteId(collection.id)}
                   >
                     <Trash2 className="mr-2 h-3.5 w-3.5" />
                     Delete
@@ -282,6 +294,18 @@ export function CollectionTree() {
           );
         })}
       </Accordion>
+
+      <ConfirmDeleteDialog
+        open={pendingDeleteId !== null}
+        onOpenChange={(open) => !open && setPendingDeleteId(null)}
+        title="Delete Collection"
+        description={`"${collections.find((c) => c.id === pendingDeleteId)?.name ?? "This collection"}" and all its requests will be permanently deleted.`}
+        confirmLabel="Yes, delete collection"
+        onConfirm={() => {
+          if (pendingDeleteId) deleteCollection(pendingDeleteId);
+          setPendingDeleteId(null);
+        }}
+      />
     </div>
   );
 }

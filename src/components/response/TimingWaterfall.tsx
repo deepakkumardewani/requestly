@@ -81,7 +81,10 @@ export function TimingWaterfall({ timing }: Props) {
 
   return (
     <TooltipProvider delay={100}>
-      <div className="flex flex-col gap-3 p-3">
+      <div
+        className="flex flex-col gap-3 p-3"
+        data-testid="response-timing-waterfall"
+      >
         {/* Stacked overview bar */}
         <div className="flex h-5 w-full overflow-hidden rounded">
           {segments.map((seg) => {
@@ -131,6 +134,7 @@ export function TimingWaterfall({ timing }: Props) {
                 key={seg.label}
                 className="grid items-center gap-x-2 py-[3px] text-[11px]"
                 style={{ gridTemplateColumns: "8px 52px 1fr 68px 28px" }}
+                data-testid="timing-row"
               >
                 {/* Swatch */}
                 {seg.value !== null ? (
@@ -145,7 +149,12 @@ export function TimingWaterfall({ timing }: Props) {
                 )}
 
                 {/* Label */}
-                <span className="text-muted-foreground">{seg.label}</span>
+                <span
+                  className="text-muted-foreground"
+                  data-testid="timing-label"
+                >
+                  {seg.label}
+                </span>
 
                 {/* Proportional mini-bar */}
                 <div
@@ -160,7 +169,10 @@ export function TimingWaterfall({ timing }: Props) {
                 </div>
 
                 {/* Value */}
-                <span className="text-right font-mono text-foreground">
+                <span
+                  className="text-right font-mono text-foreground"
+                  data-testid="timing-value"
+                >
                   {seg.value !== null ? formatMs(seg.value) : "N/A"}
                 </span>
 

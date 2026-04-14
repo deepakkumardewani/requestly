@@ -40,16 +40,23 @@ export function ErrorExplainer({
   if (!explanation || dismissed) return null;
 
   return (
-    <div className="shrink-0 border-b bg-amber-950/20">
+    <div
+      className="shrink-0 border-b bg-amber-950/20"
+      data-testid="error-explainer"
+    >
       {/* Header — full row is clickable to toggle expand */}
       <button
         type="button"
         className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left"
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
+        data-testid="error-explainer-toggle"
       >
         <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-400" />
-        <span className="flex-1 text-xs font-medium text-amber-300">
+        <span
+          className="flex-1 text-xs font-medium text-amber-300"
+          data-testid="error-explainer-title"
+        >
           Why did this fail?
         </span>
         {expanded ? (

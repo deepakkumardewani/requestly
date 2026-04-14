@@ -79,6 +79,7 @@ export function KVTable({
           >
             {!readOnly && !hideCheckbox ? (
               <Checkbox
+                data-testid={`row-enable-${row.id}`}
                 className="h-3.5 w-3.5"
                 checked={row.enabled}
                 onCheckedChange={(checked) =>
@@ -90,6 +91,7 @@ export function KVTable({
             )}
 
             <Input
+              data-testid={`row-key-${row.id}`}
               className={`h-7 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-1 ${
                 !row.enabled ? "opacity-40" : ""
               } ${readOnlyKeys ? "text-muted-foreground" : ""}`}
@@ -101,6 +103,7 @@ export function KVTable({
 
             {readOnly ? (
               <Input
+                data-testid={`row-value-${row.id}`}
                 className={`h-7 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-1 ${
                   !row.enabled ? "opacity-40" : ""
                 }`}
@@ -110,6 +113,7 @@ export function KVTable({
               />
             ) : (
               <EnvAutocompleteInput
+                data-testid={`row-value-${row.id}`}
                 className={`${VALUE_INPUT_CLASS} ${!row.enabled ? "opacity-40" : ""}`}
                 value={row.value}
                 placeholder={valuePlaceholder}
@@ -120,6 +124,7 @@ export function KVTable({
             {!readOnly && !readOnlyKeys ? (
               <button
                 type="button"
+                data-testid={`row-delete-${row.id}`}
                 onClick={() => deleteRow(row.id)}
                 className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-colors hover:text-destructive"
               >
@@ -136,6 +141,7 @@ export function KVTable({
           <div className="grid grid-cols-[auto_1fr_1fr_auto] items-center gap-1 px-2 py-0.5">
             <span className="h-3.5 w-3.5" />
             <Input
+              data-testid="draft-row-key"
               className="h-7 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-1"
               value={draftKey}
               placeholder={keyPlaceholder}
@@ -143,6 +149,7 @@ export function KVTable({
               onBlur={handleDraftKeyBlur}
             />
             <EnvAutocompleteInput
+              data-testid="draft-row-value"
               ref={draftValueRef}
               className={VALUE_INPUT_CLASS}
               value={draftValue}

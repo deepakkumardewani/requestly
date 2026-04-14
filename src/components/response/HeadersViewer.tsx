@@ -31,7 +31,7 @@ export function HeadersViewer({ headers }: HeadersViewerProps) {
 
   return (
     <ScrollArea className="h-full">
-      <Table>
+      <Table data-testid="response-headers-table">
         <TableHeader>
           <TableRow>
             <TableHead className="h-7 text-xs">Name</TableHead>
@@ -41,11 +41,21 @@ export function HeadersViewer({ headers }: HeadersViewerProps) {
         </TableHeader>
         <TableBody>
           {entries.map(([key, value]) => (
-            <TableRow key={key} className="group">
-              <TableCell className="py-1 font-mono text-[11px] font-medium">
+            <TableRow
+              key={key}
+              className="group"
+              data-testid="response-header-row"
+            >
+              <TableCell
+                className="py-1 font-mono text-[11px] font-medium"
+                data-testid="response-header-name"
+              >
                 {key}
               </TableCell>
-              <TableCell className="py-1 font-mono text-[11px] text-muted-foreground">
+              <TableCell
+                className="py-1 font-mono text-[11px] text-muted-foreground"
+                data-testid="response-header-value"
+              >
                 {value}
               </TableCell>
               <TableCell className="py-1">
@@ -54,6 +64,7 @@ export function HeadersViewer({ headers }: HeadersViewerProps) {
                   size="icon-xs"
                   className="opacity-0 group-hover:opacity-100"
                   onClick={() => copyHeader(key, value)}
+                  data-testid="response-header-copy-btn"
                 >
                   <Copy className="h-3 w-3" />
                 </Button>

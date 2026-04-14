@@ -41,11 +41,17 @@ export function TabListDropdown() {
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
         aria-label="Show all tabs"
         title="Show all tabs"
+        data-testid="tabs-overflow-btn"
       >
         <ChevronDown className="h-4 w-4" />
       </PopoverTrigger>
 
-      <PopoverContent align="end" sideOffset={4} className="w-72 p-0">
+      <PopoverContent
+        align="end"
+        sideOffset={4}
+        className="w-72 p-0"
+        data-testid="tabs-popover-content"
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-3 py-2">
           <span className="text-xs font-medium text-muted-foreground">
@@ -73,6 +79,7 @@ export function TabListDropdown() {
             onChange={(e) => setSearch(e.target.value)}
             className="h-8 text-xs"
             autoFocus
+            data-testid="tabs-search-input"
           />
         </div>
 
@@ -92,6 +99,7 @@ export function TabListDropdown() {
                   key={tab.tabId}
                   role="button"
                   tabIndex={0}
+                  data-testid="tab-list-item"
                   onClick={() => handleSelectTab(tab.tabId)}
                   onKeyDown={(e) =>
                     e.key === "Enter" && handleSelectTab(tab.tabId)

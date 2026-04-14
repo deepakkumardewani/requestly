@@ -96,7 +96,10 @@ export function TabBar() {
 
   return (
     <>
-      <div className="flex h-9 min-h-9 items-center border-b border-border bg-sidebar overflow-hidden">
+      <div
+        data-testid="tab-bar"
+        className="flex h-9 min-h-9 items-center border-b border-border bg-sidebar overflow-hidden"
+      >
         {/* Scrollable tab list with right-edge fade */}
         <div className="relative min-w-0 flex-1 overflow-hidden">
           <div
@@ -134,6 +137,7 @@ export function TabBar() {
                         size="icon-sm"
                         onClick={() => openTab()}
                         aria-label="New Request"
+                        data-testid="new-tab-btn"
                       />
                     }
                   >
@@ -163,6 +167,7 @@ export function TabBar() {
                       size="icon-sm"
                       onClick={() => openTab()}
                       aria-label="New Request"
+                      data-testid="new-tab-btn"
                     />
                   }
                 >
@@ -183,7 +188,7 @@ export function TabBar() {
         open={!!pendingCloseTabId}
         onOpenChange={(open) => !open && setPendingCloseTabId(null)}
       >
-        <AlertDialogContent>
+        <AlertDialogContent data-testid="close-tab-dialog">
           <AlertDialogHeader>
             <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
             <AlertDialogDescription>
@@ -209,7 +214,7 @@ export function TabBar() {
         open={!!pendingBulkClose}
         onOpenChange={(open) => !open && setPendingBulkClose(null)}
       >
-        <AlertDialogContent>
+        <AlertDialogContent data-testid="bulk-close-dialog">
           <AlertDialogHeader>
             <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
             <AlertDialogDescription>

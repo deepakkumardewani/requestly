@@ -64,7 +64,7 @@ export function SaveRequestModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" data-testid="save-request-modal">
         <DialogHeader>
           <DialogTitle>Save Request</DialogTitle>
         </DialogHeader>
@@ -74,6 +74,7 @@ export function SaveRequestModal({
             <Label htmlFor="request-name">Request Name</Label>
             <Input
               id="request-name"
+              data-testid="save-request-name-input"
               value={requestName}
               onChange={(e) => setRequestName(e.target.value)}
               placeholder="My Request"
@@ -83,11 +84,15 @@ export function SaveRequestModal({
           {!isCreatingNew && collections.length > 0 ? (
             <div className="space-y-2">
               <Label>Collection</Label>
-              <div className="max-h-48 space-y-1 overflow-y-auto rounded-md border p-1">
+              <div
+                className="max-h-48 space-y-1 overflow-y-auto rounded-md border p-1"
+                data-testid="collection-picker"
+              >
                 {collections.map((col) => (
                   <button
                     key={col.id}
                     type="button"
+                    data-testid={`collection-picker-item-${col.id}`}
                     onClick={() => setSelectedCollectionId(col.id)}
                     className={`w-full rounded px-2 py-1.5 text-left text-sm transition-colors ${
                       selectedCollectionId === col.id
@@ -101,6 +106,7 @@ export function SaveRequestModal({
               </div>
               <button
                 type="button"
+                data-testid="create-new-collection-link"
                 onClick={() => setIsCreatingNew(true)}
                 className="text-xs text-method-accent hover:underline"
               >
@@ -112,6 +118,7 @@ export function SaveRequestModal({
               <Label htmlFor="collection-name">New Collection Name</Label>
               <Input
                 id="collection-name"
+                data-testid="save-new-collection-name-input"
                 value={newCollectionName}
                 onChange={(e) => setNewCollectionName(e.target.value)}
                 placeholder="My Collection"
@@ -119,6 +126,7 @@ export function SaveRequestModal({
               {collections.length > 0 && (
                 <button
                   type="button"
+                  data-testid="select-existing-collection-link"
                   onClick={() => setIsCreatingNew(false)}
                   className="text-xs text-method-accent hover:underline"
                 >
@@ -130,10 +138,15 @@ export function SaveRequestModal({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            data-testid="save-modal-cancel-btn"
+          >
             Cancel
           </Button>
           <Button
+            data-testid="save-modal-save-btn"
             onClick={handleSave}
             disabled={
               isCreatingNew ? !newCollectionName.trim() : !selectedCollectionId

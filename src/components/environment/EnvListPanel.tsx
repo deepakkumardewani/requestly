@@ -1,19 +1,24 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { Button } from "@/components/ui/button";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
@@ -87,68 +92,105 @@ export function EnvListPanel({ selectedEnvId, onSelect }: EnvListPanelProps) {
 
       <div className="flex-1 overflow-y-auto py-1">
         {environments.map((env) => (
-          <div
-            key={env.id}
-            className={cn(
-              "group relative mx-1 flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5",
-              selectedEnvId === env.id
-                ? "bg-muted text-foreground"
-                : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-            )}
-            onClick={() => {
-              onSelect(env.id);
-              setActiveEnv(env.id);
-            }}
-          >
-            {/* Active env indicator dot */}
-            <span
-              className={cn(
-                "h-1.5 w-1.5 shrink-0 rounded-full",
-                activeEnvId === env.id ? "bg-method-accent" : "bg-transparent",
-              )}
-            />
-
-            {editingNameId === env.id ? (
-              <Input
-                ref={inputRef}
-                value={draftName}
-                onChange={(e) => setDraftName(e.target.value)}
-                onBlur={() => commitName(env.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") commitName(env.id);
-                  if (e.key === "Escape") {
-                    setEditingNameId(null);
-                  }
+          <ContextMenu key={env.id}>
+            <ContextMenuTrigger>
+              <div
+                data-testid={`env-list-item-${env.name}`}
+                className={cn(
+                  "group relative mx-1 flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5",
+                  selectedEnvId === env.id
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+                )}
+                onClick={() => {
+                  onSelect(env.id);
+                  setActiveEnv(env.id);
                 }}
-                className="h-5 flex-1 border-0 bg-transparent p-0 text-xs shadow-none focus-visible:ring-0"
-                onClick={(e) => e.stopPropagation()}
-              />
-            ) : (
-              <span
-                className="flex-1 truncate text-xs"
-                onDoubleClick={(e) => {
-                  e.stopPropagation();
+              >
+                {/* Active env indicator dot */}
+                <span
+                  className={cn(
+                    "h-1.5 w-1.5 shrink-0 rounded-full",
+                    activeEnvId === env.id
+                      ? "bg-method-accent"
+                      : "bg-transparent",
+                  )}
+                />
+
+                {editingNameId === env.id ? (
+                  <Input
+                    ref={inputRef}
+                    data-testid="env-item-rename-input"
+                    value={draftName}
+                    onChange={(e) => setDraftName(e.target.value)}
+                    onBlur={() => commitName(env.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") commitName(env.id);
+                      if (e.key === "Escape") setEditingNameId(null);
+                    }}
+                    className="h-5 flex-1 border-0 bg-transparent p-0 text-xs shadow-none focus-visible:ring-0"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                ) : (
+                  <span className="flex-1 truncate text-xs">{env.name}</span>
+                )}
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    data-testid="env-item-more-btn"
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-white/20"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MoreHorizontal className="h-3 w-3" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      data-testid="env-item-rename-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDraftName(env.name);
+                        setEditingNameId(env.id);
+                      }}
+                    >
+                      <Pencil className="mr-2 h-3.5 w-3.5" />
+                      Rename
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      data-testid="env-item-delete-btn"
+                      className="text-destructive focus:text-destructive"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPendingDeleteId(env.id);
+                      }}
+                    >
+                      <Trash2 className="mr-2 h-3.5 w-3.5" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuItem
+                onClick={() => {
                   setDraftName(env.name);
                   setEditingNameId(env.id);
                 }}
-                title="Double-click to rename"
               >
-                {env.name}
-              </span>
-            )}
-
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              className="shrink-0 opacity-0 group-hover:opacity-100"
-              onClick={(e) => {
-                e.stopPropagation();
-                setPendingDeleteId(env.id);
-              }}
-            >
-              <Trash2 className="h-3 w-3" />
-            </Button>
-          </div>
+                <Pencil className="mr-2 h-3.5 w-3.5" />
+                Rename
+              </ContextMenuItem>
+              <ContextMenuSeparator />
+              <ContextMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={() => setPendingDeleteId(env.id)}
+              >
+                <Trash2 className="mr-2 h-3.5 w-3.5" />
+                Delete
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
         ))}
       </div>
 
@@ -156,6 +198,7 @@ export function EnvListPanel({ selectedEnvId, onSelect }: EnvListPanelProps) {
         <Button
           variant="ghost"
           size="sm"
+          data-testid="add-env-btn"
           className="w-full justify-start gap-1.5 text-xs text-muted-foreground"
           onClick={handleAddEnvironment}
         >
@@ -164,31 +207,16 @@ export function EnvListPanel({ selectedEnvId, onSelect }: EnvListPanelProps) {
         </Button>
       </div>
 
-      <AlertDialog
+      <ConfirmDeleteDialog
         open={pendingDeleteId !== null}
         onOpenChange={(open) => !open && setPendingDeleteId(null)}
-      >
-        <AlertDialogContent size="sm">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Environment</AlertDialogTitle>
-            <AlertDialogDescription>
-              {pendingEnvName ? `"${pendingEnvName}"` : "This environment"} and
-              all its variables will be permanently deleted.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={() =>
-                pendingDeleteId && handleConfirmDelete(pendingDeleteId)
-              }
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title="Delete Environment"
+        description={`"${pendingEnvName ?? "This environment"}" and all its variables will be permanently deleted.`}
+        confirmLabel="Yes, delete environment"
+        onConfirm={() =>
+          pendingDeleteId && handleConfirmDelete(pendingDeleteId)
+        }
+      />
     </div>
   );
 }

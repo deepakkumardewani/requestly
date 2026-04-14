@@ -33,7 +33,7 @@ export function EmptyState() {
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-8 text-center">
       <div className="flex flex-col items-center gap-2">
         <p className="text-sm text-muted-foreground">No tabs open</p>
-        <Button size="sm" onClick={() => openTab()}>
+        <Button size="sm" onClick={() => openTab()} data-testid="new-tab-btn">
           <Plus className="mr-1.5 h-3.5 w-3.5" />
           New Request
         </Button>

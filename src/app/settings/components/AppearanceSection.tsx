@@ -18,6 +18,7 @@ export function AppearanceSection({ theme, onThemeChange }: Props) {
           return (
             <Card
               key={value}
+              data-testid={`theme-${value}`}
               className={cn(
                 "cursor-pointer transition-all",
                 isActive

@@ -41,6 +41,7 @@ export function RequestTabs({ tabId }: RequestTabsProps) {
       <TabsList className="h-9 shrink-0 rounded-none border-b bg-transparent px-3 justify-start gap-0">
         <TabsTrigger
           value="params"
+          data-testid="request-tab-params"
           className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
         >
           Params
@@ -52,6 +53,7 @@ export function RequestTabs({ tabId }: RequestTabsProps) {
         </TabsTrigger>
         <TabsTrigger
           value="headers"
+          data-testid="request-tab-headers"
           className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
         >
           Headers
@@ -63,6 +65,7 @@ export function RequestTabs({ tabId }: RequestTabsProps) {
         </TabsTrigger>
         <TabsTrigger
           value="auth"
+          data-testid="request-tab-auth"
           className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
         >
           Auth
@@ -72,6 +75,7 @@ export function RequestTabs({ tabId }: RequestTabsProps) {
         </TabsTrigger>
         <TabsTrigger
           value="body"
+          data-testid="request-tab-body"
           className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
         >
           Body
@@ -81,6 +85,7 @@ export function RequestTabs({ tabId }: RequestTabsProps) {
         </TabsTrigger>
         <TabsTrigger
           value="curl"
+          data-testid="request-tab-curl"
           className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
         >
           cURL

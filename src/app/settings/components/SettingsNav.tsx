@@ -37,6 +37,7 @@ export function SettingsNav({ activeSection, onSectionChange }: Props) {
         {SETTINGS_SECTIONS.map(([id, label]) => (
           <button
             key={id}
+            data-testid={`nav-${id}`}
             type="button"
             onClick={() => onSectionChange(id)}
             className={cn(

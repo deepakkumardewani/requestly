@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
 
-type StatusBadgeProps = {
+type StatusBadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
   status: number;
-  className?: string;
 };
 
 function getStatusClasses(status: number): string {
@@ -14,7 +13,7 @@ function getStatusClasses(status: number): string {
   return "bg-zinc-500/20 text-zinc-400";
 }
 
-export function StatusBadge({ status, className }: StatusBadgeProps) {
+export function StatusBadge({ status, className, ...props }: StatusBadgeProps) {
   return (
     <span
       className={cn(
@@ -22,6 +21,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
         getStatusClasses(status),
         className,
       )}
+      {...props}
     >
       {status}
     </span>

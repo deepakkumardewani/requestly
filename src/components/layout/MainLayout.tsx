@@ -118,40 +118,42 @@ export function MainLayout() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Desktop: resizable two-column layout */}
-      {mounted ? (
-        <ResizablePanelGroup
-          orientation="horizontal"
-          className="hidden md:flex"
-        >
-          <ResizablePanel
-            defaultSize="20%"
-            minSize="10%"
-            maxSize="90%"
-            className="border-r border-border"
-          >
-            <LeftPanel />
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize="80%" minSize="80%">
-            <RightPanel />
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      ) : (
-        <div className="hidden h-full w-full md:flex">
-          <div className="w-[20%] border-r border-border" />
-          <div className="flex-1" />
-        </div>
-      )}
+      <div
+        className="hidden h-full w-full md:flex"
+        data-testid="desktop-layout"
+      >
+        {mounted ? (
+          <ResizablePanelGroup orientation="horizontal">
+            <ResizablePanel
+              defaultSize="20%"
+              minSize="10%"
+              maxSize="90%"
+              className="border-r border-border"
+            >
+              <LeftPanel />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize="80%" minSize="80%">
+              <RightPanel />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        ) : (
+          <div className="flex h-full w-full">
+            <div className="w-[20%] border-r border-border" />
+            <div className="flex-1" />
+          </div>
+        )}
+      </div>
 
       {/* Mobile: full RightPanel + Sheet for sidebar */}
-      <div className="flex w-full md:hidden">
+      {/* <div className="flex w-full md:hidden" data-testid="mobile-layout">
         <RightPanel />
-      </div>
-      <Sheet open={mobileSidebarOpen} onOpenChange={toggleMobileSidebar}>
+      </div> */}
+      {/* <Sheet open={mobileSidebarOpen} onOpenChange={toggleMobileSidebar}>
         <SheetContent side="left" className="w-72 p-0">
           <LeftPanel />
         </SheetContent>
-      </Sheet>
+      </Sheet> */}
 
       {/* Command Palette — always mounted, visibility controlled by store */}
       <CommandPalette />

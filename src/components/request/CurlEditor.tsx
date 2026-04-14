@@ -63,6 +63,7 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
           <p className="text-xs font-medium">Import cURL</p>
         </div>
         <Textarea
+          data-testid="curl-input"
           className="min-h-[100px] font-mono text-xs"
           placeholder={`curl -X GET 'https://api.example.com/v1/users' \\\n  -H 'Authorization: Bearer TOKEN'`}
           value={curlInput}
@@ -73,6 +74,7 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
         />
         {parseError && <p className="text-xs text-destructive">{parseError}</p>}
         <Button
+          data-testid="curl-import-btn"
           size="sm"
           className="gap-1.5 bg-method-accent/10 text-method-accent hover:bg-method-accent/20"
           onClick={handleImport}
@@ -92,6 +94,7 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium">Generated cURL</p>
           <Button
+            data-testid="copy-curl-btn"
             variant="ghost"
             size="sm"
             className="h-6 gap-1 text-xs"
@@ -101,7 +104,10 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
             Copy
           </Button>
         </div>
-        <pre className="rounded-md bg-muted p-2 font-mono text-[11px] text-method-accent whitespace-pre-wrap break-all">
+        <pre
+          data-testid="generated-curl"
+          className="rounded-md bg-muted p-2 font-mono text-[11px] text-method-accent whitespace-pre-wrap break-all"
+        >
           {generatedCurl || "No URL configured"}
         </pre>
       </div>

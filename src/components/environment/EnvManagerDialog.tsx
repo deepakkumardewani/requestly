@@ -32,6 +32,7 @@ export function EnvManagerDialog() {
       onOpenChange={(open) => !open && setEnvManagerOpen(false)}
     >
       <DialogContent
+        data-testid="env-manager-dialog"
         className="h-[580px] max-w-4xl sm:max-w-4xl gap-0 overflow-hidden p-0"
         showCloseButton
       >
@@ -78,6 +79,7 @@ function EnvHeader({ env }: { env: { id: string; name: string } }) {
     <div className="group flex items-center gap-2 border-b px-4 py-2.5 pr-12">
       {editing ? (
         <input
+          data-testid="env-name-input"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onBlur={commit}
@@ -90,6 +92,7 @@ function EnvHeader({ env }: { env: { id: string; name: string } }) {
       ) : (
         <button
           type="button"
+          data-testid="env-name-display"
           className="flex items-center gap-1.5 text-left text-sm font-medium"
           onClick={() => {
             setDraft(env.name);

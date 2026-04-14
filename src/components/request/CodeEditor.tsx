@@ -182,6 +182,7 @@ export default function CodeEditor({
   return (
     <div
       ref={containerRef}
+      data-testid="code-editor"
       className={`h-full w-full overflow-hidden ${className ?? ""}`}
     />
   );

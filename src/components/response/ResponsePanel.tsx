@@ -59,29 +59,33 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
 
   if (error) {
     return (
-      <EmptyState
-        title="Request failed"
-        description={error.message}
-        action={
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => clearResponse(tabId)}
-          >
-            Dismiss
-          </Button>
-        }
-      />
+      <div data-testid="response-error-state" className="h-full">
+        <EmptyState
+          title="Request failed"
+          description={error.message}
+          action={
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => clearResponse(tabId)}
+            >
+              Dismiss
+            </Button>
+          }
+        />
+      </div>
     );
   }
 
   if (!response) {
     return (
-      <EmptyState
-        icon={<Send className="h-10 w-10" />}
-        title="Send a request"
-        description="Configure your request above and press Send or Ctrl+Enter"
-      />
+      <div data-testid="response-empty-state" className="h-full">
+        <EmptyState
+          icon={<Send className="h-10 w-10" />}
+          title="Send a request"
+          description="Configure your request above and press Send or Ctrl+Enter"
+        />
+      </div>
     );
   }
 
@@ -121,15 +125,30 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       {/* Meta row */}
-      <div className="flex items-center gap-3 border-b px-3 py-1.5">
-        <StatusBadge status={response.status} />
-        <span className="text-xs text-muted-foreground">
+      <div
+        className="flex items-center gap-3 border-b px-3 py-1.5"
+        data-testid="response-meta"
+      >
+        <StatusBadge
+          status={response.status}
+          data-testid="response-status-badge"
+        />
+        <span
+          className="text-xs text-muted-foreground"
+          data-testid="response-status-text"
+        >
           {response.statusText}
         </span>
-        <span className="text-xs text-muted-foreground">
+        <span
+          className="text-xs text-muted-foreground"
+          data-testid="response-duration"
+        >
           {formatDuration(response.duration)}
         </span>
-        <span className="text-xs text-muted-foreground">
+        <span
+          className="text-xs text-muted-foreground"
+          data-testid="response-size"
+        >
           {formatBytes(response.size)}
         </span>
         <div className="ml-auto flex items-center gap-1">
@@ -138,6 +157,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
             size="icon-sm"
             onClick={handleCompare}
             title="Compare in JSON Compare"
+            data-testid="response-compare-btn"
           >
             <GitCompare className="h-3.5 w-3.5" />
           </Button>
@@ -146,6 +166,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
             size="icon-sm"
             onClick={handleCopy}
             title="Copy"
+            data-testid="response-copy-btn"
           >
             <Copy className="h-3.5 w-3.5" />
           </Button>
@@ -154,6 +175,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
             size="icon-sm"
             onClick={handleDownload}
             title="Download"
+            data-testid="response-download-btn"
           >
             <Download className="h-3.5 w-3.5" />
           </Button>
@@ -162,6 +184,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
             size="icon-sm"
             onClick={() => clearResponse(tabId)}
             title="Clear"
+            data-testid="response-clear-btn"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
@@ -188,6 +211,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
             <TabsTrigger
               key={tab}
               value={tab}
+              data-testid={`response-tab-${tab}`}
               className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
             >
               {tab}

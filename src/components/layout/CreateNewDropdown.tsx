@@ -38,7 +38,12 @@ export function CreateNewDropdown({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="outline" size="icon-sm" aria-label="Create new" />
+          <Button
+            variant="outline"
+            size="icon-sm"
+            aria-label="Create new"
+            data-testid="create-new-dropdown-trigger"
+          />
         }
       >
         <Plus className="h-4 w-4" />
@@ -64,7 +69,10 @@ export function CreateNewDropdown({
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={() => setIsCreatingCollection(true)}>
+        <DropdownMenuItem
+          onClick={() => setIsCreatingCollection(true)}
+          data-testid="create-collection-item"
+        >
           <FolderPlus className="mr-2 h-3.5 w-3.5" />
           Collection
         </DropdownMenuItem>
