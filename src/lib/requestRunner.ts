@@ -83,6 +83,7 @@ function buildBody(request: ResolvedRequest): string | null {
 
 export async function runRequest(
   request: ResolvedRequest,
+  signal?: AbortSignal,
 ): Promise<ResponseData> {
   const start = performance.now();
 
@@ -111,6 +112,7 @@ export async function runRequest(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(proxyPayload),
+      signal,
     });
   } catch (cause) {
     const error: RequestError = {

@@ -92,7 +92,7 @@ export function buildUrlWithParams(
   params: Array<{ key: string; value: string; enabled: boolean }>,
 ): string {
   const enabledParams = params.filter((p) => p.enabled && p.key);
-  if (enabledParams.length === 0) return baseUrl;
+  if (enabledParams.length === 0) return baseUrl.split("?")[0];
 
   try {
     const urlWithoutQuery = baseUrl.split("?")[0];

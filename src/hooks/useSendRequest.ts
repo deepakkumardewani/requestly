@@ -56,15 +56,18 @@ export function useSendRequest(tabId: string) {
       // Substitute path params and append query params
       const finalUrl = buildFinalUrl(resolvedUrl, resolvedParams);
 
-      const response = await runRequest({
-        method: tab.method,
-        url: finalUrl,
-        headers: resolvedHeaders,
-        body: resolvedBody,
-        auth: tab.auth,
-        sslVerify,
-        followRedirects,
-      });
+      const response = await runRequest(
+        {
+          method: tab.method,
+          url: finalUrl,
+          headers: resolvedHeaders,
+          body: resolvedBody,
+          auth: tab.auth,
+          sslVerify,
+          followRedirects,
+        },
+        abortRef.current.signal,
+      );
 
       setResponse(tabId, response);
 
