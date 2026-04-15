@@ -20,6 +20,10 @@ type EnvironmentsActions = {
   deleteEnv: (id: string) => void;
   setActiveEnv: (id: string | null) => void;
   resolveVariables: (template: string) => string;
+  /** Get the current value of a variable in the active environment. */
+  getVariable: (key: string) => string | undefined;
+  /** Upsert a variable in the active environment by key. No-op if no active env. */
+  setVariable: (key: string, value: string) => void;
   hydrate: () => Promise<void>;
 };
 
@@ -115,6 +119,39 @@ export const useEnvironmentsStore = create<
     );
 
     return interpolateVariables(template, envMap);
+  },
+
+  getVariable(key) {
+    const { environments, activeEnvId } = get();
+    const activeEnv = environments.find((e) => e.id === activeEnvId);
+    if (!activeEnv) return undefined;
+    const variable = activeEnv.variables.find((v) => v.key === key);
+    if (!variable) return undefined;
+    return variable.currentValue || variable.initialValue || undefined;
+  },
+
+  setVariable(key, value) {
+    const { environments, activeEnvId, updateEnv } = get();
+    const activeEnv = environments.find((e) => e.id === activeEnvId);
+    if (!activeEnv) return;
+
+    const exists = activeEnv.variables.some((v) => v.key === key);
+    const updatedVariables = exists
+      ? activeEnv.variables.map((v) =>
+          v.key === key ? { ...v, currentValue: value } : v,
+        )
+      : [
+          ...activeEnv.variables,
+          {
+            id: generateId(),
+            key,
+            initialValue: "",
+            currentValue: value,
+            isSecret: false,
+          },
+        ];
+
+    updateEnv(activeEnv.id, { variables: updatedVariables });
   },
 
   async hydrate() {
