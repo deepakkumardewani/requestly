@@ -2,7 +2,7 @@
 
 import { Braces, Eraser, Wand2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
@@ -38,8 +38,16 @@ export function TransformPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isExecutingRef = useRef(false);
 
+  const parsedInputJson = useMemo(() => {
+    try {
+      return JSON.parse(inputBody);
+    } catch {
+      return null;
+    }
+  }, [inputBody]);
+
   const execute = useCallback(
-    async (currentCode: string, currentMode: TransformMode, body: string) => {
+    async (currentCode: string, currentMode: TransformMode) => {
       if (!currentCode.trim()) {
         setResult(null, null);
         return;
@@ -48,21 +56,15 @@ export function TransformPage() {
       isExecutingRef.current = true;
 
       const responseObj = {
-        text: body,
-        json: (() => {
-          try {
-            return JSON.parse(body);
-          } catch {
-            return null;
-          }
-        })(),
+        text: inputBody,
+        json: parsedInputJson,
         status: 200,
         headers: {},
       };
 
       const result =
         currentMode === "jsonpath"
-          ? await runJsonPath(currentCode, body)
+          ? await runJsonPath(currentCode, inputBody)
           : await runJs(currentCode, responseObj);
 
       isExecutingRef.current = false;
@@ -73,7 +75,7 @@ export function TransformPage() {
         setResult(result.output, null);
       }
     },
-    [setResult],
+    [setResult, inputBody, parsedInputJson],
   );
 
   // Debounced execution when code, mode, or inputBody changes
@@ -81,7 +83,7 @@ export function TransformPage() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
-      execute(code, mode, inputBody);
+      execute(code, mode);
     }, DEBOUNCE_MS);
 
     return () => {
@@ -89,16 +91,12 @@ export function TransformPage() {
     };
   }, [code, mode, inputBody, execute]);
 
-  // Format the input JSON
-  function handleFormatJson() {
-    try {
-      if (!inputBody.trim()) return;
-      const parsed = JSON.parse(inputBody);
-      setInputBody(JSON.stringify(parsed, null, 2));
-    } catch {
-      // not valid JSON, ignore
+  const handleFormatJson = useCallback(() => {
+    if (!inputBody.trim()) return;
+    if (parsedInputJson !== null) {
+      setInputBody(JSON.stringify(parsedInputJson, null, 2));
     }
-  }
+  }, [inputBody, parsedInputJson, setInputBody]);
 
   function computePlaceholder(
     text: string,
