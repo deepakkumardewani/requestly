@@ -11,14 +11,14 @@ const BREADCRUMB_ITEMS = [
 export default function JsonComparePage_() {
   return (
     <div className="flex h-screen flex-col bg-background">
-      <div className="flex shrink-0 items-center border-b px-4 py-2">
+      <header className="flex shrink-0 items-center border-b px-4 py-2">
         <AppBreadcrumb items={BREADCRUMB_ITEMS} />
-      </div>
+        <h1 className="sr-only">JSON Compare</h1>
+      </header>
 
-      {/* Main content */}
-      <div className="min-h-0 flex-1 overflow-hidden">
+      <main id="app-main" className="min-h-0 flex-1 overflow-hidden">
         <JsonComparePage />
-      </div>
+      </main>
     </div>
   );
 }

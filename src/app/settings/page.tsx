@@ -43,7 +43,7 @@ export default function SettingsPage() {
         onSectionChange={setActiveSection}
       />
 
-      <main className="flex-1 overflow-auto p-8">
+      <main id="app-main" className="flex-1 overflow-auto p-8">
         {activeSection === "general" && (
           <GeneralSection
             showHealthMonitor={showHealthMonitor}

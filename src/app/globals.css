@@ -97,6 +97,37 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+
+  /* Chain canvas: edges, labels, minimap (light) */
+  --chain-edge-branch: oklch(0.52 0.22 290);
+  --chain-edge-branch-label: oklch(0.58 0.2 290);
+  --chain-edge-label-bg: oklch(0.96 0.01 260);
+  --chain-edge-fail: oklch(0.577 0.245 27.325);
+  --chain-edge-success: oklch(0.55 0.16 155);
+  --chain-edge-default: oklch(0.55 0.02 260);
+  --chain-edge-neutral-label: oklch(0.52 0.02 260);
+  --chain-canvas-bg: var(--background);
+  --chain-canvas-dots-color: oklch(0.78 0.01 260);
+  --chain-minimap-idle: oklch(0.55 0.02 260);
+  --chain-minimap-running: oklch(0.55 0.2 250);
+  --chain-minimap-passed: oklch(0.55 0.16 155);
+  --chain-minimap-failed: oklch(0.577 0.245 27.325);
+  --chain-minimap-skipped: oklch(0.52 0.02 260);
+  --chain-minimap-mask-bg: oklch(0 0 0 / 0.08);
+
+  --viz-state-idle: var(--chain-minimap-idle);
+  --viz-state-running: var(--chain-minimap-running);
+  --viz-state-passed: var(--chain-minimap-passed);
+  --viz-state-failed: var(--chain-minimap-failed);
+  --viz-state-skipped: var(--chain-minimap-skipped);
+
+  --timing-na-stripe-a: oklch(0.93 0.01 260);
+  --timing-na-stripe-b: oklch(0.88 0.01 260);
+  --timing-dns: oklch(0.72 0.02 260);
+  --timing-tcp: oklch(0.58 0.18 275);
+  --timing-tls: oklch(0.55 0.22 290);
+  --timing-ttfb: oklch(0.78 0.14 85);
+  --timing-download: oklch(0.62 0.17 155);
 }
 
 .dark {
@@ -131,6 +162,52 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+
+  /* Chain canvas + timing (dark) */
+  --chain-edge-branch: oklch(0.58 0.24 290);
+  --chain-edge-branch-label: oklch(0.72 0.14 290);
+  --chain-edge-label-bg: oklch(0.28 0.04 260);
+  --chain-edge-fail: oklch(0.63 0.22 25);
+  --chain-edge-success: oklch(0.65 0.19 155);
+  --chain-edge-default: oklch(0.55 0.02 260);
+  --chain-edge-neutral-label: oklch(0.68 0.02 260);
+  --chain-canvas-bg: var(--background);
+  --chain-canvas-dots-color: oklch(0.45 0.02 260);
+  --chain-minimap-idle: oklch(0.35 0.02 260);
+  --chain-minimap-running: oklch(0.58 0.2 250);
+  --chain-minimap-passed: oklch(0.65 0.19 155);
+  --chain-minimap-failed: oklch(0.63 0.22 25);
+  --chain-minimap-skipped: oklch(0.48 0.02 260);
+  --chain-minimap-mask-bg: oklch(0 0 0 / 0.45);
+
+  --viz-state-idle: var(--chain-minimap-idle);
+  --viz-state-running: var(--chain-minimap-running);
+  --viz-state-passed: var(--chain-minimap-passed);
+  --viz-state-failed: var(--chain-minimap-failed);
+  --viz-state-skipped: var(--chain-minimap-skipped);
+
+  --timing-na-stripe-a: oklch(0.32 0.02 260);
+  --timing-na-stripe-b: oklch(0.38 0.02 260);
+  --timing-dns: oklch(0.72 0.02 260);
+  --timing-tcp: oklch(0.65 0.18 275);
+  --timing-tls: oklch(0.62 0.2 290);
+  --timing-ttfb: oklch(0.78 0.14 85);
+  --timing-download: oklch(0.68 0.17 155);
+}
+
+/* React Flow: align pane, minimap, and controls with app theme */
+.chain-canvas-react-flow.react-flow {
+  --xy-background-color: var(--chain-canvas-bg);
+  --xy-background-pattern-dots-color: var(--chain-canvas-dots-color);
+  --xy-minimap-background-color: var(--card);
+  --xy-minimap-mask-background-color: var(--chain-minimap-mask-bg);
+  --xy-controls-button-background-color: var(--card);
+  --xy-controls-button-background-color-hover: var(--muted);
+  --xy-controls-button-border-color: var(--border);
+  --xy-controls-button-color: var(--foreground);
+  --xy-controls-button-color-hover: var(--foreground);
+  --xy-edge-label-background-color: var(--chain-edge-label-bg);
+  --xy-edge-label-color: var(--foreground);
 }
 
 @layer base {

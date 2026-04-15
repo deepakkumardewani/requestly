@@ -20,7 +20,7 @@ export function AppearanceSection({ theme, onThemeChange }: Props) {
               key={value}
               data-testid={`theme-${value}`}
               className={cn(
-                "cursor-pointer transition-all",
+                "cursor-pointer transition-[color,box-shadow,border-color] duration-200",
                 isActive
                   ? "border-method-accent ring-2 ring-method-accent/30"
                   : "hover:border-method-accent/50",

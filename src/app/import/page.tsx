@@ -157,7 +157,7 @@ export default function ImportPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b px-6 py-4">
+      <header className="border-b px-6 py-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -176,10 +176,9 @@ export default function ImportPage() {
             Import collections from files or cURL commands
           </p>
         </div>
-      </div>
+      </header>
 
-      {/* Content */}
-      <div className="mx-auto max-w-2xl p-6">
+      <main id="app-main" className="mx-auto max-w-2xl p-6">
         <Tabs defaultValue="file">
           <TabsList className="w-full">
             <TabsTrigger value="file" className="flex-1">
@@ -243,6 +242,7 @@ export default function ImportPage() {
           <TabsContent value="curl" className="mt-4 space-y-3">
             <Textarea
               className="min-h-[140px] font-mono text-xs"
+              aria-label="cURL command to import"
               placeholder={`curl -X GET 'https://api.example.com/v1/users' \\\n  -H 'Authorization: Bearer TOKEN'`}
               value={curlInput}
               onChange={(e) => {
@@ -270,6 +270,7 @@ export default function ImportPage() {
           <TabsContent value="json" className="mt-4 space-y-3">
             <Textarea
               className="min-h-[200px] font-mono text-xs"
+              aria-label="Raw JSON collection to import"
               placeholder='{"collections": [{"name": "My API", "requests": [...]}]}'
               value={jsonInput}
               onChange={(e) => setJsonInput(e.target.value)}
@@ -294,7 +295,7 @@ export default function ImportPage() {
             </Button>
           </TabsContent>
         </Tabs>
-      </div>
+      </main>
     </div>
   );
 }
