@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatBytes, formatDuration } from "@/lib/utils";
 import { useResponseStore } from "@/stores/useResponseStore";
+import { ConsoleViewer } from "./ConsoleViewer";
 import { ErrorExplainer } from "./ErrorExplainer";
 import { HeadersViewer } from "./HeadersViewer";
 import { PreviewFrame } from "./PreviewFrame";
@@ -42,15 +43,23 @@ const RESPONSE_TABS = [
 
 export function ResponsePanel({ tabId }: ResponsePanelProps) {
   const router = useRouter();
-  const { responses, loading, errors, clearResponse } = useResponseStore();
+  const { responses, loading, errors, scriptLogs, clearResponse } =
+    useResponseStore();
 
   const response = responses[tabId] ?? null;
   const isLoading = loading[tabId] ?? false;
   const error = errors[tabId] ?? null;
+  const tabLogs = scriptLogs[tabId] ?? [];
 
   if (isLoading) {
     return (
-      <div className="flex h-full flex-col gap-2 p-4">
+      <div
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+        className="flex h-full flex-col gap-2 p-4"
+      >
+        <span className="sr-only">Loading response</span>
         <Skeleton className="h-6 w-32" />
         <Skeleton className="h-full w-full" />
       </div>
@@ -59,7 +68,12 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
 
   if (error) {
     return (
-      <div data-testid="response-error-state" className="h-full">
+      <div
+        role="alert"
+        aria-live="assertive"
+        data-testid="response-error-state"
+        className="h-full"
+      >
         <EmptyState
           title="Request failed"
           description={error.message}
@@ -222,6 +236,16 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
               )}
             </TabsTrigger>
           ))}
+          <TabsTrigger
+            value="console"
+            data-testid="response-tab-console"
+            className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          >
+            Console
+            {tabLogs.length > 0 && (
+              <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
+            )}
+          </TabsTrigger>
         </TabsList>
 
         <div className="flex-1 overflow-hidden">
@@ -245,6 +269,9 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
                 No timing data available
               </div>
             )}
+          </TabsContent>
+          <TabsContent value="console" className="mt-0 h-full overflow-hidden">
+            <ConsoleViewer logs={tabLogs} />
           </TabsContent>
         </div>
       </Tabs>

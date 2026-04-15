@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useMemo } from "react";
 import { MAX_RESPONSE_DISPLAY_BYTES } from "@/lib/constants";
 import { RawViewer } from "./RawViewer";
 
@@ -14,31 +15,31 @@ type PrettyViewerProps = {
 };
 
 export function PrettyViewer({ body, contentType = "" }: PrettyViewerProps) {
-  const bytes = new TextEncoder().encode(body).length;
+  const bytes = useMemo(() => new TextEncoder().encode(body).length, [body]);
+
+  const isJson = useMemo(() => {
+    if (bytes > MAX_RESPONSE_DISPLAY_BYTES) return false;
+    if (contentType.includes("json")) return true;
+    try {
+      JSON.parse(body);
+      return true;
+    } catch {
+      return false;
+    }
+  }, [body, contentType, bytes]);
+
+  const displayBody = useMemo(() => {
+    if (bytes > MAX_RESPONSE_DISPLAY_BYTES) return body;
+    if (!isJson) return body;
+    try {
+      return JSON.stringify(JSON.parse(body), null, 2);
+    } catch {
+      return body;
+    }
+  }, [body, isJson, bytes]);
 
   if (bytes > MAX_RESPONSE_DISPLAY_BYTES) {
     return <RawViewer body={body} />;
-  }
-
-  const isJson =
-    contentType.includes("json") ||
-    (() => {
-      try {
-        JSON.parse(body);
-        return true;
-      } catch {
-        return false;
-      }
-    })();
-
-  // Pretty-print JSON
-  let displayBody = body;
-  if (isJson) {
-    try {
-      displayBody = JSON.stringify(JSON.parse(body), null, 2);
-    } catch {
-      displayBody = body;
-    }
   }
 
   return (

@@ -23,7 +23,7 @@ export function PreviewFrame({ body, contentType = "" }: PreviewFrameProps) {
   return (
     <iframe
       title="Response Preview"
-      className="h-full w-full border-0 bg-white"
+      className="h-full w-full border-0 bg-background"
       sandbox="allow-scripts"
       srcDoc={body}
       data-testid="response-preview-iframe"

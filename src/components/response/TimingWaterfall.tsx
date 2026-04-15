@@ -1,5 +1,7 @@
 "use client";
 
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { useRef } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -15,44 +17,27 @@ type Props = {
 type Segment = {
   label: string;
   value: number | null;
-  fillClass: string;
-  trackClass: string;
+  /** CSS variable name without `var()` — e.g. `--timing-dns` */
+  fillVar: string;
 };
 
 const NA_STRIPE =
-  "repeating-linear-gradient(-45deg, #3f3f46 0px, #3f3f46 3px, #52525b 3px, #52525b 6px)";
+  "repeating-linear-gradient(-45deg, var(--timing-na-stripe-a) 0px, var(--timing-na-stripe-a) 3px, var(--timing-na-stripe-b) 3px, var(--timing-na-stripe-b) 6px)";
+
+/** Segment row: py-[3px] + line box (~17px). Total row: border-t + pt + line. */
+const TIMING_ROW_ESTIMATE_PX = 22;
+const TIMING_TOTAL_ROW_ESTIMATE_PX = 30;
 
 function buildSegments(timing: TimingData): Segment[] {
   return [
-    {
-      label: "DNS",
-      value: timing.dns,
-      fillClass: "bg-slate-400",
-      trackClass: "bg-slate-400/15",
-    },
-    {
-      label: "TCP",
-      value: timing.tcp,
-      fillClass: "bg-indigo-400",
-      trackClass: "bg-indigo-400/15",
-    },
-    {
-      label: "TLS",
-      value: timing.tls,
-      fillClass: "bg-purple-400",
-      trackClass: "bg-purple-400/15",
-    },
-    {
-      label: "TTFB",
-      value: timing.ttfb,
-      fillClass: "bg-amber-400",
-      trackClass: "bg-amber-400/15",
-    },
+    { label: "DNS", value: timing.dns, fillVar: "--timing-dns" },
+    { label: "TCP", value: timing.tcp, fillVar: "--timing-tcp" },
+    { label: "TLS", value: timing.tls, fillVar: "--timing-tls" },
+    { label: "TTFB", value: timing.ttfb, fillVar: "--timing-ttfb" },
     {
       label: "Download",
       value: timing.download,
-      fillClass: "bg-emerald-400",
-      trackClass: "bg-emerald-400/15",
+      fillVar: "--timing-download",
     },
   ];
 }
@@ -75,9 +60,21 @@ export function TimingWaterfall({ timing }: Props) {
   const totalForPct = filledTotal > 0 ? filledTotal : 1;
 
   const nullCount = segments.filter((s) => s.value === null).length;
-  // Reserve 5% visual width per N/A segment so they remain visible
   const naVisualPct = nullCount > 0 ? 5 : 0;
   const filledVisualPct = 100 - naVisualPct * nullCount;
+
+  const tableScrollRef = useRef<HTMLDivElement>(null);
+  const rowCount = segments.length + 1;
+
+  const virtualizer = useVirtualizer({
+    count: rowCount,
+    getScrollElement: () => tableScrollRef.current,
+    estimateSize: (index) =>
+      index === rowCount - 1
+        ? TIMING_TOTAL_ROW_ESTIMATE_PX
+        : TIMING_ROW_ESTIMATE_PX,
+    overscan: 4,
+  });
 
   return (
     <TooltipProvider delay={100}>
@@ -85,7 +82,6 @@ export function TimingWaterfall({ timing }: Props) {
         className="flex flex-col gap-3 p-3"
         data-testid="response-timing-waterfall"
       >
-        {/* Stacked overview bar */}
         <div className="flex h-5 w-full overflow-hidden rounded">
           {segments.map((seg) => {
             if (seg.value === null) {
@@ -111,8 +107,11 @@ export function TimingWaterfall({ timing }: Props) {
             return (
               <Tooltip key={seg.label}>
                 <TooltipTrigger
-                  className={`h-full cursor-default ${seg.fillClass}`}
-                  style={{ width: `${widthPct}%` }}
+                  className="h-full cursor-default"
+                  style={{
+                    width: `${widthPct}%`,
+                    backgroundColor: `var(${seg.fillVar})`,
+                  }}
                 />
                 <TooltipContent side="top">
                   <span className="font-medium">{seg.label}</span>
@@ -123,81 +122,105 @@ export function TimingWaterfall({ timing }: Props) {
           })}
         </div>
 
-        {/* Breakdown table — swatch / label / mini-bar / value / pct */}
-        <div className="flex flex-col">
-          {segments.map((seg) => {
-            const pct =
-              seg.value !== null ? (seg.value / totalForPct) * 100 : 0;
-
-            return (
-              <div
-                key={seg.label}
-                className="grid items-center gap-x-2 py-[3px] text-[11px]"
-                style={{ gridTemplateColumns: "8px 52px 1fr 68px 28px" }}
-                data-testid="timing-row"
-              >
-                {/* Swatch */}
-                {seg.value !== null ? (
-                  <span
-                    className={`h-2 w-2 shrink-0 rounded-[2px] ${seg.fillClass}`}
-                  />
-                ) : (
-                  <span
-                    className="h-2 w-2 shrink-0 rounded-[2px]"
-                    style={{ background: NA_STRIPE }}
-                  />
-                )}
-
-                {/* Label */}
-                <span
-                  className="text-muted-foreground"
-                  data-testid="timing-label"
-                >
-                  {seg.label}
-                </span>
-
-                {/* Proportional mini-bar */}
-                <div
-                  className={`h-[3px] overflow-hidden rounded-full ${seg.trackClass}`}
-                >
-                  {seg.value !== null && (
-                    <div
-                      className={`h-full rounded-full ${seg.fillClass}`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  )}
-                </div>
-
-                {/* Value */}
-                <span
-                  className="text-right font-mono text-foreground"
-                  data-testid="timing-value"
-                >
-                  {seg.value !== null ? formatMs(seg.value) : "N/A"}
-                </span>
-
-                {/* Percentage */}
-                <span className="text-right font-mono text-muted-foreground">
-                  {seg.value !== null ? formatPct(seg.value, totalForPct) : "—"}
-                </span>
-              </div>
-            );
-          })}
-
-          {/* Total row */}
+        <div
+          ref={tableScrollRef}
+          className="flex max-h-[min(45vh,15rem)] flex-col overflow-y-auto"
+        >
           <div
-            className="mt-1 grid items-center gap-x-2 border-t pt-1.5 text-[11px]"
-            style={{ gridTemplateColumns: "8px 52px 1fr 68px 28px" }}
+            className="relative w-full"
+            style={{ height: virtualizer.getTotalSize() }}
           >
-            <span />
-            <span className="text-muted-foreground">Total</span>
-            <span />
-            <span className="text-right font-mono font-medium text-foreground">
-              {formatMs(timing.total)}
-            </span>
-            <span className="text-right font-mono text-muted-foreground">
-              100%
-            </span>
+            {virtualizer.getVirtualItems().map((virtualRow) => {
+              const idx = virtualRow.index;
+              if (idx < segments.length) {
+                const seg = segments[idx];
+                const pct =
+                  seg.value !== null ? (seg.value / totalForPct) * 100 : 0;
+                return (
+                  <div
+                    key={seg.label}
+                    className="absolute left-0 right-0 grid items-center gap-x-2 py-[3px] text-[11px]"
+                    style={{
+                      top: 0,
+                      height: virtualRow.size,
+                      transform: `translateY(${virtualRow.start}px)`,
+                      gridTemplateColumns: "0.5rem 3.25rem 1fr 4.25rem 1.75rem",
+                    }}
+                    data-testid="timing-row"
+                  >
+                    {seg.value !== null ? (
+                      <span
+                        className="h-2 w-2 shrink-0 rounded-[2px]"
+                        style={{
+                          backgroundColor: `var(${seg.fillVar})`,
+                        }}
+                      />
+                    ) : (
+                      <span
+                        className="h-2 w-2 shrink-0 rounded-[2px]"
+                        style={{ background: NA_STRIPE }}
+                      />
+                    )}
+                    <span
+                      className="text-muted-foreground"
+                      data-testid="timing-label"
+                    >
+                      {seg.label}
+                    </span>
+                    <div
+                      className="h-[3px] overflow-hidden rounded-full"
+                      style={{
+                        backgroundColor: `color-mix(in oklch, var(${seg.fillVar}) 18%, transparent)`,
+                      }}
+                    >
+                      {seg.value !== null && (
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${pct}%`,
+                            backgroundColor: `var(${seg.fillVar})`,
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span
+                      className="text-right font-mono text-foreground"
+                      data-testid="timing-value"
+                    >
+                      {seg.value !== null ? formatMs(seg.value) : "N/A"}
+                    </span>
+                    <span className="text-right font-mono text-muted-foreground">
+                      {seg.value !== null
+                        ? formatPct(seg.value, totalForPct)
+                        : "—"}
+                    </span>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key="timing-total"
+                  className="absolute left-0 right-0 grid items-center gap-x-2 border-t border-border pt-1.5 text-[11px]"
+                  style={{
+                    top: 0,
+                    height: virtualRow.size,
+                    transform: `translateY(${virtualRow.start}px)`,
+                    gridTemplateColumns: "0.5rem 3.25rem 1fr 4.25rem 1.75rem",
+                  }}
+                >
+                  <span />
+                  <span className="text-muted-foreground">Total</span>
+                  <span />
+                  <span className="text-right font-mono font-medium text-foreground">
+                    {formatMs(timing.total)}
+                  </span>
+                  <span className="text-right font-mono text-muted-foreground">
+                    100%
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

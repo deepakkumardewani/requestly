@@ -7,6 +7,7 @@ type ResponseState = {
   responses: Record<string, ResponseData | null>;
   loading: Record<string, boolean>;
   errors: Record<string, RequestError | null>;
+  scriptLogs: Record<string, string[]>;
 };
 
 type ResponseActions = {
@@ -14,6 +15,7 @@ type ResponseActions = {
   clearResponse: (tabId: string) => void;
   setLoading: (tabId: string, loading: boolean) => void;
   setError: (tabId: string, error: RequestError | null) => void;
+  setScriptLogs: (tabId: string, logs: string[]) => void;
 };
 
 export const useResponseStore = create<ResponseState & ResponseActions>(
@@ -21,6 +23,7 @@ export const useResponseStore = create<ResponseState & ResponseActions>(
     responses: {},
     loading: {},
     errors: {},
+    scriptLogs: {},
 
     setResponse(tabId, response) {
       set((state) => ({
@@ -35,6 +38,7 @@ export const useResponseStore = create<ResponseState & ResponseActions>(
         responses: { ...state.responses, [tabId]: null },
         loading: { ...state.loading, [tabId]: false },
         errors: { ...state.errors, [tabId]: null },
+        scriptLogs: { ...state.scriptLogs, [tabId]: [] },
       }));
     },
 
@@ -42,6 +46,8 @@ export const useResponseStore = create<ResponseState & ResponseActions>(
       set((state) => ({
         loading: { ...state.loading, [tabId]: loading },
         errors: { ...state.errors, [tabId]: null },
+        // Clear logs when a new request starts
+        scriptLogs: { ...state.scriptLogs, [tabId]: [] },
       }));
     },
 
@@ -49,6 +55,12 @@ export const useResponseStore = create<ResponseState & ResponseActions>(
       set((state) => ({
         errors: { ...state.errors, [tabId]: error },
         loading: { ...state.loading, [tabId]: false },
+      }));
+    },
+
+    setScriptLogs(tabId, logs) {
+      set((state) => ({
+        scriptLogs: { ...state.scriptLogs, [tabId]: logs },
       }));
     },
   }),

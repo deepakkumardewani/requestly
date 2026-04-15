@@ -44,6 +44,14 @@ export function TransformPlayground({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isExecutingRef = useRef(false);
 
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current !== null) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
   const isTooLarge =
     responseBody !== null && responseBody.length > MAX_RESPONSE_BYTES;
   const hasResponse = responseBody !== null && responseBody.length > 0;
