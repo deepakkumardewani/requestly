@@ -92,6 +92,7 @@ export function HttpTabs({ tabId }: HttpTabsProps) {
         </TabsTrigger>
         <TabsTrigger
           value="scripts"
+          data-testid="request-tab-scripts"
           className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
         >
           Scripts

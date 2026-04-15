@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { toast } from "sonner";
 import { runGraphQLRequest, runRequest } from "@/lib/requestRunner";
+import { runPostScript, runPreScript } from "@/lib/scriptRunner";
 import { buildFinalUrl, generateId } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
@@ -15,13 +16,17 @@ export function useSendRequest(tabId: string) {
   const abortRef = useRef<AbortController | null>(null);
 
   const { tabs } = useTabsStore();
-  const { resolveVariables } = useEnvironmentsStore();
-  const { setLoading, setResponse, setError, loading } = useResponseStore();
+  const { resolveVariables, getVariable, setVariable } = useEnvironmentsStore();
+  const { setLoading, setResponse, setError, setScriptLogs, loading } =
+    useResponseStore();
   const { addEntry } = useHistoryStore();
   const { sslVerify, followRedirects } = useSettingsStore();
 
   const tab = tabs.find((t) => t.tabId === tabId);
   const isLoading = loading[tabId] ?? false;
+
+  const envGet = (key: string) => getVariable(key);
+  const envSet = (key: string, value: string) => setVariable(key, value);
 
   async function send() {
     if (!tab) return;
@@ -38,6 +43,8 @@ export function useSendRequest(tabId: string) {
     abortRef.current = new AbortController();
 
     setLoading(tabId, true);
+
+    const allLogs: string[] = [];
 
     try {
       if (tab.type === "graphql") {
@@ -73,6 +80,7 @@ export function useSendRequest(tabId: string) {
         return;
       }
 
+      // ── Resolve env variables ──────────────────────────────────────────────
       const resolvedUrl = resolveVariables(tab.url);
       const resolvedHeaders: KVPair[] = tab.headers.map((h) => ({
         ...h,
@@ -89,14 +97,53 @@ export function useSendRequest(tabId: string) {
         content: resolveVariables(tab.body.content),
       };
 
-      const finalUrl = buildFinalUrl(resolvedUrl, resolvedParams);
+      // ── Pre-request script ─────────────────────────────────────────────────
+      let effectiveUrl = resolvedUrl;
+      let effectiveHeaders = resolvedHeaders;
+      let effectiveBody = resolvedBody;
+
+      if (tab.preScript.trim()) {
+        const preResult = runPreScript(
+          tab.preScript,
+          {
+            url: resolvedUrl,
+            headers: resolvedHeaders,
+            method: tab.method,
+            body: resolvedBody,
+          },
+          envGet,
+          envSet,
+        );
+
+        allLogs.push(...preResult.logs);
+
+        if (preResult.error) {
+          toast.error("Pre-request script error", {
+            description: preResult.error,
+          });
+        }
+
+        if (preResult.requestOverrides) {
+          if (preResult.requestOverrides.url !== undefined) {
+            effectiveUrl = preResult.requestOverrides.url;
+          }
+          if (preResult.requestOverrides.headers !== undefined) {
+            effectiveHeaders = preResult.requestOverrides.headers;
+          }
+          if (preResult.requestOverrides.body !== undefined) {
+            effectiveBody = preResult.requestOverrides.body;
+          }
+        }
+      }
+
+      const finalUrl = buildFinalUrl(effectiveUrl, resolvedParams);
 
       const response = await runRequest(
         {
           method: tab.method,
           url: finalUrl,
-          headers: resolvedHeaders,
-          body: resolvedBody,
+          headers: effectiveHeaders,
+          body: effectiveBody,
           auth: tab.auth,
           sslVerify,
           followRedirects,
@@ -105,6 +152,29 @@ export function useSendRequest(tabId: string) {
       );
 
       setResponse(tabId, response);
+
+      // ── Post-response script ───────────────────────────────────────────────
+      if (tab.postScript.trim()) {
+        const postResult = runPostScript(
+          tab.postScript,
+          {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            body: response.body,
+          },
+          envGet,
+          envSet,
+        );
+
+        allLogs.push(...postResult.logs);
+
+        if (postResult.error) {
+          toast.error("Post-response script error", {
+            description: postResult.error,
+          });
+        }
+      }
 
       addEntry({
         id: generateId(),
@@ -123,6 +193,8 @@ export function useSendRequest(tabId: string) {
       toast.error(`Request failed: ${requestError.message}`, {
         description: requestError.cause,
       });
+    } finally {
+      setScriptLogs(tabId, allLogs);
     }
   }
 

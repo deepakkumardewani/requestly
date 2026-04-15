@@ -23,30 +23,42 @@ export function ScriptEditor({ tabId }: ScriptEditorProps) {
     <div className="flex h-full flex-col">
       <Tabs defaultValue="pre" className="flex h-full flex-col">
         <TabsList className="h-8 shrink-0 rounded-none border-b bg-transparent px-3">
-          <TabsTrigger value="pre" className="h-6 text-xs">
+          <TabsTrigger
+            value="pre"
+            data-testid="script-tab-pre"
+            className="h-6 text-xs"
+          >
             Pre-Request
           </TabsTrigger>
-          <TabsTrigger value="post" className="h-6 text-xs">
+          <TabsTrigger
+            value="post"
+            data-testid="script-tab-post"
+            className="h-6 text-xs"
+          >
             Post-Response
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pre" className="mt-0 flex-1 overflow-hidden">
-          <CodeEditor
-            value={tab.preScript}
-            language="javascript"
-            onChange={(value) => updateTabState(tabId, { preScript: value })}
-            envVariables={envVariables}
-          />
+          <div data-testid="pre-script-editor" className="h-full">
+            <CodeEditor
+              value={tab.preScript}
+              language="javascript"
+              onChange={(value) => updateTabState(tabId, { preScript: value })}
+              envVariables={envVariables}
+            />
+          </div>
         </TabsContent>
 
         <TabsContent value="post" className="mt-0 flex-1 overflow-hidden">
-          <CodeEditor
-            value={tab.postScript}
-            language="javascript"
-            onChange={(value) => updateTabState(tabId, { postScript: value })}
-            envVariables={envVariables}
-          />
+          <div data-testid="post-script-editor" className="h-full">
+            <CodeEditor
+              value={tab.postScript}
+              language="javascript"
+              onChange={(value) => updateTabState(tabId, { postScript: value })}
+              envVariables={envVariables}
+            />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

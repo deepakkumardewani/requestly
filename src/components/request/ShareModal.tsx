@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, Check, ChevronDown, Copy } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +24,15 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
   const [tooLarge, setTooLarge] = useState(false);
   const [copied, setCopied] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const copiedResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copiedResetRef.current !== null) {
+        clearTimeout(copiedResetRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const url = encodeShareLink(tab);
@@ -42,7 +51,13 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       toast.success("Link copied to clipboard");
-      setTimeout(() => setCopied(false), 2000);
+      if (copiedResetRef.current !== null) {
+        clearTimeout(copiedResetRef.current);
+      }
+      copiedResetRef.current = setTimeout(() => {
+        copiedResetRef.current = null;
+        setCopied(false);
+      }, 2000);
     } catch {
       toast.error("Failed to copy to clipboard");
     }

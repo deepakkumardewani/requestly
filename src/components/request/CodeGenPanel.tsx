@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, ChevronDown, ChevronRight, Copy } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CodeEditorLanguage } from "@/components/request/CodeEditor";
 import CodeEditor from "@/components/request/CodeEditor";
 import { Button } from "@/components/ui/button";
@@ -177,12 +177,28 @@ function CodeGenPanelHttp({ tab }: { tab: HttpTab }) {
     [setSetting],
   );
 
+  const copyResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyResetRef.current !== null) {
+        clearTimeout(copyResetRef.current);
+      }
+    };
+  }, []);
+
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(snippet).catch(() => {
-      // Clipboard API may fail in non-secure contexts; silently ignore
+    navigator.clipboard.writeText(snippet).catch((err) => {
+      console.error("Clipboard write failed", err);
     });
     setCopied(true);
-    setTimeout(() => setCopied(false), COPY_RESET_DELAY_MS);
+    if (copyResetRef.current !== null) {
+      clearTimeout(copyResetRef.current);
+    }
+    copyResetRef.current = setTimeout(() => {
+      copyResetRef.current = null;
+      setCopied(false);
+    }, COPY_RESET_DELAY_MS);
   }, [snippet]);
 
   const isExpanded = showCodeGen;

@@ -5,19 +5,13 @@ import type {
   CompletionResult,
 } from "@codemirror/autocomplete";
 import { autocompletion, startCompletion } from "@codemirror/autocomplete";
-import { java } from "@codemirror/lang-java";
-import { javascript } from "@codemirror/lang-javascript";
-import { json } from "@codemirror/lang-json";
-import { php } from "@codemirror/lang-php";
-import { python } from "@codemirror/lang-python";
 import { StreamLanguage } from "@codemirror/language";
-import { csharp } from "@codemirror/legacy-modes/mode/clike";
-import { go } from "@codemirror/legacy-modes/mode/go";
-import { ruby } from "@codemirror/legacy-modes/mode/ruby";
-import { EditorState, Prec } from "@codemirror/state";
+import type { Extension } from "@codemirror/state";
+import { Compartment, EditorState, Prec } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
-import { placeholder as cmPlaceholder } from "@codemirror/view";
-import { basicSetup, EditorView } from "codemirror";
+import { placeholder as cmPlaceholder, EditorView } from "@codemirror/view";
+import { basicSetup } from "codemirror";
+import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
 
 export type CodeEditorLanguage =
@@ -41,6 +35,75 @@ type CodeEditorProps = {
   placeholder?: string;
 };
 
+/** Light theme aligned with app `card` / `foreground` tokens */
+const lightEditorTheme = EditorView.theme({
+  "&": {
+    backgroundColor: "var(--card)",
+    color: "var(--foreground)",
+  },
+  ".cm-scroller": { backgroundColor: "var(--card)" },
+  ".cm-gutters": {
+    backgroundColor: "var(--muted)",
+    color: "var(--muted-foreground)",
+    border: "none",
+    borderRight: "1px solid var(--border)",
+  },
+  ".cm-activeLineGutter": { backgroundColor: "var(--accent)" },
+  ".cm-activeLine": { backgroundColor: "var(--accent)" },
+  "&.cm-focused .cm-cursor": {
+    borderLeftColor: "var(--foreground)",
+  },
+  "&.cm-focused .cm-selectionBackground, ::selection": {
+    backgroundColor: "color-mix(in oklch, var(--primary) 28%, transparent)",
+  },
+  ".cm-content": { caretColor: "var(--foreground)" },
+});
+
+function themeExtension(isDark: boolean): Extension {
+  return isDark ? oneDark : lightEditorTheme;
+}
+
+async function loadLanguageExtension(
+  lang: CodeEditorLanguage,
+): Promise<Extension | readonly Extension[]> {
+  switch (lang) {
+    case "json": {
+      const { json } = await import("@codemirror/lang-json");
+      return json();
+    }
+    case "javascript": {
+      const { javascript } = await import("@codemirror/lang-javascript");
+      return javascript();
+    }
+    case "python": {
+      const { python } = await import("@codemirror/lang-python");
+      return python();
+    }
+    case "java": {
+      const { java } = await import("@codemirror/lang-java");
+      return java();
+    }
+    case "php": {
+      const { php } = await import("@codemirror/lang-php");
+      return php({ plain: true });
+    }
+    case "go": {
+      const { go } = await import("@codemirror/legacy-modes/mode/go");
+      return StreamLanguage.define(go);
+    }
+    case "ruby": {
+      const { ruby } = await import("@codemirror/legacy-modes/mode/ruby");
+      return StreamLanguage.define(ruby);
+    }
+    case "csharp": {
+      const { csharp } = await import("@codemirror/legacy-modes/mode/clike");
+      return StreamLanguage.define(csharp);
+    }
+    default:
+      return [];
+  }
+}
+
 export default function CodeEditor({
   value,
   language = "text",
@@ -50,43 +113,29 @@ export default function CodeEditor({
   envVariables,
   placeholder,
 }: CodeEditorProps) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
+  const themeCompartmentRef = useRef<Compartment | null>(null);
+  if (!themeCompartmentRef.current) {
+    themeCompartmentRef.current = new Compartment();
+  }
+
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
-  // Ref so the completion source always reads latest variables
-  // without needing to tear down and recreate the editor on every render.
   const envVariablesRef = useRef(envVariables ?? []);
   envVariablesRef.current = envVariables ?? [];
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const parent = containerRef.current;
+    if (!parent) return;
 
-    const languageExtension = (() => {
-      switch (language) {
-        case "json":
-          return json();
-        case "javascript":
-          return javascript();
-        case "python":
-          return python();
-        case "java":
-          return java();
-        case "php":
-          return php({ plain: true });
-        case "go":
-          return StreamLanguage.define(go);
-        case "ruby":
-          return StreamLanguage.define(ruby);
-        case "csharp":
-          return StreamLanguage.define(csharp);
-        default:
-          return [];
-      }
-    })();
+    let cancelled = false;
+    const themeCompartment = themeCompartmentRef.current;
 
-    // Reads from ref so it's always current — no need to recreate the editor.
     function envCompletionSource(
       context: CompletionContext,
     ): CompletionResult | null {
@@ -96,7 +145,7 @@ export default function CodeEditor({
       const match = context.matchBefore(/\{\{[\w.]*/);
       if (!match) return null;
 
-      const prefix = match.text.slice(2); // strip {{
+      const prefix = match.text.slice(2);
       const filtered = variables.filter((v) =>
         v.toLowerCase().startsWith(prefix.toLowerCase()),
       );
@@ -113,15 +162,20 @@ export default function CodeEditor({
       };
     }
 
-    const state = EditorState.create({
-      doc: value,
-      extensions: [
+    (async () => {
+      const languageExtension = await loadLanguageExtension(language);
+      if (cancelled || !containerRef.current || !themeCompartment) return;
+
+      const initialDark =
+        typeof document !== "undefined" &&
+        document.documentElement.classList.contains("dark");
+
+      const extensions: Extension[] = [
         basicSetup,
-        oneDark,
+        themeCompartment.of(themeExtension(initialDark)),
         ...(Array.isArray(languageExtension)
-          ? languageExtension
+          ? [...languageExtension]
           : [languageExtension]),
-        // Prec.highest ensures our config wins over basicSetup's autocompletion()
         Prec.highest(
           autocompletion({
             override: [envCompletionSource],
@@ -140,9 +194,6 @@ export default function CodeEditor({
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             onChangeRef.current?.(update.state.doc.toString());
-
-            // { is not a word char so activateOnTyping won't fire automatically.
-            // Detect {{ and explicitly open the completion popup.
             const cursor = update.state.selection.main.from;
             const before = update.state.doc.sliceString(
               Math.max(0, cursor - 2),
@@ -153,21 +204,34 @@ export default function CodeEditor({
             }
           }
         }),
-      ],
-    });
+      ];
 
-    const view = new EditorView({ state, parent: containerRef.current });
-    viewRef.current = view;
+      const state = EditorState.create({
+        doc: value,
+        extensions,
+      });
+
+      const view = new EditorView({ state, parent: containerRef.current });
+      viewRef.current = view;
+    })();
 
     return () => {
-      view.destroy();
+      cancelled = true;
+      viewRef.current?.destroy();
       viewRef.current = null;
     };
-    // envVariables intentionally excluded — updates flow through envVariablesRef
-    // value intentionally excluded — synced without editor teardown via the effect below
+    // value synced separately — including it here would recreate the editor every keystroke
   }, [language, readOnly, placeholder]);
 
-  // Sync external value changes without losing cursor position
+  useEffect(() => {
+    const view = viewRef.current;
+    const comp = themeCompartmentRef.current;
+    if (!view || !comp) return;
+    view.dispatch({
+      effects: comp.reconfigure(themeExtension(isDark)),
+    });
+  }, [isDark]);
+
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
