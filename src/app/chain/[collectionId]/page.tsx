@@ -1,12 +1,15 @@
 "use client";
 
-import { GitBranch, Play, Square, Trash2 } from "lucide-react";
 import { use, useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { ChainCanvas } from "@/components/chain/canvas/ChainCanvas";
 import { ApiPickerDialog } from "@/components/chain/dialogs/ApiPickerDialog";
-import { AppBreadcrumb } from "@/components/layout/AppBreadcrumb";
-import { Button } from "@/components/ui/button";
-import { buildExecutionOrder, runChain } from "@/lib/chainRunner";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import {
+  buildExecutionOrder,
+  CircularDependencyError,
+  runChain,
+} from "@/lib/chainRunner";
 import { generateId } from "@/lib/utils";
 import { useChainStore } from "@/stores/useChainStore";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
@@ -26,10 +29,22 @@ import type {
   EnvPromotion,
   StandaloneChain,
 } from "@/types/chain";
+import { ChainPageEmptyState } from "./ChainPageEmptyState";
+import { ChainPageFooter } from "./ChainPageFooter";
+import { ChainPageHeader } from "./ChainPageHeader";
 
 type Props = {
   params: Promise<{ collectionId: string }>;
 };
+
+function notifyExecutionOrderFailure(err: unknown): void {
+  console.error("buildExecutionOrder failed", err);
+  const message =
+    err instanceof CircularDependencyError
+      ? "This chain has a circular dependency. Remove the cycle to run."
+      : "Could not determine run order for this chain.";
+  toast.error(message);
+}
 
 function historyNodeToRequestModel(node: ChainHistoryNode): RequestModel {
   return {
@@ -114,6 +129,8 @@ export default function ChainPage({ params }: Props) {
   // Tracks which node triggered "Add API after this" so the new node can be positioned relative to it
   const [addAfterNodeId, setAddAfterNodeId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  const handleOpenApiPicker = useCallback(() => setApiPickerOpen(true), []);
 
   // Mode detection
   const collection = collections.find((c) => c.id === id);
@@ -443,7 +460,8 @@ export default function ChainPage({ params }: Props) {
           activeConfig?.edges ?? [],
           cfIds,
         );
-      } catch {
+      } catch (err) {
+        notifyExecutionOrderFailure(err);
         return;
       }
       const idx = order.indexOf(requestId);
@@ -494,7 +512,8 @@ export default function ChainPage({ params }: Props) {
           activeConfig?.edges ?? [],
           cfIds,
         );
-      } catch {
+      } catch (err) {
+        notifyExecutionOrderFailure(err);
         return;
       }
       const idx = order.indexOf(requestId);
@@ -754,141 +773,63 @@ export default function ChainPage({ params }: Props) {
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
-      {/* Header */}
-      <header className="flex h-12 shrink-0 items-center gap-3 border-b border-border bg-card px-4">
-        <AppBreadcrumb
-          items={[{ label: "Home", href: "/" }, { label: chainTitle }]}
-        />
-        <span className="text-xs text-muted-foreground ml-2">
-          — {chainRequests.length} request
-          {chainRequests.length !== 1 ? "s" : ""}
-        </span>
+      <ChainPageHeader
+        chainTitle={chainTitle}
+        requestCount={chainRequests.length}
+        hasRunResult={hasRunResult}
+        isRunning={isRunning}
+        passedCount={passedCount}
+        failedCount={failedCount}
+        skippedCount={skippedCount}
+        onClearEdges={handleClearEdges}
+        onStop={handleStop}
+        onRun={handleRun}
+      />
 
-        <div className="flex-1" />
-
-        {/* Run result summary */}
-        {hasRunResult && !isRunning && (
-          <div className="flex items-center gap-2 text-xs">
-            {passedCount > 0 && (
-              <span className="flex items-center gap-0.5 text-emerald-400">
-                <span className="font-semibold">{passedCount}</span> passed
-              </span>
-            )}
-            {failedCount > 0 && (
-              <span className="flex items-center gap-0.5 text-red-400">
-                <span className="font-semibold">{failedCount}</span> failed
-              </span>
-            )}
-            {skippedCount > 0 && (
-              <span className="flex items-center gap-0.5 text-zinc-400">
-                <span className="font-semibold">{skippedCount}</span> skipped
-              </span>
-            )}
-          </div>
-        )}
-
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-destructive"
-            onClick={handleClearEdges}
-            disabled={isRunning}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            Clear edges
-          </Button>
-
-          {isRunning ? (
-            <Button
-              variant="destructive"
-              size="sm"
-              className="h-7 gap-1.5 text-xs"
-              onClick={handleStop}
-            >
-              <Square className="h-3 w-3 fill-current" />
-              Stop
-            </Button>
-          ) : (
-            <Button
-              size="sm"
-              className="h-7 gap-1.5 text-xs bg-primary hover:bg-primary/90"
-              onClick={handleRun}
-              disabled={chainRequests.length === 0}
-            >
-              <Play className="h-3 w-3 fill-current" />
-              Run Chain
-            </Button>
-          )}
-        </div>
-      </header>
-
-      {/* Canvas */}
-      <div className="flex-1 overflow-hidden">
+      <main
+        id="app-main"
+        className="flex min-h-0 flex-1 flex-col overflow-hidden"
+      >
         {chainRequests.length === 0 ? (
-          <div className="flex h-full items-center justify-center">
-            <div className="text-center">
-              <GitBranch className="mx-auto h-12 w-12 text-muted-foreground/30 mb-3" />
-              <p className="text-sm font-medium text-muted-foreground">
-                No APIs in this chain
-              </p>
-              <p className="text-xs text-muted-foreground/60 mt-1">
-                Use the Add API button to add requests from your collections or
-                history.
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-4 gap-1.5 text-xs"
-                onClick={() => setApiPickerOpen(true)}
-              >
-                Add API
-              </Button>
-            </div>
-          </div>
+          <ChainPageEmptyState onAddApi={handleOpenApiPicker} />
         ) : (
-          <ChainCanvas
-            chainId={id}
-            requests={chainRequests}
-            edges={activeConfig?.edges ?? []}
-            nodePositions={activeConfig?.nodePositions ?? {}}
-            nodeAssertions={activeConfig?.nodeAssertions ?? {}}
-            runState={runState}
-            isRunning={isRunning}
-            delayNodes={activeConfig?.delayNodes ?? []}
-            conditionNodes={activeConfig?.conditionNodes ?? []}
-            onAddApiClick={() => setApiPickerOpen(true)}
-            onDeleteNode={handleDeleteNode}
-            onDuplicateNode={handleDuplicateNode}
-            onUpsertEdge={handleUpsertEdge}
-            onDeleteEdge={handleDeleteEdge}
-            onUpdateNodePosition={handleUpdateNodePosition}
-            onUpsertNodeAssertions={handleUpsertNodeAssertions}
-            onRunNode={handleRunSingleNode}
-            onRunUpTo={handleRunUpTo}
-            onRunFromHere={handleRunFromHere}
-            onAddAfterNode={handleAddAfterNode}
-            onUpsertDelayNode={handleUpsertDelayNode}
-            onUpsertConditionNode={handleUpsertConditionNode}
-            onRemoveConditionNode={handleRemoveConditionNode}
-            displayNodes={activeConfig?.displayNodes ?? []}
-            onUpsertDisplayNode={handleUpsertDisplayNode}
-            envPromotions={activeConfig?.envPromotions ?? []}
-            onSavePromotion={handleUpsertEnvPromotion}
-            onRemovePromotion={handleDeleteEnvPromotion}
-            onSaveRequest={handleSaveRequest}
-          />
+          <ErrorBoundary fallbackTitle="Chain editor crashed">
+            <ChainCanvas
+              chainId={id}
+              requests={chainRequests}
+              edges={activeConfig?.edges ?? []}
+              nodePositions={activeConfig?.nodePositions ?? {}}
+              nodeAssertions={activeConfig?.nodeAssertions ?? {}}
+              runState={runState}
+              isRunning={isRunning}
+              delayNodes={activeConfig?.delayNodes ?? []}
+              conditionNodes={activeConfig?.conditionNodes ?? []}
+              onAddApiClick={handleOpenApiPicker}
+              onDeleteNode={handleDeleteNode}
+              onDuplicateNode={handleDuplicateNode}
+              onUpsertEdge={handleUpsertEdge}
+              onDeleteEdge={handleDeleteEdge}
+              onUpdateNodePosition={handleUpdateNodePosition}
+              onUpsertNodeAssertions={handleUpsertNodeAssertions}
+              onRunNode={handleRunSingleNode}
+              onRunUpTo={handleRunUpTo}
+              onRunFromHere={handleRunFromHere}
+              onAddAfterNode={handleAddAfterNode}
+              onUpsertDelayNode={handleUpsertDelayNode}
+              onUpsertConditionNode={handleUpsertConditionNode}
+              onRemoveConditionNode={handleRemoveConditionNode}
+              displayNodes={activeConfig?.displayNodes ?? []}
+              onUpsertDisplayNode={handleUpsertDisplayNode}
+              envPromotions={activeConfig?.envPromotions ?? []}
+              onSavePromotion={handleUpsertEnvPromotion}
+              onRemovePromotion={handleDeleteEnvPromotion}
+              onSaveRequest={handleSaveRequest}
+            />
+          </ErrorBoundary>
         )}
-      </div>
+      </main>
 
-      {/* Bottom hint */}
-      <div className="flex h-7 shrink-0 items-center justify-center border-t border-border bg-card/50">
-        <p className="text-[10px] text-muted-foreground">
-          Drag nodes to reposition · Draw from handle to handle to create
-          connections · Add a Display node to configure data extraction ·
-          Delete/Backspace to remove edges
-        </p>
-      </div>
+      <ChainPageFooter />
 
       <ApiPickerDialog
         open={apiPickerOpen}

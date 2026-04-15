@@ -1,7 +1,7 @@
 "use client";
 
 import { JSONPath } from "jsonpath-plus";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,6 +29,8 @@ import type {
   EnvPromotion,
 } from "@/types/chain";
 import { JsonPathExplorer } from "../dialogs/JsonPathExplorer";
+import { ArrowConfigInjectionPreviewList } from "./arrow-config/ArrowConfigInjectionPreviewList";
+import { FormattedJsonResponseBody } from "./arrow-config/FormattedJsonResponseBody";
 
 type TargetField = ChainInjection["targetField"];
 
@@ -100,20 +102,36 @@ function autoReplaceUrlSegment(
   return url;
 }
 
-/** Resolve the actual value for a JSONPath from the response body. */
-function resolveJsonPathValue(
-  responseBody: string | undefined,
+/** Resolve the actual value for a JSONPath from an already-parsed response. */
+function resolveJsonPathFromParsed(
+  parsed: unknown,
   jsonPath: string,
 ): string | null {
-  if (!responseBody || !jsonPath) return null;
+  if (
+    parsed === null ||
+    typeof parsed !== "object" ||
+    !jsonPath ||
+    !jsonPath.trim()
+  ) {
+    return null;
+  }
   try {
-    const parsed = JSON.parse(responseBody);
     const result = JSONPath({ path: jsonPath, json: parsed });
     if (Array.isArray(result) && result.length > 0) return String(result[0]);
     return null;
   } catch {
     return null;
   }
+}
+
+type InjectionRow = ChainInjection & { rowId: string };
+
+function withRowIds(injections: ChainInjection[]): InjectionRow[] {
+  return injections.map((inj) => ({ ...inj, rowId: generateId() }));
+}
+
+function stripRowIds(rows: InjectionRow[]): ChainInjection[] {
+  return rows.map(({ rowId: _id, ...inj }) => inj);
 }
 
 const TARGET_FIELD_LABEL: Record<TargetField, string> = {
@@ -147,15 +165,22 @@ export function ArrowConfigPanel({
   onSaveDisplayNode,
   onDeleteDisplayNode,
 }: ArrowConfigPanelProps) {
+  const fieldIdPrefix = useId();
+  const manualJsonPathInputId = `${fieldIdPrefix}-manual-jsonpath`;
+  const targetKeyInputId = `${fieldIdPrefix}-target-key`;
+  const targetUrlInputId = `${fieldIdPrefix}-target-url`;
+
   const { environments } = useEnvironmentsStore();
   const [viewerOpen, setViewerOpen] = useState(false);
 
   // ── Display-node mode uses a flat single-injection config ─────────────────
   const isDisplayNodeMode = Boolean(displayNodeId);
 
-  // Initialise from existing config
-  const initialInjections: ChainInjection[] = isDisplayNodeMode
-    ? [
+  const panelSessionKey = `${displayNodeId ?? ""}|${existingEdge?.id ?? ""}`;
+
+  const baseInjections = useMemo((): ChainInjection[] => {
+    if (isDisplayNodeMode) {
+      return [
         {
           sourceJsonPath:
             existingDisplayNode?.sourceJsonPath ??
@@ -165,21 +190,46 @@ export function ArrowConfigPanel({
           targetKey:
             existingDisplayNode?.targetKey ?? DEFAULT_INJECTION.targetKey,
         },
-      ]
-    : existingEdge?.injections?.length
-      ? existingEdge.injections
-      : [DEFAULT_INJECTION];
+      ];
+    }
+    if (existingEdge?.injections?.length) {
+      return existingEdge.injections.map((inj) => ({ ...inj }));
+    }
+    return [{ ...DEFAULT_INJECTION }];
+  }, [
+    isDisplayNodeMode,
+    existingDisplayNode?.sourceJsonPath,
+    existingDisplayNode?.targetField,
+    existingDisplayNode?.targetKey,
+    existingEdge?.id,
+    existingEdge?.injections,
+  ]);
 
-  const initialTargetUrl =
-    existingDisplayNode?.targetUrl ??
-    existingEdge?.targetUrl ??
-    targetRequest?.url ??
-    "";
+  const savedTargetUrl = useMemo(
+    () =>
+      existingDisplayNode?.targetUrl ??
+      existingEdge?.targetUrl ??
+      targetRequest?.url ??
+      "",
+    [
+      existingDisplayNode?.targetUrl,
+      existingEdge?.targetUrl,
+      targetRequest?.url,
+    ],
+  );
 
-  const [injections, setInjections] =
-    useState<ChainInjection[]>(initialInjections);
-  const [targetUrl, setTargetUrl] = useState(initialTargetUrl);
+  const [injections, setInjections] = useState<InjectionRow[]>(() =>
+    withRowIds([{ ...DEFAULT_INJECTION }]),
+  );
+  const [targetUrl, setTargetUrl] = useState("");
   const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    if (!open) return;
+    setInjections(withRowIds(baseInjections));
+    setTargetUrl(savedTargetUrl);
+    setActiveIdx(0);
+  }, [open, panelSessionKey, baseInjections, savedTargetUrl]);
 
   const active = injections[activeIdx] ?? injections[0];
 
@@ -204,7 +254,7 @@ export function ArrowConfigPanel({
   }
 
   function handleSelectJsonPath(path: string) {
-    const extractedValue = resolveJsonPathValue(sourceResponse?.body, path);
+    const extractedValue = resolveJsonPathFromParsed(parsedResponseBody, path);
     const newKey = jsonPathToVarName(path);
 
     if (active.targetField === "path") {
@@ -220,8 +270,8 @@ export function ArrowConfigPanel({
   function handleTargetFieldChange(field: TargetField) {
     // When switching to path, try to auto-replace URL segment immediately
     if (field === "path") {
-      const extractedValue = resolveJsonPathValue(
-        sourceResponse?.body,
+      const extractedValue = resolveJsonPathFromParsed(
+        parsedResponseBody,
         active.sourceJsonPath,
       );
       const paramName =
@@ -240,8 +290,8 @@ export function ArrowConfigPanel({
     updateActive({ targetKey: key });
     // If we're in path mode, also attempt auto-replace in URL
     if (active.targetField === "path" && key) {
-      const extractedValue = resolveJsonPathValue(
-        sourceResponse?.body,
+      const extractedValue = resolveJsonPathFromParsed(
+        parsedResponseBody,
         active.sourceJsonPath,
       );
       const newUrl = autoReplaceUrlSegment(targetUrl, key, extractedValue);
@@ -250,11 +300,16 @@ export function ArrowConfigPanel({
   }
 
   function addInjection() {
-    setInjections((prev) => [
-      ...prev,
-      { sourceJsonPath: "$.value", targetField: "header", targetKey: "" },
-    ]);
-    setActiveIdx(injections.length); // focus the new one
+    setInjections((prev) => {
+      const row: InjectionRow = {
+        sourceJsonPath: "$.value",
+        targetField: "header",
+        targetKey: "",
+        rowId: generateId(),
+      };
+      setActiveIdx(prev.length);
+      return [...prev, row];
+    });
   }
 
   function removeInjection(idx: number) {
@@ -300,7 +355,7 @@ export function ArrowConfigPanel({
       targetRequestId: targetRequest?.id ?? "",
       targetUrl:
         hasPathInjection && targetUrl.trim() ? targetUrl.trim() : undefined,
-      injections: injections.map((inj) => ({
+      injections: stripRowIds(injections).map((inj) => ({
         sourceJsonPath: inj.sourceJsonPath.trim(),
         targetField: inj.targetField,
         targetKey: inj.targetKey.trim(),
@@ -332,31 +387,34 @@ export function ArrowConfigPanel({
   }
 
   // ── Preview ───────────────────────────────────────────────────────────────
-  function buildInjectionPreview(inj: ChainInjection): string {
-    const varName = jsonPathToVarName(inj.sourceJsonPath);
-    const rawUrl =
-      inj.targetField === "path" || inj.targetField === "url"
-        ? targetUrl.trim() ||
-          targetRequest?.url ||
-          "https://api.example.com/endpoint"
-        : (targetRequest?.url ?? "https://api.example.com/endpoint");
+  const buildInjectionPreview = useCallback(
+    (inj: ChainInjection): string => {
+      const varName = jsonPathToVarName(inj.sourceJsonPath);
+      const rawUrl =
+        inj.targetField === "path" || inj.targetField === "url"
+          ? targetUrl.trim() ||
+            targetRequest?.url ||
+            "https://api.example.com/endpoint"
+          : (targetRequest?.url ?? "https://api.example.com/endpoint");
 
-    if (inj.targetField === "url") {
-      const sep = rawUrl.includes("?") ? "&" : "?";
-      return `${rawUrl}${sep}${inj.targetKey}={{${varName}}}`;
-    }
-    if (inj.targetField === "path") {
-      const placeholder = `:${inj.targetKey}`;
-      if (rawUrl.includes(placeholder)) {
-        return rawUrl.replace(placeholder, `{{${varName}}}`);
+      if (inj.targetField === "url") {
+        const sep = rawUrl.includes("?") ? "&" : "?";
+        return `${rawUrl}${sep}${inj.targetKey}={{${varName}}}`;
       }
-      return `${rawUrl.replace(/\/$/, "")}/{{${varName}}}`;
-    }
-    if (inj.targetField === "header") {
+      if (inj.targetField === "path") {
+        const placeholder = `:${inj.targetKey}`;
+        if (rawUrl.includes(placeholder)) {
+          return rawUrl.replace(placeholder, `{{${varName}}}`);
+        }
+        return `${rawUrl.replace(/\/$/, "")}/{{${varName}}}`;
+      }
+      if (inj.targetField === "header") {
+        return `${inj.targetKey}: {{${varName}}}`;
+      }
       return `${inj.targetKey}: {{${varName}}}`;
-    }
-    return `${inj.targetKey}: {{${varName}}}`;
-  }
+    },
+    [targetUrl, targetRequest?.url],
+  );
 
   const urlMissingPlaceholder =
     active.targetField === "path" &&
@@ -398,7 +456,8 @@ export function ArrowConfigPanel({
                 <button
                   type="button"
                   onClick={addInjection}
-                  className="text-xs text-primary hover:text-primary/80 font-medium"
+                  className="text-xs text-primary hover:text-primary/80 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                  aria-label="Add injection"
                 >
                   + Add
                 </button>
@@ -410,24 +469,29 @@ export function ArrowConfigPanel({
                     ? `${jsonPathToVarName(inj.sourceJsonPath)} → ${inj.targetField}:${inj.targetKey || "?"}`
                     : `Injection ${idx + 1}`;
                   return (
-                    <div
-                      key={`${inj.sourceJsonPath}-${inj.targetField}-${inj.targetKey}-${idx}`}
-                      className={`flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-mono cursor-pointer transition-colors ${
-                        isActive
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border bg-muted/30 text-muted-foreground hover:border-border/80 hover:text-foreground"
-                      }`}
-                      onClick={() => setActiveIdx(idx)}
-                    >
-                      <span className="truncate max-w-[160px]">{label}</span>
+                    <div key={inj.rowId} className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        aria-pressed={isActive}
+                        aria-label={`Select injection ${label}`}
+                        className={`flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-mono cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                          isActive
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border bg-muted/30 text-muted-foreground hover:border-border/80 hover:text-foreground"
+                        }`}
+                        onClick={() => setActiveIdx(idx)}
+                      >
+                        <span className="truncate max-w-[160px]">{label}</span>
+                      </button>
                       {injections.length > 1 && (
                         <button
                           type="button"
+                          aria-label={`Remove injection ${label}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             removeInjection(idx);
                           }}
-                          className="text-muted-foreground hover:text-destructive ml-0.5 leading-none"
+                          className="text-muted-foreground hover:text-destructive ml-0.5 leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                         >
                           ×
                         </button>
@@ -511,7 +575,11 @@ export function ArrowConfigPanel({
                   value="manual"
                   className="mt-2 flex flex-col gap-2"
                 >
+                  <Label htmlFor={manualJsonPathInputId} className="sr-only">
+                    JSONPath to extract from source response
+                  </Label>
                   <Input
+                    id={manualJsonPathInputId}
                     value={active.sourceJsonPath}
                     onChange={(e) =>
                       updateActive({ sourceJsonPath: e.target.value })
@@ -556,8 +624,10 @@ export function ArrowConfigPanel({
                 <button
                   key={field}
                   type="button"
+                  aria-pressed={active.targetField === field}
+                  aria-label={`Inject into ${field}`}
                   onClick={() => handleTargetFieldChange(field)}
-                  className={`flex-1 min-w-[60px] rounded-md border px-2 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 min-w-[60px] rounded-md border px-2 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     active.targetField === field
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-muted/50 text-muted-foreground hover:border-border/80 hover:text-foreground"
@@ -576,10 +646,14 @@ export function ArrowConfigPanel({
 
             {/* Key input */}
             <div className="flex flex-col gap-2">
-              <Label className="text-xs text-muted-foreground">
+              <Label
+                htmlFor={targetKeyInputId}
+                className="text-xs text-muted-foreground"
+              >
                 {TARGET_FIELD_LABEL[active.targetField]}
               </Label>
               <Input
+                id={targetKeyInputId}
                 value={active.targetKey}
                 onChange={(e) => handleTargetKeyChange(e.target.value)}
                 placeholder={TARGET_FIELD_PLACEHOLDER[active.targetField]}
@@ -598,12 +672,16 @@ export function ArrowConfigPanel({
             {(active.targetField === "path" ||
               active.targetField === "url") && (
               <div className="flex flex-col gap-2">
-                <Label className="text-xs text-muted-foreground">
+                <Label
+                  htmlFor={targetUrlInputId}
+                  className="text-xs text-muted-foreground"
+                >
                   {active.targetField === "path"
                     ? "URL template (add :param placeholders)"
                     : "Base URL"}
                 </Label>
                 <Input
+                  id={targetUrlInputId}
                   value={targetUrl}
                   onChange={(e) => setTargetUrl(e.target.value)}
                   placeholder={
@@ -630,67 +708,12 @@ export function ArrowConfigPanel({
             )}
           </div>
 
-          {/* ── Preview ── */}
-          {injections.some((inj) => inj.sourceJsonPath && inj.targetKey) && (
-            <div className="rounded-md border border-border/50 bg-muted/30 px-4 py-3 flex flex-col gap-2.5">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                Preview
-              </p>
-
-              {injections.map((inj, idx) => {
-                if (!inj.sourceJsonPath || !inj.targetKey) return null;
-                const varName = jsonPathToVarName(inj.sourceJsonPath);
-                const preview = buildInjectionPreview(inj);
-                return (
-                  <div
-                    key={`${inj.sourceJsonPath}-${inj.targetField}-${inj.targetKey}-${idx}`}
-                    className="flex flex-col gap-1"
-                  >
-                    {injections.length > 1 && (
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                        Injection {idx + 1}
-                      </span>
-                    )}
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                        Extract
-                      </span>
-                      <p className="text-xs font-mono">
-                        <span className="text-primary">
-                          {inj.sourceJsonPath}
-                        </span>
-                        <span className="text-muted-foreground"> from </span>
-                        <span className="text-foreground">
-                          {sourceRequest?.name ?? "source"}
-                        </span>
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                        {inj.targetField === "url"
-                          ? "Injected URL"
-                          : inj.targetField === "path"
-                            ? "Resolved URL"
-                            : inj.targetField === "header"
-                              ? "Request header"
-                              : "Body path"}
-                      </span>
-                      <p className="text-xs font-mono text-foreground break-all">
-                        {preview}
-                      </p>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground">
-                      <span className="font-mono text-emerald-400/80">{`{{${varName}}}`}</span>{" "}
-                      replaced at runtime.
-                    </p>
-                    {idx < injections.length - 1 && (
-                      <div className="h-px bg-border/40 mt-1" />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <ArrowConfigInjectionPreviewList
+            injections={injections}
+            sourceRequestName={sourceRequest?.name}
+            buildPreview={buildInjectionPreview}
+            jsonPathToVarName={jsonPathToVarName}
+          />
         </div>
 
         {/* Footer */}
@@ -784,19 +807,7 @@ export function ArrowConfigPanel({
                 Running request...
               </div>
             ) : sourceResponse ? (
-              <pre className="text-foreground whitespace-pre-wrap">
-                {(() => {
-                  try {
-                    return JSON.stringify(
-                      JSON.parse(sourceResponse.body),
-                      null,
-                      2,
-                    );
-                  } catch {
-                    return sourceResponse.body;
-                  }
-                })()}
-              </pre>
+              <FormattedJsonResponseBody body={sourceResponse.body} />
             ) : (
               <div className="text-muted-foreground">
                 No response yet. Run the API first.

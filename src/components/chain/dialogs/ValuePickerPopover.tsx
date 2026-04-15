@@ -2,7 +2,14 @@
 
 import { JSONPath } from "jsonpath-plus";
 import { Link2, Play } from "lucide-react";
-import { useMemo } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  type ReactElement,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -23,10 +30,11 @@ type ValuePickerPopoverProps = {
   onRunSource?: () => void;
 };
 
-function resolveValue(body: string | undefined, path: string): string {
-  if (!body || !path) return "";
+function resolvePathFromParsed(parsed: unknown, path: string): string {
+  if (parsed === null || typeof parsed !== "object" || !path || !path.trim()) {
+    return "";
+  }
   try {
-    const parsed = JSON.parse(body);
     const result = JSONPath({ path, json: parsed });
     if (Array.isArray(result) && result.length > 0) return String(result[0]);
     return "";
@@ -43,6 +51,9 @@ export function ValuePickerPopover({
   onSelect,
   onRunSource,
 }: ValuePickerPopoverProps) {
+  const [open, setOpen] = useState(false);
+  const popupId = useId();
+
   const parsedBody = useMemo(() => {
     if (!sourceResponse?.body) return null;
     try {
@@ -54,14 +65,36 @@ export function ValuePickerPopover({
   }, [sourceResponse?.body]);
 
   function handleSelect(path: string) {
-    const value = resolveValue(sourceResponse?.body, path);
+    const value = parsedBody ? resolvePathFromParsed(parsedBody, path) : "";
     onSelect(path, value);
   }
 
+  if (!isValidElement(children)) {
+    return null;
+  }
+
+  const trigger = cloneElement(
+    children as ReactElement<{
+      "aria-expanded"?: boolean;
+      "aria-haspopup"?: "dialog";
+      "aria-controls"?: string;
+    }>,
+    {
+      "aria-expanded": open,
+      "aria-haspopup": "dialog",
+      "aria-controls": popupId,
+    },
+  );
+
   return (
-    <Popover>
-      <PopoverTrigger render={children as React.ReactElement} />
-      <PopoverContent side="left" sideOffset={8} className="w-80 p-0">
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger render={trigger} />
+      <PopoverContent
+        id={popupId}
+        side="left"
+        sideOffset={8}
+        className="w-80 p-0"
+      >
         <div className="flex flex-col gap-0">
           <div className="px-3 py-2 border-b border-border/50">
             <p className="text-xs font-semibold text-foreground">

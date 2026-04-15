@@ -9,7 +9,14 @@ import {
   SkipForward,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -89,28 +96,32 @@ function StateIndicator({ state }: { state: ChainNodeState }) {
     case "passed":
       return (
         <div className="flex items-center gap-1.5 text-emerald-400">
-          <CheckCircle className="h-3.5 w-3.5" />
+          <CheckCircle className="h-3.5 w-3.5" aria-hidden />
           <span className="text-xs font-medium">Passed</span>
         </div>
       );
     case "failed":
       return (
         <div className="flex items-center gap-1.5 text-red-400">
-          <XCircle className="h-3.5 w-3.5" />
+          <XCircle className="h-3.5 w-3.5" aria-hidden />
           <span className="text-xs font-medium">Failed</span>
         </div>
       );
     case "running":
       return (
-        <div className="flex items-center gap-1.5 text-blue-400">
-          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        <div
+          className="flex items-center gap-1.5 text-blue-400"
+          role="status"
+          aria-live="polite"
+        >
+          <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
           <span className="text-xs font-medium">Running…</span>
         </div>
       );
     case "skipped":
       return (
         <div className="flex items-center gap-1.5 text-zinc-500">
-          <SkipForward className="h-3.5 w-3.5" />
+          <SkipForward className="h-3.5 w-3.5" aria-hidden />
           <span className="text-xs font-medium">Skipped</span>
         </div>
       );
@@ -120,9 +131,15 @@ function StateIndicator({ state }: { state: ChainNodeState }) {
 }
 
 /** Section heading with a trailing rule — creates clear visual rhythm between sections */
-function SectionHeading({ children }: { children: React.ReactNode }) {
+function SectionHeading({
+  children,
+  id,
+}: {
+  children: React.ReactNode;
+  id?: string;
+}) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3" id={id}>
       <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground shrink-0">
         {children}
       </span>
@@ -132,22 +149,42 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
+  const resetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (resetRef.current !== null) {
+        clearTimeout(resetRef.current);
+      }
+    };
+  }, []);
+
+  const handleClick = useCallback(() => {
+    navigator.clipboard.writeText(text).catch((err) => {
+      console.error("Clipboard write failed", err);
+    });
+    setCopied(true);
+    if (resetRef.current !== null) {
+      clearTimeout(resetRef.current);
+    }
+    resetRef.current = setTimeout(() => {
+      resetRef.current = null;
+      setCopied(false);
+    }, 2000);
+  }, [text]);
+
   return (
     <Button
       variant="ghost"
       size="icon"
       className="h-6 w-6 shrink-0 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-      onClick={() => {
-        navigator.clipboard.writeText(text);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      }}
-      title="Copy to clipboard"
+      onClick={handleClick}
+      aria-label={copied ? "Copied" : "Copy to clipboard"}
     >
       {copied ? (
-        <Check className="h-3.5 w-3.5 text-emerald-500" />
+        <Check className="h-3.5 w-3.5 text-emerald-500" aria-hidden />
       ) : (
-        <Copy className="h-3.5 w-3.5" />
+        <Copy className="h-3.5 w-3.5" aria-hidden />
       )}
     </Button>
   );
@@ -173,6 +210,7 @@ export function NodeDetailsPanel({
   onSavePromotion,
   onRemovePromotion,
 }: NodeDetailsPanelProps) {
+  const requestBodySectionId = useId();
   const hasExtractions =
     extractedValues && Object.keys(extractedValues).length > 0;
 
@@ -195,13 +233,14 @@ export function NodeDetailsPanel({
     onSaveBody !== undefined &&
     ["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase());
 
-  // Pretty-print response body if it's JSON
-  let prettyBody = response?.body ?? "";
-  try {
-    prettyBody = JSON.stringify(JSON.parse(prettyBody), null, 2);
-  } catch {
-    // leave as-is
-  }
+  const prettyBody = useMemo(() => {
+    const raw = response?.body ?? "";
+    try {
+      return JSON.stringify(JSON.parse(raw), null, 2);
+    } catch {
+      return raw;
+    }
+  }, [response?.body]);
 
   const isEmpty = !response && !error && !hasExtractions && !hasBodyEditor;
 
@@ -237,12 +276,19 @@ export function NodeDetailsPanel({
         </SheetHeader>
 
         {/* ── Tab bar ────────────────────────────────────── */}
-        <div className="flex shrink-0 border-b border-border px-5">
+        <div
+          role="tablist"
+          aria-label="Node panel sections"
+          className="flex shrink-0 border-b border-border px-5"
+        >
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === "details"}
+            id="node-details-tab-details"
             onClick={() => setActiveTab("details")}
             className={cn(
-              "pb-2 pt-3 text-xs font-medium border-b-2 mr-4 transition-colors",
+              "pb-2 pt-3 text-xs font-medium border-b-2 mr-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card rounded-sm",
               activeTab === "details"
                 ? "border-primary text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground",
@@ -252,9 +298,12 @@ export function NodeDetailsPanel({
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={activeTab === "assertions"}
+            id="node-details-tab-assertions"
             onClick={() => setActiveTab("assertions")}
             className={cn(
-              "pb-2 pt-3 text-xs font-medium border-b-2 flex items-center gap-1.5 transition-colors",
+              "pb-2 pt-3 text-xs font-medium border-b-2 flex items-center gap-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card rounded-sm",
               activeTab === "assertions"
                 ? "border-primary text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground",
@@ -291,13 +340,16 @@ export function NodeDetailsPanel({
               {/* ── Request body editor (POST/PUT/PATCH only) ───── */}
               {hasBodyEditor && (
                 <section className="flex flex-col gap-3">
-                  <SectionHeading>Request body</SectionHeading>
+                  <SectionHeading id={requestBodySectionId}>
+                    Request body
+                  </SectionHeading>
                   <Textarea
                     value={editedBody}
                     onChange={(e) => setEditedBody(e.target.value)}
                     className="font-mono text-xs min-h-[140px] resize-y bg-muted/20 border-border/50"
                     placeholder='{"key": "value"}'
                     spellCheck={false}
+                    aria-labelledby={requestBodySectionId}
                   />
                   <Button
                     size="sm"

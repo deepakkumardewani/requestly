@@ -14,14 +14,10 @@ import {
   ReactFlow,
   useEdgesState,
   useNodesState,
-  useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { LayoutGrid } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { computeAutoLayout } from "@/lib/chainLayout";
+import { useTheme } from "next-themes";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { generateId } from "@/lib/utils";
 import type { RequestModel } from "@/types";
 import type {
@@ -38,12 +34,24 @@ import { ChainNode, type ChainNodeData } from "../nodes/ChainNode";
 import { ConditionNode, type ConditionNodeData } from "../nodes/ConditionNode";
 import { DelayNode, type DelayNodeData } from "../nodes/DelayNode";
 import { DisplayNode, type DisplayNodeData } from "../nodes/DisplayNode";
-import { ConditionConfigPanel } from "../panels/ConditionConfigPanel";
-import { EditRequestPanel } from "../panels/EditRequestPanel";
 import { NodeDetailsPanel } from "../panels/NodeDetailsPanel";
+import { AutoLayoutControl, type LayoutNode } from "./AutoLayoutControl";
 import { BlockMenu } from "./BlockMenu";
 import { DeletableEdge } from "./DeletableEdge";
+import { GhostNode } from "./GhostNode";
+import { GhostPlacementHandler } from "./GhostPlacementHandler";
 import { NodeContextMenu } from "./NodeContextMenu";
+
+const EditRequestPanel = lazy(() =>
+  import("../panels/EditRequestPanel").then((m) => ({
+    default: m.EditRequestPanel,
+  })),
+);
+const ConditionConfigPanel = lazy(() =>
+  import("../panels/ConditionConfigPanel").then((m) => ({
+    default: m.ConditionConfigPanel,
+  })),
+);
 
 const NODE_TYPES = {
   chainNode: ChainNode,
@@ -201,11 +209,18 @@ function buildEdges(
         target: e.targetRequestId,
         sourceHandle: e.branchId,
         type: "deletable",
-        style: { stroke: "#7c3aed", strokeWidth: 2, strokeDasharray: "4 2" },
+        style: {
+          stroke: "var(--chain-edge-branch)",
+          strokeWidth: 2,
+          strokeDasharray: "4 2",
+        },
         data: {
           label,
-          labelStyle: { fontSize: 10, fill: "#a78bfa" },
-          labelBgStyle: { fill: "#1e293b", fillOpacity: 0.85 },
+          labelStyle: { fontSize: 10, fill: "var(--chain-edge-branch-label)" },
+          labelBgStyle: {
+            fill: "var(--chain-edge-label-bg)",
+            fillOpacity: 0.92,
+          },
           onDeleteEdge,
           onClickEdge,
         },
@@ -220,7 +235,11 @@ function buildEdges(
         target: e.targetRequestId,
         sourceHandle: "fail",
         type: "deletable",
-        style: { stroke: "#ef4444", strokeWidth: 2, strokeDasharray: "4 2" },
+        style: {
+          stroke: "var(--chain-edge-fail)",
+          strokeWidth: 2,
+          strokeDasharray: "4 2",
+        },
         data: { onDeleteEdge, onClickEdge },
       };
     }
@@ -235,7 +254,9 @@ function buildEdges(
       sourceHandle: isSuccessHandle ? "success" : undefined,
       type: "deletable",
       style: {
-        stroke: isSuccessHandle ? "#10b981" : "#475569",
+        stroke: isSuccessHandle
+          ? "var(--chain-edge-success)"
+          : "var(--chain-edge-default)",
         strokeWidth: 2,
         strokeDasharray: isSuccessHandle ? "4 2" : undefined,
       },
@@ -288,177 +309,6 @@ type ChainCanvasProps = {
   onSaveRequest: (id: string, patch: Partial<RequestModel>) => void;
 };
 
-// ── Auto-layout control (must live inside ReactFlow context) ─────────────────
-
-type LayoutNode = Node<{ [key: string]: unknown }>;
-
-type AutoLayoutControlProps = {
-  nodes: LayoutNode[];
-  edges: Edge[];
-  disabled: boolean;
-  onUpdateNodePosition: (nodeId: string, pos: { x: number; y: number }) => void;
-  setNodes: React.Dispatch<React.SetStateAction<LayoutNode[]>>;
-};
-
-function AutoLayoutControl({
-  nodes,
-  edges,
-  disabled,
-  onUpdateNodePosition,
-  setNodes,
-}: AutoLayoutControlProps) {
-  const { fitView } = useReactFlow();
-
-  const handleAutoLayout = useCallback(() => {
-    const positions = computeAutoLayout(nodes, edges);
-
-    setNodes((prev) =>
-      prev.map((node) => ({
-        ...node,
-        position: positions[node.id] ?? node.position,
-      })),
-    );
-
-    for (const [id, pos] of Object.entries(positions)) {
-      onUpdateNodePosition(id, pos);
-    }
-
-    requestAnimationFrame(() => fitView({ padding: 0.2 }));
-    toast.success("Layout applied");
-  }, [nodes, edges, setNodes, onUpdateNodePosition, fitView]);
-
-  return (
-    <Button
-      variant="outline"
-      size="sm"
-      className="h-7 gap-1.5 text-xs bg-card"
-      onClick={handleAutoLayout}
-      disabled={disabled}
-    >
-      <LayoutGrid className="h-3.5 w-3.5" />
-      Auto Layout
-    </Button>
-  );
-}
-
-// ── Ghost node overlay ───────────────────────────────────────────────────────
-
-type GhostNodeProps = {
-  type: "delay" | "condition" | "display";
-  cursorPos: { x: number; y: number };
-};
-
-function GhostNode({ type, cursorPos }: GhostNodeProps) {
-  return (
-    <div
-      className="pointer-events-none fixed z-50 opacity-60"
-      style={{ left: cursorPos.x + 12, top: cursorPos.y + 12 }}
-    >
-      {type === "delay" ? (
-        <div className="flex min-w-[160px] items-center gap-2 rounded-lg border-2 border-amber-400 bg-card px-3 py-2 shadow-lg">
-          <span className="text-xs text-muted-foreground">Wait</span>
-          <span className="text-xs font-semibold text-foreground">1000</span>
-          <span className="text-xs text-muted-foreground">ms</span>
-        </div>
-      ) : type === "condition" ? (
-        <div className="min-w-[180px] rounded-lg border-2 border-violet-400 bg-card px-3 py-2 shadow-lg">
-          <span className="text-xs font-semibold text-foreground">
-            Condition
-          </span>
-        </div>
-      ) : (
-        <div className="min-w-[180px] rounded-lg border-2 border-violet-400 bg-card px-3 py-2 shadow-lg">
-          <span className="text-xs font-semibold text-foreground">Display</span>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── Ghost placement handler (needs ReactFlow context for screenToFlowPosition)
-
-type GhostPlacementHandlerProps = {
-  pendingNodeType: "delay" | "condition" | "display" | null;
-  cursorPos: { x: number; y: number };
-  onUpsertDelayNode: (node: DelayNodeConfig) => void;
-  onUpsertConditionNode: (node: ConditionNodeConfig) => void;
-  onUpsertDisplayNode: (node: DisplayNodeConfig) => void;
-  onUpdateNodePosition: (nodeId: string, pos: { x: number; y: number }) => void;
-  onOpenConditionPanel: (nodeId: string) => void;
-  onClearPending: () => void;
-};
-
-function GhostPlacementHandler({
-  pendingNodeType,
-  cursorPos,
-  onUpsertDelayNode,
-  onUpsertConditionNode,
-  onUpsertDisplayNode,
-  onUpdateNodePosition,
-  onOpenConditionPanel,
-  onClearPending,
-}: GhostPlacementHandlerProps) {
-  const { screenToFlowPosition } = useReactFlow();
-
-  useEffect(() => {
-    if (!pendingNodeType) return;
-
-    function handlePaneClick(e: MouseEvent) {
-      const target = e.target as HTMLElement;
-      const isPaneClick =
-        target.classList.contains("react-flow__pane") ||
-        target.closest(".react-flow__pane") !== null;
-      if (!isPaneClick) return;
-
-      const pos = screenToFlowPosition({ x: cursorPos.x, y: cursorPos.y });
-      const id = generateId();
-
-      if (pendingNodeType === "delay") {
-        onUpsertDelayNode({ id, type: "delay", delayMs: 1000 });
-        onUpdateNodePosition(id, pos);
-      } else if (pendingNodeType === "display") {
-        onUpsertDisplayNode({
-          id,
-          type: "display",
-          sourceJsonPath: "",
-          targetField: "header",
-          targetKey: "",
-        });
-        onUpdateNodePosition(id, pos);
-      } else {
-        onUpsertConditionNode({
-          id,
-          type: "condition",
-          variable: "{{value}}",
-          branches: [
-            { id: generateId(), label: "branch 1", expression: "== 'value'" },
-            { id: generateId(), label: "else", expression: "" },
-          ],
-        });
-        onUpdateNodePosition(id, pos);
-        onOpenConditionPanel(id);
-      }
-
-      onClearPending();
-    }
-
-    window.addEventListener("click", handlePaneClick);
-    return () => window.removeEventListener("click", handlePaneClick);
-  }, [
-    pendingNodeType,
-    cursorPos,
-    screenToFlowPosition,
-    onUpsertDelayNode,
-    onUpsertConditionNode,
-    onUpsertDisplayNode,
-    onUpdateNodePosition,
-    onOpenConditionPanel,
-    onClearPending,
-  ]);
-
-  return null;
-}
-
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function ChainCanvas({
@@ -491,6 +341,9 @@ export function ChainCanvas({
   onRemovePromotion,
   onSaveRequest,
 }: ChainCanvasProps) {
+  const { resolvedTheme } = useTheme();
+  const flowColorMode = resolvedTheme === "dark" ? "dark" : "light";
+
   const [nodeDetailOpen, setNodeDetailOpen] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
@@ -503,8 +356,11 @@ export function ChainCanvas({
   >(null);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [editRequestId, setEditRequestId] = useState<string | null>(null);
-
+  const [keyboardFocusNodeId, setKeyboardFocusNodeId] = useState<string | null>(
+    null,
+  );
   const handleClickNode = useCallback((requestId: string) => {
+    setKeyboardFocusNodeId(requestId);
     setSelectedNodeId(requestId);
     setNodeDetailOpen(true);
   }, []);
@@ -572,7 +428,18 @@ export function ChainCanvas({
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
 
   useEffect(() => {
-    setNodes(buildAllNodes());
+    const built = buildAllNodes();
+    setNodes(
+      built.map((n) => ({
+        ...n,
+        selected: keyboardFocusNodeId !== null && n.id === keyboardFocusNodeId,
+        data: {
+          ...n.data,
+          isKeyboardFocused:
+            keyboardFocusNodeId !== null && n.id === keyboardFocusNodeId,
+        },
+      })) as typeof built,
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     runState,
@@ -587,6 +454,7 @@ export function ChainCanvas({
     onDuplicateNode,
     onRunNode,
     handleUpdateDelay,
+    keyboardFocusNodeId,
   ]);
 
   useEffect(() => {
@@ -662,15 +530,24 @@ export function ChainCanvas({
               sourceHandle: newEdge.branchId,
               type: "deletable",
               style: isCondBranch
-                ? { stroke: "#7c3aed", strokeWidth: 2, strokeDasharray: "4 2" }
-                : { stroke: "#475569", strokeWidth: 2 },
+                ? {
+                    stroke: "var(--chain-edge-branch)",
+                    strokeWidth: 2,
+                    strokeDasharray: "4 2",
+                  }
+                : { stroke: "var(--chain-edge-default)", strokeWidth: 2 },
               data: {
                 label,
                 labelStyle: {
                   fontSize: 10,
-                  fill: isCondBranch ? "#a78bfa" : "#94a3b8",
+                  fill: isCondBranch
+                    ? "var(--chain-edge-branch-label)"
+                    : "var(--chain-edge-neutral-label)",
                 },
-                labelBgStyle: { fill: "#1e293b", fillOpacity: 0.85 },
+                labelBgStyle: {
+                  fill: "var(--chain-edge-label-bg)",
+                  fillOpacity: 0.92,
+                },
                 onDeleteEdge,
                 onClickEdge: handleEdgeClick,
               },
@@ -702,7 +579,7 @@ export function ChainCanvas({
               sourceHandle: "fail",
               type: "deletable",
               style: {
-                stroke: "#ef4444",
+                stroke: "var(--chain-edge-fail)",
                 strokeWidth: 2,
                 strokeDasharray: "4 2",
               },
@@ -734,8 +611,12 @@ export function ChainCanvas({
               sourceHandle: newEdge.branchId,
               type: "deletable",
               style: isSuccess
-                ? { stroke: "#10b981", strokeWidth: 2, strokeDasharray: "4 2" }
-                : { stroke: "#475569", strokeWidth: 2 },
+                ? {
+                    stroke: "var(--chain-edge-success)",
+                    strokeWidth: 2,
+                    strokeDasharray: "4 2",
+                  }
+                : { stroke: "var(--chain-edge-default)", strokeWidth: 2 },
               data: { onDeleteEdge, onClickEdge: handleEdgeClick },
             },
             eds,
@@ -800,7 +681,71 @@ export function ChainCanvas({
 
   const onPaneClick = useCallback(() => {
     setContextMenu(null);
+    setKeyboardFocusNodeId(null);
   }, []);
+
+  const onCanvasKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (
+        e.target instanceof HTMLElement &&
+        e.target.closest("input, textarea, select, [contenteditable='true']")
+      ) {
+        return;
+      }
+      if (pendingNodeType) return;
+
+      const sortedIds = [...nodes]
+        .sort((a, b) => {
+          const dy = a.position.y - b.position.y;
+          if (Math.abs(dy) > 10) return dy;
+          return a.position.x - b.position.x;
+        })
+        .map((n) => n.id);
+
+      if (sortedIds.length === 0) return;
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setKeyboardFocusNodeId(null);
+        setNodeDetailOpen(false);
+        setSelectedNodeId(null);
+        return;
+      }
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const id = keyboardFocusNodeId ?? sortedIds[0];
+        const node = nodes.find((n) => n.id === id);
+        if (!node) return;
+        if (node.type === "chainNode") {
+          handleClickNode(id);
+        } else if (node.type === "conditionNode") {
+          setConditionPanelNodeId(id);
+        }
+        return;
+      }
+
+      if (
+        e.key === "ArrowRight" ||
+        e.key === "ArrowDown" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowUp"
+      ) {
+        e.preventDefault();
+        const focusIdx = keyboardFocusNodeId
+          ? sortedIds.indexOf(keyboardFocusNodeId)
+          : -1;
+        let nextIdx = focusIdx >= 0 ? focusIdx : 0;
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          nextIdx = (nextIdx + 1) % sortedIds.length;
+        } else {
+          nextIdx = (nextIdx - 1 + sortedIds.length) % sortedIds.length;
+        }
+        setKeyboardFocusNodeId(sortedIds[nextIdx]);
+      }
+    },
+    [pendingNodeType, nodes, keyboardFocusNodeId, handleClickNode],
+  );
 
   // ── Derived data ─────────────────────────────────────────────────────────────
 
@@ -815,17 +760,22 @@ export function ChainCanvas({
 
   return (
     <div
-      className="h-full w-full"
+      role="application"
+      aria-label="Request chain canvas. Use arrow keys to move between nodes, Enter to open details or configure, Escape to clear selection."
+      tabIndex={0}
+      className="h-full w-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
       style={{ cursor: pendingNodeType ? "crosshair" : undefined }}
       onMouseMove={(e) => {
         if (pendingNodeType) setCursorPos({ x: e.clientX, y: e.clientY });
       }}
+      onKeyDown={onCanvasKeyDown}
     >
       {pendingNodeType && (
         <GhostNode type={pendingNodeType} cursorPos={cursorPos} />
       )}
 
       <ReactFlow
+        className="chain-canvas-react-flow"
         nodes={nodes}
         edges={edges}
         nodeTypes={NODE_TYPES}
@@ -841,10 +791,10 @@ export function ChainCanvas({
         fitViewOptions={{ padding: 0.2 }}
         deleteKeyCode={["Backspace", "Delete"]}
         proOptions={{ hideAttribution: true }}
-        colorMode="dark"
+        colorMode={flowColorMode}
       >
         <Background
-          color="#62676fff"
+          color="var(--chain-canvas-dots-color)"
           gap={24}
           variant={BackgroundVariant.Dots}
         />
@@ -857,16 +807,16 @@ export function ChainCanvas({
             const state =
               (node.data as { state?: ChainNodeState })?.state ?? "idle";
             const colors: Record<ChainNodeState, string> = {
-              idle: "#374151",
-              running: "#3b82f6",
-              passed: "#10b981",
-              failed: "#ef4444",
-              skipped: "#6b7280",
+              idle: "var(--viz-state-idle)",
+              running: "var(--viz-state-running)",
+              passed: "var(--viz-state-passed)",
+              failed: "var(--viz-state-failed)",
+              skipped: "var(--viz-state-skipped)",
             };
             return colors[state as ChainNodeState];
           }}
           className="!bg-card !border-border !rounded-lg"
-          maskColor="rgba(0,0,0,0.4)"
+          maskColor="var(--chain-minimap-mask-bg)"
         />
 
         <Panel position="top-left" className="m-3 flex gap-2">
@@ -920,14 +870,16 @@ export function ChainCanvas({
         (() => {
           const editRequest = requests.find((r) => r.id === editRequestId);
           return editRequest ? (
-            <EditRequestPanel
-              open
-              onClose={() => setEditRequestId(null)}
-              request={editRequest}
-              onSave={(updated) => {
-                onSaveRequest(editRequestId, updated);
-              }}
-            />
+            <Suspense fallback={null}>
+              <EditRequestPanel
+                open
+                onClose={() => setEditRequestId(null)}
+                request={editRequest}
+                onSave={(updated) => {
+                  onSaveRequest(editRequestId, updated);
+                }}
+              />
+            </Suspense>
           ) : null;
         })()}
 
@@ -936,6 +888,7 @@ export function ChainCanvas({
         onClose={() => {
           setNodeDetailOpen(false);
           setSelectedNodeId(null);
+          setKeyboardFocusNodeId(null);
         }}
         name={selectedRequest?.name ?? ""}
         method={selectedRequest?.method ?? "GET"}
@@ -969,17 +922,19 @@ export function ChainCanvas({
         onRemovePromotion={onRemovePromotion}
       />
 
-      <ConditionConfigPanel
-        open={conditionPanelNodeId !== null}
-        node={conditionPanelNode}
-        onClose={() => setConditionPanelNodeId(null)}
-        onSave={(updated) => {
-          onUpsertConditionNode(updated);
-        }}
-        onDelete={(nodeId) => {
-          onRemoveConditionNode(nodeId);
-        }}
-      />
+      <Suspense fallback={null}>
+        <ConditionConfigPanel
+          open={conditionPanelNodeId !== null}
+          node={conditionPanelNode}
+          onClose={() => setConditionPanelNodeId(null)}
+          onSave={(updated) => {
+            onUpsertConditionNode(updated);
+          }}
+          onDelete={(nodeId) => {
+            onRemoveConditionNode(nodeId);
+          }}
+        />
+      </Suspense>
     </div>
   );
 }

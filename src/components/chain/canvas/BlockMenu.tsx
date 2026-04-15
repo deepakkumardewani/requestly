@@ -1,7 +1,7 @@
 "use client";
 
 import { GitBranch, Monitor, Plus, Timer, Zap } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -58,6 +58,7 @@ export function BlockMenu({
   onAddApiClick,
   onEnterGhostMode,
 }: BlockMenuProps) {
+  const blockMenuContentId = useId();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -87,12 +88,16 @@ export function BlockMenu({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         disabled={disabled}
-        className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-card px-2 text-xs font-medium hover:bg-muted disabled:pointer-events-none disabled:opacity-50 transition-colors"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        aria-controls={blockMenuContentId}
+        className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-card px-2 text-xs font-medium hover:bg-muted disabled:pointer-events-none disabled:opacity-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <Plus className="h-3.5 w-3.5" />
+        <Plus className="h-3.5 w-3.5" aria-hidden />
         Block
       </PopoverTrigger>
       <PopoverContent
+        id={blockMenuContentId}
         className="w-72 p-0"
         side="bottom"
         align="start"

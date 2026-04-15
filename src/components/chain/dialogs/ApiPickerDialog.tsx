@@ -97,7 +97,7 @@ function RequestRow({ method, name, url, isAdded, onAdd }: RequestRowProps) {
             Added
           </span>
         ) : (
-          <div className="h-6 w-6 rounded flex items-center justify-center bg-muted/50 group-hover:bg-primary group-hover:text-primary-foreground text-muted-foreground transition-all">
+          <div className="h-6 w-6 rounded flex items-center justify-center bg-muted/50 group-hover:bg-primary group-hover:text-primary-foreground text-muted-foreground transition-[color,background-color,transform] duration-200">
             <Plus className="h-3.5 w-3.5" />
           </div>
         )}
@@ -156,7 +156,7 @@ function HistoryRow({ entry, isAdded, onAdd }: HistoryRowProps) {
             Added
           </span>
         ) : (
-          <div className="h-6 w-6 rounded flex items-center justify-center bg-muted/50 group-hover:bg-primary group-hover:text-primary-foreground text-muted-foreground transition-all">
+          <div className="h-6 w-6 rounded flex items-center justify-center bg-muted/50 group-hover:bg-primary group-hover:text-primary-foreground text-muted-foreground transition-[color,background-color,transform] duration-200">
             <Plus className="h-3.5 w-3.5" />
           </div>
         )}

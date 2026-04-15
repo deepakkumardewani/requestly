@@ -10,7 +10,8 @@ import {
   Trash2,
   XCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { memo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -29,6 +30,7 @@ export type DisplayNodeData = {
   error?: string;
   onClickNode?: (nodeId: string) => void;
   onDeleteNode?: (nodeId: string) => void;
+  isKeyboardFocused?: boolean;
 };
 
 const STATE_BORDER: Record<ChainNodeState, string> = {
@@ -41,22 +43,39 @@ const STATE_BORDER: Record<ChainNodeState, string> = {
 
 const STATE_BG: Record<ChainNodeState, string> = {
   idle: "bg-card",
-  running: "bg-blue-950/30",
-  passed: "bg-emerald-950/30",
-  failed: "bg-red-950/30",
-  skipped: "bg-zinc-900/30",
+  running: "bg-blue-500/10 dark:bg-blue-950/30",
+  passed: "bg-emerald-500/10 dark:bg-emerald-950/30",
+  failed: "bg-red-500/10 dark:bg-red-950/30",
+  skipped: "bg-muted/60 dark:bg-zinc-900/30",
 };
 
 function StateIcon({ state }: { state: ChainNodeState }) {
   switch (state) {
     case "running":
-      return <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-400" />;
+      return (
+        <Loader2
+          className="h-3.5 w-3.5 animate-spin text-blue-600 dark:text-blue-400"
+          aria-hidden
+        />
+      );
     case "passed":
-      return <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />;
+      return (
+        <CheckCircle
+          className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400"
+          aria-hidden
+        />
+      );
     case "failed":
-      return <XCircle className="h-3.5 w-3.5 text-red-400" />;
+      return (
+        <XCircle
+          className="h-3.5 w-3.5 text-red-600 dark:text-red-400"
+          aria-hidden
+        />
+      );
     case "skipped":
-      return <Circle className="h-3.5 w-3.5 text-zinc-500" />;
+      return (
+        <Circle className="h-3.5 w-3.5 text-muted-foreground" aria-hidden />
+      );
     default:
       return null;
   }
@@ -115,9 +134,16 @@ function JsonSummary({ body }: { body: string }) {
   );
 }
 
-export function DisplayNode({ data }: { data: DisplayNodeData }) {
-  const { nodeId, config, sourceResponse, state, onClickNode, onDeleteNode } =
-    data;
+function DisplayNodeInner({ data }: { data: DisplayNodeData }) {
+  const {
+    nodeId,
+    config,
+    sourceResponse,
+    state,
+    onClickNode,
+    onDeleteNode,
+    isKeyboardFocused,
+  } = data;
   const [format, setFormat] = useState<"JSON" | "Raw">("JSON");
 
   const hasResponse = !!sourceResponse?.body;
@@ -146,13 +172,21 @@ export function DisplayNode({ data }: { data: DisplayNodeData }) {
           <div className="absolute -top-0 left-1/2 -translate-x-1/2 hidden group-hover/node:flex items-center gap-0.5 rounded-full border border-border bg-card px-1.5 py-1 shadow-lg z-20">
             <Tooltip>
               <TooltipTrigger
-                className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/20 hover:text-destructive transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteNode(nodeId);
-                }}
+                render={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="h-6 w-6 rounded-full text-muted-foreground hover:bg-destructive/20 hover:text-destructive"
+                    aria-label="Remove display node from chain"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteNode(nodeId);
+                    }}
+                  />
+                }
               >
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="h-3 w-3" aria-hidden />
               </TooltipTrigger>
               <TooltipContent side="top">Remove from chain</TooltipContent>
             </Tooltip>
@@ -161,12 +195,23 @@ export function DisplayNode({ data }: { data: DisplayNodeData }) {
       )}
 
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={`Display node, run state ${state}`}
         className={cn(
-          "relative min-w-[200px] max-w-[260px] rounded-lg border-2 shadow-lg transition-all cursor-pointer hover:brightness-110 hover:shadow-xl",
+          "relative min-w-[200px] max-w-[260px] rounded-lg border-2 shadow-lg transition-[color,box-shadow,filter,border-color] duration-200 cursor-pointer hover:brightness-110 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           STATE_BORDER[state],
           STATE_BG[state],
+          isKeyboardFocused &&
+            "ring-2 ring-ring ring-offset-2 ring-offset-background",
         )}
         onClick={() => onClickNode?.(nodeId)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onClickNode?.(nodeId);
+          }
+        }}
       >
         <Handle
           type="target"
@@ -187,12 +232,14 @@ export function DisplayNode({ data }: { data: DisplayNodeData }) {
                 <button
                   key={f}
                   type="button"
+                  aria-pressed={format === f}
+                  aria-label={`Show response as ${f}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setFormat(f);
                   }}
                   className={cn(
-                    "rounded px-1 py-0 text-[9px] font-medium transition-colors",
+                    "rounded px-1 py-0 text-[9px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     format === f
                       ? "bg-primary/20 text-primary"
                       : "text-muted-foreground hover:text-foreground",
@@ -204,10 +251,10 @@ export function DisplayNode({ data }: { data: DisplayNodeData }) {
               <button
                 type="button"
                 onClick={handleCopy}
-                className="ml-0.5 rounded p-0.5 text-muted-foreground hover:text-foreground transition-colors"
-                title="Copy response"
+                className="ml-0.5 rounded p-0.5 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label="Copy response body"
               >
-                <Copy className="h-2.5 w-2.5" />
+                <Copy className="h-2.5 w-2.5" aria-hidden />
               </button>
             </div>
           )}
@@ -249,3 +296,5 @@ export function DisplayNode({ data }: { data: DisplayNodeData }) {
     </div>
   );
 }
+
+export const DisplayNode = memo(DisplayNodeInner);

@@ -1,4 +1,5 @@
 import { Copy, Info, Play, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -20,13 +21,21 @@ export function NodeToolbar({ data }: NodeToolbarProps) {
         {onRunNode && (
           <Tooltip>
             <TooltipTrigger
-              className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-primary transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                onRunNode(requestId);
-              }}
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="h-6 w-6 rounded-full text-muted-foreground hover:bg-muted hover:text-primary"
+                  aria-label="Run this request independently"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRunNode(requestId);
+                  }}
+                />
+              }
             >
-              <Play className="h-3 w-3 fill-current" />
+              <Play className="h-3 w-3 fill-current" aria-hidden />
             </TooltipTrigger>
             <TooltipContent side="top">Run independently</TooltipContent>
           </Tooltip>
@@ -34,13 +43,21 @@ export function NodeToolbar({ data }: NodeToolbarProps) {
         {onClickNode && (
           <Tooltip>
             <TooltipTrigger
-              className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-primary transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClickNode(requestId);
-              }}
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="h-6 w-6 rounded-full text-muted-foreground hover:bg-muted hover:text-primary"
+                  aria-label="View request details"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClickNode(requestId);
+                  }}
+                />
+              }
             >
-              <Info className="h-3 w-3" />
+              <Info className="h-3 w-3" aria-hidden />
             </TooltipTrigger>
             <TooltipContent side="top">View details</TooltipContent>
           </Tooltip>
@@ -48,13 +65,21 @@ export function NodeToolbar({ data }: NodeToolbarProps) {
         {onDuplicateNode && (
           <Tooltip>
             <TooltipTrigger
-              className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-primary transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDuplicateNode(requestId);
-              }}
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="h-6 w-6 rounded-full text-muted-foreground hover:bg-muted hover:text-primary"
+                  aria-label="Duplicate this node"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDuplicateNode(requestId);
+                  }}
+                />
+              }
             >
-              <Copy className="h-3 w-3" />
+              <Copy className="h-3 w-3" aria-hidden />
             </TooltipTrigger>
             <TooltipContent side="top">Duplicate</TooltipContent>
           </Tooltip>
@@ -62,13 +87,21 @@ export function NodeToolbar({ data }: NodeToolbarProps) {
         {onDeleteNode && (
           <Tooltip>
             <TooltipTrigger
-              className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/20 hover:text-destructive transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteNode(requestId);
-              }}
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  className="h-6 w-6 rounded-full text-muted-foreground hover:bg-destructive/20 hover:text-destructive"
+                  aria-label="Remove node from chain"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDeleteNode(requestId);
+                  }}
+                />
+              }
             >
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="h-3 w-3" aria-hidden />
             </TooltipTrigger>
             <TooltipContent side="top">Remove from chain</TooltipContent>
           </Tooltip>

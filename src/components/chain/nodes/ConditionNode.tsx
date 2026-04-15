@@ -10,6 +10,8 @@ import {
   Trash2,
   XCircle,
 } from "lucide-react";
+import { memo } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -28,6 +30,7 @@ export type ConditionNodeData = {
   error?: string;
   onDeleteNode?: (nodeId: string) => void;
   onConfigureNode?: (nodeId: string) => void;
+  isKeyboardFocused?: boolean;
 };
 
 const STATE_BORDER: Record<ChainNodeState, string> = {
@@ -40,28 +43,43 @@ const STATE_BORDER: Record<ChainNodeState, string> = {
 
 const STATE_BG: Record<ChainNodeState, string> = {
   idle: "bg-card",
-  running: "bg-blue-950/30",
-  passed: "bg-emerald-950/30",
-  failed: "bg-red-950/30",
-  skipped: "bg-zinc-900/30",
+  running: "bg-blue-500/10 dark:bg-blue-950/30",
+  passed: "bg-emerald-500/10 dark:bg-emerald-950/30",
+  failed: "bg-red-500/10 dark:bg-red-950/30",
+  skipped: "bg-muted/60 dark:bg-zinc-900/30",
 };
 
 function StateIcon({ state }: { state: ChainNodeState }) {
   switch (state) {
     case "running":
-      return <Loader2 className="h-4 w-4 animate-spin text-blue-400" />;
+      return (
+        <Loader2
+          className="h-4 w-4 animate-spin text-blue-600 dark:text-blue-400"
+          aria-hidden
+        />
+      );
     case "passed":
-      return <CheckCircle className="h-4 w-4 text-emerald-400" />;
+      return (
+        <CheckCircle
+          className="h-4 w-4 text-emerald-600 dark:text-emerald-400"
+          aria-hidden
+        />
+      );
     case "failed":
-      return <XCircle className="h-4 w-4 text-red-400" />;
+      return (
+        <XCircle
+          className="h-4 w-4 text-red-600 dark:text-red-400"
+          aria-hidden
+        />
+      );
     case "skipped":
-      return <Circle className="h-4 w-4 text-zinc-500" />;
+      return <Circle className="h-4 w-4 text-muted-foreground" aria-hidden />;
     default:
       return null;
   }
 }
 
-export function ConditionNode({ data }: { data: ConditionNodeData }) {
+function ConditionNodeInner({ data }: { data: ConditionNodeData }) {
   const {
     nodeId,
     variable,
@@ -71,6 +89,7 @@ export function ConditionNode({ data }: { data: ConditionNodeData }) {
     error,
     onDeleteNode,
     onConfigureNode,
+    isKeyboardFocused,
   } = data;
 
   const branchCount = branches.length;
@@ -83,13 +102,21 @@ export function ConditionNode({ data }: { data: ConditionNodeData }) {
           {onConfigureNode && (
             <Tooltip>
               <TooltipTrigger
-                className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-primary transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onConfigureNode(nodeId);
-                }}
+                render={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="h-6 w-6 rounded-full text-muted-foreground hover:bg-muted hover:text-primary"
+                    aria-label="Configure condition"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onConfigureNode(nodeId);
+                    }}
+                  />
+                }
               >
-                <Settings className="h-3 w-3" />
+                <Settings className="h-3 w-3" aria-hidden />
               </TooltipTrigger>
               <TooltipContent side="top">Configure</TooltipContent>
             </Tooltip>
@@ -97,13 +124,21 @@ export function ConditionNode({ data }: { data: ConditionNodeData }) {
           {onDeleteNode && (
             <Tooltip>
               <TooltipTrigger
-                className="flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/20 hover:text-destructive transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteNode(nodeId);
-                }}
+                render={
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="h-6 w-6 rounded-full text-muted-foreground hover:bg-destructive/20 hover:text-destructive"
+                    aria-label="Remove condition from chain"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteNode(nodeId);
+                    }}
+                  />
+                }
               >
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="h-3 w-3" aria-hidden />
               </TooltipTrigger>
               <TooltipContent side="top">Remove from chain</TooltipContent>
             </Tooltip>
@@ -113,9 +148,11 @@ export function ConditionNode({ data }: { data: ConditionNodeData }) {
 
       <div
         className={cn(
-          "relative min-w-[180px] rounded-lg border-2 px-3 py-2 shadow-lg transition-all",
+          "relative min-w-[180px] rounded-lg border-2 px-3 py-2 shadow-lg transition-[color,box-shadow,filter,border-color] duration-200",
           STATE_BORDER[state],
           STATE_BG[state],
+          isKeyboardFocused &&
+            "ring-2 ring-ring ring-offset-2 ring-offset-background",
         )}
         style={{
           paddingBottom:
@@ -129,7 +166,10 @@ export function ConditionNode({ data }: { data: ConditionNodeData }) {
         />
 
         <div className="flex items-center gap-1.5">
-          <GitBranch className="h-3.5 w-3.5 shrink-0 text-violet-400" />
+          <GitBranch
+            className="h-3.5 w-3.5 shrink-0 text-violet-400"
+            aria-hidden
+          />
           <span className="text-xs font-semibold text-foreground truncate">
             {variable || "Condition"}
           </span>
@@ -181,3 +221,5 @@ export function ConditionNode({ data }: { data: ConditionNodeData }) {
     </div>
   );
 }
+
+export const ConditionNode = memo(ConditionNodeInner);

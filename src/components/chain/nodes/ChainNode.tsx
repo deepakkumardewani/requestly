@@ -2,6 +2,7 @@
 
 import { Handle, Position } from "@xyflow/react";
 import { CheckCircle, Circle, Loader2, Pencil, XCircle } from "lucide-react";
+import { memo } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -28,6 +29,8 @@ export type ChainNodeData = {
   onDuplicateNode?: (requestId: string) => void;
   onRunNode?: (nodeId: string) => void;
   onEditRequest?: (requestId: string) => void;
+  /** Canvas keyboard navigation focus (set by ChainCanvas) */
+  isKeyboardFocused?: boolean;
 };
 
 const STATE_BORDER: Record<ChainNodeState, string> = {
@@ -40,31 +43,62 @@ const STATE_BORDER: Record<ChainNodeState, string> = {
 
 const STATE_BG: Record<ChainNodeState, string> = {
   idle: "bg-card",
-  running: "bg-blue-950/30",
-  passed: "bg-emerald-950/30",
-  failed: "bg-red-950/30",
-  skipped: "bg-zinc-900/30",
+  running: "bg-blue-500/10 dark:bg-blue-950/30",
+  passed: "bg-emerald-500/10 dark:bg-emerald-950/30",
+  failed: "bg-red-500/10 dark:bg-red-950/30",
+  skipped: "bg-muted/60 dark:bg-zinc-900/30",
 };
 
 function StateIcon({ state }: { state: ChainNodeState }) {
   switch (state) {
     case "running":
-      return <Loader2 className="h-4 w-4 animate-spin text-blue-400" />;
+      return (
+        <Loader2
+          className="h-4 w-4 animate-spin text-blue-600 dark:text-blue-400"
+          aria-hidden
+        />
+      );
     case "passed":
-      return <CheckCircle className="h-4 w-4 text-emerald-400" />;
+      return (
+        <CheckCircle
+          className="h-4 w-4 text-emerald-600 dark:text-emerald-400"
+          aria-hidden
+        />
+      );
     case "failed":
-      return <XCircle className="h-4 w-4 text-red-400" />;
+      return (
+        <XCircle
+          className="h-4 w-4 text-red-600 dark:text-red-400"
+          aria-hidden
+        />
+      );
     case "skipped":
-      return <Circle className="h-4 w-4 text-zinc-500" />;
+      return <Circle className="h-4 w-4 text-muted-foreground" aria-hidden />;
     default:
-      return <span className="h-4 w-4 text-muted-foreground text-xs">–</span>;
+      return (
+        <span className="h-4 w-4 text-muted-foreground text-xs" aria-hidden>
+          –
+        </span>
+      );
   }
 }
 
-export function ChainNode({ data }: { data: ChainNodeData }) {
-  const { method, name, url, state, requestId, onClickNode, onEditRequest } =
-    data;
+function ChainNodeInner({ data }: { data: ChainNodeData }) {
+  const {
+    method,
+    name,
+    url,
+    state,
+    requestId,
+    onClickNode,
+    onEditRequest,
+    isKeyboardFocused,
+  } = data;
   const displayUrl = url.length > 100 ? `${url.slice(0, 100)}\u2026` : url;
+
+  function handleActivateNode() {
+    onClickNode?.(requestId);
+  }
 
   return (
     // pt-9 extends the group bounding box upward so the hover zone covers the gap between the toolbar and the node
@@ -72,12 +106,23 @@ export function ChainNode({ data }: { data: ChainNodeData }) {
       <NodeToolbar data={data} />
 
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={`${method} request ${name}, run state ${state}`}
         className={cn(
-          "relative min-w-[200px] max-w-[280px] rounded-lg border-2 p-3 shadow-lg transition-all cursor-pointer hover:brightness-110 hover:shadow-xl",
+          "relative min-w-[200px] max-w-[280px] rounded-lg border-2 p-3 shadow-lg transition-[color,box-shadow,filter,border-color] duration-200 cursor-pointer hover:brightness-110 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           STATE_BORDER[state],
           STATE_BG[state],
+          isKeyboardFocused &&
+            "ring-2 ring-ring ring-offset-2 ring-offset-background",
         )}
-        onClick={() => onClickNode?.(requestId)}
+        onClick={handleActivateNode}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleActivateNode();
+          }
+        }}
       >
         {/* Incoming handle — left side */}
         <Handle
@@ -167,3 +212,5 @@ export function ChainNode({ data }: { data: ChainNodeData }) {
     </div>
   );
 }
+
+export const ChainNode = memo(ChainNodeInner);
