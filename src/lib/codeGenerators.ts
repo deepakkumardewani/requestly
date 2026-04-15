@@ -3,8 +3,8 @@ import type {
   AuthConfig,
   BodyConfig,
   EnvironmentModel,
+  HttpTab,
   KVPair,
-  TabState,
 } from "@/types";
 
 const REDACTED = "<REDACTED>";
@@ -18,9 +18,9 @@ const REDACTED = "<REDACTED>";
  * values with REDACTED so they are never exposed in generated snippets.
  */
 export function resolveTabStateVars(
-  tab: TabState,
+  tab: HttpTab,
   env: EnvironmentModel | null,
-): TabState {
+): HttpTab {
   if (!env) return tab;
 
   const envMap = env.variables.reduce<Record<string, string>>((acc, v) => {
@@ -81,7 +81,7 @@ export { generateCurl } from "@/lib/curlGenerator";
 // Helpers shared across generators
 // ---------------------------------------------------------------------------
 
-function buildHeadersObject(tab: TabState): Record<string, string> {
+function buildHeadersObject(tab: HttpTab): Record<string, string> {
   const headers: Record<string, string> = {};
 
   if (tab.auth.type === "bearer") {
@@ -109,7 +109,7 @@ function buildHeadersObject(tab: TabState): Record<string, string> {
   return headers;
 }
 
-function buildBodyString(tab: TabState): string | null {
+function buildBodyString(tab: HttpTab): string | null {
   if (tab.body.type === "none") return null;
 
   if (tab.body.type === "form-data" || tab.body.type === "urlencoded") {
@@ -131,7 +131,7 @@ function capitalize(s: string): string {
 // fetch
 // ---------------------------------------------------------------------------
 
-export function generateFetch(tab: TabState): string {
+export function generateFetch(tab: HttpTab): string {
   const url = buildFinalUrl(tab.url, tab.params);
   const headers = buildHeadersObject(tab);
   const body = buildBodyString(tab);
@@ -177,7 +177,7 @@ export function generateFetch(tab: TabState): string {
 // axios
 // ---------------------------------------------------------------------------
 
-export function generateAxios(tab: TabState): string {
+export function generateAxios(tab: HttpTab): string {
   const url = buildFinalUrl(tab.url, tab.params);
   const headers = buildHeadersObject(tab);
   const body = buildBodyString(tab);
@@ -213,7 +213,7 @@ export function generateAxios(tab: TabState): string {
 // Python requests
 // ---------------------------------------------------------------------------
 
-export function generatePython(tab: TabState): string {
+export function generatePython(tab: HttpTab): string {
   const url = buildFinalUrl(tab.url, tab.params);
   const headers = buildHeadersObject(tab);
   const body = buildBodyString(tab);
@@ -294,7 +294,7 @@ function pythonRepr(value: unknown, depth = 0): string {
 // Ruby Net::HTTP
 // ---------------------------------------------------------------------------
 
-export function generateRuby(tab: TabState): string {
+export function generateRuby(tab: HttpTab): string {
   const url = buildFinalUrl(tab.url, tab.params);
   const headers = buildHeadersObject(tab);
   const body = buildBodyString(tab);
@@ -334,7 +334,7 @@ export function generateRuby(tab: TabState): string {
 // Java HttpClient (Java 11+)
 // ---------------------------------------------------------------------------
 
-export function generateJava(tab: TabState): string {
+export function generateJava(tab: HttpTab): string {
   const url = buildFinalUrl(tab.url, tab.params);
   const headers = buildHeadersObject(tab);
   const body = buildBodyString(tab);
@@ -381,7 +381,7 @@ export function generateJava(tab: TabState): string {
 // C# HttpClient
 // ---------------------------------------------------------------------------
 
-export function generateCSharp(tab: TabState): string {
+export function generateCSharp(tab: HttpTab): string {
   const url = buildFinalUrl(tab.url, tab.params);
   const headers = buildHeadersObject(tab);
   const body = buildBodyString(tab);
@@ -433,7 +433,7 @@ export function generateCSharp(tab: TabState): string {
 // PHP cURL
 // ---------------------------------------------------------------------------
 
-export function generatePHP(tab: TabState): string {
+export function generatePHP(tab: HttpTab): string {
   const url = buildFinalUrl(tab.url, tab.params);
   const headers = buildHeadersObject(tab);
   const body = buildBodyString(tab);
@@ -480,7 +480,7 @@ export function generatePHP(tab: TabState): string {
 // Go net/http
 // ---------------------------------------------------------------------------
 
-export function generateGo(tab: TabState): string {
+export function generateGo(tab: HttpTab): string {
   const url = buildFinalUrl(tab.url, tab.params);
   const headers = buildHeadersObject(tab);
   const body = buildBodyString(tab);

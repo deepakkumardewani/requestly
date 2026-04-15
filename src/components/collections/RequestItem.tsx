@@ -24,7 +24,7 @@ import { generateId } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
-import type { RequestModel } from "@/types";
+import type { HttpTab, RequestModel } from "@/types";
 
 type RequestItemProps = {
   request: RequestModel;
@@ -56,6 +56,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
       return;
     }
     openTab({
+      type: "http",
       requestId: request.id,
       name: request.name,
       method: request.method,
@@ -86,11 +87,12 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
   }
 
   function handleDuplicate() {
-    addRequest(request.collectionId, {
+    const duplicateTab: HttpTab = {
       tabId: generateId(),
-      requestId: request.id,
+      requestId: null,
       name: `${request.name} (copy)`,
       isDirty: false,
+      type: "http",
       method: request.method,
       url: request.url,
       params: request.params,
@@ -99,7 +101,8 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
       body: request.body,
       preScript: request.preScript,
       postScript: request.postScript,
-    });
+    };
+    addRequest(request.collectionId, duplicateTab);
   }
 
   return (

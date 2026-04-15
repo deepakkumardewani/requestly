@@ -28,7 +28,7 @@ import {
 } from "@/lib/codeGenerators";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
-import type { EnvironmentModel, TabState } from "@/types";
+import type { EnvironmentModel, HttpTab, TabState } from "@/types";
 
 // ---------------------------------------------------------------------------
 // Types & constants
@@ -79,7 +79,7 @@ function isValidLanguage(lang: string): lang is Language {
   return (LANGUAGES as string[]).includes(lang);
 }
 
-function generateSnippet(tab: TabState, lang: Language): string {
+function generateSnippet(tab: HttpTab, lang: Language): string {
   switch (lang) {
     case "cURL":
       return generateCurl(tab);
@@ -143,6 +143,11 @@ type CodeGenPanelProps = {
 };
 
 export function CodeGenPanel({ tab }: CodeGenPanelProps) {
+  if (tab.type !== "http") return null;
+  return <CodeGenPanelHttp tab={tab} />;
+}
+
+function CodeGenPanelHttp({ tab }: { tab: HttpTab }) {
   const { showCodeGen, codeGenLang, setSetting } = useSettingsStore();
   const { environments, activeEnvId } = useEnvironmentsStore();
 

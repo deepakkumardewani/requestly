@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { TAB_TYPES } from "@/lib/constants";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
 
@@ -50,19 +51,21 @@ export function CreateNewDropdown({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-44">
-        <DropdownMenuItem onClick={() => openTab()}>
+        <DropdownMenuItem onClick={() => openTab({ type: TAB_TYPES.HTTP })}>
           <Globe className="mr-2 h-3.5 w-3.5" />
           HTTP
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => openTab()}>
+        <DropdownMenuItem onClick={() => openTab({ type: TAB_TYPES.GRAPHQL })}>
           <Braces className="mr-2 h-3.5 w-3.5" />
           GraphQL
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => openTab()}>
+        <DropdownMenuItem
+          onClick={() => openTab({ type: TAB_TYPES.WEBSOCKET })}
+        >
           <ArrowLeftRight className="mr-2 h-3.5 w-3.5" />
           WebSocket
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => openTab()}>
+        <DropdownMenuItem onClick={() => openTab({ type: TAB_TYPES.SOCKETIO })}>
           <Zap className="mr-2 h-3.5 w-3.5" />
           Socket.IO
         </DropdownMenuItem>

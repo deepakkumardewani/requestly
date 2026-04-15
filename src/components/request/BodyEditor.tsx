@@ -35,6 +35,7 @@ export function BodyEditor({ tabId }: BodyEditorProps) {
   const envVariables = useEnvVariableKeys();
 
   if (!tab) return null;
+  if (tab.type !== "http") return null;
 
   const { body } = tab;
 

@@ -14,12 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
-import type { TabState } from "@/types";
+import type { HttpTab } from "@/types";
 
 type SaveRequestModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  tab: TabState;
+  tab: HttpTab;
 };
 
 export function SaveRequestModal({

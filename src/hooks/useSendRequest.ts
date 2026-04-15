@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { toast } from "sonner";
-import { runRequest } from "@/lib/requestRunner";
+import { runGraphQLRequest, runRequest } from "@/lib/requestRunner";
 import { buildFinalUrl, generateId } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
@@ -25,6 +25,10 @@ export function useSendRequest(tabId: string) {
 
   async function send() {
     if (!tab) return;
+    if (tab.type !== "http" && tab.type !== "graphql") {
+      toast.info("Send is not available for this tab type");
+      return;
+    }
     if (!tab.url.trim()) {
       toast.warning("Enter a URL to send the request");
       return;
@@ -36,7 +40,39 @@ export function useSendRequest(tabId: string) {
     setLoading(tabId, true);
 
     try {
-      // Resolve environment variables
+      if (tab.type === "graphql") {
+        const query = resolveVariables(tab.query).trim();
+        if (!query) {
+          toast.warning("Enter a GraphQL query");
+          setLoading(tabId, false);
+          return;
+        }
+
+        const resolvedUrl = resolveVariables(tab.url);
+        const resolvedHeaders: KVPair[] = tab.headers.map((h) => ({
+          ...h,
+          key: resolveVariables(h.key),
+          value: resolveVariables(h.value),
+        }));
+
+        const response = await runGraphQLRequest(
+          {
+            url: resolvedUrl,
+            headers: resolvedHeaders,
+            auth: tab.auth,
+            query,
+            variablesJson: resolveVariables(tab.variables),
+            operationName: resolveVariables(tab.operationName),
+            sslVerify,
+            followRedirects,
+          },
+          abortRef.current.signal,
+        );
+
+        setResponse(tabId, response);
+        return;
+      }
+
       const resolvedUrl = resolveVariables(tab.url);
       const resolvedHeaders: KVPair[] = tab.headers.map((h) => ({
         ...h,
@@ -53,7 +89,6 @@ export function useSendRequest(tabId: string) {
         content: resolveVariables(tab.body.content),
       };
 
-      // Substitute path params and append query params
       const finalUrl = buildFinalUrl(resolvedUrl, resolvedParams);
 
       const response = await runRequest(
@@ -71,7 +106,6 @@ export function useSendRequest(tabId: string) {
 
       setResponse(tabId, response);
 
-      // Save to history
       addEntry({
         id: generateId(),
         method: tab.method,

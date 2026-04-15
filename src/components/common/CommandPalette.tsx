@@ -117,6 +117,7 @@ export function CommandPalette() {
                     onSelect={() =>
                       handleSelect(() =>
                         openTab({
+                          type: "http",
                           requestId: req.id,
                           name: req.name,
                           method: req.method,
@@ -156,6 +157,7 @@ export function CommandPalette() {
                   onSelect={() =>
                     handleSelect(() =>
                       openTab({
+                        type: "http",
                         name: truncateUrl(entry.url, 30),
                         method: entry.method,
                         url: entry.url,
@@ -163,6 +165,8 @@ export function CommandPalette() {
                         headers: entry.request.headers,
                         auth: entry.request.auth,
                         body: entry.request.body,
+                        preScript: entry.request.preScript,
+                        postScript: entry.request.postScript,
                       }),
                     )
                   }

@@ -93,6 +93,7 @@ export function SidebarSearchResults({
       setActiveTab(existing.tabId);
     } else {
       openTab({
+        type: "http",
         requestId: req.id,
         name: req.name,
         method: req.method,

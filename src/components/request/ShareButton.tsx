@@ -20,8 +20,7 @@ export function ShareButton({ tabId }: ShareButtonProps) {
 
   const tab = useTabsStore((s) => s.tabs.find((t) => t.tabId === tabId));
 
-  // Nothing to share until the user has typed a URL
-  const disabled = !tab?.url;
+  const disabled = !tab?.url || tab.type !== "http";
 
   return (
     <>
@@ -39,7 +38,7 @@ export function ShareButton({ tabId }: ShareButtonProps) {
         <TooltipContent>Share request link</TooltipContent>
       </Tooltip>
 
-      {open && tab && (
+      {open && tab && tab.type === "http" && (
         <ShareModal open={open} onOpenChange={setOpen} tab={tab} />
       )}
     </>

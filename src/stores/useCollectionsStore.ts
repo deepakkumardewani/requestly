@@ -5,7 +5,7 @@ import { create } from "zustand";
 import { getDB } from "@/lib/idb";
 import { generateId } from "@/lib/utils";
 import { useTabsStore } from "@/stores/useTabsStore";
-import type { CollectionModel, RequestModel, TabState } from "@/types";
+import type { CollectionModel, HttpTab, RequestModel } from "@/types";
 
 type CollectionsState = {
   collections: CollectionModel[];
@@ -20,7 +20,7 @@ type CollectionsActions = {
   ) => void;
   renameCollection: (id: string, name: string) => void;
   deleteCollection: (id: string) => void;
-  addRequest: (collectionId: string, tab: TabState) => RequestModel;
+  addRequest: (collectionId: string, tab: HttpTab) => RequestModel;
   updateRequest: (id: string, patch: Partial<RequestModel>) => void;
   deleteRequest: (id: string) => void;
   moveRequest: (requestId: string, targetCollectionId: string) => void;

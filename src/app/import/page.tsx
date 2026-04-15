@@ -40,6 +40,7 @@ export default function ImportPage() {
     try {
       const parsed = parseCurl(curlInput);
       openTab({
+        type: "http",
         name: `${parsed.method} request`,
         method: parsed.method,
         url: parsed.url,
@@ -110,6 +111,7 @@ export default function ImportPage() {
         requestId: null,
         name: String(item.name ?? "Request"),
         isDirty: false,
+        type: "http",
         method: String(req.method ?? "GET") as ReturnType<
           typeof parseCurl
         >["method"],
@@ -136,6 +138,7 @@ export default function ImportPage() {
           requestId: null,
           name: String(req.name ?? "Request"),
           isDirty: false,
+          type: "http",
           method: String(req.method ?? "GET") as ReturnType<
             typeof parseCurl
           >["method"],

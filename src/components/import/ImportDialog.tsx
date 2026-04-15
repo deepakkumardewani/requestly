@@ -64,6 +64,7 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
     try {
       const parsed = parseCurl(curlInput);
       openTab({
+        type: "http",
         name: `${parsed.method} request`,
         method: parsed.method,
         url: parsed.url,
@@ -189,6 +190,7 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
         requestId: null,
         name: String(item.name ?? "Request"),
         isDirty: false,
+        type: "http",
         method: String(req.method ?? "GET").toUpperCase() as HttpMethod,
         url,
         params: [],

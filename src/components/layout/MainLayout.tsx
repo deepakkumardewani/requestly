@@ -48,7 +48,7 @@ export function MainLayout() {
     }
   }
 
-  const activeMethod = activeTab?.method ?? "GET";
+  const activeMethod = activeTab?.type === "http" ? activeTab.method : "GET";
 
   // Prevent closing the browser tab when there are unsaved changes
   useEffect(() => {
@@ -75,6 +75,7 @@ export function MainLayout() {
     const payload = decodeShareLink(raw);
     if (payload) {
       openTab({
+        type: "http",
         name: `${payload.method} ${payload.url || "Shared Request"}`,
         method: payload.method,
         url: payload.url,
@@ -156,7 +157,7 @@ export function MainLayout() {
       <CommandPalette />
 
       {/* Save Request Modal — opened by Cmd+S or Save button when tab has no collection */}
-      {saveModalOpen && activeTab && (
+      {saveModalOpen && activeTab && activeTab.type === "http" && (
         <SaveRequestModal
           open={saveModalOpen}
           onOpenChange={setSaveModalOpen}

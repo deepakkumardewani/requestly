@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { TabState } from "@/types";
+import type { HttpTab } from "@/types";
 
 const HTTP_METHODS = [
   "GET",
@@ -69,7 +69,7 @@ const MAX_ENCODED_BYTES = 8 * 1024;
  * Encodes a tab's request state into a shareable URL.
  * Returns null when the encoded payload exceeds MAX_ENCODED_BYTES.
  */
-export function encodeShareLink(tab: TabState): string | null {
+export function encodeShareLink(tab: HttpTab): string | null {
   const payload: SharePayload = {
     method: tab.method,
     url: tab.url,

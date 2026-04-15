@@ -1,10 +1,10 @@
 import { buildFinalUrl } from "@/lib/utils";
-import type { TabState } from "@/types";
+import type { HttpTab } from "@/types";
 
 /**
  * Generates a formatted multi-line curl command from a tab's state.
  */
-export function generateCurl(tab: TabState, resolvedUrl?: string): string {
+export function generateCurl(tab: HttpTab, resolvedUrl?: string): string {
   const lines: string[] = [];
   const url = resolvedUrl ?? tab.url;
 

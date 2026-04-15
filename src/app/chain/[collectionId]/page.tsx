@@ -241,9 +241,10 @@ export default function ChainPage({ params }: Props) {
       const source = chainRequests.find((r) => r.id === requestId);
       if (!source) return;
       const newRequest = addRequest(source.collectionId || id, {
-        tabId: "",
+        tabId: generateId(),
         requestId: null,
         isDirty: false,
+        type: "http",
         name: `${source.name} (copy)`,
         method: source.method,
         url: source.url,

@@ -74,20 +74,58 @@ export function TabContextMenu({ tab }: TabContextMenuProps) {
         </ContextMenuItem>
         <ContextMenuItem
           className={ICON_OFFSET}
-          onClick={() =>
-            openTab({
-              name: tab.name,
-              method: tab.method,
-              url: tab.url,
-              params: tab.params,
-              headers: tab.headers,
-              auth: tab.auth,
-              body: tab.body,
-              preScript: tab.preScript,
-              postScript: tab.postScript,
-              isDirty: false,
-            })
-          }
+          onClick={() => {
+            switch (tab.type) {
+              case "http":
+                openTab({
+                  type: "http",
+                  name: tab.name,
+                  method: tab.method,
+                  url: tab.url,
+                  params: tab.params,
+                  headers: tab.headers,
+                  auth: tab.auth,
+                  body: tab.body,
+                  preScript: tab.preScript,
+                  postScript: tab.postScript,
+                  isDirty: false,
+                });
+                break;
+              case "graphql":
+                openTab({
+                  type: "graphql",
+                  name: tab.name,
+                  url: tab.url,
+                  headers: tab.headers,
+                  query: tab.query,
+                  variables: tab.variables,
+                  operationName: tab.operationName,
+                  auth: tab.auth,
+                  isDirty: false,
+                });
+                break;
+              case "websocket":
+                openTab({
+                  type: "websocket",
+                  name: tab.name,
+                  url: tab.url,
+                  headers: tab.headers,
+                  messageLog: [],
+                  isDirty: false,
+                });
+                break;
+              case "socketio":
+                openTab({
+                  type: "socketio",
+                  name: tab.name,
+                  url: tab.url,
+                  headers: tab.headers,
+                  messageLog: [],
+                  isDirty: false,
+                });
+                break;
+            }
+          }}
         >
           Duplicate Tab
         </ContextMenuItem>

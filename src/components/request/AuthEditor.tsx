@@ -28,6 +28,7 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
   const tab = tabs.find((t) => t.tabId === tabId);
 
   if (!tab) return null;
+  if (tab.type !== "http" && tab.type !== "graphql") return null;
 
   const { auth } = tab;
 

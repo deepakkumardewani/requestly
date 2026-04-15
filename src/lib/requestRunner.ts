@@ -1,17 +1,18 @@
 import { parseTimingHeaders } from "@/lib/timingParser";
 import type {
   AuthConfig,
+  BodyConfig,
+  HttpMethod,
   KVPair,
   RequestError,
   ResponseData,
-  TabState,
 } from "@/types";
 
 type ResolvedRequest = {
-  method: TabState["method"];
+  method: HttpMethod;
   url: string;
   headers: KVPair[];
-  body: TabState["body"];
+  body: BodyConfig;
   auth: AuthConfig;
   sslVerify?: boolean;
   followRedirects?: boolean;
@@ -81,30 +82,21 @@ function buildBody(request: ResolvedRequest): string | null {
   return body.content || null;
 }
 
-export async function runRequest(
-  request: ResolvedRequest,
+type ProxyRequestPayload = {
+  url: string;
+  method: HttpMethod;
+  headers: Record<string, string>;
+  body?: string;
+  sslVerify: boolean;
+  followRedirects: boolean;
+};
+
+async function executeProxy(
+  proxyPayload: ProxyRequestPayload,
+  responseMeta: { url: string; method: HttpMethod },
   signal?: AbortSignal,
 ): Promise<ResponseData> {
   const start = performance.now();
-
-  const headers = buildHeaders(request);
-  const body = buildBody(request);
-
-  let url = request.url;
-  // Append api-key to query if configured
-  if (request.auth.type === "api-key" && request.auth.addTo === "query") {
-    const separator = url.includes("?") ? "&" : "?";
-    url = `${url}${separator}${encodeURIComponent(request.auth.key)}=${encodeURIComponent(request.auth.value)}`;
-  }
-
-  const proxyPayload = {
-    url,
-    method: request.method,
-    headers,
-    body: body ?? undefined,
-    sslVerify: request.sslVerify ?? true,
-    followRedirects: request.followRedirects ?? true,
-  };
 
   let proxyResponse: Response;
   try {
@@ -147,7 +139,6 @@ export async function runRequest(
   const duration = performance.now() - start;
   const size = new TextEncoder().encode(data.body).length;
 
-  // Collect proxy response headers to extract server-side timing
   const proxyHeaders: Record<string, string> = {};
   proxyResponse.headers.forEach((value, key) => {
     proxyHeaders[key] = value;
@@ -161,9 +152,115 @@ export async function runRequest(
     body: data.body,
     duration,
     size,
-    url: request.url,
-    method: request.method,
+    url: responseMeta.url,
+    method: responseMeta.method,
     timestamp: Date.now(),
     timing,
   };
+}
+
+export async function runRequest(
+  request: ResolvedRequest,
+  signal?: AbortSignal,
+): Promise<ResponseData> {
+  const headers = buildHeaders(request);
+  const body = buildBody(request);
+
+  let url = request.url;
+  if (request.auth.type === "api-key" && request.auth.addTo === "query") {
+    const separator = url.includes("?") ? "&" : "?";
+    url = `${url}${separator}${encodeURIComponent(request.auth.key)}=${encodeURIComponent(request.auth.value)}`;
+  }
+
+  return executeProxy(
+    {
+      url,
+      method: request.method,
+      headers,
+      body: body ?? undefined,
+      sslVerify: request.sslVerify ?? true,
+      followRedirects: request.followRedirects ?? true,
+    },
+    { url: request.url, method: request.method },
+    signal,
+  );
+}
+
+export type GraphQLResolvedRequest = {
+  url: string;
+  headers: KVPair[];
+  auth: AuthConfig;
+  query: string;
+  variablesJson: string;
+  operationName: string;
+  sslVerify?: boolean;
+  followRedirects?: boolean;
+};
+
+function parseGraphQLVariables(raw: string): Record<string, unknown> | null {
+  const trimmed = raw.trim();
+  if (trimmed === "") return {};
+  const parsed: unknown = JSON.parse(trimmed);
+  if (parsed === null) return null;
+  if (typeof parsed !== "object" || Array.isArray(parsed)) {
+    throw new Error("Variables must be a JSON object");
+  }
+  return parsed as Record<string, unknown>;
+}
+
+/**
+ * GraphQL over HTTP: POST with JSON body { query, variables, operationName? }.
+ */
+export async function runGraphQLRequest(
+  request: GraphQLResolvedRequest,
+  signal?: AbortSignal,
+): Promise<ResponseData> {
+  let variables: Record<string, unknown> | null;
+  try {
+    variables = parseGraphQLVariables(request.variablesJson);
+  } catch (e) {
+    const error: RequestError = {
+      type: "parse",
+      message: e instanceof Error ? e.message : "Invalid variables JSON",
+      cause: e instanceof Error ? undefined : String(e),
+    };
+    throw error;
+  }
+
+  const bodyPayload: Record<string, unknown> = {
+    query: request.query,
+    variables: variables ?? null,
+  };
+  const op = request.operationName.trim();
+  if (op) bodyPayload.operationName = op;
+
+  const bodyString = JSON.stringify(bodyPayload);
+
+  const headerRecord = buildHeaders({
+    method: "POST",
+    url: request.url,
+    headers: request.headers,
+    body: { type: "json", content: bodyString },
+    auth: request.auth,
+  });
+  headerRecord["Content-Type"] = "application/json";
+
+  let url = request.url;
+  if (request.auth.type === "api-key" && request.auth.addTo === "query") {
+    const separator = url.includes("?") ? "&" : "?";
+    url = `${url}${separator}${encodeURIComponent(request.auth.key)}=${encodeURIComponent(request.auth.value)}`;
+  }
+
+  return executeProxy(
+    {
+      url,
+      method: "POST",
+      headers: headerRecord,
+      body: bodyString,
+      sslVerify: request.sslVerify ?? true,
+      followRedirects: request.followRedirects ?? true,
+    },
+    { url: request.url, method: "POST" },
+    signal,
+  );
 }

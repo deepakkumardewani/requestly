@@ -11,12 +11,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { encodeShareLink } from "@/lib/shareLink";
-import type { TabState } from "@/types";
+import type { HttpTab } from "@/types";
 
 type ShareModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  tab: TabState;
+  tab: HttpTab;
 };
 
 export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {

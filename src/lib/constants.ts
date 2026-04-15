@@ -38,7 +38,7 @@ export const MAX_RESPONSE_DISPLAY_BYTES = 10_485_760; // 10MB
 export const MAX_PROXY_RESPONSE_BYTES = 52_428_800; // 50MB
 
 export const IDB_DB_NAME = "requestly";
-export const IDB_VERSION = 1;
+export const IDB_VERSION = 3;
 
 export const STANDARD_HEADERS = [
   "Accept",
@@ -68,3 +68,13 @@ export const CONTENT_TYPES: Record<string, string> = {
   html: "text/html",
   urlencoded: "application/x-www-form-urlencoded",
 };
+
+/** Values align with `TabType` in `@/types`. */
+export const TAB_TYPES = {
+  HTTP: "http",
+  GRAPHQL: "graphql",
+  WEBSOCKET: "websocket",
+  SOCKETIO: "socketio",
+} as const;
+
+export const MAX_WS_LOG_ENTRIES = 1000;

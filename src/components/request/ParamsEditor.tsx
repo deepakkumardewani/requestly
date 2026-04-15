@@ -22,6 +22,7 @@ export function ParamsEditor({ tabId }: ParamsEditorProps) {
   const tab = tabs.find((t) => t.tabId === tabId);
 
   if (!tab) return null;
+  if (tab.type !== "http") return null;
 
   const { url } = tab;
   const pathParams = tab.params.filter((p) => p.type === "path");

@@ -1,23 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsStore } from "@/stores/useTabsStore";
-import { AuthEditor } from "./AuthEditor";
-import { CurlEditor } from "./CurlEditor";
-import { HeadersEditor } from "./HeadersEditor";
-import { ParamsEditor } from "./ParamsEditor";
-
-const BodyEditor = dynamic(
-  () => import("./BodyEditor").then((m) => ({ default: m.BodyEditor })),
-  {
-    ssr: false,
-  },
-);
-const ScriptEditor = dynamic(
-  () => import("./ScriptEditor").then((m) => ({ default: m.ScriptEditor })),
-  { ssr: false },
-);
+import { GraphQLTabs } from "./tabs/GraphQLTabs";
+import { HttpTabs } from "./tabs/HttpTabs";
+import { SocketIOTabs } from "./tabs/SocketIOTabs";
+import { WebSocketTabs } from "./tabs/WebSocketTabs";
 
 type RequestTabsProps = {
   tabId: string;
@@ -29,95 +16,10 @@ export function RequestTabs({ tabId }: RequestTabsProps) {
 
   if (!tab) return null;
 
-  const enabledHeadersCount = tab.headers.filter(
-    (h) => h.enabled && h.key,
-  ).length;
-  const enabledParamsCount = tab.params.filter(
-    (p) => p.enabled && p.key,
-  ).length;
+  if (tab.type === "http") return <HttpTabs tabId={tabId} />;
+  if (tab.type === "graphql") return <GraphQLTabs tabId={tabId} />;
+  if (tab.type === "websocket") return <WebSocketTabs tabId={tabId} />;
+  if (tab.type === "socketio") return <SocketIOTabs tabId={tabId} />;
 
-  return (
-    <Tabs defaultValue="params" className="flex h-full flex-col">
-      <TabsList className="h-9 shrink-0 rounded-none border-b bg-transparent px-3 justify-start gap-0">
-        <TabsTrigger
-          value="params"
-          data-testid="request-tab-params"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
-        >
-          Params
-          {enabledParamsCount > 0 && (
-            <span className="ml-1 rounded-full bg-method-accent/20 px-1.5 py-0.5 text-[10px] text-method-accent">
-              {enabledParamsCount}
-            </span>
-          )}
-        </TabsTrigger>
-        <TabsTrigger
-          value="headers"
-          data-testid="request-tab-headers"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
-        >
-          Headers
-          {enabledHeadersCount > 0 && (
-            <span className="ml-1 rounded-full bg-method-accent/20 px-1.5 py-0.5 text-[10px] text-method-accent">
-              {enabledHeadersCount}
-            </span>
-          )}
-        </TabsTrigger>
-        <TabsTrigger
-          value="auth"
-          data-testid="request-tab-auth"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
-        >
-          Auth
-          {tab.auth.type !== "none" && (
-            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
-          )}
-        </TabsTrigger>
-        <TabsTrigger
-          value="body"
-          data-testid="request-tab-body"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
-        >
-          Body
-          {tab.body.type !== "none" && (
-            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
-          )}
-        </TabsTrigger>
-        <TabsTrigger
-          value="curl"
-          data-testid="request-tab-curl"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
-        >
-          cURL
-        </TabsTrigger>
-        <TabsTrigger
-          value="scripts"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
-        >
-          Scripts
-        </TabsTrigger>
-      </TabsList>
-
-      <div className="flex-1 overflow-hidden">
-        <TabsContent value="params" className="mt-0 h-full overflow-auto">
-          <ParamsEditor tabId={tabId} />
-        </TabsContent>
-        <TabsContent value="headers" className="mt-0 h-full overflow-auto">
-          <HeadersEditor tabId={tabId} />
-        </TabsContent>
-        <TabsContent value="auth" className="mt-0 h-full overflow-auto">
-          <AuthEditor tabId={tabId} />
-        </TabsContent>
-        <TabsContent value="body" className="mt-0 h-full overflow-hidden">
-          <BodyEditor tabId={tabId} />
-        </TabsContent>
-        <TabsContent value="curl" className="mt-0 h-full overflow-auto">
-          <CurlEditor tabId={tabId} />
-        </TabsContent>
-        <TabsContent value="scripts" className="mt-0 h-full overflow-hidden">
-          <ScriptEditor tabId={tabId} />
-        </TabsContent>
-      </div>
-    </Tabs>
-  );
+  return null;
 }

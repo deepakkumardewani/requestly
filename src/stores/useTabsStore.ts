@@ -4,7 +4,13 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { getDB } from "@/lib/idb";
 import { generateId } from "@/lib/utils";
-import type { AuthConfig, BodyConfig, HttpMethod, TabState } from "@/types";
+import type {
+  AuthConfig,
+  BodyConfig,
+  HttpMethod,
+  HttpTab,
+  TabState,
+} from "@/types";
 
 type TabsState = {
   tabs: TabState[];
@@ -26,22 +32,95 @@ type TabsActions = {
 const DEFAULT_AUTH: AuthConfig = { type: "none" };
 const DEFAULT_BODY: BodyConfig = { type: "none", content: "" };
 
-function createEmptyTab(overrides: Partial<TabState> = {}): TabState {
+function normalizePersistedTab(raw: TabState): TabState {
+  if (
+    raw.type === "http" ||
+    raw.type === "graphql" ||
+    raw.type === "websocket" ||
+    raw.type === "socketio"
+  ) {
+    return raw;
+  }
+  const legacy = raw as Omit<HttpTab, "type">;
   return {
-    tabId: generateId(),
-    requestId: null,
-    name: "New Request",
-    isDirty: false,
-    method: "GET" as HttpMethod,
-    url: "",
-    params: [],
-    headers: [],
-    auth: DEFAULT_AUTH,
-    body: DEFAULT_BODY,
-    preScript: "",
-    postScript: "",
-    ...overrides,
+    tabId: legacy.tabId,
+    requestId: legacy.requestId,
+    name: legacy.name,
+    isDirty: legacy.isDirty,
+    type: "http",
+    url: legacy.url,
+    headers: legacy.headers ?? [],
+    method: legacy.method ?? "GET",
+    params: legacy.params ?? [],
+    auth: legacy.auth ?? DEFAULT_AUTH,
+    body: legacy.body ?? DEFAULT_BODY,
+    preScript: legacy.preScript ?? "",
+    postScript: legacy.postScript ?? "",
   };
+}
+
+function createEmptyTab(overrides: Partial<TabState> = {}): TabState {
+  const tabId = generateId();
+  const requestId = overrides.requestId ?? null;
+
+  switch (overrides.type) {
+    case "graphql":
+      return {
+        name: "New GraphQL",
+        isDirty: false,
+        url: "",
+        headers: [],
+        query: "",
+        variables: "{}",
+        operationName: "",
+        auth: DEFAULT_AUTH,
+        ...overrides,
+        tabId,
+        requestId: overrides.requestId ?? requestId,
+        type: "graphql",
+      };
+    case "websocket":
+      return {
+        name: "New WebSocket",
+        isDirty: false,
+        url: "wss://",
+        headers: [],
+        messageLog: [],
+        ...overrides,
+        tabId,
+        requestId: overrides.requestId ?? requestId,
+        type: "websocket",
+      };
+    case "socketio":
+      return {
+        name: "New Socket.IO",
+        isDirty: false,
+        url: "http://",
+        headers: [],
+        messageLog: [],
+        ...overrides,
+        tabId,
+        requestId: overrides.requestId ?? requestId,
+        type: "socketio",
+      };
+    default:
+      return {
+        name: "New Request",
+        isDirty: false,
+        url: "",
+        headers: [],
+        method: "GET" as HttpMethod,
+        params: [],
+        auth: DEFAULT_AUTH,
+        body: DEFAULT_BODY,
+        preScript: "",
+        postScript: "",
+        ...overrides,
+        tabId,
+        requestId: overrides.requestId ?? requestId,
+        type: "http",
+      };
+  }
 }
 
 async function persistTabs(tabs: TabState[]) {
@@ -140,7 +219,7 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
   updateTabState(tabId, patch) {
     set((state) => ({
       tabs: state.tabs.map((t) =>
-        t.tabId === tabId ? { ...t, isDirty: true, ...patch } : t,
+        t.tabId === tabId ? ({ ...t, isDirty: true, ...patch } as TabState) : t,
       ),
     }));
     // No persistence here — tabs are only written to DB on explicit Save
@@ -154,7 +233,8 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
       const instance = await db;
       const saved = await instance.getAll("tabs");
       if (saved.length > 0) {
-        set({ tabs: saved, activeTabId: saved[0].tabId });
+        const tabs = saved.map((t) => normalizePersistedTab(t as TabState));
+        set({ tabs, activeTabId: tabs[0].tabId });
       } else {
         set({ tabs: [], activeTabId: null });
       }

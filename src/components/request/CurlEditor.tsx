@@ -21,6 +21,7 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
   const tab = tabs.find((t) => t.tabId === tabId);
 
   if (!tab) return null;
+  if (tab.type !== "http") return null;
 
   const generatedCurl = generateCurl(tab);
 

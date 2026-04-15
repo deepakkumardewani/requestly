@@ -3,8 +3,8 @@ import type {
   AuthConfig,
   BodyConfig,
   HttpMethod,
+  HttpTab,
   KVPair,
-  TabState,
 } from "@/types";
 
 export class InsomniaParseError extends Error {
@@ -18,7 +18,7 @@ type InsomniaResource = Record<string, unknown>;
 
 type ParsedCollection = {
   name: string;
-  requests: Omit<TabState, "tabId" | "requestId" | "isDirty">[];
+  requests: Omit<HttpTab, "tabId" | "requestId" | "isDirty">[];
 };
 
 function parseInsomniaHeaders(
@@ -143,6 +143,7 @@ export function parseInsomnia(
       const method = String(r.method ?? "GET").toUpperCase() as HttpMethod;
 
       return {
+        type: "http" as const,
         name: String(r.name ?? "Request"),
         method,
         url: String(r.url ?? ""),

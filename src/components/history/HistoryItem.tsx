@@ -18,13 +18,15 @@ export function HistoryItem({ entry }: HistoryItemProps) {
 
   function handleClick() {
     const existing = tabs.find(
-      (t) => t.url === entry.url && t.method === entry.method,
+      (t) =>
+        t.type === "http" && t.url === entry.url && t.method === entry.method,
     );
     if (existing) {
       setActiveTab(existing.tabId);
       return;
     }
     openTab({
+      type: "http",
       name: entry.request.name || truncateUrl(entry.url, 30),
       method: entry.method,
       url: entry.url,

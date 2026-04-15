@@ -19,6 +19,10 @@ export function useSaveRequest() {
 
   function save() {
     if (!activeTab) return;
+    if (activeTab.type !== "http") {
+      toast.info("Saving is only available for HTTP requests");
+      return;
+    }
 
     if (activeTab.requestId) {
       const existing = requests.find((r) => r.id === activeTab.requestId);

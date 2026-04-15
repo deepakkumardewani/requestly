@@ -1,3 +1,5 @@
+export type TabType = "http" | "graphql" | "websocket" | "socketio";
+
 export type HttpMethod =
   | "GET"
   | "POST"
@@ -42,20 +44,52 @@ export type BulkCloseAction =
   | { kind: "others"; keepTabId: string }
   | { kind: "all" };
 
-export type TabState = {
+export type WsMessage = {
+  id: string;
+  direction: "sent" | "received";
+  data: string;
+  timestamp: number;
+};
+
+export type BaseTab = {
   tabId: string;
   requestId: string | null;
   name: string;
   isDirty: boolean;
-  method: HttpMethod;
+  type: TabType;
   url: string;
-  params: KVPair[];
   headers: KVPair[];
+};
+
+export type HttpTab = BaseTab & {
+  type: "http";
+  method: HttpMethod;
+  params: KVPair[];
   auth: AuthConfig;
   body: BodyConfig;
   preScript: string;
   postScript: string;
 };
+
+export type GraphQLTab = BaseTab & {
+  type: "graphql";
+  query: string;
+  variables: string;
+  operationName: string;
+  auth: AuthConfig;
+};
+
+export type WebSocketTab = BaseTab & {
+  type: "websocket";
+  messageLog: WsMessage[];
+};
+
+export type SocketIOTab = BaseTab & {
+  type: "socketio";
+  messageLog: WsMessage[];
+};
+
+export type TabState = HttpTab | GraphQLTab | WebSocketTab | SocketIOTab;
 
 export type RequestModel = {
   id: string;
@@ -128,7 +162,7 @@ export type HistoryEntry = {
   duration: number;
   size: number;
   timestamp: number;
-  request: TabState;
+  request: HttpTab;
   response: ResponseData;
 };
 

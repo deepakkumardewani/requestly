@@ -1,8 +1,8 @@
 "use client";
 
-import { X } from "lucide-react";
-import { MethodBadge } from "@/components/common/MethodBadge";
+import { ArrowLeftRight, Braces, Globe, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useConnectionStore } from "@/stores/useConnectionStore";
 import type { TabState } from "@/types";
 
 type TabProps = {
@@ -14,6 +14,10 @@ type TabProps = {
 
 export function Tab({ tab, isActive, onSelect, onClose }: TabProps) {
   const tabName = tab.name || "New Request";
+  const conn = useConnectionStore((s) => s.connections[tab.tabId]);
+  const showConnectionDot =
+    (tab.type === "websocket" || tab.type === "socketio") &&
+    (conn?.isConnected ?? false);
 
   return (
     <div
@@ -34,8 +38,26 @@ export function Tab({ tab, isActive, onSelect, onClose }: TabProps) {
           : "bg-sidebar text-muted-foreground hover:bg-muted hover:text-foreground",
       )}
     >
-      <MethodBadge method={tab.method} />
+      {tab.type === "http" && (
+        <Globe className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+      )}
+      {tab.type === "graphql" && (
+        <Braces className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+      )}
+      {tab.type === "websocket" && (
+        <ArrowLeftRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+      )}
+      {tab.type === "socketio" && (
+        <Zap className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+      )}
       <span className="flex-1 truncate text-left">{tabName}</span>
+      {showConnectionDot && (
+        <span
+          data-testid="tab-connection-dot"
+          className="h-2 w-2 shrink-0 rounded-full bg-emerald-500"
+          title="Connected"
+        />
+      )}
       {tab.isDirty && (
         <span
           data-testid="tab-dirty-indicator"
@@ -59,7 +81,7 @@ export function Tab({ tab, isActive, onSelect, onClose }: TabProps) {
           "flex h-4 w-4 items-center justify-center rounded transition-opacity",
           isActive
             ? "opacity-60 hover:opacity-100"
-            : "opacity-0 group-hover:opacity-60 hover:!opacity-100",
+            : "opacity-0 group-hover:opacity-60 hover:opacity-100!",
         )}
       >
         <X className="h-3 w-3" />

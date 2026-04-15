@@ -20,6 +20,17 @@ export function RightPanel() {
   const { activeTabId, tabs } = useTabsStore();
 
   const activeTab = tabs.find((t) => t.tabId === activeTabId);
+  const hideHttpResponsePanel =
+    activeTab?.type === "websocket" || activeTab?.type === "socketio";
+
+  const requestColumn = activeTabId ? (
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
+      <div className="min-h-0 flex-1">
+        <RequestTabs tabId={activeTabId} />
+      </div>
+      {activeTab ? <CodeGenPanel tab={activeTab} /> : null}
+    </div>
+  ) : null;
 
   return (
     <div className="flex h-full flex-col">
@@ -28,26 +39,27 @@ export function RightPanel() {
       {activeTabId ? (
         <>
           <UrlBar tabId={activeTabId} />
-          <ResizablePanelGroup
-            orientation="vertical"
-            className="flex-1 overflow-hidden"
-            onLayoutChanged={(sizes) => {
-              if (sizes[0] !== undefined) setSplitRatio(sizes[0]);
-            }}
-          >
-            <ResizablePanel defaultSize="50%" minSize="20%">
-              <div className="flex h-full flex-col overflow-hidden">
-                <div className="min-h-0 flex-1">
-                  <RequestTabs tabId={activeTabId} />
-                </div>
-                {activeTab && <CodeGenPanel tab={activeTab} />}
-              </div>
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize="50%" minSize="20%" maxSize="70%">
-              <ResponsePanel tabId={activeTabId} />
-            </ResizablePanel>
-          </ResizablePanelGroup>
+          {hideHttpResponsePanel ? (
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+              {requestColumn}
+            </div>
+          ) : (
+            <ResizablePanelGroup
+              orientation="vertical"
+              className="flex-1 overflow-hidden"
+              onLayoutChanged={(sizes) => {
+                if (sizes[0] !== undefined) setSplitRatio(sizes[0]);
+              }}
+            >
+              <ResizablePanel defaultSize="50%" minSize="20%">
+                {requestColumn}
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize="50%" minSize="20%" maxSize="70%">
+                <ResponsePanel tabId={activeTabId} />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          )}
         </>
       ) : (
         <EmptyState />
