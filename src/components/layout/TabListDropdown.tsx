@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, X } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useTabsStore } from "@/stores/useTabsStore";
 
 export function TabListDropdown() {
+  const tabsMenuId = useId();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { tabs, activeTabId, setActiveTab } = useTabsStore();
@@ -40,13 +41,17 @@ export function TabListDropdown() {
       <PopoverTrigger
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
         aria-label="Show all tabs"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        aria-controls={tabsMenuId}
         title="Show all tabs"
         data-testid="tabs-overflow-btn"
       >
-        <ChevronDown className="h-4 w-4" />
+        <ChevronDown className="h-4 w-4" aria-hidden />
       </PopoverTrigger>
 
       <PopoverContent
+        id={tabsMenuId}
         align="end"
         sideOffset={4}
         className="w-72 p-0"
@@ -80,6 +85,7 @@ export function TabListDropdown() {
             className="h-8 text-xs"
             autoFocus
             data-testid="tabs-search-input"
+            aria-label="Search open tabs"
           />
         </div>
 
@@ -101,11 +107,14 @@ export function TabListDropdown() {
                   tabIndex={0}
                   data-testid="tab-list-item"
                   onClick={() => handleSelectTab(tab.tabId)}
-                  onKeyDown={(e) =>
-                    e.key === "Enter" && handleSelectTab(tab.tabId)
-                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleSelectTab(tab.tabId);
+                    }
+                  }}
                   className={cn(
-                    "group flex cursor-pointer items-center justify-between px-3 py-2 text-sm",
+                    "group flex cursor-pointer items-center justify-between px-3 py-2 text-sm rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     isActive
                       ? "bg-muted/60 text-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground",

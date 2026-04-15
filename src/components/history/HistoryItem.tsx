@@ -71,7 +71,7 @@ export function HistoryItem({ entry }: HistoryItemProps) {
           deleteEntry(entry.id);
         }}
         data-testid="history-item-delete"
-        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-1.5 text-muted-foreground opacity-0 hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 transition-all"
+        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-sm p-1.5 text-muted-foreground opacity-0 hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 transition-[color,background-color,opacity] duration-200"
         title="Delete history entry"
       >
         <Trash2 className="h-3.5 w-3.5" />

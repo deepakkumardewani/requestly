@@ -199,7 +199,7 @@ export function CollectionTree() {
                       {/* Direct chain button — visible on hover */}
                       <button
                         type="button"
-                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-white/20 transition-opacity"
+                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-foreground/10 dark:hover:bg-white/20 transition-opacity"
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(`/chain/${collection.id}`);
@@ -212,7 +212,7 @@ export function CollectionTree() {
                       {/* Dropdown sits before the auto-chevron so chevron ends up at far right */}
                       <DropdownMenu>
                         <DropdownMenuTrigger
-                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-white/20"
+                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-foreground/10 dark:hover:bg-white/20"
                           onClick={(e) => e.stopPropagation()}
                           data-testid={`collection-more-btn-${collection.id}`}
                         >

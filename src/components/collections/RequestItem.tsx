@@ -147,7 +147,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
 
           <DropdownMenu>
             <DropdownMenuTrigger
-              className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-white/20"
+              className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-foreground/10 dark:hover:bg-white/20"
               onClick={(e) => e.stopPropagation()}
               data-testid="request-item-more-btn"
             >

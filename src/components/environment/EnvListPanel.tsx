@@ -138,7 +138,7 @@ export function EnvListPanel({ selectedEnvId, onSelect }: EnvListPanelProps) {
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     data-testid="env-item-more-btn"
-                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-white/20"
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-foreground/10 dark:hover:bg-white/20"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <MoreHorizontal className="h-3 w-3" />

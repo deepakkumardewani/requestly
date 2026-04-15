@@ -60,10 +60,11 @@ export function HubProviderCard({ slug, meta }: HubProviderCardProps) {
         {meta.logoUrl ? (
           <Image
             src={meta.logoUrl}
-            alt={meta.name}
+            alt={`${meta.name} logo`}
             width={36}
             height={36}
             className="object-contain"
+            loading="lazy"
             unoptimized
           />
         ) : (
