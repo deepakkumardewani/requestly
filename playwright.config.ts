@@ -40,10 +40,21 @@ export default defineConfig({
     },
   ],
 
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: "bun run dev",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
-  },
+  /**
+   * Next.js app + local Socket.IO echo (`scripts/run-socketio-echo.sh`).
+   * If you already run the echo on :3333, Playwright reuses it when not in CI.
+   */
+  webServer: [
+    {
+      command: "bun run dev",
+      url: "http://127.0.0.1:3000",
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: "bash scripts/run-socketio-echo.sh",
+      url: "http://127.0.0.1:3333/socket.io/?EIO=4&transport=polling",
+      reuseExistingServer: !process.env.CI,
+      timeout: 180_000,
+    },
+  ],
 });
