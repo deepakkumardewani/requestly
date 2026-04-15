@@ -30,7 +30,15 @@ export default function RootLayout({
           "font-sans antialiased",
         )}
       >
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <a
+            href="#app-main"
+            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+          >
+            Skip to main content
+          </a>
+          {children}
+        </AppProviders>
       </body>
     </html>
   );

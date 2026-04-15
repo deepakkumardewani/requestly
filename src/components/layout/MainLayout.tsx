@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SaveRequestModal } from "@/components/collections/SaveRequestModal";
 import { CommandPalette } from "@/components/common/CommandPalette";
+import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -128,17 +129,26 @@ export function MainLayout() {
               maxSize="90%"
               className="border-r border-border"
             >
-              <LeftPanel />
+              <nav
+                aria-label="Collections, history, and workspace"
+                className="h-full"
+              >
+                <LeftPanel />
+              </nav>
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize="80%" minSize="80%">
-              <RightPanel />
+              <main id="app-main" className="h-full min-h-0">
+                <ErrorBoundary fallbackTitle="Request panel crashed">
+                  <RightPanel />
+                </ErrorBoundary>
+              </main>
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : (
           <div className="flex h-full w-full">
             <div className="w-[20%] border-r border-border" />
-            <div className="flex-1" />
+            <main id="app-main" className="min-h-0 flex-1" />
           </div>
         )}
       </div>
