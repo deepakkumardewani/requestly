@@ -270,6 +270,157 @@ test.describe("HTTP Requests", () => {
     await expect(output).toContainText("https://dummyjson.com/products/add");
   });
 
+  test("Open Scripts tab and see Pre-Request editor by default", async ({
+    page,
+  }) => {
+    await page.getByTestId("request-tab-scripts").click();
+
+    await expect(page.getByTestId("script-tab-pre")).toBeVisible();
+    await expect(page.getByTestId("script-tab-post")).toBeVisible();
+    // Editor wrapper exists in DOM but CodeMirror loads async — assert attached, not visible
+    await expect(page.getByTestId("pre-script-editor")).toBeAttached();
+  });
+
+  test("Pre-script console.log output appears in Console tab", async ({
+    page,
+  }) => {
+    await fillUrl(page, "https://dummyjson.com/products/1");
+    await page.getByTestId("request-tab-scripts").click();
+
+    const preEditor = page
+      .getByTestId("pre-script-editor")
+      .locator(".cm-content");
+    await preEditor.scrollIntoViewIfNeeded();
+    await preEditor.focus();
+    await page.keyboard.press("ControlOrMeta+a");
+    await page.keyboard.type('console.log("pre-script ran");', { delay: 20 });
+
+    await sendRequest(page);
+
+    const badge = page.getByTestId("response-status-badge");
+    await expect(badge).toBeVisible({ timeout: 15000 });
+    await expect(badge).toHaveText("200");
+
+    await page.getByTestId("response-tab-console").click();
+    await expect(page.getByTestId("response-console-viewer")).toContainText(
+      "pre-script ran",
+    );
+  });
+
+  test("Post-script reads response status via requestly.response.status", async ({
+    page,
+  }) => {
+    await fillUrl(page, "https://dummyjson.com/products/1");
+    await page.getByTestId("request-tab-scripts").click();
+    await page.getByTestId("script-tab-post").click();
+
+    await expect(page.getByTestId("post-script-editor")).toBeAttached();
+
+    const postEditor = page
+      .getByTestId("post-script-editor")
+      .locator(".cm-content");
+    await postEditor.scrollIntoViewIfNeeded();
+    await postEditor.focus();
+    await page.keyboard.press("ControlOrMeta+a");
+    await page.keyboard.type(
+      'console.log("status:", requestly.response.status);',
+      { delay: 20 },
+    );
+
+    await sendRequest(page);
+
+    const badge = page.getByTestId("response-status-badge");
+    await expect(badge).toBeVisible({ timeout: 15000 });
+
+    await page.getByTestId("response-tab-console").click();
+    await expect(page.getByTestId("response-console-viewer")).toContainText(
+      "status: 200",
+    );
+  });
+
+  test("Pre-script injects a request header and request succeeds", async ({
+    page,
+  }) => {
+    await fillUrl(page, "https://dummyjson.com/products/1");
+    await page.getByTestId("request-tab-scripts").click();
+
+    const preEditor = page
+      .getByTestId("pre-script-editor")
+      .locator(".cm-content");
+    await preEditor.scrollIntoViewIfNeeded();
+    await preEditor.focus();
+    await page.keyboard.press("ControlOrMeta+a");
+    await page.keyboard.type(
+      'requestly.request.headers.set("X-Playwright-Test", "1");',
+      { delay: 20 },
+    );
+
+    await sendRequest(page);
+
+    const badge = page.getByTestId("response-status-badge");
+    await expect(badge).toBeVisible({ timeout: 15000 });
+    await expect(badge).toHaveText("200");
+  });
+
+  test("Post-script parses response JSON via requestly.response.json()", async ({
+    page,
+  }) => {
+    await fillUrl(page, "https://dummyjson.com/products/1");
+    await page.getByTestId("request-tab-scripts").click();
+    await page.getByTestId("script-tab-post").click();
+
+    const postEditor = page
+      .getByTestId("post-script-editor")
+      .locator(".cm-content");
+    await postEditor.scrollIntoViewIfNeeded();
+    await postEditor.focus();
+    await page.keyboard.press("ControlOrMeta+a");
+    await page.keyboard.type(
+      'const d = requestly.response.json(); console.log("title:", d.title);',
+      { delay: 20 },
+    );
+
+    await sendRequest(page);
+
+    const badge = page.getByTestId("response-status-badge");
+    await expect(badge).toBeVisible({ timeout: 15000 });
+    await expect(badge).toHaveText("200");
+
+    await page.getByTestId("response-tab-console").click();
+    await expect(page.getByTestId("response-console-viewer")).toContainText(
+      "Essence Mascara Lash Princess",
+    );
+  });
+
+  test("Script content persists when switching between pre and post tabs", async ({
+    page,
+  }) => {
+    await page.getByTestId("request-tab-scripts").click();
+
+    // Type in pre-request
+    const preEditor = page
+      .getByTestId("pre-script-editor")
+      .locator(".cm-content");
+    await preEditor.focus();
+    await page.keyboard.press("ControlOrMeta+a");
+    await page.keyboard.type("const pre = 1;", { delay: 20 });
+
+    // Switch to post-response and type
+    await page.getByTestId("script-tab-post").click();
+    const postEditor = page
+      .getByTestId("post-script-editor")
+      .locator(".cm-content");
+    await postEditor.focus();
+    await page.keyboard.press("ControlOrMeta+a");
+    await page.keyboard.type("const post = 2;", { delay: 20 });
+
+    // Switch back to pre-request and verify content is preserved
+    await page.getByTestId("script-tab-pre").click();
+    await expect(
+      page.getByTestId("pre-script-editor").locator(".cm-content"),
+    ).toContainText("const pre = 1");
+  });
+
   test("Send a request with path parameters", async ({ page }) => {
     await fillUrl(page, "https://dummyjson.com/products/:id");
     await page.getByTestId("request-tab-params").click();
