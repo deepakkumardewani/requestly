@@ -1,0 +1,16 @@
+{
+  "id": "broker-api-default-env",
+  "name": "Alpaca (Broker)",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://broker-api.sandbox.alpaca.markets",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

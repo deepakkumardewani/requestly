@@ -1,0 +1,16 @@
+{
+  "id": "orders-default-env",
+  "name": "PayPal",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api-m.paypal.com",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

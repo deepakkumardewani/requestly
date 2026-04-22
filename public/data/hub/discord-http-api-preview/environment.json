@@ -1,0 +1,16 @@
+{
+  "id": "discord-http-api-preview-default-env",
+  "name": "Discord",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://discord.com/api/v10",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

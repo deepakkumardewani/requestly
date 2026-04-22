@@ -1,0 +1,11 @@
+{
+  "name": "Twitter / X v2",
+  "providerName": "twitter",
+  "description": "Twitter API v2 available endpoints",
+  "category": "Social",
+  "logoUrl": "https://cdn.simpleicons.org/x",
+  "docsUrl": "https://developer.twitter.com/",
+  "specUrl": "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/twitter.com/current/2.62/openapi.yaml",
+  "version": "2.62",
+  "requestCount": 80
+}

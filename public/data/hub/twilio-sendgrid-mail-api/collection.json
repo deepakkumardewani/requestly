@@ -1,0 +1,190 @@
+{
+  "id": "262d49b8-6edc-4aed-ae1b-3c50661f7fc5",
+  "name": "SendGrid",
+  "description": "The Twilio SendGrid v3 Mail API allows you to send email at scale over HTTP. The Mail Send endpoint supports many levels of functionality, allowing you to send templates, set categories and custom arguments that can be used to analyze your send, and configure which tracking settings to include such as opens and clicks. You can also group mail sends into batches, allowing you to schedule and cancel sends by their batch IDs.",
+  "createdAt": 1776830114254,
+  "requests": [
+    {
+      "id": "366788d4-b5ac-427f-b74c-16810ae2b070",
+      "name": "Create a batch ID.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v3/mail/batch",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "on-behalf-of",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "Batch ID success response.",
+          "content": "{\n  \"batch_id\": \"HkJ5yLYULb7Rj8GKSx7u025ouWVlMgAi\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Batch ID bad response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Batch ID unauthorized response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Batch ID forbidden response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Batch ID not found response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "405",
+          "description": "Get batch ID method not allowed response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Get batch ID internal server error response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": "**This operation allows you to generate a new mail batch ID.**\n\n\nOnce a batch ID is created, you can associate it with a mail send by passing\nit in the request body of the [Mail Send operation](https://docs.sendgrid.com/api-reference/mail-send/mail-send).\nThis makes it possible to group multiple requests to the Mail Send operation\nby assigning them the same batch ID.\n\n\nA batch ID that's associated with a mail send can be used to access and modify the associated send. For example, you can pause or cancel a send using its batch ID. See the [Scheduled Sends API](https://www.twilio.com/docs/sendgrid/api-reference/cancel-scheduled-sends) for more information about pausing and cancelling a mail send.\n"
+    },
+    {
+      "id": "9909af51-c0dc-4d36-8c71-5612db18ed48",
+      "name": "Validate a batch ID.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v3/mail/batch/{batch_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "on-behalf-of",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Batch ID success response.",
+          "content": "{\n  \"batch_id\": \"HkJ5yLYULb7Rj8GKSx7u025ouWVlMgAi\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Batch ID bad response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Batch ID unauthorized response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Batch ID forbidden response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "405",
+          "description": "Get batch ID method not allowed response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Get batch ID internal server error response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": "**This operation allows you to validate a mail batch ID.**\n\nIf you provide a valid batch ID, this operation will return a `200` status code and the batch ID itself.\nIf you provide an invalid batch ID, you will receive a `400` level status code and an error message.\nA batch ID does not need to be assigned to a send to be considered valid. A successful response means only that the batch ID has been created, but it does not indicate that the ID has been assigned to a send."
+    },
+    {
+      "id": "527ef381-bb09-4a8b-99c2-d5f20b83227d",
+      "name": "Send Email with Twilio SendGrid.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v3/mail/send",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Content-Encoding",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"personalizations\": [\n    {\n      \"from\": null,\n      \"to\": [\n        null\n      ],\n      \"cc\": [\n        null\n      ],\n      \"bcc\": [\n        null\n      ],\n      \"subject\": \"\",\n      \"headers\": {},\n      \"substitutions\": {},\n      \"dynamic_template_data\": {},\n      \"custom_args\": {},\n      \"send_at\": 0\n    }\n  ],\n  \"from\": {\n    \"email\": \"\",\n    \"name\": \"\"\n  },\n  \"reply_to\": {\n    \"email\": \"\",\n    \"name\": \"\"\n  },\n  \"reply_to_list\": [\n    {\n      \"email\": null,\n      \"name\": null\n    }\n  ],\n  \"subject\": \"\",\n  \"content\": [\n    {\n      \"type\": \"\",\n      \"value\": \"\"\n    }\n  ],\n  \"attachments\": [\n    {\n      \"content\": \"\",\n      \"type\": \"\",\n      \"filename\": \"\",\n      \"disposition\": null,\n      \"content_id\": \"\"\n    }\n  ],\n  \"template_id\": \"\",\n  \"headers\": {},\n  \"categories\": [\n    \"\"\n  ],\n  \"custom_args\": \"\",\n  \"send_at\": 0,\n  \"batch_id\": \"\",\n  \"asm\": {\n    \"group_id\": 0,\n    \"groups_to_display\": [\n      0\n    ]\n  },\n  \"ip_pool_name\": \"\",\n  \"mail_settings\": {\n    \"bypass_list_management\": {\n      \"enable\": false\n    },\n    \"bypass_spam_management\": {\n      \"enable\": false\n    },\n    \"bypass_bounce_management\": {\n      \"enable\": false\n    },\n    \"bypass_unsubscribe_management\": {\n      \"enable\": false\n    },\n    \"footer\": {\n      \"enable\": false,\n      \"text\": \"\",\n      \"html\": \"\"\n    },\n    \"sandbox_mode\": {\n      \"enable\": false\n    }\n  },\n  \"tracking_settings\": {\n    \"click_tracking\": {\n      \"enable\": false,\n      \"enable_text\": false\n    },\n    \"open_tracking\": {\n      \"enable\": false,\n      \"substitution_tag\": \"\"\n    },\n    \"subscription_tracking\": {\n      \"enable\": false,\n      \"text\": \"\",\n      \"html\": \"\",\n      \"substitution_tag\": \"\"\n    },\n    \"ganalytics\": {\n      \"enable\": false,\n      \"utm_source\": \"\",\n      \"utm_medium\": \"\",\n      \"utm_term\": \"\",\n      \"utm_content\": \"\",\n      \"utm_campaign\": \"\"\n    }\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "202",
+          "description": "Accepted"
+        },
+        {
+          "statusCode": "400",
+          "description": "Mail Send bad response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Mail Send unauthorized response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Mail Send forbidden response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Mail Send not found response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "405",
+          "description": "Mail Send method not allowed response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "413",
+          "description": "Mail Send content too large response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Mail send internal server error response.",
+          "content": "{\n  \"errors\": [\n    {\n      \"field\": \"field_name\",\n      \"message\": \"error message\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": "*The Mail Send operation allows you to send email over SendGrid's v3 Web API*\n\nFor an overview of this API, including its features and limitations, please see the [Mail Send API overview page](https://www.twilio.com/docs/sendgrid/api-reference/mail-send)\n\nThe overview page also includes links to SendGrid's Email API quickstarts and helper libraries to get you working with this endpoint even faster.\n"
+    }
+  ]
+}

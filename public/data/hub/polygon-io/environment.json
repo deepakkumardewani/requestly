@@ -1,0 +1,21 @@
+{
+  "id": "polygon-io-default-env",
+  "name": "Polygon.io",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.polygon.io",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    },
+    {
+      "key": "APIKEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Slack",
+  "providerName": "slack-web-api",
+  "description": "One way to interact with the Slack platform is its HTTP RPC-based Web API, a collection of methods requiring OAuth 2.0-based user, bot, or workspace tokens blessed with related OAuth scopes.",
+  "category": "Dev Tools",
+  "logoUrl": "https://www.vectorlogo.zone/logos/slack/slack-icon.svg",
+  "docsUrl": "https://api.slack.com/support",
+  "specUrl": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
+  "version": "1.7.0",
+  "requestCount": 174
+}

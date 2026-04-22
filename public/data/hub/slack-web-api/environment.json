@@ -1,0 +1,16 @@
+{
+  "id": "slack-web-api-default-env",
+  "name": "Slack",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://slack.com/api",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

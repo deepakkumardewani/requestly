@@ -1,0 +1,2495 @@
+{
+  "id": "e1dca689-0a37-45c4-9558-9fefc9d93106",
+  "name": "Resend",
+  "description": "Resend is the email platform for developers.",
+  "createdAt": 1776830114568,
+  "requests": [
+    {
+      "id": "b6c302e0-c5ba-497d-9bf9-27427e012bda",
+      "name": "Send an email",
+      "method": "POST",
+      "url": "{{BASE_URL}}/emails",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Idempotency-Key",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"from\": \"\",\n  \"to\": \"\",\n  \"subject\": \"\",\n  \"bcc\": \"\",\n  \"cc\": \"\",\n  \"reply_to\": \"\",\n  \"html\": \"\",\n  \"text\": \"\",\n  \"template\": {\n    \"id\": null,\n    \"variables\": null\n  },\n  \"headers\": {},\n  \"scheduled_at\": \"\",\n  \"attachments\": [\n    {\n      \"content\": null,\n      \"filename\": null,\n      \"path\": null,\n      \"content_type\": null,\n      \"content_id\": null\n    }\n  ],\n  \"tags\": [\n    {\n      \"name\": null,\n      \"value\": null\n    }\n  ],\n  \"topic_id\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "6aaf2492-9044-48fe-b260-ebc37b328f87",
+      "name": "Retrieve a list of emails",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emails",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"to\": null,\n      \"from\": null,\n      \"created_at\": null,\n      \"subject\": null,\n      \"html\": null,\n      \"text\": null,\n      \"bcc\": null,\n      \"cc\": null,\n      \"reply_to\": null,\n      \"last_event\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "769ff945-97a8-480d-b34b-14f3f216afcb",
+      "name": "Retrieve a single email",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emails/{email_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"email\",\n  \"id\": \"4ef9a417-02e9-4d39-ad75-9611e0fcc33c\",\n  \"to\": [\n    \"\"\n  ],\n  \"from\": \"Acme <onboarding@resend.dev>\",\n  \"created_at\": \"2023-04-03T22:13:42.674981+00:00\",\n  \"subject\": \"Hello World\",\n  \"html\": \"Congrats on sending your <strong>first email</strong>!\",\n  \"text\": \"\",\n  \"bcc\": [\n    \"\"\n  ],\n  \"cc\": [\n    \"\"\n  ],\n  \"reply_to\": [\n    \"\"\n  ],\n  \"last_event\": \"delivered\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "03deeef5-36e5-43b5-afa7-8726d47befb7",
+      "name": "Update a single email",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/emails/{email_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"scheduled_at\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f2a73353-6de9-47ae-b626-dfc4f7d0a8b6",
+      "name": "Cancel the schedule of the e-mail.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/emails/{email_id}/cancel",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"email\",\n  \"id\": \"4ef9a417-02e9-4d39-ad75-9611e0fcc33c\",\n  \"to\": [\n    \"\"\n  ],\n  \"from\": \"Acme <onboarding@resend.dev>\",\n  \"created_at\": \"2023-04-03T22:13:42.674981+00:00\",\n  \"subject\": \"Hello World\",\n  \"html\": \"Congrats on sending your <strong>first email</strong>!\",\n  \"text\": \"\",\n  \"bcc\": [\n    \"\"\n  ],\n  \"cc\": [\n    \"\"\n  ],\n  \"reply_to\": [\n    \"\"\n  ],\n  \"last_event\": \"delivered\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "7dab5c8e-4a63-4420-84c0-dd3a695df684",
+      "name": "Trigger up to 100 batch emails at once.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/emails/batch",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Idempotency-Key",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "[\n  {\n    \"from\": \"\",\n    \"to\": {},\n    \"subject\": \"\",\n    \"bcc\": {},\n    \"cc\": {},\n    \"reply_to\": {},\n    \"html\": \"\",\n    \"text\": \"\",\n    \"template\": {},\n    \"headers\": {},\n    \"scheduled_at\": \"\",\n    \"attachments\": [\n      null\n    ],\n    \"tags\": [\n      null\n    ],\n    \"topic_id\": \"\"\n  }\n]"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"data\": [\n    {\n      \"id\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "42f5826e-477d-48ac-a9f1-d64eee361fed",
+      "name": "Retrieve a list of attachments for a sent email",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emails/{email_id}/attachments",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"660e8400-e29b-41d4-a716-446655440000\",\n      \"filename\": \"document.pdf\",\n      \"content_type\": \"application/pdf\",\n      \"content_id\": \"img001\",\n      \"content_disposition\": \"attachment\",\n      \"download_url\": \"https://cloudfront.example.com/path?Signature=...\",\n      \"expires_at\": \"2024-10-27T18:30:00.000Z\",\n      \"size\": 2048\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "41ca7b1a-b241-4689-a544-c319a2bdb6ca",
+      "name": "Retrieve a single attachment for a sent email",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emails/{email_id}/attachments/{attachment_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"attachment\",\n  \"id\": \"660e8400-e29b-41d4-a716-446655440000\",\n  \"filename\": \"document.pdf\",\n  \"content_type\": \"application/pdf\",\n  \"content_id\": \"img001\",\n  \"content_disposition\": \"attachment\",\n  \"download_url\": \"https://cloudfront.example.com/path?Signature=...\",\n  \"expires_at\": \"2024-10-27T18:30:00.000Z\",\n  \"size\": 2048\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "df6ee6c4-561f-4ba6-b557-db97ff775a73",
+      "name": "Retrieve a list of received emails",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emails/receiving",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"to\": [\n        null\n      ],\n      \"from\": \"sender@example.com\",\n      \"subject\": \"Hello World\",\n      \"message_id\": \"<message-id@example.com>\",\n      \"bcc\": [\n        null\n      ],\n      \"cc\": [\n        null\n      ],\n      \"reply_to\": [\n        null\n      ],\n      \"created_at\": \"2023-10-06T23:47:56.678Z\",\n      \"attachments\": [\n        null\n      ]\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "df2cd33d-6d78-49a8-9813-e743d244477c",
+      "name": "Retrieve a single received email",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emails/receiving/{email_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"email\",\n  \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"to\": [\n    \"\"\n  ],\n  \"from\": \"sender@example.com\",\n  \"subject\": \"Hello World\",\n  \"message_id\": \"<message-id@example.com>\",\n  \"bcc\": [\n    \"\"\n  ],\n  \"cc\": [\n    \"\"\n  ],\n  \"reply_to\": [\n    \"\"\n  ],\n  \"html\": \"<p>Email content</p>\",\n  \"text\": \"Email content\",\n  \"headers\": {},\n  \"created_at\": \"2023-10-06:23:47:56.678Z\",\n  \"attachments\": [\n    {\n      \"id\": \"\",\n      \"filename\": \"\",\n      \"content_type\": \"\",\n      \"content_id\": \"\",\n      \"content_disposition\": \"\",\n      \"size\": 0\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "a4a96f9a-9aef-4137-8d89-81f175f9df9e",
+      "name": "Retrieve a list of attachments for a received email",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emails/receiving/{email_id}/attachments",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"660e8400-e29b-41d4-a716-446655440000\",\n      \"filename\": \"document.pdf\",\n      \"content_type\": \"application/pdf\",\n      \"content_id\": \"img001\",\n      \"content_disposition\": \"attachment\",\n      \"download_url\": \"https://cloudfront.example.com/path?Signature=...\",\n      \"expires_at\": \"2024-10-27T18:30:00.000Z\",\n      \"size\": 2048\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "7762cf05-c011-4d15-9a7a-0ee9d5aa107b",
+      "name": "Retrieve a single attachment for a received email",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emails/receiving/{email_id}/attachments/{attachment_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"attachment\",\n  \"id\": \"660e8400-e29b-41d4-a716-446655440000\",\n  \"filename\": \"document.pdf\",\n  \"content_type\": \"application/pdf\",\n  \"content_id\": \"img001\",\n  \"content_disposition\": \"attachment\",\n  \"download_url\": \"https://cloudfront.example.com/path?Signature=...\",\n  \"expires_at\": \"2024-10-27T18:30:00.000Z\",\n  \"size\": 2048\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "a3b44d82-4716-4196-884b-824733bcc2ef",
+      "name": "Create a new domain",
+      "method": "POST",
+      "url": "{{BASE_URL}}/domains",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"region\": \"us-east-1\",\n  \"custom_return_path\": \"\",\n  \"open_tracking\": false,\n  \"click_tracking\": false,\n  \"tls\": \"opportunistic\",\n  \"capabilities\": {\n    \"sending\": \"\",\n    \"receiving\": \"\"\n  },\n  \"tracking_subdomain\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"name\": \"\",\n  \"created_at\": \"\",\n  \"status\": \"\",\n  \"capabilities\": {\n    \"sending\": \"\",\n    \"receiving\": \"\"\n  },\n  \"records\": [\n    {\n      \"record\": null,\n      \"name\": null,\n      \"type\": null,\n      \"ttl\": null,\n      \"status\": null,\n      \"value\": null,\n      \"priority\": null\n    }\n  ],\n  \"region\": \"\",\n  \"open_tracking\": false,\n  \"click_tracking\": false,\n  \"tracking_subdomain\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "dbb208da-7225-41eb-86ef-eeea297f22f0",
+      "name": "Retrieve a list of domains",
+      "method": "GET",
+      "url": "{{BASE_URL}}/domains",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": null,\n      \"name\": null,\n      \"status\": null,\n      \"created_at\": null,\n      \"region\": null,\n      \"capabilities\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "b089473e-f482-4a31-b5da-a6f24721e036",
+      "name": "Retrieve a single domain",
+      "method": "GET",
+      "url": "{{BASE_URL}}/domains/{domain_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"domain\",\n  \"id\": \"d91cd9bd-1176-453e-8fc1-35364d380206\",\n  \"name\": \"example.com\",\n  \"status\": \"not_started\",\n  \"created_at\": \"2023-04-26T20:21:26.347412+00:00\",\n  \"region\": \"us-east-1\",\n  \"open_tracking\": false,\n  \"click_tracking\": false,\n  \"tracking_subdomain\": \"\",\n  \"capabilities\": {\n    \"sending\": \"\",\n    \"receiving\": \"\"\n  },\n  \"records\": [\n    {\n      \"record\": null,\n      \"name\": null,\n      \"type\": null,\n      \"ttl\": null,\n      \"status\": null,\n      \"value\": null,\n      \"priority\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "58cce40e-8508-4a07-a060-ccf05247414b",
+      "name": "Update an existing domain",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/domains/{domain_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"open_tracking\": false,\n  \"click_tracking\": false,\n  \"tls\": \"opportunistic\",\n  \"capabilities\": {\n    \"sending\": \"\",\n    \"receiving\": \"\"\n  },\n  \"tracking_subdomain\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"d91cd9bd-1176-453e-8fc1-35364d380206\",\n  \"object\": \"domain\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4df36b84-657f-4f0f-906a-be79aa01400c",
+      "name": "Remove an existing domain",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/domains/{domain_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"domain\",\n  \"id\": \"d91cd9bd-1176-453e-8fc1-35364d380206\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "87ba20e0-4baf-400f-9a2c-da84a5e3cea2",
+      "name": "Verify an existing domain",
+      "method": "POST",
+      "url": "{{BASE_URL}}/domains/{domain_id}/verify",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"domain\",\n  \"id\": \"d91cd9bd-1176-453e-8fc1-35364d380206\"\n}"
+        }
+      ],
+      "description": "Triggers verification of the domain's DNS records including DKIM, SPF, and the tracking CNAME (if a tracking subdomain is configured)."
+    },
+    {
+      "id": "a5a4f637-6627-4f0f-be2b-681543214e01",
+      "name": "Create a new API key",
+      "method": "POST",
+      "url": "{{BASE_URL}}/api-keys",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"permission\": \"\",\n  \"domain_id\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"token\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "15ad78e1-18ba-4781-add8-2cef05a202d7",
+      "name": "Retrieve a list of API keys",
+      "method": "GET",
+      "url": "{{BASE_URL}}/api-keys",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"last_used_at\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "0f40f01f-961d-4b78-a7db-123ee84f19d4",
+      "name": "Remove an existing API key",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/api-keys/{api_key_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"api_key\",\n  \"id\": \"\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "319c8e60-48b9-4f67-8c32-12481b7a77cf",
+      "name": "Create a template",
+      "method": "POST",
+      "url": "{{BASE_URL}}/templates",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"alias\": \"\",\n  \"from\": \"\",\n  \"subject\": \"\",\n  \"reply_to\": [\n    \"\"\n  ],\n  \"html\": \"\",\n  \"text\": \"\",\n  \"variables\": [\n    {\n      \"key\": null,\n      \"type\": null,\n      \"fallback_value\": null\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"template\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d30ab968-fa05-4336-bb8f-fcfab44f4cdf",
+      "name": "Retrieve a list of templates",
+      "method": "GET",
+      "url": "{{BASE_URL}}/templates",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"name\": null,\n      \"status\": null,\n      \"published_at\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"alias\": null\n    }\n  ],\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "06a9e3c4-aebd-40c3-88e0-908140f12432",
+      "name": "Retrieve a single template",
+      "method": "GET",
+      "url": "{{BASE_URL}}/templates/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"template\",\n  \"id\": \"\",\n  \"current_version_id\": \"\",\n  \"name\": \"\",\n  \"alias\": \"\",\n  \"from\": \"\",\n  \"subject\": \"\",\n  \"reply_to\": [\n    \"\"\n  ],\n  \"html\": \"\",\n  \"text\": \"\",\n  \"variables\": [\n    {\n      \"id\": null,\n      \"key\": null,\n      \"type\": null,\n      \"fallback_value\": null,\n      \"created_at\": null,\n      \"updated_at\": null\n    }\n  ],\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"status\": \"\",\n  \"published_at\": \"\",\n  \"has_unpublished_versions\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "6a4ba21b-4d07-454b-afe4-4693a4b83f76",
+      "name": "Update an existing template",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/templates/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"alias\": \"\",\n  \"from\": \"\",\n  \"subject\": \"\",\n  \"reply_to\": [\n    \"\"\n  ],\n  \"html\": \"\",\n  \"text\": \"\",\n  \"variables\": [\n    {\n      \"key\": null,\n      \"type\": null,\n      \"fallback_value\": null\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"template\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "a11ea1ef-651e-462c-a3b4-f78c95358f81",
+      "name": "Remove an existing template",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/templates/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"template\",\n  \"id\": \"\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "70b228cf-6306-4436-8cda-0c663094470c",
+      "name": "Publish a template",
+      "method": "POST",
+      "url": "{{BASE_URL}}/templates/{id}/publish",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"template\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "77600d08-942d-466b-913f-3d44559083c4",
+      "name": "Duplicate a template",
+      "method": "POST",
+      "url": "{{BASE_URL}}/templates/{id}/duplicate",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"template\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "dddb993a-5400-456d-82fa-e1537c75f695",
+      "name": "Create a list of contacts",
+      "method": "POST",
+      "url": "{{BASE_URL}}/audiences",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"audience\",\n  \"name\": \"Registered Users\"\n}"
+        }
+      ],
+      "description": "Deprecated: Use Segments instead. These endpoints still work, but will be removed in the future."
+    },
+    {
+      "id": "3fff2905-4f59-49f1-ae8a-807903d3b1a8",
+      "name": "Retrieve a list of audiences",
+      "method": "GET",
+      "url": "{{BASE_URL}}/audiences",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n      \"name\": \"Registered Users\",\n      \"created_at\": \"2023-10-06T22:59:55.977Z\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Deprecated: Use Segments instead. These endpoints still work, but will be removed in the future."
+    },
+    {
+      "id": "c2b03abb-65b0-4a7e-929b-91a1cd67866c",
+      "name": "Remove an existing audience",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/audiences/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"audience\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": "Deprecated: Use Segments instead. These endpoints still work, but will be removed in the future."
+    },
+    {
+      "id": "2de9d622-fc5b-404d-8c32-f125ff554f32",
+      "name": "Retrieve a single audience",
+      "method": "GET",
+      "url": "{{BASE_URL}}/audiences/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"audience\",\n  \"name\": \"Registered Users\",\n  \"created_at\": \"2023-10-06T22:59:55.977Z\"\n}"
+        }
+      ],
+      "description": "Deprecated: Use Segments instead. These endpoints still work, but will be removed in the future."
+    },
+    {
+      "id": "5265d0d6-8055-4b7d-adec-de5fcc82067b",
+      "name": "Create a new contact",
+      "method": "POST",
+      "url": "{{BASE_URL}}/contacts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"email\": \"steve.wozniak@gmail.com\",\n  \"first_name\": \"Steve\",\n  \"last_name\": \"Wozniak\",\n  \"unsubscribed\": false,\n  \"properties\": {},\n  \"segments\": [\n    \"\"\n  ],\n  \"topics\": [\n    {\n      \"id\": \"\",\n      \"subscription\": \"\"\n    }\n  ],\n  \"audience_id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"object\": \"contact\",\n  \"id\": \"479e3145-dd38-476b-932c-529ceb705947\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "67afb0b9-7334-4603-8196-8d3c1da23734",
+      "name": "Retrieve a list of contacts",
+      "method": "GET",
+      "url": "{{BASE_URL}}/contacts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "segment_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"e169aa45-1ecf-4183-9955-b1499d5701d3\",\n      \"email\": \"steve.wozniak@gmail.com\",\n      \"first_name\": \"Steve\",\n      \"last_name\": \"Wozniak\",\n      \"created_at\": \"2023-10-06T23:47:56.678Z\",\n      \"unsubscribed\": false\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4e60e454-f77d-4169-9799-3be874fb5348",
+      "name": "Retrieve a single contact by ID or email",
+      "method": "GET",
+      "url": "{{BASE_URL}}/contacts/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"contact\",\n  \"id\": \"e169aa45-1ecf-4183-9955-b1499d5701d3\",\n  \"email\": \"steve.wozniak@gmail.com\",\n  \"first_name\": \"Steve\",\n  \"last_name\": \"Wozniak\",\n  \"created_at\": \"2023-10-06T23:47:56.678Z\",\n  \"unsubscribed\": false,\n  \"properties\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d779a6cb-39f7-4101-bc96-94f0e8c08ab5",
+      "name": "Update a single contact by ID or email",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/contacts/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"email\": \"steve.wozniak@gmail.com\",\n  \"first_name\": \"Steve\",\n  \"last_name\": \"Wozniak\",\n  \"unsubscribed\": false,\n  \"properties\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"contact\",\n  \"id\": \"479e3145-dd38-476b-932c-529ceb705947\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5467a43d-cca9-4c48-8c92-13224ba7f994",
+      "name": "Remove an existing contact by ID or email",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/contacts/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"contact\",\n  \"id\": \"520784e2-887d-4c25-b53c-4ad46ad38100\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "6464d2aa-65d7-4d58-81d0-7304a81ea862",
+      "name": "Create a broadcast",
+      "method": "POST",
+      "url": "{{BASE_URL}}/broadcasts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"segment_id\": \"\",\n  \"audience_id\": \"\",\n  \"from\": \"\",\n  \"subject\": \"\",\n  \"reply_to\": [\n    \"\"\n  ],\n  \"preview_text\": \"Here are our announcements\",\n  \"html\": \"\",\n  \"text\": \"\",\n  \"topic_id\": \"\",\n  \"send\": false,\n  \"scheduled_at\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"broadcast\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "16172dd0-67f0-4602-b018-2fac7bbe3fc3",
+      "name": "Retrieve a list of broadcasts",
+      "method": "GET",
+      "url": "{{BASE_URL}}/broadcasts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"e169aa45-1ecf-4183-9955-b1499d5701d3\",\n      \"name\": \"November announcements\",\n      \"audience_id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n      \"segment_id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n      \"status\": \"draft\",\n      \"created_at\": \"2023-10-06T22:59:55.977Z\",\n      \"scheduled_at\": \"2023-10-06T22:59:55.977Z\",\n      \"sent_at\": \"2023-10-06T22:59:55.977Z\",\n      \"topic_id\": \"b6d24b8e-af0b-4c3c-be0c-359bbd97381e\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f5664d02-074b-4db3-9537-ae659d814d9c",
+      "name": "Remove an existing broadcast that is in the draft status",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/broadcasts/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"broadcast\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "35b5ee95-fdc3-4910-83e6-3702eca56e81",
+      "name": "Retrieve a single broadcast",
+      "method": "GET",
+      "url": "{{BASE_URL}}/broadcasts/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"e169aa45-1ecf-4183-9955-b1499d5701d3\",\n  \"name\": \"November announcements\",\n  \"audience_id\": \"\",\n  \"segment_id\": \"\",\n  \"from\": \"Acme <onboarding@resend.dev>\",\n  \"subject\": \"Hello World\",\n  \"reply_to\": [\n    \"\"\n  ],\n  \"preview_text\": \"Here are our announcements\",\n  \"status\": \"draft\",\n  \"created_at\": \"2023-10-06T22:59:55.977Z\",\n  \"scheduled_at\": \"2023-10-06T22:59:55.977Z\",\n  \"sent_at\": \"2023-10-06T22:59:55.977Z\",\n  \"text\": \"Hello {{{FIRST_NAME|there}}}!\",\n  \"html\": \"<p>Hello {{{FIRST_NAME|there}}}!</p>\",\n  \"topic_id\": \"b6d24b8e-af0b-4c3c-be0c-359bbd97381e\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "fc253e42-eaba-49ab-a8c6-0f76dcec2f6d",
+      "name": "Update an existing broadcast",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/broadcasts/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"audience_id\": \"\",\n  \"segment_id\": \"\",\n  \"from\": \"\",\n  \"subject\": \"\",\n  \"reply_to\": [\n    \"\"\n  ],\n  \"preview_text\": \"\",\n  \"html\": \"\",\n  \"text\": \"\",\n  \"topic_id\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"broadcast\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "bbf77718-f7ba-451d-8111-ecbfece01714",
+      "name": "Send or schedule a broadcast",
+      "method": "POST",
+      "url": "{{BASE_URL}}/broadcasts/{id}/send",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"scheduled_at\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "0ab754b1-6acf-46b6-a442-a5d3d2ef2814",
+      "name": "Create a new webhook",
+      "method": "POST",
+      "url": "{{BASE_URL}}/webhooks",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"endpoint\": \"https://webhook.example.com/handler\",\n  \"events\": [\n    \"\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "Created",
+          "content": "{\n  \"object\": \"webhook\",\n  \"id\": \"479e3145-dd38-476b-932c-529ceb705947\",\n  \"signing_secret\": \"whsec_...\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "70474865-6da9-4e68-868e-6170fb9ed042",
+      "name": "Retrieve a list of webhooks",
+      "method": "GET",
+      "url": "{{BASE_URL}}/webhooks",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"479e3145-dd38-476b-932c-529ceb705947\",\n      \"endpoint\": \"https://webhook.example.com/handler\",\n      \"events\": [\n        null\n      ],\n      \"status\": \"enabled\",\n      \"created_at\": \"2023-10-06T23:47:56.678Z\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "322112be-6302-4e19-8aa6-7b5a6f736b3e",
+      "name": "Retrieve a single webhook",
+      "method": "GET",
+      "url": "{{BASE_URL}}/webhooks/{webhook_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"webhook\",\n  \"id\": \"479e3145-dd38-476b-932c-529ceb705947\",\n  \"endpoint\": \"https://webhook.example.com/handler\",\n  \"events\": [\n    \"\"\n  ],\n  \"status\": \"enabled\",\n  \"created_at\": \"2023-10-06T23:47:56.678Z\",\n  \"signing_secret\": \"whsec_...\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "0da1c09a-585b-4663-9737-e3a1dc610179",
+      "name": "Update an existing webhook",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/webhooks/{webhook_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"endpoint\": \"https://webhook.example.com/new-handler\",\n  \"events\": [\n    \"\"\n  ],\n  \"status\": \"enabled\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"webhook\",\n  \"id\": \"479e3145-dd38-476b-932c-529ceb705947\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f565b3a2-b2e8-4427-acc3-a31445693123",
+      "name": "Remove an existing webhook",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/webhooks/{webhook_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"webhook\",\n  \"id\": \"479e3145-dd38-476b-932c-529ceb705947\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "fc13518e-9916-4dd5-9a8e-ed1102a4e799",
+      "name": "Create a new segment",
+      "method": "POST",
+      "url": "{{BASE_URL}}/segments",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"audience_id\": \"\",\n  \"filter\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"segment\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "73975562-5d46-43c4-bc28-dcc2f5da5447",
+      "name": "Retrieve a list of segments",
+      "method": "GET",
+      "url": "{{BASE_URL}}/segments",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"audience_id\": \"\",\n      \"created_at\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f14d5941-9653-400f-b1d9-270e3130f28c",
+      "name": "Retrieve a single segment",
+      "method": "GET",
+      "url": "{{BASE_URL}}/segments/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"segment\",\n  \"name\": \"Active Users\",\n  \"audience_id\": \"\",\n  \"filter\": {},\n  \"created_at\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "6b4f1f6c-ffef-466c-b0b8-c56e368ed973",
+      "name": "Remove an existing segment",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/segments/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"segment\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "3becac9a-e111-4c38-ab04-790f3716f1d9",
+      "name": "Create a new topic",
+      "method": "POST",
+      "url": "{{BASE_URL}}/topics",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"default_subscription\": \"\",\n  \"description\": \"\",\n  \"visibility\": \"private\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"topic\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "39c3d0c0-50bb-4122-b97e-8da85e8b87e7",
+      "name": "Retrieve a list of topics",
+      "method": "GET",
+      "url": "{{BASE_URL}}/topics",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"description\": \"\",\n      \"default_subscription\": \"\",\n      \"visibility\": \"\",\n      \"created_at\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d3a2fcb4-6838-4f8e-a7b0-03a435753457",
+      "name": "Retrieve a single topic",
+      "method": "GET",
+      "url": "{{BASE_URL}}/topics/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"topic\",\n  \"name\": \"Newsletter\",\n  \"description\": \"\",\n  \"default_subscription\": \"\",\n  \"visibility\": \"\",\n  \"created_at\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4b470885-77b6-4510-bfd8-a61f8174dd7a",
+      "name": "Update an existing topic",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/topics/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"description\": \"\",\n  \"visibility\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"topic\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "2813555c-5e3e-4a8a-9703-8fceb217d146",
+      "name": "Remove an existing topic",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/topics/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"topic\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "71c70c6e-090e-4e6a-b1fa-d89736e7f1d8",
+      "name": "Create a new contact property",
+      "method": "POST",
+      "url": "{{BASE_URL}}/contact-properties",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"key\": \"\",\n  \"type\": \"\",\n  \"fallback_value\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"contact_property\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c3601f53-a9e5-4300-bd5e-c9904090945f",
+      "name": "Retrieve a list of contact properties",
+      "method": "GET",
+      "url": "{{BASE_URL}}/contact-properties",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"\",\n      \"key\": \"\",\n      \"type\": \"\",\n      \"fallback_value\": {},\n      \"created_at\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "6ea8ccd1-0516-4c96-a1de-ff636e734c63",
+      "name": "Retrieve a single contact property",
+      "method": "GET",
+      "url": "{{BASE_URL}}/contact-properties/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"contact_property\",\n  \"id\": \"b6d24b8e-af0b-4c3c-be0c-359bbd97381e\",\n  \"key\": \"company_name\",\n  \"type\": \"string\",\n  \"fallback_value\": \"\",\n  \"created_at\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4d32f3ff-3917-40c0-a97b-74f24a9a2300",
+      "name": "Update an existing contact property",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/contact-properties/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"fallback_value\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"contact_property\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "99401a6a-2a8f-4024-9913-b92016949fc4",
+      "name": "Remove an existing contact property",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/contact-properties/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"78261eea-8f8b-4381-83c6-79fa7120f1cf\",\n  \"object\": \"contact_property\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "69ce66c3-9cf1-41a7-a723-797f5db53ddb",
+      "name": "Retrieve a list of segments for a contact",
+      "method": "GET",
+      "url": "{{BASE_URL}}/contacts/{contact_id}/segments",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"created_at\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "57a98813-8b80-4be3-84c1-af29b94cf689",
+      "name": "Add a contact to a segment",
+      "method": "POST",
+      "url": "{{BASE_URL}}/contacts/{contact_id}/segments/{segment_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"contact_segment\",\n  \"contact_id\": \"\",\n  \"segment_id\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4ee47118-652c-4eda-81fb-5abb2f427a9f",
+      "name": "Remove a contact from a segment",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/contacts/{contact_id}/segments/{segment_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"contact_segment\",\n  \"contact_id\": \"\",\n  \"segment_id\": \"\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "0035a4a2-e9b1-4af8-a7d5-bf399e685c51",
+      "name": "Retrieve topics for a contact",
+      "method": "GET",
+      "url": "{{BASE_URL}}/contacts/{contact_id}/topics",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": \"\",\n      \"name\": \"\",\n      \"description\": \"\",\n      \"subscription\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "a0ed3073-f07b-42d1-927a-660c31ab640a",
+      "name": "Update topics for a contact",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/contacts/{contact_id}/topics",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"topics\": [\n    {\n      \"id\": \"\",\n      \"subscription\": \"\"\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"contact_topics\",\n  \"contact_id\": \"\",\n  \"topics\": [\n    {\n      \"id\": \"\",\n      \"subscription\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "aed3beb5-28f9-4eb8-942c-d8a6c3144f82",
+      "name": "Retrieve a list of logs",
+      "method": "GET",
+      "url": "{{BASE_URL}}/logs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": null,\n      \"created_at\": null,\n      \"endpoint\": null,\n      \"method\": null,\n      \"response_status\": null,\n      \"user_agent\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "e6ae14f3-d771-489b-b6e3-4c724e6ff4c2",
+      "name": "Retrieve a single log",
+      "method": "GET",
+      "url": "{{BASE_URL}}/logs/{log_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"log\",\n  \"id\": \"\",\n  \"created_at\": \"\",\n  \"endpoint\": \"\",\n  \"method\": \"\",\n  \"response_status\": 0,\n  \"user_agent\": \"\",\n  \"request_body\": null,\n  \"response_body\": null\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5ffab2e0-1b81-44cf-89e7-9411903a0db8",
+      "name": "Create an automation",
+      "method": "POST",
+      "url": "{{BASE_URL}}/automations",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"status\": \"disabled\",\n  \"steps\": [\n    {\n      \"key\": null,\n      \"type\": null,\n      \"config\": null\n    }\n  ],\n  \"connections\": [\n    {\n      \"from\": null,\n      \"to\": null,\n      \"type\": null\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"object\": \"automation\",\n  \"id\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "50ecc714-d44f-4c42-8a10-0c9077131328",
+      "name": "Retrieve a list of automations",
+      "method": "GET",
+      "url": "{{BASE_URL}}/automations",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": null,\n      \"name\": null,\n      \"status\": null,\n      \"created_at\": null,\n      \"updated_at\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4d931523-09d1-4225-a96b-96e0e412c3c4",
+      "name": "Retrieve a single automation",
+      "method": "GET",
+      "url": "{{BASE_URL}}/automations/{automation_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"automation\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"status\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"steps\": [\n    {\n      \"key\": null,\n      \"type\": null,\n      \"config\": null\n    }\n  ],\n  \"connections\": [\n    {\n      \"from\": null,\n      \"to\": null,\n      \"type\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "25b22f45-7636-4235-9a5f-4980ea06837a",
+      "name": "Update an automation",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/automations/{automation_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"status\": \"\",\n  \"steps\": [\n    {\n      \"key\": null,\n      \"type\": null,\n      \"config\": null\n    }\n  ],\n  \"connections\": [\n    {\n      \"from\": null,\n      \"to\": null,\n      \"type\": null\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"automation\",\n  \"id\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "35d7eb81-dc70-43bd-bb7b-61458975cb81",
+      "name": "Delete an automation",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/automations/{automation_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"automation\",\n  \"id\": \"\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "65dd2abd-b29a-4ee8-ba19-cf344205cd2f",
+      "name": "Stop an automation",
+      "method": "POST",
+      "url": "{{BASE_URL}}/automations/{automation_id}/stop",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"automation\",\n  \"id\": \"\",\n  \"status\": \"disabled\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "a9f757aa-affb-4f14-b905-eaf15f995c6c",
+      "name": "Retrieve a list of automation runs",
+      "method": "GET",
+      "url": "{{BASE_URL}}/automations/{automation_id}/runs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": null,\n      \"status\": null,\n      \"started_at\": null,\n      \"completed_at\": null,\n      \"created_at\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c1473ec4-3598-4d74-997a-fbf274073051",
+      "name": "Retrieve a single automation run",
+      "method": "GET",
+      "url": "{{BASE_URL}}/automations/{automation_id}/runs/{run_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"automation_run\",\n  \"id\": \"\",\n  \"status\": \"\",\n  \"started_at\": \"\",\n  \"completed_at\": \"\",\n  \"created_at\": \"\",\n  \"steps\": [\n    {\n      \"key\": null,\n      \"type\": null,\n      \"status\": null,\n      \"started_at\": null,\n      \"completed_at\": null,\n      \"output\": null,\n      \"error\": null,\n      \"created_at\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "2cb3526f-786e-4018-892b-fbe3a89c4966",
+      "name": "Create an event",
+      "method": "POST",
+      "url": "{{BASE_URL}}/events",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"schema\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"object\": \"event\",\n  \"id\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "3b89c6a9-9043-4130-a453-bf7f1c28d41d",
+      "name": "Retrieve a list of events",
+      "method": "GET",
+      "url": "{{BASE_URL}}/events",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"has_more\": false,\n  \"data\": [\n    {\n      \"id\": null,\n      \"name\": null,\n      \"schema\": null,\n      \"created_at\": null,\n      \"updated_at\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5bc999ed-c08a-4e28-b871-8c5a8935bad5",
+      "name": "Send an event",
+      "method": "POST",
+      "url": "{{BASE_URL}}/events/send",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"event\": \"\",\n  \"contact_id\": \"\",\n  \"email\": \"\",\n  \"payload\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "202",
+          "description": "Accepted",
+          "content": "{\n  \"object\": \"event\",\n  \"event\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "e2e0335a-d550-4cc1-92ad-2dc4db28e9d0",
+      "name": "Retrieve a single event",
+      "method": "GET",
+      "url": "{{BASE_URL}}/events/{identifier}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"event\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"schema\": {},\n  \"created_at\": \"\",\n  \"updated_at\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "bc78611a-ec4d-4937-b7ae-ea2d4c5ffc26",
+      "name": "Update an event",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/events/{identifier}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"schema\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"event\",\n  \"id\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "46723d4f-342d-466c-87c2-d4ce008e8234",
+      "name": "Delete an event",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/events/{identifier}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"event\",\n  \"id\": \"\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": ""
+    }
+  ]
+}

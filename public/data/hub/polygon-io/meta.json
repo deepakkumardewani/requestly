@@ -1,0 +1,11 @@
+{
+  "name": "Polygon.io",
+  "providerName": "polygon-io",
+  "description": "The future of fintech.",
+  "category": "Finance",
+  "logoUrl": "https://cdn.simpleicons.org/polygon",
+  "docsUrl": "https://polygon.io/docs/swagger.json",
+  "specUrl": "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/polygon.io/1.0.0/swagger.yaml",
+  "version": "1.0.0",
+  "requestCount": 10
+}

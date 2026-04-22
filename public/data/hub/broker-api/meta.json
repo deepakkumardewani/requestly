@@ -1,0 +1,11 @@
+{
+  "name": "Alpaca (Broker)",
+  "providerName": "broker-api",
+  "description": "Open brokerage accounts, enable crypto and stock trading, and manage the ongoing user experience with Alpaca Broker API",
+  "category": "Finance",
+  "logoUrl": "https://avatars.githubusercontent.com/u/41517409?s=200&v=4",
+  "docsUrl": "https://alpaca.markets/support",
+  "specUrl": "https://raw.githubusercontent.com/alpacahq/alpaca-docs/master/oas/broker/openapi.yaml",
+  "version": "1.0.0",
+  "requestCount": 52
+}

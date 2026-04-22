@@ -1,0 +1,6080 @@
+{
+  "id": "ce6393a3-c367-4fd7-a1a4-5b1c5bf64519",
+  "name": "Slack",
+  "description": "One way to interact with the Slack platform is its HTTP RPC-based Web API, a collection of methods requiring OAuth 2.0-based user, bot, or workspace tokens blessed with related OAuth scopes.",
+  "createdAt": 1776830118530,
+  "requests": [
+    {
+      "id": "9ffab41c-c711-4e6a-aea3-7f2ecc01c9aa",
+      "name": "admin_apps_approve",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.apps.approve",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Approve an app for installation on a workspace."
+    },
+    {
+      "id": "c8efcc71-0eb0-4f7a-9fef-97a43d01880a",
+      "name": "admin_apps_approved_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.apps.approved.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "enterprise_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List approved apps for an org or workspace."
+    },
+    {
+      "id": "a344ed90-7606-445b-8eba-6e32d9e4f7b1",
+      "name": "admin_apps_requests_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.apps.requests.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List app requests for a team/workspace."
+    },
+    {
+      "id": "10553a2b-eae6-49d4-9835-99b2edd320f2",
+      "name": "admin_apps_restrict",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.apps.restrict",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Restrict an app for installation on a workspace."
+    },
+    {
+      "id": "36bcff52-4dc5-4697-a1db-80f572aa8f8c",
+      "name": "admin_apps_restricted_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.apps.restricted.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "enterprise_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List restricted apps for an org or workspace."
+    },
+    {
+      "id": "85727800-4ca6-4221-a616-035ea2b72cd5",
+      "name": "admin_conversations_archive",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.archive",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Archive a public or private channel."
+    },
+    {
+      "id": "a5f74504-892a-4a78-a2dd-9dc4e5714bbb",
+      "name": "admin_conversations_convertToPrivate",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.convertToPrivate",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Convert a public channel to a private channel."
+    },
+    {
+      "id": "a36fdd55-63fb-45f9-9f05-c54ae50d88c5",
+      "name": "admin_conversations_create",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.create",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Create a public or private channel-based conversation."
+    },
+    {
+      "id": "e4bb0aed-a0df-4026-9cef-ac1b99caaf0f",
+      "name": "admin_conversations_delete",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.delete",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Delete a public or private channel."
+    },
+    {
+      "id": "d4899267-6053-4ec5-a866-b1f727231b86",
+      "name": "admin_conversations_disconnectShared",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.disconnectShared",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Disconnect a connected channel from one or more workspaces."
+    },
+    {
+      "id": "88ac1c38-3743-4a47-ba47-8f87885092e5",
+      "name": "admin_conversations_ekm_listOriginalConnectedChannelInfo",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.conversations.ekm.listOriginalConnectedChannelInfo",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "channel_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "team_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all disconnected channels—i.e., channels that were once connected to other workspaces and then disconnected—and the corresponding original channel IDs for key revocation with EKM."
+    },
+    {
+      "id": "fb7cd787-bf0d-4308-be1f-e2fce7072ffe",
+      "name": "admin_conversations_getConversationPrefs",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.conversations.getConversationPrefs",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "channel_id",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Get conversation preferences for a public or private channel."
+    },
+    {
+      "id": "78595661-d387-4e9a-afd1-518dad7ccb10",
+      "name": "admin_conversations_getTeams",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.conversations.getTeams",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "channel_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Get all the workspaces a given public or private channel is connected to within this Enterprise org."
+    },
+    {
+      "id": "b3cc3542-0710-41cd-8a79-a95e34bd126c",
+      "name": "admin_conversations_invite",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.invite",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Invite a user to a public or private channel."
+    },
+    {
+      "id": "e19769b9-9b2d-4c93-ac8d-f53e35609454",
+      "name": "admin_conversations_rename",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.rename",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Rename a public or private channel."
+    },
+    {
+      "id": "acef75ec-761c-4aa4-a195-91b4f6185d72",
+      "name": "admin_conversations_restrictAccess_addGroup",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.restrictAccess.addGroup",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Add an allowlist of IDP groups for accessing a channel"
+    },
+    {
+      "id": "2233cc1f-11cb-4d88-b5cc-973d8dd17a3a",
+      "name": "admin_conversations_restrictAccess_listGroups",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.conversations.restrictAccess.listGroups",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "channel_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all IDP Groups linked to a channel"
+    },
+    {
+      "id": "017a8b0d-ac35-456d-b0ac-91f234305e25",
+      "name": "admin_conversations_restrictAccess_removeGroup",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.restrictAccess.removeGroup",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Remove a linked IDP group linked from a private channel"
+    },
+    {
+      "id": "2503c41e-7204-4cd4-8d3f-116110c9f5ec",
+      "name": "admin_conversations_search",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.conversations.search",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "team_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "query",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "search_channel_types",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "sort",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "sort_dir",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Search for public or private channels in an Enterprise organization."
+    },
+    {
+      "id": "3c578d5b-4bca-4ab2-a4f1-762529c559b9",
+      "name": "admin_conversations_setConversationPrefs",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.setConversationPrefs",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set the posting permissions for a public or private channel."
+    },
+    {
+      "id": "a7c3ac53-06f6-4803-b204-ebbc2a875cd3",
+      "name": "admin_conversations_setTeams",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.setTeams",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set the workspaces in an Enterprise grid org that connect to a public or private channel."
+    },
+    {
+      "id": "4925417f-9afc-44f1-9de0-7ba847bc3da4",
+      "name": "admin_conversations_unarchive",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.conversations.unarchive",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Unarchive a public or private channel."
+    },
+    {
+      "id": "e02ae186-7630-43cc-b484-75c781853cbf",
+      "name": "admin_emoji_add",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.emoji.add",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Add an emoji."
+    },
+    {
+      "id": "4b162532-5049-49df-86c7-3c397191c258",
+      "name": "admin_emoji_addAlias",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.emoji.addAlias",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Add an emoji alias."
+    },
+    {
+      "id": "920b4491-95b7-4dd2-b20d-8ebe2a31da1c",
+      "name": "admin_emoji_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.emoji.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List emoji for an Enterprise Grid organization."
+    },
+    {
+      "id": "c871a452-23ab-44d2-b34d-3bbc17a066c5",
+      "name": "admin_emoji_remove",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.emoji.remove",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Remove an emoji across an Enterprise Grid organization"
+    },
+    {
+      "id": "c774e766-f04f-4d1e-9d0d-a6c52311fc17",
+      "name": "admin_emoji_rename",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.emoji.rename",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Rename an emoji."
+    },
+    {
+      "id": "49421bd5-d5ee-48f9-a7ef-5f6994230012",
+      "name": "admin_inviteRequests_approve",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.inviteRequests.approve",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Approve a workspace invite request."
+    },
+    {
+      "id": "1d4940ba-c594-4587-91f1-bcc0897562bc",
+      "name": "admin_inviteRequests_approved_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.inviteRequests.approved.list",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all approved workspace invite requests."
+    },
+    {
+      "id": "03ebebff-d3c6-4060-8a74-3afe72109533",
+      "name": "admin_inviteRequests_denied_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.inviteRequests.denied.list",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all denied workspace invite requests."
+    },
+    {
+      "id": "8ab67398-ac36-4968-9923-08c29c68383f",
+      "name": "admin_inviteRequests_deny",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.inviteRequests.deny",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Deny a workspace invite request."
+    },
+    {
+      "id": "a7657bf8-e6ec-466a-bc39-4f557aed817d",
+      "name": "admin_inviteRequests_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.inviteRequests.list",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all pending workspace invite requests."
+    },
+    {
+      "id": "58136de6-9f30-4a0c-9a6c-40774e31fdca",
+      "name": "admin_teams_admins_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.teams.admins.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all of the admins on a given workspace."
+    },
+    {
+      "id": "6c38e20a-df10-4bb4-aa02-01aac0b46ca7",
+      "name": "admin_teams_create",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.teams.create",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Create an Enterprise team."
+    },
+    {
+      "id": "315ffc59-b8a5-4896-bd26-143e96f5a33a",
+      "name": "admin_teams_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.teams.list",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all teams on an Enterprise organization"
+    },
+    {
+      "id": "45eabdc4-be1d-4460-975b-9a5ff18c7e7e",
+      "name": "admin_teams_owners_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.teams.owners.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all of the owners on a given workspace."
+    },
+    {
+      "id": "2e514073-7e79-4a00-8b49-4dbc394a686e",
+      "name": "admin_teams_settings_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.teams.settings.info",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Fetch information about settings in a workspace"
+    },
+    {
+      "id": "01d35eb2-bdc1-441d-87d5-675e1e3f5ab6",
+      "name": "admin_teams_settings_setDefaultChannels",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.teams.settings.setDefaultChannels",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set the default channels of a workspace."
+    },
+    {
+      "id": "ea92c789-98c6-411a-8273-4c4ace02764f",
+      "name": "admin_teams_settings_setDescription",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.teams.settings.setDescription",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set the description of a given workspace."
+    },
+    {
+      "id": "ef6eeed4-2266-4ef2-8220-4f3d917f733e",
+      "name": "admin_teams_settings_setDiscoverability",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.teams.settings.setDiscoverability",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "An API method that allows admins to set the discoverability of a given workspace"
+    },
+    {
+      "id": "543e78df-df5f-495d-ba83-aa6675dbbf72",
+      "name": "admin_teams_settings_setIcon",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.teams.settings.setIcon",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Sets the icon of a workspace."
+    },
+    {
+      "id": "fa86be52-3c68-4f89-b2ed-6530be700b20",
+      "name": "admin_teams_settings_setName",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.teams.settings.setName",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set the name of a given workspace."
+    },
+    {
+      "id": "b6294786-a545-4399-a3de-0cf104cd668c",
+      "name": "admin_usergroups_addChannels",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.usergroups.addChannels",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response if the token provided is not associated with an Org Admin or Owner"
+        }
+      ],
+      "description": "Add one or more default channels to an IDP group."
+    },
+    {
+      "id": "5b095c92-6525-444b-8089-b0f87deb4047",
+      "name": "admin_usergroups_addTeams",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.usergroups.addTeams",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Associate one or more default workspaces with an organization-wide IDP group."
+    },
+    {
+      "id": "470dd5ad-41b6-4c53-abd5-bf8990b78089",
+      "name": "admin_usergroups_listChannels",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.usergroups.listChannels",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "usergroup_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "include_num_members",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response if the token provided is not associated with an Org Admin or Owner"
+        }
+      ],
+      "description": "List the channels linked to an org-level IDP group (user group)."
+    },
+    {
+      "id": "19971076-e94d-4ec4-ba29-f086a2e088fb",
+      "name": "admin_usergroups_removeChannels",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.usergroups.removeChannels",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response if the token provided is not associated with an Org Admin or Owner"
+        }
+      ],
+      "description": "Remove one or more default channels from an org-level IDP group (user group)."
+    },
+    {
+      "id": "16380751-3d41-4484-99b2-3517b77812a6",
+      "name": "admin_users_assign",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.assign",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Add an Enterprise user to a workspace."
+    },
+    {
+      "id": "3c25e800-ff3f-4528-9b91-25ac6e6baade",
+      "name": "admin_users_invite",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.invite",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Invite a user to a workspace."
+    },
+    {
+      "id": "2a53dd91-b38c-475d-9c94-9e3d53609d02",
+      "name": "admin_users_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/admin.users.list",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List users on a workspace"
+    },
+    {
+      "id": "809ea72e-ec1e-4eed-8571-3108d0241963",
+      "name": "admin_users_remove",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.remove",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Remove a user from a workspace."
+    },
+    {
+      "id": "6cfbe375-7e9e-4ce4-a880-2dfd2fea8972",
+      "name": "admin_users_session_invalidate",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.session.invalidate",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Invalidate a single session for a user by session_id"
+    },
+    {
+      "id": "4e5204e5-5e7d-4b46-8d51-e2e7008ec2d4",
+      "name": "admin_users_session_reset",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.session.reset",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Wipes all valid sessions on all devices for a given user"
+    },
+    {
+      "id": "7819b74f-b17b-4e27-b78a-bcb4f7ef9ff8",
+      "name": "admin_users_setAdmin",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.setAdmin",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set an existing guest, regular user, or owner to be an admin user."
+    },
+    {
+      "id": "328dda4c-9ad9-4b26-aef5-ca5c76d193a1",
+      "name": "admin_users_setExpiration",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.setExpiration",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set an expiration for a guest user"
+    },
+    {
+      "id": "b2819be5-3388-4b18-a415-7d90bc407a86",
+      "name": "admin_users_setOwner",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.setOwner",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set an existing guest, regular user, or admin user to be a workspace owner."
+    },
+    {
+      "id": "47bd3122-4fe6-452b-86e5-84a2b72aa32b",
+      "name": "admin_users_setRegular",
+      "method": "POST",
+      "url": "{{BASE_URL}}/admin.users.setRegular",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set an existing guest user, admin user, or owner to be a regular user."
+    },
+    {
+      "id": "09eee931-42af-470d-bcaa-54e82e8da91f",
+      "name": "api_test",
+      "method": "GET",
+      "url": "{{BASE_URL}}/api.test",
+      "headers": [],
+      "params": [
+        {
+          "key": "error",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "foo",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Standard success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Artificial error response"
+        }
+      ],
+      "description": "Checks API calling code."
+    },
+    {
+      "id": "40625063-5a72-4c5d-b5a2-e0dde3a75ac1",
+      "name": "apps_event_authorizations_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/apps.event.authorizations.list",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "event_context",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Get a list of authorizations for the given event context. Each authorization represents an app installation that the event is visible to."
+    },
+    {
+      "id": "43ccb7f3-20bf-4819-9c1a-90f77d943124",
+      "name": "apps_permissions_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/apps.permissions.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Standard success response when used with a user token"
+        },
+        {
+          "statusCode": "default",
+          "description": "Standard failure response when used with an invalid token"
+        }
+      ],
+      "description": "Returns list of permissions this app has on a team."
+    },
+    {
+      "id": "b6aa0d4e-775f-494a-b6d1-a1e2f38e6bd9",
+      "name": "apps_permissions_request",
+      "method": "GET",
+      "url": "{{BASE_URL}}/apps.permissions.request",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "scopes",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "trigger_id",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Standard success response when used with a user token"
+        },
+        {
+          "statusCode": "default",
+          "description": "Standard failure response when trigger_id is invalid"
+        }
+      ],
+      "description": "Allows an app to request additional scopes"
+    },
+    {
+      "id": "376d1277-9f79-46ba-be24-ec642edbebb4",
+      "name": "apps_permissions_resources_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/apps.permissions.resources.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical successful paginated response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Returns list of resource grants this app has on a team."
+    },
+    {
+      "id": "f39aad59-72ab-42ad-9324-ef455455a2be",
+      "name": "apps_permissions_scopes_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/apps.permissions.scopes.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical successful paginated response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Returns list of scopes this app has on a team."
+    },
+    {
+      "id": "09f080ad-7e6b-4a2d-a147-7ccc6e5da55d",
+      "name": "apps_permissions_users_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/apps.permissions.users.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical successful paginated response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Returns list of user grants and corresponding scopes this app has on a team."
+    },
+    {
+      "id": "edeb72c1-8544-4b6a-bbff-9255a82a89e0",
+      "name": "apps_permissions_users_request",
+      "method": "GET",
+      "url": "{{BASE_URL}}/apps.permissions.users.request",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "scopes",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "trigger_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Standard success response when used with a user token"
+        },
+        {
+          "statusCode": "default",
+          "description": "Standard failure response when trigger_id is invalid"
+        }
+      ],
+      "description": "Enables an app to trigger a permissions modal to grant an app access to a user access scope."
+    },
+    {
+      "id": "c3ce3154-e624-46f8-972a-218b72b8c056",
+      "name": "apps_uninstall",
+      "method": "GET",
+      "url": "{{BASE_URL}}/apps.uninstall",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "client_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "client_secret",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Uninstalls your app from a workspace."
+    },
+    {
+      "id": "7b106c1a-f6aa-4719-90f2-ec9068eeb3ce",
+      "name": "auth_revoke",
+      "method": "GET",
+      "url": "{{BASE_URL}}/auth.revoke",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "test",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Revokes a token."
+    },
+    {
+      "id": "3a999861-faad-418f-890d-6ed534a56759",
+      "name": "auth_test",
+      "method": "GET",
+      "url": "{{BASE_URL}}/auth.test",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Standard success response when used with a user token"
+        },
+        {
+          "statusCode": "default",
+          "description": "Standard failure response when used with an invalid token"
+        }
+      ],
+      "description": "Checks authentication & identity."
+    },
+    {
+      "id": "ab3b44ae-b74a-44b9-baec-e1797a4b7916",
+      "name": "bots_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/bots.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "bot",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "When successful, returns bot info by bot ID."
+        },
+        {
+          "statusCode": "default",
+          "description": "When no bot can be found, it returns an error."
+        }
+      ],
+      "description": "Gets information about a bot user."
+    },
+    {
+      "id": "17429659-d17f-4bb2-ba88-8f5b85db746a",
+      "name": "calls_add",
+      "method": "POST",
+      "url": "{{BASE_URL}}/calls.add",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Registers a new Call."
+    },
+    {
+      "id": "aaadb9dc-b410-4397-b404-2046f88e0568",
+      "name": "calls_end",
+      "method": "POST",
+      "url": "{{BASE_URL}}/calls.end",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Ends a Call."
+    },
+    {
+      "id": "dd252e1e-ce8d-4b0d-99b0-b7473161dac1",
+      "name": "calls_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/calls.info",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "id",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Returns information about a Call."
+    },
+    {
+      "id": "c00719ae-b792-4303-a4c2-d5ec538f5240",
+      "name": "calls_participants_add",
+      "method": "POST",
+      "url": "{{BASE_URL}}/calls.participants.add",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Registers new participants added to a Call."
+    },
+    {
+      "id": "8cb48abc-8b41-4f70-b6dd-29058d4476e4",
+      "name": "calls_participants_remove",
+      "method": "POST",
+      "url": "{{BASE_URL}}/calls.participants.remove",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Registers participants removed from a Call."
+    },
+    {
+      "id": "9c32a281-7371-422f-9e39-45b7a24c8fc1",
+      "name": "calls_update",
+      "method": "POST",
+      "url": "{{BASE_URL}}/calls.update",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Updates information about a Call."
+    },
+    {
+      "id": "27cb0706-cb47-43f6-b1cb-1c49a4f3bea5",
+      "name": "chat_delete",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat.delete",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Deletes a message."
+    },
+    {
+      "id": "95ee67ab-9856-4c85-8ca2-cd97fbc7d984",
+      "name": "chat_deleteScheduledMessage",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat.deleteScheduledMessage",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response if no message is found"
+        }
+      ],
+      "description": "Deletes a pending scheduled message from the queue."
+    },
+    {
+      "id": "6766eaa8-2f4c-46a1-abed-19e3bfae0edb",
+      "name": "chat_getPermalink",
+      "method": "GET",
+      "url": "{{BASE_URL}}/chat.getPermalink",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "message_ts",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Standard success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Error response when channel cannot be found"
+        }
+      ],
+      "description": "Retrieve a permalink URL for a specific extant message"
+    },
+    {
+      "id": "17d57783-bba0-47b7-bfbd-270f32193484",
+      "name": "chat_meMessage",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat.meMessage",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Share a me message into a channel."
+    },
+    {
+      "id": "ced9d9ce-5cb5-4434-b6fa-87b8528e3826",
+      "name": "chat_postEphemeral",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat.postEphemeral",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Sends an ephemeral message to a user in a channel."
+    },
+    {
+      "id": "e22fbceb-4cc1-43c6-9669-e0ff7894960f",
+      "name": "chat_postMessage",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat.postMessage",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response if too many attachments are included"
+        }
+      ],
+      "description": "Sends a message to a channel."
+    },
+    {
+      "id": "a8189503-6e86-4614-9f90-5042ab1f7002",
+      "name": "chat_scheduleMessage",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat.scheduleMessage",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response if the `post_at` is invalid (ex. in the past or too far into the future)"
+        }
+      ],
+      "description": "Schedules a message to be sent to a channel."
+    },
+    {
+      "id": "4d04bf00-bc6c-4dd5-9867-8748a2433039",
+      "name": "chat_scheduledMessages_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/chat.scheduledMessages.list",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "latest",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "oldest",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response if the channel passed is invalid"
+        }
+      ],
+      "description": "Returns a list of scheduled messages."
+    },
+    {
+      "id": "6ac28775-40b9-4d1a-a5bf-39a067e7b11f",
+      "name": "chat_unfurl",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat.unfurl",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical, minimal success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Provide custom unfurl behavior for user-posted URLs"
+    },
+    {
+      "id": "b71631f1-75dc-4eab-9b78-0c9413793760",
+      "name": "chat_update",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat.update",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Updates a message."
+    },
+    {
+      "id": "309c001a-5dd0-4716-9cac-704375beab82",
+      "name": "conversations_archive",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.archive",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Archives a conversation."
+    },
+    {
+      "id": "f1434eb4-a22e-4c7e-9c3b-b1a50453440a",
+      "name": "conversations_close",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.close",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Closes a direct message or multi-person direct message."
+    },
+    {
+      "id": "bd695498-4d5e-406d-b37a-ad23fe82d83e",
+      "name": "conversations_create",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.create",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "If successful, the command returns a rather stark [conversation object](/types/conversation)"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response when name already in use"
+        }
+      ],
+      "description": "Initiates a public or private channel-based conversation"
+    },
+    {
+      "id": "1b2821ac-bb0d-4840-8f28-7c5baa48ce62",
+      "name": "conversations_history",
+      "method": "GET",
+      "url": "{{BASE_URL}}/conversations.history",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "latest",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "oldest",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "inclusive",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response containing a channel's messages"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Fetches a conversation's history of messages and events."
+    },
+    {
+      "id": "345c2c3a-f345-431c-8fbb-3018942c557d",
+      "name": "conversations_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/conversations.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "include_locale",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "include_num_members",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response for a public channel. (Also, a response from a private channel and a multi-party IM is very similar to this example.)"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response when a channel cannot be found"
+        }
+      ],
+      "description": "Retrieve information about a conversation."
+    },
+    {
+      "id": "06404ca8-55be-482b-a6ab-e0270d06b5fd",
+      "name": "conversations_invite",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.invite",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response when an invitation is extended"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response when an invite is attempted on a conversation type that does not support it"
+        }
+      ],
+      "description": "Invites users to a channel."
+    },
+    {
+      "id": "1b0a468b-2359-482c-8cf3-05e88b59690e",
+      "name": "conversations_join",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.join",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response if the conversation is archived and cannot be joined"
+        }
+      ],
+      "description": "Joins an existing conversation."
+    },
+    {
+      "id": "9259cd42-8092-44e6-b6b8-2e5bc781ca39",
+      "name": "conversations_kick",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.kick",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response when you attempt to kick yourself from a channel"
+        }
+      ],
+      "description": "Removes a user from a conversation."
+    },
+    {
+      "id": "fa771aa0-0ca1-49aa-a85a-41ca0090bb1d",
+      "name": "conversations_leave",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.leave",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response when attempting to leave a workspace's \"general\" channel"
+        }
+      ],
+      "description": "Leaves a conversation."
+    },
+    {
+      "id": "c1d3a36f-2fb0-4497-bf66-2d52e48fde5e",
+      "name": "conversations_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/conversations.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "exclude_archived",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "types",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response with only public channels"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Lists all channels in a Slack team."
+    },
+    {
+      "id": "facb0a3c-ee10-470a-96e5-c4318eb67ef6",
+      "name": "conversations_mark",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.mark",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Sets the read cursor in a channel."
+    },
+    {
+      "id": "b21ed775-ba56-4a98-9a5f-fddfc87f3313",
+      "name": "conversations_members",
+      "method": "GET",
+      "url": "{{BASE_URL}}/conversations.members",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical paginated success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response when an invalid cursor is provided"
+        }
+      ],
+      "description": "Retrieve members of a conversation."
+    },
+    {
+      "id": "f3bb8f69-6e52-4b33-8e67-42710bd11b24",
+      "name": "conversations_open",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.open",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Opens or resumes a direct message or multi-person direct message."
+    },
+    {
+      "id": "a5c50ab5-d876-4f25-a572-d01aa491173a",
+      "name": "conversations_rename",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.rename",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response when the calling user is not a member of the conversation"
+        }
+      ],
+      "description": "Renames a conversation."
+    },
+    {
+      "id": "da30b29f-9d60-4706-bd9d-5432125a5a8e",
+      "name": "conversations_replies",
+      "method": "GET",
+      "url": "{{BASE_URL}}/conversations.replies",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "ts",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "latest",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "oldest",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "inclusive",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Retrieve a thread of messages posted to a conversation"
+    },
+    {
+      "id": "750ab3ea-ac49-43c3-81ca-fd3210b2b9bc",
+      "name": "conversations_setPurpose",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.setPurpose",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Sets the purpose for a conversation."
+    },
+    {
+      "id": "d5df409e-c1f4-47b5-b31a-7f7fc6ffa8a2",
+      "name": "conversations_setTopic",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.setTopic",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Sets the topic for a conversation."
+    },
+    {
+      "id": "15e08f54-9340-4bf3-a390-faba176e8d06",
+      "name": "conversations_unarchive",
+      "method": "POST",
+      "url": "{{BASE_URL}}/conversations.unarchive",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Reverses conversation archival."
+    },
+    {
+      "id": "eae574d0-8672-4573-998d-279302c6015d",
+      "name": "dialog_open",
+      "method": "GET",
+      "url": "{{BASE_URL}}/dialog.open",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "dialog",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "trigger_id",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response is quite minimal."
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response, before getting to any possible validation errors."
+        }
+      ],
+      "description": "Open a dialog with a user"
+    },
+    {
+      "id": "b87da8ba-c672-4554-aebe-5d676b2f0449",
+      "name": "dnd_endDnd",
+      "method": "POST",
+      "url": "{{BASE_URL}}/dnd.endDnd",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Ends the current user's Do Not Disturb session immediately."
+    },
+    {
+      "id": "177df641-ac56-45f1-98c9-1f8a7e3233d8",
+      "name": "dnd_endSnooze",
+      "method": "POST",
+      "url": "{{BASE_URL}}/dnd.endSnooze",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Ends the current user's snooze mode immediately."
+    },
+    {
+      "id": "ef3b49b1-9603-4fbf-ba8c-f985687552ff",
+      "name": "dnd_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/dnd.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Retrieves a user's current Do Not Disturb status."
+    },
+    {
+      "id": "2a5161d0-a5d3-4fba-b745-710fb58c6ff3",
+      "name": "dnd_setSnooze",
+      "method": "POST",
+      "url": "{{BASE_URL}}/dnd.setSnooze",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Turns on Do Not Disturb mode for the current user, or changes its duration."
+    },
+    {
+      "id": "94c74844-8950-4231-84a5-0c8125fc50d6",
+      "name": "dnd_teamInfo",
+      "method": "GET",
+      "url": "{{BASE_URL}}/dnd.teamInfo",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "users",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Retrieves the Do Not Disturb status for up to 50 users on a team."
+    },
+    {
+      "id": "3d8833bb-7bfc-40bf-ba54-0d9fad784265",
+      "name": "emoji_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/emoji.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Lists custom emoji for a team."
+    },
+    {
+      "id": "d62408d2-8185-420f-a12f-57decba4b125",
+      "name": "files_comments_delete",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files.comments.delete",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Standard success response is very simple"
+        },
+        {
+          "statusCode": "default",
+          "description": "Standard failure response when used with an invalid token"
+        }
+      ],
+      "description": "Deletes an existing comment on a file."
+    },
+    {
+      "id": "8e51cd90-2c57-4ed1-970d-0264b6b2c5d3",
+      "name": "files_delete",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files.delete",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Deletes a file."
+    },
+    {
+      "id": "6fd0a06e-a86b-48f8-a1d5-b6c7153d7361",
+      "name": "files_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/files.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "file",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "count",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Gets information about a file."
+    },
+    {
+      "id": "7722e466-d3d7-47de-a9f9-ab4a49a97ffe",
+      "name": "files_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/files.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "ts_from",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "ts_to",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "types",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "count",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "show_files_hidden_by_limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List for a team, in a channel, or from a user with applied filters."
+    },
+    {
+      "id": "4d7dc177-3a7a-4b04-88f8-d35218f1695e",
+      "name": "files_remote_add",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files.remote.add",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Adds a file from a remote service"
+    },
+    {
+      "id": "17469d93-34aa-4cfc-af35-a4b6867cb815",
+      "name": "files_remote_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/files.remote.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "file",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "external_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Retrieve information about a remote file added to Slack"
+    },
+    {
+      "id": "fecf76a4-4d5b-4cb5-8eb0-31dc9c1ac93f",
+      "name": "files_remote_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/files.remote.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "ts_from",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "ts_to",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Retrieve information about a remote file added to Slack"
+    },
+    {
+      "id": "0f7ec1e9-04c6-4517-a88c-a3f236da857c",
+      "name": "files_remote_remove",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files.remote.remove",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Remove a remote file."
+    },
+    {
+      "id": "14813d1f-fc9b-43bd-9f17-be72fca0cb96",
+      "name": "files_remote_share",
+      "method": "GET",
+      "url": "{{BASE_URL}}/files.remote.share",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "file",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "external_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "channels",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Share a remote file into a channel."
+    },
+    {
+      "id": "2247d8ac-0557-49fa-8db9-8606b13076ff",
+      "name": "files_remote_update",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files.remote.update",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Updates an existing remote file."
+    },
+    {
+      "id": "b1d6e1e4-946d-48b0-a737-164a6f1f769e",
+      "name": "files_revokePublicURL",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files.revokePublicURL",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Revokes public/external sharing access for a file"
+    },
+    {
+      "id": "d7c3d03f-7eb9-46a2-846f-cceb04c87a52",
+      "name": "files_sharedPublicURL",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files.sharedPublicURL",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Enables a file for public/external sharing."
+    },
+    {
+      "id": "bfa34e3f-0294-49ce-8434-0ea880b6360a",
+      "name": "files_upload",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files.upload",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success response after uploading a file to a channel with an initial message"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Uploads or creates a file."
+    },
+    {
+      "id": "0f480318-3014-446b-ad3f-9845e35a85a6",
+      "name": "migration_exchange",
+      "method": "GET",
+      "url": "{{BASE_URL}}/migration.exchange",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "users",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "team_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "to_old",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response when mappings exist for the specified user IDs"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response when there are no mappings to provide"
+        }
+      ],
+      "description": "For Enterprise Grid workspaces, map local user IDs to global user IDs"
+    },
+    {
+      "id": "21a2efe6-b8ca-44cb-80ec-caebd5e3da27",
+      "name": "oauth_access",
+      "method": "GET",
+      "url": "{{BASE_URL}}/oauth.access",
+      "headers": [],
+      "params": [
+        {
+          "key": "client_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "client_secret",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "code",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "redirect_uri",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "single_channel",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful user token negotiation for a single scope"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Exchanges a temporary OAuth verifier code for an access token."
+    },
+    {
+      "id": "50f24c5b-83dd-461b-be35-799354971f64",
+      "name": "oauth_token",
+      "method": "GET",
+      "url": "{{BASE_URL}}/oauth.token",
+      "headers": [],
+      "params": [
+        {
+          "key": "client_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "client_secret",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "code",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "redirect_uri",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "single_channel",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success example using a workspace app produces a very different kind of response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Exchanges a temporary OAuth verifier code for a workspace token."
+    },
+    {
+      "id": "b9b7c1ac-7c52-400c-8069-2dbaf08235fb",
+      "name": "oauth_v2_access",
+      "method": "GET",
+      "url": "{{BASE_URL}}/oauth.v2.access",
+      "headers": [],
+      "params": [
+        {
+          "key": "client_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "client_secret",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "code",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "redirect_uri",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful token request with scopes for both a bot user and a user token"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Exchanges a temporary OAuth verifier code for an access token."
+    },
+    {
+      "id": "6aef0023-3817-4c90-9212-a59667a4a9c3",
+      "name": "pins_add",
+      "method": "POST",
+      "url": "{{BASE_URL}}/pins.add",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Pins an item to a channel."
+    },
+    {
+      "id": "bf3fb70a-88ad-409e-970e-5e72bc05d9b7",
+      "name": "pins_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/pins.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Lists items pinned to a channel."
+    },
+    {
+      "id": "9822f67e-972a-429e-a269-d7bab8e7878e",
+      "name": "pins_remove",
+      "method": "POST",
+      "url": "{{BASE_URL}}/pins.remove",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Un-pins an item from a channel."
+    },
+    {
+      "id": "d2577c3a-9ea0-45f2-a14d-903a98807ba4",
+      "name": "reactions_add",
+      "method": "POST",
+      "url": "{{BASE_URL}}/reactions.add",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Adds a reaction to an item."
+    },
+    {
+      "id": "fa3677fd-d81e-4ee3-8d6d-794673587645",
+      "name": "reactions_get",
+      "method": "GET",
+      "url": "{{BASE_URL}}/reactions.get",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "channel",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "file",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "file_comment",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "full",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "timestamp",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Gets reactions for an item."
+    },
+    {
+      "id": "ced90c86-e3d0-40ff-82dc-a6a7ac59f014",
+      "name": "reactions_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/reactions.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "full",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "count",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Lists reactions made by a user."
+    },
+    {
+      "id": "d55ca10d-5cba-4111-9755-e64c9db872e2",
+      "name": "reactions_remove",
+      "method": "POST",
+      "url": "{{BASE_URL}}/reactions.remove",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Removes a reaction from an item."
+    },
+    {
+      "id": "7182ada5-419c-4f06-b141-a28bd2f65d86",
+      "name": "reminders_add",
+      "method": "POST",
+      "url": "{{BASE_URL}}/reminders.add",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Creates a reminder."
+    },
+    {
+      "id": "fc88ddc2-1e74-4560-bf15-71e2558f42a2",
+      "name": "reminders_complete",
+      "method": "POST",
+      "url": "{{BASE_URL}}/reminders.complete",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Marks a reminder as complete."
+    },
+    {
+      "id": "065e2248-31b1-4519-aa68-e5381217d3b9",
+      "name": "reminders_delete",
+      "method": "POST",
+      "url": "{{BASE_URL}}/reminders.delete",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Deletes a reminder."
+    },
+    {
+      "id": "2501ccdd-401b-4da3-8377-1e8abc9398f1",
+      "name": "reminders_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/reminders.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "reminder",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Gets information about a reminder."
+    },
+    {
+      "id": "f862b6cf-de7e-4927-b3a8-e099cdf6fa10",
+      "name": "reminders_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/reminders.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Lists all reminders created by or for a given user."
+    },
+    {
+      "id": "512bf5e7-2859-4768-ade1-4959ef8b238b",
+      "name": "rtm_connect",
+      "method": "GET",
+      "url": "{{BASE_URL}}/rtm.connect",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "batch_presence_aware",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "presence_sub",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Starts a Real Time Messaging session."
+    },
+    {
+      "id": "c3c79d14-f6a2-493b-8384-51147664a346",
+      "name": "search_messages",
+      "method": "GET",
+      "url": "{{BASE_URL}}/search.messages",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "count",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "highlight",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "query",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "sort",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "sort_dir",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Searches for messages matching a query."
+    },
+    {
+      "id": "15133b07-3d20-4f0b-8b31-0982953ccb0c",
+      "name": "stars_add",
+      "method": "POST",
+      "url": "{{BASE_URL}}/stars.add",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Adds a star to an item."
+    },
+    {
+      "id": "d3dae6b1-efa5-42a6-a889-ccfa27c74103",
+      "name": "stars_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/stars.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "count",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Lists stars for a user."
+    },
+    {
+      "id": "bc43f018-9f5d-4c00-a72b-c5199653e8b8",
+      "name": "stars_remove",
+      "method": "POST",
+      "url": "{{BASE_URL}}/stars.remove",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Removes a star from an item."
+    },
+    {
+      "id": "f601c00f-b70b-408c-8979-9b8cc9196c84",
+      "name": "team_accessLogs",
+      "method": "GET",
+      "url": "{{BASE_URL}}/team.accessLogs",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "count",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "This response demonstrates pagination and two access log entries."
+        },
+        {
+          "statusCode": "default",
+          "description": "A workspace must be on a paid plan to use this method, otherwise the `paid_only` error is thrown:"
+        }
+      ],
+      "description": "Gets the access logs for the current team."
+    },
+    {
+      "id": "26e840fb-72b3-4331-89ac-1df61de03d31",
+      "name": "team_billableInfo",
+      "method": "GET",
+      "url": "{{BASE_URL}}/team.billableInfo",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Gets billable users information for the current team."
+    },
+    {
+      "id": "922885b0-0f19-4f00-a409-3558206d2f5c",
+      "name": "team_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/team.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "team",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Gets information about the current team."
+    },
+    {
+      "id": "65239e4e-4a09-4f9a-92dd-cfec7b94e3ed",
+      "name": "team_integrationLogs",
+      "method": "GET",
+      "url": "{{BASE_URL}}/team.integrationLogs",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "app_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "change_type",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "count",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "service_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Gets the integration logs for the current team."
+    },
+    {
+      "id": "6f27ec73-6525-4acd-85b0-a023c7eaa9dc",
+      "name": "team_profile_get",
+      "method": "GET",
+      "url": "{{BASE_URL}}/team.profile.get",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "visibility",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Retrieve a team's profile."
+    },
+    {
+      "id": "190af703-11e9-4f22-a356-c2371f057fc7",
+      "name": "usergroups_create",
+      "method": "POST",
+      "url": "{{BASE_URL}}/usergroups.create",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Create a User Group"
+    },
+    {
+      "id": "aacaece2-5efa-443e-a647-a5e282c00f2f",
+      "name": "usergroups_disable",
+      "method": "POST",
+      "url": "{{BASE_URL}}/usergroups.disable",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Disable an existing User Group"
+    },
+    {
+      "id": "708b4d34-34b1-46b7-b0fd-aca0ee993cfb",
+      "name": "usergroups_enable",
+      "method": "POST",
+      "url": "{{BASE_URL}}/usergroups.enable",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Enable a User Group"
+    },
+    {
+      "id": "28aadb56-3fcf-4f4d-b62e-be0f5f5ac2cb",
+      "name": "usergroups_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/usergroups.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "include_users",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "include_count",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "include_disabled",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List all User Groups for a team"
+    },
+    {
+      "id": "1402700a-005d-4c9c-9565-31c5605989f8",
+      "name": "usergroups_update",
+      "method": "POST",
+      "url": "{{BASE_URL}}/usergroups.update",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Update an existing User Group"
+    },
+    {
+      "id": "80d249db-6890-4641-8a2e-06cf789f08ae",
+      "name": "usergroups_users_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/usergroups.users.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "include_disabled",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "usergroup",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Standard success response when used with a user token"
+        },
+        {
+          "statusCode": "default",
+          "description": "Standard failure response when used with an invalid token"
+        }
+      ],
+      "description": "List all users in a User Group"
+    },
+    {
+      "id": "da646464-ee23-4677-abe6-a71811866c1d",
+      "name": "usergroups_users_update",
+      "method": "POST",
+      "url": "{{BASE_URL}}/usergroups.users.update",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Update the list of users for a User Group"
+    },
+    {
+      "id": "162817b9-dc69-43b6-ae11-86998f0adfc1",
+      "name": "users_conversations",
+      "method": "GET",
+      "url": "{{BASE_URL}}/users.conversations",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "types",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "exclude_archived",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response with only public channels. Note how `num_members` and `is_member` are not returned like typical `conversations` objects."
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "List conversations the calling user may access."
+    },
+    {
+      "id": "d35524e8-754d-4970-860a-6b433d51e5fd",
+      "name": "users_deletePhoto",
+      "method": "POST",
+      "url": "{{BASE_URL}}/users.deletePhoto",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Delete the user profile photo"
+    },
+    {
+      "id": "121f96fe-ad5d-405a-89a8-942c587d3e9d",
+      "name": "users_getPresence",
+      "method": "GET",
+      "url": "{{BASE_URL}}/users.getPresence",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "When requesting information for a different user, this method just returns the current presence (either `active` or `away`)."
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Gets user presence information."
+    },
+    {
+      "id": "967ca26b-95d7-46ad-9c3f-94ac5d3ca80a",
+      "name": "users_identity",
+      "method": "GET",
+      "url": "{{BASE_URL}}/users.identity",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "You will receive at a minimum the following information:"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Get a user's identity."
+    },
+    {
+      "id": "3fcccfce-67e2-4fa1-a3dc-db6bad5716c2",
+      "name": "users_info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/users.info",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "include_locale",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Gets information about a user."
+    },
+    {
+      "id": "51fb5178-7fe9-4cd0-9463-8e0ed609c04e",
+      "name": "users_list",
+      "method": "GET",
+      "url": "{{BASE_URL}}/users.list",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cursor",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "include_locale",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Lists all users in a Slack team."
+    },
+    {
+      "id": "96ece71f-cded-4fda-b5d6-d39b75a9f9f3",
+      "name": "users_lookupByEmail",
+      "method": "GET",
+      "url": "{{BASE_URL}}/users.lookupByEmail",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "email",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Find a user with an email address."
+    },
+    {
+      "id": "8da37774-d5fc-43d7-885b-2273eedb0c64",
+      "name": "users_profile_get",
+      "method": "GET",
+      "url": "{{BASE_URL}}/users.profile.get",
+      "headers": [],
+      "params": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "include_labels",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Retrieves a user's profile information."
+    },
+    {
+      "id": "9e6789c5-40d8-4ff7-9ca1-7a215d1d99e8",
+      "name": "users_profile_set",
+      "method": "POST",
+      "url": "{{BASE_URL}}/users.profile.set",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set the profile information for a user."
+    },
+    {
+      "id": "b91550c2-e74f-4c2d-a3b4-540e358977e1",
+      "name": "users_setActive",
+      "method": "POST",
+      "url": "{{BASE_URL}}/users.setActive",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Marked a user as active. Deprecated and non-functional."
+    },
+    {
+      "id": "7db0e30f-e75f-477e-9220-24512b140598",
+      "name": "users_setPhoto",
+      "method": "POST",
+      "url": "{{BASE_URL}}/users.setPhoto",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Set the user profile photo"
+    },
+    {
+      "id": "848ec4b1-4bc3-4709-bc08-cef00f7d4d42",
+      "name": "users_setPresence",
+      "method": "POST",
+      "url": "{{BASE_URL}}/users.setPresence",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Manually sets user presence."
+    },
+    {
+      "id": "3d286182-f25c-4bca-bf4a-8841e5ace9b2",
+      "name": "views_open",
+      "method": "GET",
+      "url": "{{BASE_URL}}/views.open",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "trigger_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "view",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response includes the opened view payload."
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response, before getting to any possible validation errors."
+        }
+      ],
+      "description": "Open a view for a user."
+    },
+    {
+      "id": "cb45c9df-514a-45de-8eb2-92bc3d168c01",
+      "name": "views_publish",
+      "method": "GET",
+      "url": "{{BASE_URL}}/views.publish",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "user_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "view",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "hash",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response includes the published view payload."
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response, before getting to any possible validation errors."
+        }
+      ],
+      "description": "Publish a static view for a User."
+    },
+    {
+      "id": "4570ee9e-dc62-47a0-8f10-7f515e842bea",
+      "name": "views_push",
+      "method": "GET",
+      "url": "{{BASE_URL}}/views.push",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "trigger_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "view",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response includes the pushed view payload."
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response."
+        }
+      ],
+      "description": "Push a view onto the stack of a root view."
+    },
+    {
+      "id": "bbafacaf-e781-4ea4-86b4-f69c7bc786b5",
+      "name": "views_update",
+      "method": "GET",
+      "url": "{{BASE_URL}}/views.update",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "view_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "external_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "view",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "hash",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response includes the updated view payload."
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response."
+        }
+      ],
+      "description": "Update an existing view."
+    },
+    {
+      "id": "b31920f4-e9e8-4a41-8dca-c76122ca7566",
+      "name": "workflows_stepCompleted",
+      "method": "GET",
+      "url": "{{BASE_URL}}/workflows.stepCompleted",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "workflow_step_execute_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "outputs",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Indicate that an app's step in a workflow completed execution."
+    },
+    {
+      "id": "3fa79336-cda8-41fa-81d6-6eed46d38de7",
+      "name": "workflows_stepFailed",
+      "method": "GET",
+      "url": "{{BASE_URL}}/workflows.stepFailed",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "workflow_step_execute_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "error",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Indicate that an app's step in a workflow failed to execute."
+    },
+    {
+      "id": "291e3cb9-b4a1-4931-a1f1-dbab82d304e1",
+      "name": "workflows_updateStep",
+      "method": "GET",
+      "url": "{{BASE_URL}}/workflows.updateStep",
+      "headers": [
+        {
+          "key": "token",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "workflow_step_edit_id",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "inputs",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "outputs",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "step_name",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "step_image_url",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Typical success response"
+        },
+        {
+          "statusCode": "default",
+          "description": "Typical error response"
+        }
+      ],
+      "description": "Update the configuration for a workflow extension step."
+    }
+  ]
+}

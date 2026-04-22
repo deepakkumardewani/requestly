@@ -1,0 +1,26 @@
+{
+  "id": "clerk-frontend-api-default-env",
+  "name": "Clerk (Frontend API)",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://{domain}.clerk.accounts.dev",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    },
+    {
+      "key": "__DEV_SESSION",
+      "value": "",
+      "secret": true
+    },
+    {
+      "key": "_IS_NATIVE",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Alpaca (Trading)",
+  "providerName": "trader-api",
+  "description": "Alpaca's Trading API is a modern platform for algorithmic trading.\n\nFor complete documentation on the Trading API and to obtain your keys head to https://alpaca.markets/docs/api-documentation/api-v2/. Once you have your keys, head to the environments tab to quickly get started.",
+  "category": "Finance",
+  "logoUrl": "https://avatars.githubusercontent.com/u/41517409?s=200&v=4",
+  "docsUrl": "https://alpaca.markets/support",
+  "specUrl": "https://raw.githubusercontent.com/alpacahq/alpaca-docs/master/oas/trading/openapi.yaml",
+  "version": "2.0.0",
+  "requestCount": 29
+}

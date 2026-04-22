@@ -1,0 +1,21 @@
+{
+  "id": "gitlab-default-env",
+  "name": "GitLab",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://gitlab.com/api",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    },
+    {
+      "key": "PRIVATE_TOKEN",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

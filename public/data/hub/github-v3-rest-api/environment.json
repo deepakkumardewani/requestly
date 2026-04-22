@@ -1,0 +1,11 @@
+{
+  "id": "github-v3-rest-api-default-env",
+  "name": "GitHub",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.github.com",
+      "secret": false
+    }
+  ]
+}

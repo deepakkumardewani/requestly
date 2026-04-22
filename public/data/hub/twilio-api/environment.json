@@ -1,0 +1,16 @@
+{
+  "id": "twilio-api-default-env",
+  "name": "Twilio",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.twilio.com",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

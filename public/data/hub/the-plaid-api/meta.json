@@ -1,0 +1,11 @@
+{
+  "name": "Plaid",
+  "providerName": "the-plaid-api",
+  "description": "The Plaid REST API. Please see https://plaid.com/docs/api for more details.",
+  "category": "Finance",
+  "logoUrl": "https://avatars.githubusercontent.com/u/12067784?s=200&v=4",
+  "docsUrl": "https://plaid.com",
+  "specUrl": "https://raw.githubusercontent.com/plaid/plaid-openapi/master/2020-09-14.yml",
+  "version": "2020-09-14_1.688.0",
+  "requestCount": 328
+}

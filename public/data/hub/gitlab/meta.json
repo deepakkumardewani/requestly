@@ -1,0 +1,11 @@
+{
+  "name": "GitLab",
+  "providerName": "gitlab",
+  "description": "The platform for modern developers\nGitLab unifies issues, code review, CI and CD into a single UI",
+  "category": "Dev Tools",
+  "logoUrl": "https://cdn.simpleicons.org/gitlab",
+  "docsUrl": "https://axil.gitlab.io/swaggerapi/static/swagger.json",
+  "specUrl": "https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/gitlab.com/v3/swagger.yaml",
+  "version": "v3",
+  "requestCount": 358
+}

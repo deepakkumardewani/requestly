@@ -1,0 +1,11 @@
+{
+  "name": "OpenAI",
+  "providerName": "openai-api",
+  "description": "The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.",
+  "category": "AI / ML",
+  "logoUrl": "https://avatars.githubusercontent.com/u/14957082?s=200&v=4",
+  "docsUrl": "https://help.openai.com/",
+  "specUrl": "https://raw.githubusercontent.com/openai/openai-openapi/manual_spec/openapi.yaml",
+  "version": "2.3.0",
+  "requestCount": 148
+}

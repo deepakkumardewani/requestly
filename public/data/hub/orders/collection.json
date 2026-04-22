@@ -1,0 +1,691 @@
+{
+  "id": "66f4243c-d601-4a8d-a8e3-fc414829aa74",
+  "name": "PayPal",
+  "description": "An order represents a payment between two or more parties. Use the Orders API to create, update, retrieve, authorize, and capture orders.",
+  "createdAt": 1776830113087,
+  "requests": [
+    {
+      "id": "7fcd408a-db16-4a27-9499-89049d958b5e",
+      "name": "Create order",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/checkout/orders",
+      "headers": [
+        {
+          "key": "PayPal-Request-Id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Partner-Attribution-Id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Client-Metadata-Id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "Prefer",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Auth-Assertion",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"intent\": \"\",\n  \"payer\": {},\n  \"purchase_units\": [\n    {}\n  ],\n  \"payment_source\": {\n    \"card\": null,\n    \"token\": null,\n    \"paypal\": {},\n    \"bancontact\": {},\n    \"blik\": {},\n    \"eps\": {},\n    \"giropay\": {},\n    \"ideal\": {},\n    \"mybank\": {},\n    \"p24\": {},\n    \"sofort\": {},\n    \"trustly\": {},\n    \"apple_pay\": {},\n    \"google_pay\": {},\n    \"venmo\": {},\n    \"crypto\": {}\n  },\n  \"application_context\": {\n    \"brand_name\": null,\n    \"locale\": null,\n    \"landing_page\": null,\n    \"shipping_preference\": null,\n    \"user_action\": null,\n    \"payment_method\": null,\n    \"return_url\": null,\n    \"cancel_url\": null,\n    \"stored_payment_source\": null\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A successful response to an idempotent request returns the HTTP `200 OK` status code with a JSON response body that shows order details.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "201",
+          "description": "A successful request returns the HTTP `201 Created` status code and a JSON response body that includes by default a minimal response with the ID, status, and HATEOAS links. If you require the complete order resource representation, you must pass the <a href=\"https://developer.paypal.com/docs/api/orders/v2/#orders-create-header-parameters\"><code>Prefer: return=representation</code> request header</a>. This header value is not the default.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "202",
+          "description": "The request has been accepted for processing, but the processing has not been completed yet. The server returns the HTTP `202 Accepted` status code to indicate that the request is valid and will be handled asynchronously.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Request is not well-formed, syntactically incorrect, or violates schema.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "The requested action could not be performed, semantically incorrect, or failed business validation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "Creates an order. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href=\"https://developer.paypal.com/docs/checkout/advanced/processing/\">checkout</a> or <a href=\"https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/\">multiparty checkout</a>.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href=\"https://developer.paypal.com/api/rest/reference/orders/v2/errors/#create-order\">Orders v2 errors</a>.</blockquote>"
+    },
+    {
+      "id": "2b5b1927-d2d6-4b7d-9597-3a08de2a341b",
+      "name": "Show order details",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/checkout/orders/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Auth-Assertion",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [
+        {
+          "key": "fields",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A successful request returns the HTTP `200 OK` status code and a JSON response body that shows order details.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Not Found.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "Shows details for an order, by ID.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href=\"https://developer.paypal.com/api/rest/reference/orders/v2/errors/#get-order\">Orders v2 errors</a>.</blockquote>"
+    },
+    {
+      "id": "ee4f8076-25c2-414b-bcd9-addae8840306",
+      "name": "Update order",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/v2/checkout/orders/{id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Auth-Assertion",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "[\n  {\n    \"op\": null,\n    \"path\": null,\n    \"value\": null,\n    \"from\": null\n  }\n]"
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "No Content."
+        },
+        {
+          "statusCode": "400",
+          "description": "Request is not well-formed, syntactically incorrect, or violates schema.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Not Found.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "The requested action could not be performed, semantically incorrect, or failed business validation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "Updates an order with a `CREATED` or `APPROVED` status. You cannot update an order with the `COMPLETED` status.<br/><br/>To make an update, you must provide a `reference_id`. If you omit this value with an order that contains only one purchase unit, PayPal sets the value to `default` which enables you to use the path: <code>\\\"/purchase_units/@reference_id=='default'/{attribute-or-object}\\\"</code>. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href=\"https://developer.paypal.com/docs/checkout/advanced/processing/\">checkout</a> or <a href=\"https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/\">multiparty checkout</a>.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href=\"https://developer.paypal.com/api/rest/reference/orders/v2/errors/#patch-order\">Orders v2 errors</a>.</blockquote>Patchable attributes or objects:<br/><br/><table><thead><th>Attribute</th><th>Op</th><th>Notes</th></thead><tbody><tr><td><code>intent</code></td><td>replace</td><td></td></tr><tr><td><code>payer</code></td><td>replace, add</td><td>Using replace op for <code>payer</code> will replace the whole <code>payer</code> object with the value sent in request.</td></tr><tr><td><code>purchase_units</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].custom_id</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].description</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].payee.email</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].shipping.name</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.email_address</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.phone_number</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.options</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.address</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.type</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].soft_descriptor</code></td><td>replace, remove</td><td></td></tr><tr><td><code>purchase_units[].amount</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].items</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].invoice_id</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].payment_instruction</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].payment_instruction.disbursement_mode</code></td><td>replace</td><td>By default, <code>disbursement_mode</code> is <code>INSTANT</code>.</td></tr><tr><td><code>purchase_units[].payment_instruction.payee_receivable_fx_rate_id</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].payment_instruction.platform_fees</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].supplementary_data.airline</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].supplementary_data.card</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>application_context.client_configuration</code></td><td>replace, add</td><td></td></tr></tbody></table>"
+    },
+    {
+      "id": "5471af08-d846-4fa6-9069-209dbe075e51",
+      "name": "Confirm the Order",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/checkout/orders/{id}/confirm-payment-source",
+      "headers": [
+        {
+          "key": "PayPal-Client-Metadata-Id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Auth-Assertion",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "Prefer",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"payment_source\": {\n    \"card\": null,\n    \"token\": null,\n    \"paypal\": {},\n    \"bancontact\": {},\n    \"blik\": {},\n    \"eps\": {},\n    \"giropay\": {},\n    \"ideal\": {},\n    \"mybank\": {},\n    \"p24\": {},\n    \"sofort\": {},\n    \"trustly\": {},\n    \"apple_pay\": {},\n    \"google_pay\": {},\n    \"venmo\": {},\n    \"crypto\": {}\n  },\n  \"application_context\": {\n    \"brand_name\": \"\",\n    \"locale\": {},\n    \"return_url\": \"\",\n    \"cancel_url\": \"\",\n    \"stored_payment_source\": null\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A successful request indicates that the payment source was added to the Order. A successful request returns the HTTP `200 OK` status code with a JSON response body that shows order details.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Request is not well-formed, syntactically incorrect, or violates schema.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "The requested action could not be performed, semantically incorrect, or failed business validation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "Payer confirms their intent to pay for the the Order with the given payment source."
+    },
+    {
+      "id": "aaadd9ff-9b91-484d-af4b-6e57ba34d413",
+      "name": "Authorize payment for order",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/checkout/orders/{id}/authorize",
+      "headers": [
+        {
+          "key": "PayPal-Request-Id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "Prefer",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Client-Metadata-Id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Auth-Assertion",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"payment_source\": {\n    \"card\": null,\n    \"token\": null,\n    \"paypal\": null,\n    \"bancontact\": null,\n    \"blik\": null,\n    \"eps\": null,\n    \"giropay\": null,\n    \"ideal\": null,\n    \"mybank\": null,\n    \"p24\": null,\n    \"sofort\": null,\n    \"trustly\": null,\n    \"apple_pay\": null,\n    \"google_pay\": null,\n    \"venmo\": null,\n    \"crypto\": null\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A successful response to an idempotent request returns the HTTP `200 OK` status code with a JSON response body that shows authorized payment details.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "201",
+          "description": "A successful response to a non-idempotent request returns the HTTP `201 Created` status code with a JSON response body that shows authorized payment details. If a duplicate response is retried, returns the HTTP `200 OK` status code. By default, the response is minimal. If you need the complete resource representation, you must pass the <a href=\"https://developer.paypal.com/docs/api/orders/v2/#orders-authorize-header-parameters\"><code>Prefer: return=representation</code> request header</a>.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "202",
+          "description": "The request has been accepted for processing, but the processing has not been completed yet. The server returns the HTTP `202 Accepted` status code to indicate that the request is valid and will be handled asynchronously.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "207",
+          "description": "The request was successfully processed, but the result contains mixed outcomes. When an order includes multiple purchase units, the server returns the HTTP `207 Multi-Status` code to indicate that one or more purchase units were processed successfully while others failed. The response body provides the processing result for each purchase unit.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Request is not well-formed, syntactically incorrect, or violates schema.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Not Found.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "409",
+          "description": "The request could not be completed due to a conflict with the current state of the resource. The HTTP `409 Conflict` status code is returned when the requested operation is not allowed because the order or one or more purchase units are in a state that prevents the operation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "The requested action could not be performed, semantically incorrect, or failed business validation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "Authorizes payment for an order. To successfully authorize payment for an order, the buyer must first approve the order or a valid payment_source must be provided in the request. A buyer can approve the order upon being redirected to the rel:approve URL that was returned in the HATEOAS links in the create order response.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href=\"https://developer.paypal.com/api/rest/reference/orders/v2/errors/#authorize-order\">Orders v2 errors</a>.</blockquote>"
+    },
+    {
+      "id": "f14ca8b2-914c-4005-91a4-e9294468241c",
+      "name": "Capture payment for order",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/checkout/orders/{id}/capture",
+      "headers": [
+        {
+          "key": "PayPal-Request-Id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "Prefer",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Client-Metadata-Id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Auth-Assertion",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"payment_source\": {\n    \"card\": null,\n    \"token\": null,\n    \"paypal\": null,\n    \"bancontact\": null,\n    \"blik\": null,\n    \"eps\": null,\n    \"giropay\": null,\n    \"ideal\": null,\n    \"mybank\": null,\n    \"p24\": null,\n    \"sofort\": null,\n    \"trustly\": null,\n    \"apple_pay\": null,\n    \"google_pay\": null,\n    \"venmo\": null,\n    \"crypto\": null\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A successful response to an idempotent request returns the HTTP `200 OK` status code with a JSON response body that shows captured payment details.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "201",
+          "description": "A successful response to a non-idempotent request returns the HTTP `201 Created` status code with a JSON response body that shows captured payment details. If a duplicate response is retried, returns the HTTP `200 OK` status code. By default, the response is minimal. If you need the complete resource representation, pass the <a href=\"https://developer.paypal.com/docs/api/orders/v2/#orders-authorize-header-parameters\"><code>Prefer: return=representation</code> request header</a>.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "202",
+          "description": "The request has been accepted for processing, but the processing has not been completed yet. The server returns the HTTP `202 Accepted` status code to indicate that the request is valid and will be handled asynchronously.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "207",
+          "description": "The request was successfully processed, but the result contains mixed outcomes. When an order includes multiple purchase units, the server returns the HTTP `207 Multi-Status` code to indicate that one or more purchase units were processed successfully while others failed. The response body provides the processing result for each purchase unit.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Request is not well-formed, syntactically incorrect, or violates schema.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Not Found.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "409",
+          "description": "The request could not be completed due to a conflict with the current state of the resource. The HTTP `409 Conflict` status code is returned when the requested operation is not allowed because the order or one or more purchase units are in a state that prevents the operation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "The requested action could not be performed, semantically incorrect, or failed business validation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "Captures payment for an order. To successfully capture payment for an order, the buyer must first approve the order or a valid payment_source must be provided in the request. A buyer can approve the order upon being redirected to the rel:approve URL that was returned in the HATEOAS links in the create order response.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href=\"https://developer.paypal.com/api/rest/reference/orders/v2/errors/#capture-order\">Orders v2 errors</a>.</blockquote>"
+    },
+    {
+      "id": "58e5f39f-59c2-4cab-9d9e-300b24450655",
+      "name": "Add tracking information for an Order.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/checkout/orders/{id}/track",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Auth-Assertion",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"tracking_number\": \"\",\n  \"carrier\": null,\n  \"carrier_name_other\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A successful response to an idempotent request returns the HTTP `200 OK` status code with a JSON response body that shows tracker details.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "201",
+          "description": "A successful response to a non-idempotent request returns the HTTP `201 Created` status code with a JSON response body that shows tracker details. If a duplicate response is retried, returns the HTTP `200 OK` status code.",
+          "content": "{\n  \"create_time\": null,\n  \"update_time\": null\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Request is not well-formed, syntactically incorrect, or violates schema.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Not Found.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "The requested action could not be performed, semantically incorrect, or failed business validation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "Adds tracking information for an Order."
+    },
+    {
+      "id": "da23f931-87d8-4734-b1cb-9e7f4a865818",
+      "name": "Update or cancel tracking information for an order",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/v2/checkout/orders/{id}/trackers/{tracker_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "PayPal-Auth-Assertion",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "[\n  {\n    \"op\": null,\n    \"path\": null,\n    \"value\": null,\n    \"from\": null\n  }\n]"
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "No Content."
+        },
+        {
+          "statusCode": "400",
+          "description": "Request is not well-formed, syntactically incorrect, or violates schema.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Not Found.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "The requested action could not be performed, semantically incorrect, or failed business validation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "Updates or cancels the tracking information for a PayPal order, by ID. Updatable attributes or objects:<br/><br/><table><thead><th>Attribute</th><th>Op</th><th>Notes</th></thead><tbody></tr><tr><td><code>items</code></td><td>replace</td><td>Using replace op for <code>items</code> will replace the entire <code>items</code> object with the value sent in request.</td></tr><tr><td><code>notify_payer</code></td><td>replace, add</td><td></td></tr><tr><td><code>status</code></td><td>replace</td><td>Only patching status to CANCELLED is currently supported.</td></tr></tbody></table>"
+    },
+    {
+      "id": "570bba0f-928b-47b8-bf57-a1f054869de9",
+      "name": "Receive updated order information via callback URL",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/checkout/orders/order-update-callback",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"id\": \"\",\n  \"shipping_address\": {\n    \"address_line_1\": null,\n    \"address_line_2\": null,\n    \"address_line_3\": null,\n    \"admin_area_4\": null,\n    \"admin_area_3\": null,\n    \"admin_area_2\": null,\n    \"admin_area_1\": null,\n    \"postal_code\": null,\n    \"country_code\": null,\n    \"address_details\": null\n  },\n  \"shipping_option\": {\n    \"id\": null,\n    \"label\": null,\n    \"type\": null,\n    \"amount\": null,\n    \"selected\": null\n  },\n  \"purchase_units\": [\n    {}\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The callback to merchant was successful.",
+          "content": "{\n  \"id\": \"\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "The request is not well-formed, is syntactically incorrect, or violates the schema.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"details\": [\n    {\n      \"field\": null,\n      \"value\": null,\n      \"issue\": null\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "The requested action could not be completed, was semantically incorrect, or failed business validation.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"details\": [\n    {\n      \"field\": null,\n      \"value\": null,\n      \"issue\": null\n    }\n  ]\n}"
+        },
+        {
+          "statusCode": "500",
+          "description": "Internal Server Error.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        },
+        {
+          "statusCode": "default",
+          "description": "Default response.",
+          "content": "{\n  \"name\": \"\",\n  \"message\": \"\",\n  \"debug_id\": \"\",\n  \"details\": [\n    {}\n  ],\n  \"links\": [\n    {}\n  ]\n}"
+        }
+      ],
+      "description": "The documentation for this 'endpoint' is different from the other endpoints under v2 Orders. For this endpoint the role of client and server is reversed. The client sending the request is PayPal, and the server sending the response is the merchant. In the request, PayPal will send the buyer's redacted shipping address and selected shipping option to the callback URL defined the create order request. The response from the merchant will update the Orders resource."
+    }
+  ]
+}

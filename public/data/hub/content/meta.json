@@ -1,0 +1,11 @@
+{
+  "name": "BigCommerce (Store Content)",
+  "providerName": "content",
+  "description": "Manage blog posts, blog tags, content pages, and redirects.\n\n> #### Warning\n> **Deprecations**\n> * Redirects V2 are deprecated; use [Redirects V3](/docs/rest-management/redirects) instead. \n> * Pages V2 are deprecated; use [Pages V3](/docs/rest-content/pages) instead.",
+  "category": "E-commerce",
+  "logoUrl": "https://cdn.simpleicons.org/bigcommerce",
+  "docsUrl": "https://www.bigcommerce.com",
+  "specUrl": "https://raw.githubusercontent.com/bigcommerce/api-specs/main/reference/store_content.v2.yml",
+  "version": "",
+  "requestCount": 20
+}

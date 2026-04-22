@@ -1,0 +1,16 @@
+{
+  "id": "trader-api-default-env",
+  "name": "Alpaca (Trading)",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://paper-api.alpaca.markets",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

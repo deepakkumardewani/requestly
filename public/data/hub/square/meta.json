@@ -1,0 +1,11 @@
+{
+  "name": "Square",
+  "providerName": "square",
+  "description": "Use Square APIs to manage and run business including payment, customer, product, inventory, and employee management.",
+  "category": "Payments",
+  "logoUrl": "https://cdn.simpleicons.org/square",
+  "docsUrl": "https://squareup.com/developers",
+  "specUrl": "https://raw.githubusercontent.com/square/connect-api-specification/master/api.json",
+  "version": "2.0",
+  "requestCount": 327
+}

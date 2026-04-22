@@ -1,0 +1,11 @@
+{
+  "name": "Clerk (Backend API)",
+  "providerName": "clerk-backend-api",
+  "description": "The Clerk REST Backend API, meant to be accessed by backend servers.\n\n### Versions\n\nWhen the API changes in a way that isn't compatible with older versions, a new version is released.\nEach version is identified by its release date, e.g. `2024-10-01`. For more information, please see [Clerk API Versions](https://clerk.com/docs/versioning/available-versions).\n\nPlease see https://clerk.com/docs for more information.",
+  "category": "Auth",
+  "logoUrl": "https://cdn.simpleicons.org/clerk",
+  "docsUrl": "https://clerk.com/support",
+  "specUrl": "https://raw.githubusercontent.com/clerk/openapi-specs/main/bapi/2024-10-01.yml",
+  "version": "2024-10-01",
+  "requestCount": 197
+}

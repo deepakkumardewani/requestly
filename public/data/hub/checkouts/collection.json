@@ -1,0 +1,525 @@
+{
+  "id": "64f7794f-d980-44ac-ab56-505d455ea889",
+  "name": "BigCommerce (Checkouts)",
+  "description": "For more information on authenticating BigCommerce APIs, see [Authentication](/docs/start/authentication).\n\nCreate and manage checkouts from existing carts using BigCommerce checkout logic.",
+  "createdAt": 1776830120290,
+  "requests": [
+    {
+      "id": "f90fc284-0d7f-4e19-b762-72bef52c8d3c",
+      "name": "Get a Checkout",
+      "method": "GET",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "include",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Error code that is displayed when a given checkout ID is not found.",
+          "content": "{\n  \"errors\": [\n    {\n      \"status\": 0,\n      \"title\": \"\",\n      \"type\": \"\",\n      \"detail\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Returns a *Checkout*.\n\n**Notes**\n\nThe cart ID and checkout ID are the same."
+    },
+    {
+      "id": "960279fb-68e6-42d8-8089-678f0ab9472f",
+      "name": "Update Customer Messages",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"customer_message\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Change customer message pertaining to an existing *Checkout*.\n\n**Limits:**\n* 2000 characters for customer message"
+    },
+    {
+      "id": "1cadc9ef-1eba-47e6-b162-b1096b7410b4",
+      "name": "Add Discount to Checkout",
+      "method": "POST",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/discounts",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"cart\": {\n    \"discounts\": [\n      {\n        \"discounted_amount\": null,\n        \"name\": null\n      }\n    ]\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Adds a discount to an existing *checkout*.\n\nThis discount only applies to `line_items`. When you call this API, you clear out all existing discounts applied to line items, including product and order-based discounts.\n\nThis endpoint splits the discount between line items based on the item value.\n\nRequired Fields\n* discounted_amount"
+    },
+    {
+      "id": "c082430c-19ee-497d-a20a-e9edf9f6e08c",
+      "name": "Add Checkout Billing Address",
+      "method": "POST",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/billing-address",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"first_name\": \"\",\n  \"last_name\": \"\",\n  \"email\": \"\",\n  \"company\": \"\",\n  \"address1\": \"\",\n  \"address2\": \"\",\n  \"city\": \"\",\n  \"state_or_province\": \"\",\n  \"state_or_province_code\": \"\",\n  \"country_code\": \"\",\n  \"postal_code\": \"\",\n  \"phone\": \"\",\n  \"custom_fields\": [\n    {\n      \"field_id\": \"\",\n      \"field_value\": \"\"\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Adds a billing address to an existing checkout.\n\n**Required Fields**\n* email\n* country_code"
+    },
+    {
+      "id": "8976da46-034f-47d9-b3e3-b3c94ed39666",
+      "name": "Update Checkout Billing Address",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/billing-address/{addressId}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"first_name\": \"\",\n  \"last_name\": \"\",\n  \"email\": \"\",\n  \"company\": \"\",\n  \"address1\": \"\",\n  \"address2\": \"\",\n  \"city\": \"\",\n  \"state_or_province\": \"\",\n  \"state_or_province_code\": \"\",\n  \"country_code\": \"\",\n  \"postal_code\": \"\",\n  \"phone\": \"\",\n  \"custom_fields\": [\n    {\n      \"field_id\": \"\",\n      \"field_value\": \"\"\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Updates an existing billing address on a checkout."
+    },
+    {
+      "id": "be2a9a8e-3b13-437c-b272-6275471f145b",
+      "name": "Add Consignment to Checkout",
+      "method": "POST",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/consignments",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "include",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "json",
+        "content": "[\n  {\n    \"address\": {\n      \"first_name\": \"\",\n      \"last_name\": \"\",\n      \"email\": \"\",\n      \"company\": \"\",\n      \"address1\": \"\",\n      \"address2\": \"\",\n      \"city\": \"\",\n      \"state_or_province\": \"\",\n      \"state_or_province_code\": \"\",\n      \"country_code\": \"\",\n      \"postal_code\": \"\",\n      \"phone\": \"\",\n      \"custom_fields\": [\n        null\n      ]\n    },\n    \"line_items\": [\n      {\n        \"item_id\": null,\n        \"quantity\": null\n      }\n    ],\n    \"pickup_option\": {\n      \"pickup_method_id\": 1\n    }\n  }\n]"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Adds a new consignment to a checkout.\n\n\nPlease note that this API endpoint is not concurrent safe, meaning multiple simultaneous requests could result in unexpected and inconsistent results.\n\nFor more information about working with consignments, see [Checkout consignment](/docs/storefront/cart-checkout/guide/consignments).  \n\nThough the only required `address` properties to create a consignment are `email` and `country_code`, to successfully [create an order](/docs/rest-management/checkouts/checkout-orders#create-an-order) the `address` requires the following properties:\n* `first_name`\n* `last_name`\n* `address1`\n* `city`\n* `country`\n* `email`\n* `country_code`\n\nDepending on the country, the following `address` properties may also be required:\n\n* `postal_code`\n* `state_or_province`"
+    },
+    {
+      "id": "c7a1f85c-7992-4f28-8215-7ce50f37dd14",
+      "name": "Update Checkout Consignment",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/consignments/{consignmentId}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "include",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"address\": {\n    \"first_name\": \"\",\n    \"last_name\": \"\",\n    \"email\": \"\",\n    \"company\": \"\",\n    \"address1\": \"\",\n    \"address2\": \"\",\n    \"city\": \"\",\n    \"state_or_province\": \"\",\n    \"state_or_province_code\": \"\",\n    \"country_code\": \"\",\n    \"postal_code\": \"\",\n    \"phone\": \"\",\n    \"custom_fields\": [\n      {\n        \"field_id\": null,\n        \"field_value\": null\n      }\n    ]\n  },\n  \"line_items\": [\n    {\n      \"item_id\": \"\",\n      \"quantity\": 0\n    }\n  ],\n  \"shipping_option_id\": \"\",\n  \"pickup_option\": {\n    \"pickup_method_id\": 1\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Updates an existing consignment. The address, line item IDs, and shipping option ID can be updated using this endpoint.\n\nUse a separate `PUT` request to update the shipping option IDs if you also want to update the address and line item IDs.  \n\nTo add new shipping options, complete the following steps: \n* Use the [Add Consignment to Checkout](/docs/rest-management/checkouts/checkout-consignments#add-consignment-to-checkout) endpoint to add a new [consignment] to a checkout. \n* Assign a shipping option to the new consignment by sending a `PUT` request to update the consignment's `shipping_option_id` with a returned value from `data.consignments[N].available_shipping_option[N].id` obtained in the [Add Consignment to Checkout](/docs/rest-management/checkouts/checkout-consignments#add-consignment-to-checkout) endpoint. \n\nTo update an existing address and line item IDs, assign a new address and line item IDs by sending a `PUT` request.\n\nPlease note that this API endpoint is not concurrent safe, meaning multiple simultaneous requests could result in unexpected and inconsistent results."
+    },
+    {
+      "id": "7b1ffbe4-18ce-4a1c-8f27-0b7bc1c905d9",
+      "name": "Delete Checkout Consignment",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/consignments/{consignmentId}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Removes an existing consignment from a checkout.\n\nRemoving the last consignment will remove the cart from the customer it is assigned to. Create a new redirect URL for the customer so they can access the cart again."
+    },
+    {
+      "id": "31b33fbb-4665-414d-9467-c94813f1089f",
+      "name": "Add Coupon to Checkout",
+      "method": "POST",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/coupons",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"coupon_code\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Adds a coupon code to a checkout.\n\n**Required Fields**\n* coupon_code\n\n**Limits**\n* Coupon codes have a 50-character limit. "
+    },
+    {
+      "id": "d0b71f75-c451-4c11-8889-5381019e3b0b",
+      "name": "Delete Checkout Coupon",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/coupons/{couponCode}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": \"497f6eca-6276-4993-bfeb-53cbbbba6f08\",\n    \"cart\": {\n      \"id\": null,\n      \"customer_id\": null,\n      \"email\": null,\n      \"currency\": null,\n      \"base_amount\": null,\n      \"channel_id\": null,\n      \"discount_amount\": null,\n      \"cart_amount_inc_tax\": null,\n      \"cart_amount_ex_tax\": null,\n      \"coupons\": null,\n      \"discounts\": null,\n      \"line_items\": null,\n      \"created_time\": null,\n      \"updated_time\": null\n    },\n    \"billing_address\": {},\n    \"consignments\": [\n      null\n    ],\n    \"taxes\": [\n      null\n    ],\n    \"coupons\": [\n      null\n    ],\n    \"order_id\": \"\",\n    \"shipping_cost_total_inc_tax\": 0,\n    \"shipping_cost_total_ex_tax\": 0,\n    \"handling_cost_total_inc_tax\": 0,\n    \"handling_cost_total_ex_tax\": 0,\n    \"tax_total\": 0,\n    \"subtotal_inc_tax\": 0,\n    \"subtotal_ex_tax\": 0,\n    \"grand_total\": 0,\n    \"created_time\": \"\",\n    \"updated_time\": \"\",\n    \"customer_message\": \"\",\n    \"promotions\": [\n      null\n    ]\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Deletes a coupon code from a checkout."
+    },
+    {
+      "id": "1bcac964-538d-48fd-bc1c-2f41e61843d4",
+      "name": "Create an Order",
+      "method": "POST",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/orders",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"id\": 75\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Creates an order.\n\n## Usage notes\n* Orders created will be set to incomplete order status.\n* You can create as many orders from the same order (cart) as you want.\n* Order duplication copies the existing order, assigns a new order number, and sets the new order status to `incomplete`.\n* Once the order is paid, the cart is deleted.\n* Cart deletion occurs if you are using BigCommerce to accept payments on orders."
+    },
+    {
+      "id": "0a3948c1-84fb-4581-86c6-07bba9665f0b",
+      "name": "Get Checkout Settings",
+      "method": "GET",
+      "url": "{{BASE_URL}}/checkouts/settings",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"custom_checkout_script_url\": \"https://example.com/custom-checkout-script.js\",\n    \"order_confirmation_use_custom_checkout_script\": false,\n    \"custom_order_confirmation_script_url\": \"https://example.com/custom-order-confirmation-script.js\",\n    \"custom_checkout_supports_uco_settings\": false\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Get checkout settings"
+    },
+    {
+      "id": "29f9901c-02dd-4438-b897-2d24dc2d5570",
+      "name": "Update Checkout Settings",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/checkouts/settings",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"custom_checkout_script_url\": \"\",\n  \"order_confirmation_use_custom_checkout_script\": false,\n  \"custom_order_confirmation_script_url\": \"\",\n  \"custom_checkout_supports_uco_settings\": false\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"data\": {\n    \"custom_checkout_script_url\": \"https://example.com/custom-checkout-script.js\",\n    \"order_confirmation_use_custom_checkout_script\": false,\n    \"custom_order_confirmation_script_url\": \"https://example.com/custom-order-confirmation-script.js\",\n    \"custom_checkout_supports_uco_settings\": false\n  },\n  \"meta\": {}\n}"
+        }
+      ],
+      "description": "Update checkout settings"
+    },
+    {
+      "id": "cc419f2e-f3e8-4578-bfea-efb125425289",
+      "name": "Create Checkout Token",
+      "method": "POST",
+      "url": "{{BASE_URL}}/checkouts/{checkoutId}/token",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"maxUses\": 1,\n  \"ttl\": 86400\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"checkoutToken\": \"beb3590088be88f59ba980d54a68df655cd8a1052a3e9caf535f3f820146c226\",\n  \"meta\": {}\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Unauthorized - the v3 Auth client ID or token in the request are not a valid combination for this store.",
+          "content": "{\n  \"status\": 401,\n  \"title\": \"Unauthorized\",\n  \"type\": \"https://developer.bigcommerce.com/api-docs/getting-started/api-status-codes\",\n  \"errors\": {}\n}"
+        },
+        {
+          "statusCode": "422",
+          "description": "Invalid JSON request body - missing or invalid data.",
+          "content": "{\n  \"status\": \"422\",\n  \"title\": \"Invalid input\",\n  \"type\": \"https://developer.bigcommerce.com/api-docs/getting-started/api-status-codes\"\n}"
+        }
+      ],
+      "description": "Use the checkout token to display a confirmation page for a guest shopper.\n**Usage Notes** * The response from performing this POST request is a checkout token. * The checkout token is a single-use token that is not order-dependent. You cannot create this token after finalizing an order. * After completing the order, you can redirect the shopper to /order-confirmation/{orderId}?t={checkoutToken}. * After token validation, the /order-confirmation/{orderId} page displays. * The `ORDER_TOKEN` should match the order or the logged-in customer can access the order."
+    }
+  ]
+}

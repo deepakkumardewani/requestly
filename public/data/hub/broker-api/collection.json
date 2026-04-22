@@ -1,0 +1,1949 @@
+{
+  "id": "d4910adf-acf7-41c8-a65e-cd83f4fe16c0",
+  "name": "Alpaca (Broker)",
+  "description": "Open brokerage accounts, enable crypto and stock trading, and manage the ongoing user experience with Alpaca Broker API",
+  "createdAt": 1776830122171,
+  "requests": [
+    {
+      "id": "2d596a86-7983-42e3-988c-1276bf27761c",
+      "name": "Get all accounts",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "query",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "created_after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "created_before",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "sort",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "entities",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The response is a list of Account model up to 1000 items\nper query order by created_at. To scroll the result,\nplease use the created_after parameter.\n",
+          "content": "[\n  {\n    \"id\": \"\",\n    \"account_number\": \"\",\n    \"status\": null,\n    \"crypto_status\": null,\n    \"currency\": \"USD\",\n    \"created_at\": \"\",\n    \"last_equity\": \"\",\n    \"kyc_results\": null,\n    \"account_type\": null\n  }\n]"
+        }
+      ],
+      "description": "Retrieves all accounts found by the query'"
+    },
+    {
+      "id": "42e8304d-f984-47fc-8b44-6187494f1ca6",
+      "name": "Create an account",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/accounts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"contact\": {\n    \"email_address\": \"john.doe@example.com\",\n    \"phone_number\": \"+15556667788\",\n    \"street_address\": [\n      null\n    ],\n    \"city\": \"San Mateo\",\n    \"state\": \"CA\",\n    \"postal_code\": \"94401\"\n  },\n  \"identity\": {\n    \"given_name\": \"John\",\n    \"family_name\": \"Doe\",\n    \"date_of_birth\": \"1990-01-01\",\n    \"tax_id\": \"666-55-4321\",\n    \"tax_id_type\": null,\n    \"country_of_citizenship\": \"USA\",\n    \"country_of_birth\": \"USA\",\n    \"country_of_tax_residence\": \"USA\",\n    \"funding_source\": [\n      null\n    ],\n    \"annual_income_min\": 0,\n    \"annual_income_max\": 0,\n    \"liquid_net_worth_min\": 0,\n    \"liquid_net_worth_max\": 0,\n    \"total_net_worth_min\": 0,\n    \"total_net_worth_max\": 0,\n    \"extra\": {}\n  },\n  \"disclosures\": {\n    \"employment_status\": \"\",\n    \"employer_name\": \"\",\n    \"employer_address\": \"\",\n    \"employment_position\": \"\",\n    \"is_control_person\": false,\n    \"is_affiliated_exchange_or_finra\": false,\n    \"is_politically_exposed\": false,\n    \"immediate_family_exposed\": false,\n    \"context\": [\n      null\n    ]\n  },\n  \"agreements\": [\n    {\n      \"agreement\": null,\n      \"signed_at\": null,\n      \"ip_address\": null,\n      \"revision\": null\n    }\n  ],\n  \"documents\": [\n    {\n      \"document_type\": null,\n      \"document_sub_type\": null,\n      \"content\": null,\n      \"mime_type\": null\n    }\n  ],\n  \"trusted_contact\": {\n    \"given_name\": \"Jane\",\n    \"family_name\": \"Doe\",\n    \"email_address\": \"jane.doe@example.com\",\n    \"phone_number\": \"\",\n    \"street_address\": [\n      null\n    ],\n    \"city\": \"\",\n    \"state\": \"\",\n    \"postal_code\": \"\",\n    \"country\": \"\"\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"account_number\": \"\",\n  \"status\": \"ACTIVE\",\n  \"crypto_status\": \"ACTIVE\",\n  \"currency\": \"USD\",\n  \"created_at\": \"\",\n  \"last_equity\": \"\",\n  \"kyc_results\": {\n    \"reject\": {},\n    \"accept\": {},\n    \"indeterminate\": {},\n    \"addidional_information\": \"\"\n  },\n  \"account_type\": \"trading\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "The post body is not well formed."
+        },
+        {
+          "statusCode": "409",
+          "description": "There is already an existing account registered with the same email address."
+        },
+        {
+          "statusCode": "422",
+          "description": "One of the input values is not a valid value."
+        }
+      ],
+      "description": "Submit an account application with KYC information. This will create a trading account for the end user. The account status may or may not be ACTIVE immediately and you will receive account status updates on the event API. "
+    },
+    {
+      "id": "993903a6-d777-4dc3-a9ae-bb55bd87b2e6",
+      "name": "Get an account by Id.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Will return an AccountExtended if an account with account_id exists, otherwise will throw an error.",
+          "content": "{\n  \"id\": \"\",\n  \"account_number\": \"\",\n  \"status\": \"ACTIVE\",\n  \"crypto_status\": \"ACTIVE\",\n  \"kyc_result\": {\n    \"reject\": {},\n    \"accept\": {},\n    \"indeterminate\": {},\n    \"addidional_information\": \"\"\n  },\n  \"currency\": \"USD\",\n  \"last_equity\": \"\",\n  \"created_at\": \"\",\n  \"contact\": {\n    \"email_address\": \"john.doe@example.com\",\n    \"phone_number\": \"+15556667788\",\n    \"street_address\": [\n      null\n    ],\n    \"city\": \"San Mateo\",\n    \"state\": \"CA\",\n    \"postal_code\": \"94401\"\n  },\n  \"identity\": {\n    \"given_name\": \"John\",\n    \"family_name\": \"Doe\",\n    \"date_of_birth\": \"1990-01-01\",\n    \"tax_id\": \"666-55-4321\",\n    \"tax_id_type\": null,\n    \"country_of_citizenship\": \"USA\",\n    \"country_of_birth\": \"USA\",\n    \"country_of_tax_residence\": \"USA\",\n    \"funding_source\": [\n      null\n    ],\n    \"annual_income_min\": 0,\n    \"annual_income_max\": 0,\n    \"liquid_net_worth_min\": 0,\n    \"liquid_net_worth_max\": 0,\n    \"total_net_worth_min\": 0,\n    \"total_net_worth_max\": 0,\n    \"extra\": {}\n  },\n  \"disclosures\": {\n    \"employment_status\": \"\",\n    \"employer_name\": \"\",\n    \"employer_address\": \"\",\n    \"employment_position\": \"\",\n    \"is_control_person\": false,\n    \"is_affiliated_exchange_or_finra\": false,\n    \"is_politically_exposed\": false,\n    \"immediate_family_exposed\": false,\n    \"context\": [\n      null\n    ]\n  },\n  \"agreements\": [\n    {\n      \"agreement\": null,\n      \"signed_at\": null,\n      \"ip_address\": null,\n      \"revision\": null\n    }\n  ],\n  \"documents\": [\n    {\n      \"id\": null,\n      \"document_type\": null,\n      \"document_sub_type\": null,\n      \"mime_type\": null,\n      \"created_at\": null\n    }\n  ],\n  \"trusted_contact\": {\n    \"given_name\": \"Jane\",\n    \"family_name\": \"Doe\",\n    \"email_address\": \"jane.doe@example.com\",\n    \"phone_number\": \"\",\n    \"street_address\": [\n      null\n    ],\n    \"city\": \"\",\n    \"state\": \"\",\n    \"postal_code\": \"\",\n    \"country\": \"\"\n  },\n  \"account_name\": \"\",\n  \"account_type\": \"trading\",\n  \"custodial_account_type\": \"\",\n  \"minor_identity\": {\n    \"given_name\": \"\",\n    \"family_name\": \"\",\n    \"date_of_birth\": \"\",\n    \"tax_id\": \"\",\n    \"tax_id_type\": null,\n    \"country_of_citizenship\": \"\",\n    \"country_of_birth\": \"\",\n    \"country_of_tax_residence\": \"\",\n    \"state\": \"\",\n    \"email\": \"\"\n  },\n  \"trading_configurations\": {\n    \"dtbp_check\": \"both\",\n    \"trade_confirm_email\": \"\",\n    \"suspend_trade\": false,\n    \"no_shorting\": false,\n    \"fractional_trading\": false,\n    \"max_margin_multiplier\": \"\",\n    \"pdt_check\": \"entry\"\n  }\n}"
+        }
+      ],
+      "description": "You can query a specific account that you submitted to Alpaca by passing into the query the account_id associated with the account you’re retrieving.\n"
+    },
+    {
+      "id": "478784ae-d380-4770-be5e-f23a37cab4d9",
+      "name": "Update an account",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"contact\": {\n    \"email_address\": \"john.doe@example.com\",\n    \"phone_number\": \"+15556667788\",\n    \"street_address\": [\n      null\n    ],\n    \"city\": \"San Mateo\",\n    \"state\": \"CA\",\n    \"postal_code\": \"94401\"\n  },\n  \"identity\": {\n    \"given_name\": \"John\",\n    \"family_name\": \"Doe\",\n    \"date_of_birth\": \"1990-01-01\",\n    \"tax_id\": \"666-55-4321\",\n    \"tax_id_type\": null,\n    \"country_of_citizenship\": \"USA\",\n    \"country_of_birth\": \"USA\",\n    \"country_of_tax_residence\": \"USA\",\n    \"funding_source\": [\n      null\n    ],\n    \"annual_income_min\": 0,\n    \"annual_income_max\": 0,\n    \"liquid_net_worth_min\": 0,\n    \"liquid_net_worth_max\": 0,\n    \"total_net_worth_min\": 0,\n    \"total_net_worth_max\": 0,\n    \"extra\": {}\n  },\n  \"disclosures\": {\n    \"employment_status\": \"\",\n    \"employer_name\": \"\",\n    \"employer_address\": \"\",\n    \"employment_position\": \"\",\n    \"is_control_person\": false,\n    \"is_affiliated_exchange_or_finra\": false,\n    \"is_politically_exposed\": false,\n    \"immediate_family_exposed\": false,\n    \"context\": [\n      null\n    ]\n  },\n  \"trustedContact\": {\n    \"given_name\": \"Jane\",\n    \"family_name\": \"Doe\",\n    \"email_address\": \"jane.doe@example.com\",\n    \"phone_number\": \"\",\n    \"street_address\": [\n      null\n    ],\n    \"city\": \"\",\n    \"state\": \"\",\n    \"postal_code\": \"\",\n    \"country\": \"\"\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "If all parameters are valid and updates have been made, it returns with status code 200. The response is the account model.",
+          "content": "{\n  \"id\": \"\",\n  \"account_number\": \"\",\n  \"status\": \"ACTIVE\",\n  \"crypto_status\": \"ACTIVE\",\n  \"kyc_result\": {\n    \"reject\": {},\n    \"accept\": {},\n    \"indeterminate\": {},\n    \"addidional_information\": \"\"\n  },\n  \"currency\": \"USD\",\n  \"last_equity\": \"\",\n  \"created_at\": \"\",\n  \"contact\": {\n    \"email_address\": \"john.doe@example.com\",\n    \"phone_number\": \"+15556667788\",\n    \"street_address\": [\n      null\n    ],\n    \"city\": \"San Mateo\",\n    \"state\": \"CA\",\n    \"postal_code\": \"94401\"\n  },\n  \"identity\": {\n    \"given_name\": \"John\",\n    \"family_name\": \"Doe\",\n    \"date_of_birth\": \"1990-01-01\",\n    \"tax_id\": \"666-55-4321\",\n    \"tax_id_type\": null,\n    \"country_of_citizenship\": \"USA\",\n    \"country_of_birth\": \"USA\",\n    \"country_of_tax_residence\": \"USA\",\n    \"funding_source\": [\n      null\n    ],\n    \"annual_income_min\": 0,\n    \"annual_income_max\": 0,\n    \"liquid_net_worth_min\": 0,\n    \"liquid_net_worth_max\": 0,\n    \"total_net_worth_min\": 0,\n    \"total_net_worth_max\": 0,\n    \"extra\": {}\n  },\n  \"disclosures\": {\n    \"employment_status\": \"\",\n    \"employer_name\": \"\",\n    \"employer_address\": \"\",\n    \"employment_position\": \"\",\n    \"is_control_person\": false,\n    \"is_affiliated_exchange_or_finra\": false,\n    \"is_politically_exposed\": false,\n    \"immediate_family_exposed\": false,\n    \"context\": [\n      null\n    ]\n  },\n  \"agreements\": [\n    {\n      \"agreement\": null,\n      \"signed_at\": null,\n      \"ip_address\": null,\n      \"revision\": null\n    }\n  ],\n  \"documents\": [\n    {\n      \"id\": null,\n      \"document_type\": null,\n      \"document_sub_type\": null,\n      \"mime_type\": null,\n      \"created_at\": null\n    }\n  ],\n  \"trusted_contact\": {\n    \"given_name\": \"Jane\",\n    \"family_name\": \"Doe\",\n    \"email_address\": \"jane.doe@example.com\",\n    \"phone_number\": \"\",\n    \"street_address\": [\n      null\n    ],\n    \"city\": \"\",\n    \"state\": \"\",\n    \"postal_code\": \"\",\n    \"country\": \"\"\n  },\n  \"account_name\": \"\",\n  \"account_type\": \"trading\",\n  \"custodial_account_type\": \"\",\n  \"minor_identity\": {\n    \"given_name\": \"\",\n    \"family_name\": \"\",\n    \"date_of_birth\": \"\",\n    \"tax_id\": \"\",\n    \"tax_id_type\": null,\n    \"country_of_citizenship\": \"\",\n    \"country_of_birth\": \"\",\n    \"country_of_tax_residence\": \"\",\n    \"state\": \"\",\n    \"email\": \"\"\n  },\n  \"trading_configurations\": {\n    \"dtbp_check\": \"both\",\n    \"trade_confirm_email\": \"\",\n    \"suspend_trade\": false,\n    \"no_shorting\": false,\n    \"fractional_trading\": false,\n    \"max_margin_multiplier\": \"\",\n    \"pdt_check\": \"entry\"\n  }\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "The post body is not well formed."
+        },
+        {
+          "statusCode": "422",
+          "description": "​ The request body contains an attribute that is not permitted to be updated or you are attempting to set an invalid value."
+        }
+      ],
+      "description": "This operation updates account information.\n\nIf all parameters are valid and updates have been made, it returns with status code 200. The response is the account model."
+    },
+    {
+      "id": "25c22cd5-a3ef-4215-b57b-91e140a30ba8",
+      "name": "Request to close an account",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "No content."
+        }
+      ],
+      "description": "This operation closes an active account."
+    },
+    {
+      "id": "b96717d3-948f-4a67-84a2-f417d20f11ab",
+      "name": "Return a list of account documents.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/documents",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_date",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "end_date",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "type",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "[\n  [\n    {\n      \"document_id\": null,\n      \"document_type\": null,\n      \"document_date\": null\n    }\n  ]\n]"
+        },
+        {
+          "statusCode": "404",
+          "description": "Not found"
+        }
+      ],
+      "description": "This endpoint allows you to query all the documents that belong to a certain account. You can filter by date, or type of document."
+    },
+    {
+      "id": "1d98a34f-407f-46d7-8c9c-0be708dcf9c6",
+      "name": "Upload a document to an already existing account",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/documents/upload",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"document_type\": \"identity_verification\",\n  \"document_sub_type\": \"passport\",\n  \"content\": \"/9j/Cg==\",\n  \"mime_type\": \"image/jpeg\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "Success (No Content)"
+        },
+        {
+          "statusCode": "400",
+          "description": "Bad Request. The body in the request is not valid."
+        },
+        {
+          "statusCode": "404",
+          "description": "Not Found. No account was found for this account_id"
+        }
+      ],
+      "description": "Upload a document to be attached to an account.\n\nDocuments are binary objects whose contents are encoded in base64. Each encoded content size is limited to 10MB if you use Alpaca for KYCaaS. If you perform your own KYC there are no document size limitations."
+    },
+    {
+      "id": "07059f14-6611-4bf1-815c-e76470577083",
+      "name": "Download a document file that belongs to an account.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/documents/{document_id}/download",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "301",
+          "description": "Redirect to the pre-signed download link for the document PDF file.\n"
+        },
+        {
+          "statusCode": "404",
+          "description": "The document is not found."
+        }
+      ],
+      "description": "This endpoint allows you to download a document identified by the document_id passed in the header. The returned document is in PDF format.\n\nThe operation returns a pre-signed downloadable link as a redirect with HTTP status code 301 if one is found.\n"
+    },
+    {
+      "id": "0580aca0-3ee4-4da6-bc09-22189d835637",
+      "name": "Download a document file directly",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/documents/{document_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "301",
+          "description": "Redirect to the pre-signed download link for the document PDF file.\n"
+        },
+        {
+          "statusCode": "404",
+          "description": "The document was not found."
+        }
+      ],
+      "description": "The operation returns a pre-signed downloadable link as a redirect with HTTP status code 301 if one is found.\n"
+    },
+    {
+      "id": "ec8e0de9-ed8f-4ba3-932a-29e8fe378ef5",
+      "name": "Retrieve bank relationships for an account",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/recipient_banks",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bank_name",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success. Returns the bank relationship model.",
+          "content": "[\n  {\n    \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n    \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"account_id\": \"\",\n    \"status\": \"\",\n    \"name\": \"\",\n    \"bank_code\": \"\",\n    \"bank_code_type\": \"\",\n    \"country\": \"\",\n    \"state_province\": \"\",\n    \"postal_code\": \"\",\n    \"city\": \"\",\n    \"street_address\": \"\",\n    \"account_number\": \"\"\n  }\n]"
+        },
+        {
+          "statusCode": "400",
+          "description": "Bad request. The body in the request is not valid."
+        }
+      ],
+      "description": "Retrieves Bank Relationships for an account"
+    },
+    {
+      "id": "7bd26140-987b-4f0e-ae8c-b54edddde50a",
+      "name": "Create a Bank Relationship for an account",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/recipient_banks",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"bank_code\": \"\",\n  \"bank_code_type\": \"\",\n  \"country\": \"\",\n  \"state_province\": \"\",\n  \"postal_code\": \"\",\n  \"city\": \"\",\n  \"street_address\": \"\",\n  \"account_number\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success",
+          "content": "{\n  \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"account_id\": \"\",\n  \"status\": \"\",\n  \"name\": \"\",\n  \"bank_code\": \"\",\n  \"bank_code_type\": \"\",\n  \"country\": \"\",\n  \"state_province\": \"\",\n  \"postal_code\": \"\",\n  \"city\": \"\",\n  \"street_address\": \"\",\n  \"account_number\": \"\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Bad Request"
+        },
+        {
+          "statusCode": "409",
+          "description": "Conflict"
+        }
+      ],
+      "description": "If successful, retrieves Bank Relationships for an account"
+    },
+    {
+      "id": "34093e47-6afc-4cc7-8549-0688f63b78de",
+      "name": "Delete a Bank Relationship for an account",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/recipient_banks/{bank_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "Success (No Content)"
+        },
+        {
+          "statusCode": "400",
+          "description": "Bad Request"
+        },
+        {
+          "statusCode": "404",
+          "description": "Bank Not Found"
+        }
+      ],
+      "description": "If successful, deletes Bank Relationship for an account"
+    },
+    {
+      "id": "b61a1505-5595-4e6d-abc1-f7ce75c738bd",
+      "name": "Return a list of transfers for an account.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/transfers",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "direction",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "offset",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success.",
+          "content": "[\n  {\n    \"id\": \"\",\n    \"relationship_id\": \"\",\n    \"bank_id\": \"\",\n    \"account_id\": \"\",\n    \"type\": null,\n    \"status\": null,\n    \"reason\": \"\",\n    \"amount\": \"\",\n    \"direction\": null,\n    \"created_at\": \"\",\n    \"updated_at\": \"\",\n    \"expires_at\": \"\",\n    \"additional_information\": \"\",\n    \"hold_until\": \"\",\n    \"instant_amount\": \"\"\n  }\n]"
+        }
+      ],
+      "description": "You can query a list of transfers for an account.\n\n\nYou can filter requested transfers by values such as direction and status.\n"
+    },
+    {
+      "id": "b0face3b-b796-4ac0-a4fe-2fe53b090fd3",
+      "name": "Request a new transfer",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/transfers",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"transfer_type\": \"ach\",\n  \"relationship_id\": \"\",\n  \"bank_id\": \"\",\n  \"amount\": \"\",\n  \"direction\": \"INCOMING\",\n  \"timing\": \"immediate\",\n  \"additional_information\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successfully requested a transfer.",
+          "content": "{\n  \"id\": \"\",\n  \"relationship_id\": \"\",\n  \"bank_id\": \"\",\n  \"account_id\": \"\",\n  \"type\": \"ach\",\n  \"status\": \"QUEUED\",\n  \"reason\": \"\",\n  \"amount\": \"\",\n  \"direction\": \"INCOMING\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"expires_at\": \"\",\n  \"additional_information\": \"\",\n  \"hold_until\": \"\",\n  \"instant_amount\": \"\"\n}"
+        }
+      ],
+      "description": "Create a new transfer to an account to fund it.\n\nIn the sandbox environment, you can instantly deposit to or withdraw from an account with a virtual money amount. In the production environment, this endpoint is used only for requesting an outgoing (withdrawal) wire transfer at this moment. For the wire transfer (in production), you need to create a bank resource first using the Bank API. For more on how to fund an account in sandbox please check out this tutorial [here](https://alpaca.markets/learn/fund-broker-api/)."
+    },
+    {
+      "id": "7cadb4f8-ab30-43ac-8ee1-5c2c32a4967a",
+      "name": "Request to close a transfer",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/transfers/{transfer_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "Success (No Content)"
+        },
+        {
+          "statusCode": "404",
+          "description": "Resource does not exist.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Request to close a transfer"
+    },
+    {
+      "id": "275ef08d-0048-4256-8608-65afa98d37a0",
+      "name": "Retrieve account activities",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/activities",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "account_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "date",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "direction",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page_size",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page_token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success",
+          "content": "[\n  {\n    \"id\": null,\n    \"account_id\": null,\n    \"activity_type\": null\n  }\n]"
+        }
+      ],
+      "description": "Returns an array of Activities\n\nNotes:\n* Pagination is handled using the `page_token` and `page_size` parameters.\n* `page_token` represents the ID of the end of your current page of results.\n  for example if in your first response the id of the last Activiy item returned in the array was `20220203000000000::045b3b8d-c566-4bef-b741-2bf598dd6ae7`, you'd pass that value as `page_token` to get the next page of results\n\n* If specified with a `direction` of `desc`, for example, the results will end before the activity with the specified ID.\n* If specified with a `direction` of `asc`, results will begin with the activity immediately after the one specified.\n* `page_size` is the maximum number of entries to return in the response.\n* If `date` is not specified, the default and maximum value is 100.\n* If `date` is specified, the default behavior is to return all results, and there is no maximum page size."
+    },
+    {
+      "id": "53ebc604-62e6-42f2-9bd8-31a4960a9988",
+      "name": "Retrieve specific account activities",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/activities/{activity_type}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "account_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "date",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "direction",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page_size",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page_token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success",
+          "content": "[\n  {\n    \"id\": null,\n    \"account_id\": null,\n    \"activity_type\": null\n  }\n]"
+        }
+      ],
+      "description": "Retrieves an Array of Activies by type\n\nNotes:\n* Pagination is handled using the `page_token` and `page_size` parameters.\n* `page_token` represents the ID of the end of your current page of results.\n  for example if in your first response the id of the last Activiy item returned in the array was `20220203000000000::045b3b8d-c566-4bef-b741-2bf598dd6ae7`, you'd pass that value as `page_token` to get the next page of results\n\n* If specified with a `direction` of `desc`, for example, the results will end before the activity with the specified ID.\n* If specified with a `direction` of `asc`, results will begin with the activity immediately after the one specified.\n* `page_size` is the maximum number of entries to return in the response.\n* If `date` is not specified, the default and maximum value is 100.\n* If `date` is specified, the default behavior is to return all results, and there is no maximum page size."
+    },
+    {
+      "id": "f647665a-707b-4e9a-9d4f-12a96b770d97",
+      "name": "Retrieve ACH Relationships for an account",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/ach_relationships",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "statuses",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success",
+          "content": "[\n  {\n    \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n    \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"account_id\": \"\",\n    \"status\": \"\",\n    \"account_owner_name\": \"\",\n    \"bank_account_type\": \"\",\n    \"bank_account_number\": \"\",\n    \"bank_routing_number\": \"\",\n    \"nickname\": \"\"\n  }\n]"
+        }
+      ],
+      "description": "Returns a list of ACH Relationships for an account"
+    },
+    {
+      "id": "9e35b439-3ee8-4dc4-91b7-d509a64208cd",
+      "name": "Create an ACH Relationship",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/ach_relationships",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"account_owner_name\": \"\",\n  \"bank_account_type\": \"\",\n  \"bank_account_number\": \"\",\n  \"bank_routing_number\": \"\",\n  \"nickname\": \"\",\n  \"processor_token\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "returns the newly created ACH Relationship entity.",
+          "content": "{\n  \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"account_id\": \"\",\n  \"status\": \"\",\n  \"account_owner_name\": \"\",\n  \"bank_account_type\": \"\",\n  \"bank_account_number\": \"\",\n  \"bank_routing_number\": \"\",\n  \"nickname\": \"\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Malformed input.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Client is not authorized for this operation.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        },
+        {
+          "statusCode": "409",
+          "description": "The account already has an active relationship.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Create a new ACHRelationship for an account\n\nIf successful, will return 200 code with a newly created ACH Relationship entity."
+    },
+    {
+      "id": "3233209c-8f98-411d-abe2-5f94dcef76bf",
+      "name": "Delete an existing ACH relationship",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/ach_relationships/{ach_relationship_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "Success (No Content)"
+        },
+        {
+          "statusCode": "400",
+          "description": "the passed in account_id or relationship_id were invalid"
+        },
+        {
+          "statusCode": "404",
+          "description": "Resource does not exist.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Delete an existing ACH relationship for an account"
+    },
+    {
+      "id": "3af6d06a-05e6-42dd-8d8e-0be4f7f19116",
+      "name": "Retrieve trading details for an account.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/account",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"c8f1ef5d-edc0-4f23-9ee4-378f19cb92a4\",\n  \"account_number\": \"927584925\",\n  \"status\": \"ACTIVE\",\n  \"currency\": \"USD\",\n  \"buying_power\": \"12345.6789\",\n  \"regt_buying_power\": \"12345.6789\",\n  \"daytrading_buying_power\": \"12345.6789\",\n  \"cash\": \"12345.6789\",\n  \"cash_withdrawable\": \"12345.6789\",\n  \"cash_transferable\": \"12345.6789\",\n  \"pending_transfer_out\": \"12345.6789\",\n  \"portfolio_value\": \"12345.6789\",\n  \"pattern_day_trader\": false,\n  \"trading_blocked\": false,\n  \"transfers_blocked\": false,\n  \"account_blocked\": false,\n  \"created_at\": \"2021-03-01T13:28:49.270232Z\",\n  \"trade_suspended_by_user\": false,\n  \"multiplier\": \"2\",\n  \"shorting_enabled\": false,\n  \"equity\": \"12345.6789\",\n  \"last_equity\": \"12345.6789\",\n  \"long_market_value\": \"12345.6789\",\n  \"short_market_value\": \"0\",\n  \"initial_margin\": \"12345.6789\",\n  \"maintenance_margin\": \"12345.6789\",\n  \"last_maintenance_margin\": \"12345.6789\",\n  \"sma\": \"12345.6789\",\n  \"daytrade_count\": 0,\n  \"previous_close\": \"2021-04-01T19:00:00-04:00\",\n  \"last_long_market_value\": \"12345.6789\",\n  \"last_short_market_value\": \"0\",\n  \"last_cash\": \"12345.6789\",\n  \"last_initial_margin\": \"12345.6789\",\n  \"last_regt_buying_power\": \"12345.6789\",\n  \"last_daytrading_buying_power\": \"12345.6789\",\n  \"last_buying_power\": \"12345.6789\",\n  \"last_daytrade_count\": 0,\n  \"clearing_broker\": \"Velox\"\n}"
+        }
+      ],
+      "description": "As a broker you can view more trading details about your users.\n\nThe response is a Trading Account model."
+    },
+    {
+      "id": "f87de159-fc7a-4e10-bd1c-9e0c74e5d79e",
+      "name": "List open positions for an account",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/positions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success",
+          "content": "[\n  {\n    \"asset_id\": \"904837e3-3b76-47ec-b432-046db621571b\",\n    \"symbol\": \"AAPL\",\n    \"exchange\": \"NASDAQ\",\n    \"asset_class\": null,\n    \"asset_marginable\": false,\n    \"avg_entry_price\": \"100.0\",\n    \"qty\": \"5\",\n    \"side\": \"long\",\n    \"market_value\": \"600.0\",\n    \"cost_basis\": \"500.0\",\n    \"unrealized_pl\": \"100.0\",\n    \"unrealized_plpc\": \"0.20\",\n    \"unrealized_intraday_pl\": \"10.0\",\n    \"unrealized_intraday_plpc\": \"0.0084\",\n    \"current_price\": \"120.0\",\n    \"lastday_price\": \"119.0\",\n    \"change_today\": \"0.0084\"\n  }\n]"
+        }
+      ],
+      "description": "List open positions for an account"
+    },
+    {
+      "id": "26c6d58f-f605-4db6-beb7-2752704cca2b",
+      "name": "Close All Positions for an Account",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/positions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "cancel_orders",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "207",
+          "description": "HTTP 207 Multi-Status with body; an array of objects that include the order id and http status code for each status request.",
+          "content": "[\n  {\n    \"symbol\": \"\",\n    \"status\": 0,\n    \"body\": null\n  }\n]"
+        },
+        {
+          "statusCode": "500",
+          "description": "Failed to liquidate some positions"
+        }
+      ],
+      "description": "Closes (liquidates) all of the account’s open long and short positions. A response will be provided for each order that is attempted to be cancelled. If an order is no longer cancelable, the server will respond with status 500 and reject the request."
+    },
+    {
+      "id": "80457e67-1250-481a-808b-85ae95b87848",
+      "name": "Get an Open Position for account by Symbol or AssetId",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/positions/{symbol_or_asset_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The requested Position object",
+          "content": "{\n  \"asset_id\": \"904837e3-3b76-47ec-b432-046db621571b\",\n  \"symbol\": \"AAPL\",\n  \"exchange\": \"NASDAQ\",\n  \"asset_class\": \"\",\n  \"asset_marginable\": false,\n  \"avg_entry_price\": \"100.0\",\n  \"qty\": \"5\",\n  \"side\": \"long\",\n  \"market_value\": \"600.0\",\n  \"cost_basis\": \"500.0\",\n  \"unrealized_pl\": \"100.0\",\n  \"unrealized_plpc\": \"0.20\",\n  \"unrealized_intraday_pl\": \"10.0\",\n  \"unrealized_intraday_plpc\": \"0.0084\",\n  \"current_price\": \"120.0\",\n  \"lastday_price\": \"119.0\",\n  \"change_today\": \"0.0084\"\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Account doesn't have a position for this symbol or asset_id "
+        }
+      ],
+      "description": "Retrieves the account’s open position for the given symbol or asset_id."
+    },
+    {
+      "id": "d11976be-128d-4ffc-b9d9-f05728e298c6",
+      "name": "Close a Position for an Account",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/positions/{symbol_or_asset_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "qty",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "percentage",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"client_order_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"submitted_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"filled_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"expired_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"canceled_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"failed_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"replaced_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"replaced_by\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"replaces\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"asset_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"symbol\": \"AALP\",\n  \"asset_class\": \"\",\n  \"notional\": \"4.2\",\n  \"qty\": \"4.2\",\n  \"filled_qty\": \"4.2\",\n  \"filled_avg_price\": \"4.2\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"stop\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"gtc\",\n  \"limit_price\": \"3.14\",\n  \"stop_price\": \"3.14\",\n  \"status\": \"filled\",\n  \"extended_hours\": true,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_price\": null,\n      \"trail_percent\": null,\n      \"hwm\": null,\n      \"commission\": null\n    }\n  ],\n  \"trail_price\": \"3.14\",\n  \"trail_percent\": \"5.0\",\n  \"hwm\": \"3.14\",\n  \"commission\": \"3.14\"\n}"
+        }
+      ],
+      "description": "Closes (liquidates) the account’s open position for the given symbol. Works for both long and short positions."
+    },
+    {
+      "id": "b06f1cdc-8ab1-4c72-acfd-0c35213e8f33",
+      "name": "Retrieves a single order for the given order_id.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/orders/{order_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The requested Order object",
+          "content": "{\n  \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"client_order_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"submitted_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"filled_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"expired_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"canceled_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"failed_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"replaced_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"replaced_by\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"replaces\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"asset_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"symbol\": \"AALP\",\n  \"asset_class\": \"\",\n  \"notional\": \"4.2\",\n  \"qty\": \"4.2\",\n  \"filled_qty\": \"4.2\",\n  \"filled_avg_price\": \"4.2\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"stop\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"gtc\",\n  \"limit_price\": \"3.14\",\n  \"stop_price\": \"3.14\",\n  \"status\": \"filled\",\n  \"extended_hours\": true,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_price\": null,\n      \"trail_percent\": null,\n      \"hwm\": null,\n      \"commission\": null\n    }\n  ],\n  \"trail_price\": \"3.14\",\n  \"trail_percent\": \"5.0\",\n  \"hwm\": \"3.14\",\n  \"commission\": \"3.14\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Malformed input.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Resource does not exist.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Retrieves a single order for the given order_id."
+    },
+    {
+      "id": "ba7d2628-f757-4a1d-8334-602e5df7111f",
+      "name": "Replaces a single order with updated parameters",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/orders/{order_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"qty\": \"4.2\",\n  \"time_in_force\": \"gtc\",\n  \"limit_price\": \"3.14\",\n  \"stop_price\": \"3.14\",\n  \"trail\": \"3.14\",\n  \"client_order_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A new Order object with a new order_id",
+          "content": "{\n  \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"client_order_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"submitted_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"filled_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"expired_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"canceled_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"failed_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"replaced_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"replaced_by\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"replaces\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"asset_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"symbol\": \"AALP\",\n  \"asset_class\": \"\",\n  \"notional\": \"4.2\",\n  \"qty\": \"4.2\",\n  \"filled_qty\": \"4.2\",\n  \"filled_avg_price\": \"4.2\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"stop\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"gtc\",\n  \"limit_price\": \"3.14\",\n  \"stop_price\": \"3.14\",\n  \"status\": \"filled\",\n  \"extended_hours\": true,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_price\": null,\n      \"trail_percent\": null,\n      \"hwm\": null,\n      \"commission\": null\n    }\n  ],\n  \"trail_price\": \"3.14\",\n  \"trail_percent\": \"5.0\",\n  \"hwm\": \"3.14\",\n  \"commission\": \"3.14\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Malformed input.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Buying power or shares are not sufficient"
+        },
+        {
+          "statusCode": "404",
+          "description": "Resource does not exist.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Replaces a single order with updated parameters. Each parameter overrides the corresponding attribute of the existing order. The other attributes remain the same as the existing order.\n\nA success return code from a replaced order does NOT guarantee the existing open order has been replaced. If the existing open order is filled before the replacing (new) order reaches the execution venue, the replacing (new) order is rejected, and these events are sent in the trade_updates stream channel found [here in the market data api](https://alpaca.markets/docs/api-references/market-data-api/#order-updates).\n\nWhile an order is being replaced, the account's buying power is reduced by the larger of the two orders that have been placed (the old order being replaced, and the newly placed order to replace it). If you are replacing a buy entry order with a higher limit price than the original order, the buying power is calculated based on the newly placed order. If you are replacing it with a lower limit price, the buying power is calculated based on the old order."
+    },
+    {
+      "id": "12164b36-147d-4cd5-985c-94ea6f592d30",
+      "name": "Attempts to cancel an open order.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/orders/{order_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "Success (No Content)"
+        },
+        {
+          "statusCode": "400",
+          "description": "Malformed input.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Resource does not exist.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Attempts to cancel an open order. If the order is no longer cancelable (for example if the status is \"filled\"), the server will respond with status 422, and reject the request.\n\nUpon acceptance of the cancel request, it returns status 204."
+    },
+    {
+      "id": "9fa658c3-4f61-4cad-beb9-2bd1cc9dd03f",
+      "name": "Retrieves a list of orders for the account, filtered by the supplied query parameters.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/orders",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "direction",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "nested",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "symbols",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Retrieves a list of orders for the account, filtered by the supplied query parameters.",
+          "content": "[\n  {\n    \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n    \"client_order_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n    \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"submitted_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"filled_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"expired_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"canceled_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"failed_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"replaced_at\": \"2021-03-16T18:38:01.942282Z\",\n    \"replaced_by\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n    \"replaces\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n    \"asset_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n    \"symbol\": \"AALP\",\n    \"asset_class\": null,\n    \"notional\": \"4.2\",\n    \"qty\": \"4.2\",\n    \"filled_qty\": \"4.2\",\n    \"filled_avg_price\": \"4.2\",\n    \"order_class\": null,\n    \"order_type\": null,\n    \"type\": null,\n    \"side\": null,\n    \"time_in_force\": null,\n    \"limit_price\": \"3.14\",\n    \"stop_price\": \"3.14\",\n    \"status\": null,\n    \"extended_hours\": true,\n    \"legs\": [\n      null\n    ],\n    \"trail_price\": \"3.14\",\n    \"trail_percent\": \"5.0\",\n    \"hwm\": \"3.14\",\n    \"commission\": \"3.14\"\n  }\n]"
+        },
+        {
+          "statusCode": "400",
+          "description": "Malformed input.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Resource does not exist.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Retrieves a list of orders for the account, filtered by the supplied query parameters.\n\nEndpoint defaults to open orders if no parameters are provided."
+    },
+    {
+      "id": "6b6252ef-e97b-4536-afb2-a89c53d17175",
+      "name": "Create an order for an account.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/orders",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"symbol\": \"AAPL\",\n  \"qty\": \"4.124\",\n  \"notional\": \"3\",\n  \"side\": \"buy\",\n  \"type\": \"stop\",\n  \"time_in_force\": \"gtc\",\n  \"limit_price\": \"3.14\",\n  \"stop_price\": \"3.14\",\n  \"trail_price\": \"3.14\",\n  \"trail_percent\": \"5.0\",\n  \"extended_hours\": false,\n  \"client_order_id\": \"eb9e2aaa-f71a-4f51-b5b4-52a6c565dad4\",\n  \"order_class\": \"bracket\",\n  \"take_profit\": {\n    \"limit_price\": \"3.14\"\n  },\n  \"stop_loss\": {\n    \"stop_price\": \"3.14\",\n    \"limit_price\": \"3.14\"\n  },\n  \"commission\": \"1.0\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"client_order_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"created_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"updated_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"submitted_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"filled_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"expired_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"canceled_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"failed_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"replaced_at\": \"2021-03-16T18:38:01.942282Z\",\n  \"replaced_by\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"replaces\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"asset_id\": \"61e69015-8549-4bfd-b9c3-01e75843f47d\",\n  \"symbol\": \"AALP\",\n  \"asset_class\": \"\",\n  \"notional\": \"4.2\",\n  \"qty\": \"4.2\",\n  \"filled_qty\": \"4.2\",\n  \"filled_avg_price\": \"4.2\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"stop\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"gtc\",\n  \"limit_price\": \"3.14\",\n  \"stop_price\": \"3.14\",\n  \"status\": \"filled\",\n  \"extended_hours\": true,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_price\": null,\n      \"trail_percent\": null,\n      \"hwm\": null,\n      \"commission\": null\n    }\n  ],\n  \"trail_price\": \"3.14\",\n  \"trail_percent\": \"5.0\",\n  \"hwm\": \"3.14\",\n  \"commission\": \"3.14\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Malformed input.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Request is forbidden"
+        },
+        {
+          "statusCode": "404",
+          "description": "Resource does not exist.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Create an order for an account."
+    },
+    {
+      "id": "c7f43420-fb5f-4d65-aa80-9548396c12f0",
+      "name": "Attempts to cancel all open orders. A response will be provided for each order that is attempted to be cancelled.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/orders",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "207",
+          "description": "HTTP 207 Multi-Status with body, which is an array of objects that include the order id, http status code and an order object for each cancellation request.",
+          "content": "[\n  {\n    \"id\": \"\",\n    \"status\": 0,\n    \"body\": null\n  }\n]"
+        },
+        {
+          "statusCode": "400",
+          "description": "Malformed input.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Resource does not exist.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "Attempts to cancel all open orders. A response will be provided for each order that is attempted to be cancelled."
+    },
+    {
+      "id": "86074a4d-e028-424a-9292-3685d037a74b",
+      "name": "Retrieve all assets",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/assets",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "asset_class",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "An array of asset objects.",
+          "content": "[\n  {\n    \"id\": \"904837e3-3b76-47ec-b432-046db621571b\",\n    \"class\": null,\n    \"exchange\": null,\n    \"symbol\": \"AAPL\",\n    \"name\": \"Apple Inc. Common Stock\",\n    \"status\": \"active\",\n    \"tradable\": true,\n    \"marginable\": true,\n    \"shortable\": true,\n    \"easy_to_borrow\": true,\n    \"fractionable\": true,\n    \"last_close_pct_change\": \"\",\n    \"last_price\": \"\",\n    \"last_close\": \"\"\n  }\n]"
+        }
+      ],
+      "description": "Returns all assets"
+    },
+    {
+      "id": "9ad630f4-23c4-476d-b9df-b121f9719351",
+      "name": "Retrieve an asset by UUID",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/assets/{symbol_or_asset_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Returns asset",
+          "content": "{\n  \"id\": \"904837e3-3b76-47ec-b432-046db621571b\",\n  \"class\": \"\",\n  \"exchange\": \"NASDAQ\",\n  \"symbol\": \"AAPL\",\n  \"name\": \"Apple Inc. Common Stock\",\n  \"status\": \"active\",\n  \"tradable\": true,\n  \"marginable\": true,\n  \"shortable\": true,\n  \"easy_to_borrow\": true,\n  \"fractionable\": true,\n  \"last_close_pct_change\": \"\",\n  \"last_price\": \"\",\n  \"last_close\": \"\"\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Asset not found"
+        }
+      ],
+      "description": "Returns the requested asset, if found"
+    },
+    {
+      "id": "043de6c2-ec8e-41bf-aed9-475011033633",
+      "name": "Query market calendar",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/calendar",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "end",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Returns the calendar object",
+          "content": "[\n  {\n    \"date\": \"2021-04-06\",\n    \"open\": \"09:30\",\n    \"close\": \"16:00\",\n    \"session_open\": \"0700\",\n    \"session_close\": \"1900\"\n  }\n]"
+        }
+      ],
+      "description": "The calendar API serves the full list of market days from 1970 to 2029. It can also be queried by specifying a start and/or end time to narrow down the results. In addition to the dates, the response also contains the specific open and close times for the market days, taking into account early closures."
+    },
+    {
+      "id": "39c026eb-02c3-4d90-9411-7ec2340e81cd",
+      "name": "Query market clock",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/clock",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The current market's timestamp",
+          "content": "{\n  \"timestamp\": \"2022-02-16T13:06:05.210563128-05:00\",\n  \"is_open\": false,\n  \"next_open\": \"\",\n  \"next_close\": \"\"\n}"
+        }
+      ],
+      "description": "The Clock API serves the current market timestamp, whether or not the market is currently open, as well as the times of the next market open and close."
+    },
+    {
+      "id": "46eaa575-9339-4601-8ed7-eeb649a1ff58",
+      "name": "Subscribe to account status events (SSE).",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/events/accounts/status",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "since",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "since_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Connected. Events will now start streaming as long as you keep the connection open."
+        }
+      ],
+      "description": "Events API provide event push as well as historical queries via SSE (server sent events).\n\nHistorical events are streamed immediately if queried, and updates are pushed as events occur.\n\nQuery Params Rules:\n- `since` required if `until` specified\n- `since_id` required if `until_id` specified\n- `since` and `since_id` can’t be used at the same time\nBehavior:\n- if `since` or `since_id` not specified this will not return any historic data\n- if `until` or `until_id` reached stream will end (status 200)\n\n---\n\nNote for people using the clients generated from this OAS spec. Currently OAS-3 doesn't have full support for representing SSE style responses from an API, so if you are using a generated client and don't specify a `since` and `until` there is a good chance the generated clients will hang waiting for the response to end.\n\nIf you require the streaming capabilities we recommend not using the generated clients for this specific usecase until the OAS-3 standards come to a consensus on how to represent this correcting in OAS-3.\n"
+    },
+    {
+      "id": "5a4db1be-d72c-44fc-a392-8491639ff3da",
+      "name": "Subscribe to journal events (SSE).",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/events/journals/status",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "since",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "since_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Connected. Events will now start streaming as long as you keep the connection open."
+        }
+      ],
+      "description": "The Events API provides event push as well as historical queries via SSE (server sent events).\n\nYou can listen to journal status updates as they get processed by our backoffice.\n\nHistorical events are streamed immediately if queried, and updates are pushed as events occur.\n\nQuery Params Rules:\n- `since` required if `until` specified\n- `since_id` required if `until_id` specified\n- `since` and `since_id` can’t be used at the same time\nBehavior:\n- if `since` or `since_id` not specified this will not return any historic data\n- if `until` or `until_id` reached stream will end (status 200)\n\n---\n\nNote for people using the clients generated from this OAS spec. Currently OAS-3 doesn't have full support for representing SSE style responses from an API, so if you are using a generated client and don't specify a `since` and `until` there is a good chance the generated clients will hang waiting for the response to end.\n\nIf you require the streaming capabilities we recommend not using the generated clients for this specific usecase until the OAS-3 standards come to a consensus on how to represent this correcting in OAS-3."
+    },
+    {
+      "id": "d7cbf17c-8fb6-41ae-b5e1-d607b59efbc1",
+      "name": "Subscribe to Transfer Events (SSE)",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/events/transfers/status",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "since",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "since_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Connected. Events will now start streaming as long as you keep the connection open."
+        }
+      ],
+      "description": "The Events API provides event push as well as historical queries via SSE (server sent events).\n\nYou can listen to transfer status updates as they get processed by our backoffice, for both end-user and firm accounts.\n\nHistorical events are streamed immediately if queried, and updates are pushed as events occur.\n\nQuery Params Rules:\n- `since` required if `until` specified\n- `since_id` required if `until_id` specified\n- `since` and `since_id` can’t be used at the same time\nBehavior:\n- if `since` or `since_id` not specified this will not return any historic data\n- if `until` or `until_id` reached stream will end (status 200)\n\n---\n\nNote for people using the clients generated from this OAS spec. Currently OAS-3 doesn't have full support for representing SSE style responses from an API, so if you are using a generated client and don't specify a `since` and `until` there is a good chance the generated clients will hang waiting for the response to end.\n\nIf you require the streaming capabilities we recommend not using the generated clients for this specific usecase until the OAS-3 standards come to a consensus on how to represent this correcting in OAS-3."
+    },
+    {
+      "id": "74dd4c60-8048-4153-9f9a-d93884388822",
+      "name": "Subscribe to Trade Events (SSE)",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/events/trades",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "since",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "since_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Connected. Events will now start streaming as long as you keep the connection open."
+        }
+      ],
+      "description": "The Events API provides event push as well as historical queries via SSE (server sent events).\n\nYou can listen to events related to trade updates. Most market trades sent during market hours are filled instantly; you can listen to limit order updates through this endpoint.\n\nHistorical events are streamed immediately if queried, and updates are pushed as events occur.\n\nQuery Params Rules:\n- `since` required if `until` specified\n- `since_id` required if `until_id` specified\n- `since` and `since_id` can’t be used at the same time\nBehavior:\n- if `since` or `since_id` not specified this will not return any historic data\n- if `until` or `until_id` reached stream will end (status 200)\n\n---\n\nNote for people using the clients generated from this OAS spec. Currently OAS-3 doesn't have full support for representing SSE style responses from an API, so if you are using a generated client and don't specify a `since` and `until` there is a good chance the generated clients will hang waiting for the response to end.\n\nIf you require the streaming capabilities we recommend not using the generated clients for this specific usecase until the OAS-3 standards come to a consensus on how to represent this correcting in OAS-3."
+    },
+    {
+      "id": "41070d69-35b3-4489-afc1-d0be48667de4",
+      "name": "Return a list of requested journals.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/journals",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "entry_type",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "to_account",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "from_account",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "[\n  {\n    \"id\": null,\n    \"entry_type\": null,\n    \"from_account\": null,\n    \"to_account\": null,\n    \"settle_date\": null,\n    \"status\": null\n  }\n]"
+        }
+      ],
+      "description": "Returns an array of journal objects."
+    },
+    {
+      "id": "1ba7457a-5ba8-4363-a009-9a028dc7dbc5",
+      "name": "Create a Journal.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/journals",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"entry_type\": \"JNLC\",\n  \"from_account\": \"7c891489-574f-4f9a-82f0-4082a07f4736\",\n  \"to_account\": \"2d47a229-0c25-40a2-8cc7-b2c8821ff93a\",\n  \"amount\": \"115.5\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The New Journal object",
+          "content": "{\n  \"id\": \"h7h5g33f-ef01-4458-9a4b-9598727a406f\",\n  \"entry_type\": \"JNLS\",\n  \"from_account\": \"8fjkjn-4483-4199-840f-6c5fe0b7ca24\",\n  \"to_account\": \"3gtt65jd-6f2a-433c-8c33-17b66b8941fa\",\n  \"status\": \"executed\",\n  \"symbol\": \"AAPL\",\n  \"qty\": \"2\",\n  \"price\": \"128.23\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "One of the parameters is invalid."
+        },
+        {
+          "statusCode": "403",
+          "description": "The amount requested to move is not available."
+        },
+        {
+          "statusCode": "404",
+          "description": "One of the account is not found."
+        }
+      ],
+      "description": "A journal can be JNLC (move cash) or JNLS (move shares), dictated by `entry_type`. Generally, journal requests are subject to approval and starts from the `pending` status. The status changes are propagated through the Event API. Under certain conditions agreed for the partner, such journal transactions that meet the criteria are executed right away.\n"
+    },
+    {
+      "id": "08c4a85a-8961-4720-8e92-8f775d3b4595",
+      "name": "Cancel a pending journal.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/journals/{journal_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "The cancel request succeeded. (No-content)\n"
+        },
+        {
+          "statusCode": "404",
+          "description": "The journal is not found.\n"
+        },
+        {
+          "statusCode": "422",
+          "description": "The journal is not in the pending status.\n"
+        }
+      ],
+      "description": "You can only delete a journal if the journal is still in a pending state, if a journal is executed you will not be able to delete. The alternative is to create a mirror journal entry to reverse the flow of funds."
+    },
+    {
+      "id": "0251a864-055c-4e95-b8b3-49574c737035",
+      "name": "Create a Batch Journal Transaction (One-to-Many)",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/journals/batch",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"entry_type\": \"\",\n  \"from_account\": \"\",\n  \"description\": \"\",\n  \"entries\": [\n    {\n      \"to_account\": \"\",\n      \"amount\": \"\"\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "an array of journal objects with an extra attribute error_message in the case when a specific account fails to receive a journal.",
+          "content": "[\n  {}\n]"
+        }
+      ],
+      "description": "You can create a batch of journal requests by using this endpoint. This is enabled on JNLC type Journals for now only.\n\nEvery single request must be valid for the entire batch operation to succeed.\n\nIn the case of a successful request, the response will contain an array of journal objects with an extra attribute error_message in the case when a specific account fails to receive a journal."
+    },
+    {
+      "id": "b85f3e61-ce60-445d-adb9-f8db0c7e1070",
+      "name": "Get an OAuth client",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/oauth/clients/{client_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "response_type",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "redirect_uri",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "scope",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success.",
+          "content": "{\n  \"client_id\": \"7a3c52a910e1dc2abbb14da2b6b8e711\",\n  \"name\": \"TradingApp\",\n  \"description\": \"Sample description\",\n  \"url\": \"http://test.com\",\n  \"terms_of_use\": \"\",\n  \"privacy_policy\": \"\",\n  \"status\": \"ACTIVE\",\n  \"redirect_uri\": [\n    \"http://localhost\"\n  ],\n  \"live_trading_approved\": true\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Client does not exist or you do not have access to the client.\n"
+        }
+      ],
+      "description": "The endpoint returns the details of OAuth client to display in the authorization page.\n"
+    },
+    {
+      "id": "63daf0b0-6e7d-4fb3-82d3-b3644459ae62",
+      "name": "Issue an OAuth token.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/oauth/token",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"client_id\": \"7a3c52a910e1dc2abbb14da2b6b8e711\",\n  \"client_secret\": \"bbb14da2b6b8e7117a3c52a910e1dc2a\",\n  \"redirect_uri\": \"http://localhost\",\n  \"scope\": \"general\",\n  \"account_id\": \"0d18ae51-3c94-4511-b209-101e1666416b\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Success.",
+          "content": "{\n  \"access_token\": \"\",\n  \"token_type\": \"Bearer\",\n  \"scope\": \"\"\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Client does not exists, you do not have access to the client, or “client_secret” is incorrect.\n"
+        },
+        {
+          "statusCode": "422",
+          "description": "Redirect URI or scope is invalid.\n"
+        }
+      ],
+      "description": "The operation issues an OAuth code which can be used in the OAuth code flow.\n"
+    },
+    {
+      "id": "66e588d5-a03a-4ea4-8fca-0e50626dc59b",
+      "name": "Authorize an OAuth Token",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/oauth/authorize",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"client_id\": \"7a3c52a910e1dc2abbb14da2b6b8e711\",\n  \"client_secret\": \"bbb14da2b6b8e7117a3c52a910e1dc2a\",\n  \"redirect_uri\": \"http://localhost\",\n  \"scope\": \"general\",\n  \"account_id\": \"0d18ae51-3c94-4511-b209-101e1666416b\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successfully issued a code.",
+          "content": "{\n  \"code\": \"\",\n  \"client_id\": \"\",\n  \"redirect_uri\": \"\",\n  \"scope\": \"\"\n}"
+        },
+        {
+          "statusCode": "401",
+          "description": "Client does not exists, you do not have access to the client, or “client_secret” is incorrect.\n"
+        },
+        {
+          "statusCode": "422",
+          "description": "Redirect URI or scope is invalid.\n"
+        }
+      ],
+      "description": "The operation issues an OAuth code which can be used in the OAuth code flow.\n"
+    },
+    {
+      "id": "54499eb5-c463-496a-9ddd-7d6ce81d2043",
+      "name": "Retrieve all watchlists",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/watchlists",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "[\n  {\n    \"id\": \"\",\n    \"account_id\": \"\",\n    \"created_at\": \"\",\n    \"updated_at\": \"\",\n    \"name\": \"\",\n    \"assets\": [\n      null\n    ]\n  }\n]"
+        }
+      ],
+      "description": "Fetch a list of all watchlists currently in an account."
+    },
+    {
+      "id": "37129a93-2ae0-45b9-861d-2e1507db07c3",
+      "name": "Create a new watchlist",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v1/trading/accounts/{account_id}/watchlists",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"symbols\": [\n    \"[\\\"AAPL\\\", \\\"TSLA\\\"]\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Newly created watchlist",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null,\n      \"last_close_pct_change\": null,\n      \"last_price\": null,\n      \"last_close\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Returns the watchlist object"
+    },
+    {
+      "id": "6e54de4c-a2b1-4722-83af-e9dcf7fcc636",
+      "name": "Manage watchlists",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/watchlists/{watchlist_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null,\n      \"last_close_pct_change\": null,\n      \"last_price\": null,\n      \"last_close\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Fetch a single watchlist by identifier."
+    },
+    {
+      "id": "be5dafe8-b759-4f12-8f64-e2086cc067c4",
+      "name": "Update an existing watchlist",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/watchlists/{watchlist_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"symbols\": [\n    \"[\\\"AAPL\\\", \\\"TSLA\\\"]\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Updated watchlist.",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null,\n      \"last_close_pct_change\": null,\n      \"last_price\": null,\n      \"last_close\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Replace entirely the set of securities contained in the watchlist while optionally renaming it. Destructive operation."
+    },
+    {
+      "id": "1bbed83e-4274-4365-ae43-787c4aab1557",
+      "name": "Remove a watchlist",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v1/accounts/{account_id}/watchlists/{watchlist_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Watchlist deleted."
+        }
+      ],
+      "description": "Irrevocably delete a watchlist."
+    },
+    {
+      "id": "0e8c2ac7-290b-4446-b9bb-7fe8f515dd55",
+      "name": "Retrieving Announcements",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/corporate_actions/announcements",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Basic {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "ca_types",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "since",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "symbol",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "cusip",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "date_type",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "[\n  {\n    \"id\": \"\",\n    \"corporate_action_id\": \"\",\n    \"ca_type\": null,\n    \"ca_sub_type\": null,\n    \"initiating_symbol\": \"\",\n    \"initiating_original_cusip\": \"\",\n    \"target_symbol\": \"\",\n    \"target_original_cusip\": \"\",\n    \"declaration_date\": \"\",\n    \"ex_date\": \"\",\n    \"record_date\": \"\",\n    \"payable_date\": \"\",\n    \"cash\": \"\",\n    \"old_rate\": \"\",\n    \"new_rate\": \"\"\n  }\n]"
+        },
+        {
+          "statusCode": "400",
+          "description": "Malformed input.",
+          "content": "{\n  \"code\": 0,\n  \"message\": \"\"\n}"
+        }
+      ],
+      "description": "This enables searching for an array of corporate action announcements based on criteria."
+    }
+  ]
+}

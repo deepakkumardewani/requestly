@@ -1,0 +1,11 @@
+{
+  "name": "Discord",
+  "providerName": "discord-http-api-preview",
+  "description": "Preview of the Discord v10 HTTP API specification. See https://discord.com/developers/docs for more details.",
+  "category": "Dev Tools",
+  "logoUrl": "https://cdn.simpleicons.org/discord",
+  "docsUrl": "",
+  "specUrl": "https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json",
+  "version": "10",
+  "requestCount": 231
+}

@@ -1,0 +1,737 @@
+{
+  "id": "78492496-6ff0-402c-97ff-53c96db3e1ef",
+  "name": "BigCommerce (Store Content)",
+  "description": "Manage blog posts, blog tags, content pages, and redirects.\n\n> #### Warning\n> **Deprecations**\n> * Redirects V2 are deprecated; use [Redirects V3](/docs/rest-management/redirects) instead. \n> * Pages V2 are deprecated; use [Pages V3](/docs/rest-content/pages) instead.",
+  "createdAt": 1776830120628,
+  "requests": [
+    {
+      "id": "913b2e30-a991-4c16-90aa-f3120dd8c707",
+      "name": "Get All Blog Tags",
+      "method": "GET",
+      "url": "{{BASE_URL}}/blog/tags",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "[\n  [\n    {\n      \"tag\": null,\n      \"post_ids\": null\n    }\n  ]\n]"
+        }
+      ],
+      "description": "Returns a list of *Blog Tags*."
+    },
+    {
+      "id": "c7841502-e736-43dc-bc56-8ac8d8aae16d",
+      "name": "Get All Blog Posts",
+      "method": "GET",
+      "url": "{{BASE_URL}}/blog/posts",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "is_published",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "url",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "tag",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "published_date",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "[\n  {\n    \"id\": 3,\n    \"title\": \"Hello Again\",\n    \"url\": \"/blog/hello-again/\",\n    \"preview_url\": \"/blog/hello-again/\",\n    \"body\": \"<p>Jelly beans muffin marzipan gingerbread donut dessert. Cheesecake cheesecake sugar plum cookie cake tart. Soufflé sesame snaps jelly beans brownie chocolate tart. Marshmallow jujubes candy pie. Gummies lemon drops tart soufflé pastry pie. Caramels wafer biscuit gummi bears. Liquorice toffee wafer bear claw marzipan jelly-o. Dessert bear claw topping icing croissant. Pie bonbon chocolate bar chocolate bar tiramisu chocolate lemon drops candy.</p><p>Marshmallow cupcake sweet roll candy marshmallow caramels cotton candy pie icing. Powder jelly beans chupa chups lollipop liquorice marzipan dessert soufflé sesame snaps. Macaroon chupa chups gummies cheesecake ice cream caramels sesame snaps cotton candy gingerbread. Chocolate cake fruitcake tart bear claw lemon drops tart dragée tart apple pie. Halvah chupa chups soufflé jelly soufflé marshmallow. Croissant tart tart. Gingerbread apple pie biscuit.</p><p>Wafer lemon drops tart pastry brownie chocolate bar jelly. Dragée muffin cupcake liquorice caramels marzipan gingerbread marzipan. Apple pie pudding jelly sweet roll croissant bonbon wafer. Cookie chocolate bar sesame snaps bonbon macaroon candy canes donut sugar plum. Bear claw bonbon tootsie roll bonbon. Apple pie gummies donut sweet. Marzipan bear claw cotton candy topping dragée bonbon danish powder.</p>\",\n    \"tags\": [\n      \"sugar\",\n      \"sweet\",\n      \"spice\",\n      \"everything\",\n      \"nice\"\n    ],\n    \"summary\": \"Jelly beans muffin marzipan gingerbread donut dessert. Cheesecake cheesecake sugar plum cookie cake tart. Soufflé sesame snaps jelly beans brownie chocolate tart. Marshmallow jujubes candy pie. Gummies lemon drops tart soufflé pastry pie. Caramels wafer biscuit gummi bears. Liquorice toffee wafer bear claw marzipan jelly-o. Dessert bear claw topping icing croissant. Pie bonbon chocolate bar [...]\",\n    \"is_published\": true,\n    \"published_date\": {\n      \"date\": \"2018-05-18 08:26:42.000000\",\n      \"timezone_type\": 1,\n      \"timezone\": \"+00:00\"\n    },\n    \"published_date_iso8601\": \"2018-05-18T13:26:42+0000\",\n    \"meta_description\": \"Cupcakes post 2\",\n    \"meta_keywords\": \"sugar,sweet,spice,everything,nice\",\n    \"author\": \"\",\n    \"thumbnail_path\": \"\"\n  },\n  {\n    \"id\": 2,\n    \"title\": \"Hello\",\n    \"url\": \"/blog/hello/\",\n    \"preview_url\": \"/blog/hello/\",\n    \"body\": \"<p>Jelly beans muffin marzipan gingerbread donut dessert. Cheesecake cheesecake sugar plum cookie cake tart. Soufflé sesame snaps jelly beans brownie chocolate tart. Marshmallow jujubes candy pie. Gummies lemon drops tart soufflé pastry pie. Caramels wafer biscuit gummi bears. Liquorice toffee wafer bear claw marzipan jelly-o. Dessert bear claw topping icing croissant. Pie bonbon chocolate bar chocolate bar tiramisu chocolate lemon drops candy.</p><p>Marshmallow cupcake sweet roll candy marshmallow caramels cotton candy pie icing. Powder jelly beans chupa chups lollipop liquorice marzipan dessert soufflé sesame snaps. Macaroon chupa chups gummies cheesecake ice cream caramels sesame snaps cotton candy gingerbread. Chocolate cake fruitcake tart bear claw lemon drops tart dragée tart apple pie. Halvah chupa chups soufflé jelly soufflé marshmallow. Croissant tart tart. Gingerbread apple pie biscuit.</p><p>Wafer lemon drops tart pastry brownie chocolate bar jelly. Dragée muffin cupcake liquorice caramels marzipan gingerbread marzipan. Apple pie pudding jelly sweet roll croissant bonbon wafer. Cookie chocolate bar sesame snaps bonbon macaroon candy canes donut sugar plum. Bear claw bonbon tootsie roll bonbon. Apple pie gummies donut sweet. Marzipan bear claw cotton candy topping dragée bonbon danish powder.</p>\",\n    \"tags\": [\n      \"cupcakes\",\n      \"sugar\",\n      \"sweet\"\n    ],\n    \"summary\": \"Jelly beans muffin marzipan gingerbread donut dessert. Cheesecake cheesecake sugar plum cookie cake tart. Soufflé sesame snaps jelly beans brownie chocolate tart. Marshmallow jujubes candy pie. Gummies lemon drops tart soufflé pastry pie. Caramels wafer biscuit gummi bears. Liquorice toffee wafer bear claw marzipan jelly-o. Dessert bear claw topping icing croissant. Pie bonbon chocolate bar [...]\",\n    \"is_published\": true,\n    \"published_date\": {\n      \"date\": \"2018-05-18 08:26:00.000000\",\n      \"timezone_type\": 1,\n      \"timezone\": \"+00:00\"\n    },\n    \"published_date_iso8601\": \"2018-05-18T13:26:00+0000\",\n    \"meta_description\": \"cupcake blog post\",\n    \"meta_keywords\": \"cupcakes,sugar,sweet\",\n    \"author\": \"\",\n    \"thumbnail_path\": \"\"\n  },\n  {\n    \"id\": 1,\n    \"title\": \"Your first blog post!\",\n    \"url\": \"/your-first-blog-post/\",\n    \"preview_url\": \"/your-first-blog-post/\",\n    \"body\": \"<p><strong>Welcome to your blog!</strong><br> A blog is a great place to share details on your products, business and whatever else you think your shoppers might like to hear from you. You can include photos in your blog posts and even videos. For ideas and inspiration on how to structure your blog, take a look at the BigCommerce <a href='http://blog.bigcommerce.com/' target='_blank' rel='nofollow'>ecommerce blog</a>.</p><p><strong>How can I delete this post?</strong><br>To delete this post and add your own, login to your <a href='/admin' target='_blank'>admin area</a> and go to Storefront > Blog in the left hand menu.</p><p><strong>Powered by BigCommerce</strong><br>Your website, online store and blog are powered by BigCommerce <a href='http://www.bigcommerce.com/' target='_blank' rel='nofollow'>ecommerce software</a>. It includes everything you need to run a beautiful online store including <a href='http://www.bigcommerce.com/templates/' target='_blank' rel='nofollow'>ecommerce website templates</a>, <a href='http://www.bigcommerce.com/features/hosting/' target='_blank' rel='nofollow'>ecommerce hosting</a>, an <a href='http://www.bigcommerce.com/features/setup/' target='_blank' rel='nofollow'>online shopping cart</a> and more.</p>\",\n    \"tags\": [\n      \"Blog\",\n      \"SEO\"\n    ],\n    \"summary\": \" Welcome to your blog! A blog is a great place to share details on your products, business and whatever else you think your shoppers might like to hear from you. You can include photos in your blog posts and even videos. For ideas and inspiration on how to structure your blog, take a look [...]\",\n    \"is_published\": true,\n    \"published_date\": {\n      \"date\": \"2014-02-15 14:46:34.000000\",\n      \"timezone_type\": 1,\n      \"timezone\": \"+00:00\"\n    },\n    \"published_date_iso8601\": \"2014-02-15T19:46:34+0000\",\n    \"meta_description\": \"\",\n    \"meta_keywords\": \"Blog,SEO\",\n    \"author\": \"\",\n    \"thumbnail_path\": \"\"\n  }\n]"
+        }
+      ],
+      "description": "Returns all *Blog Posts*. Default sorting is by published_date, beginning with the most recent post."
+    },
+    {
+      "id": "b42b1da8-f65c-4008-b539-2a3d25a3ea2d",
+      "name": "Create a Blog Post",
+      "method": "POST",
+      "url": "{{BASE_URL}}/blog/posts",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"title\": \"Welcome to BigCommerce\",\n  \"url\": \"/blog/welcome-bigcommerce/\",\n  \"body\": \"<p>Customize your site, manage shipping and payments, and list your products on Amazon, eBay, and Facebook by Meta with the #1 ecommerce platform. </p>\",\n  \"tags\": [\n    \"\"\n  ],\n  \"is_published\": true,\n  \"meta_description\": \"Welcome Post\",\n  \"meta_keywords\": \"BigCommerce, welcome, ecommerce\",\n  \"author\": \"BigCommerce\",\n  \"thumbnail_path\": \"\",\n  \"published_date\": \"Wed, 10 Aug 2022 15:39:15 -0500\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 3,\n  \"title\": \"Welcome to BigCommerce\",\n  \"url\": \"/blog/welcome-bigcommerce/\",\n  \"preview_url\": \"/blog/welcome-bigcommerce/\",\n  \"body\": \"<p>Customize your site, manage shipping and payments, and list your products on Amazon, eBay, and Facebook by Meta with the #1 ecommerce platform. </p>\",\n  \"tags\": [\n    \"BigCommerce\",\n    \"welcome\",\n    \"ecommerce\"\n  ],\n  \"summary\": \"<p>We power ecommerce websites for successful retailers all over the world</p>\",\n  \"is_published\": true,\n  \"published_date\": {\n    \"date\": \"2018-05-18T08:26:42.000Z\",\n    \"timezone_type\": 1,\n    \"timezone\": \"+00:00\"\n  },\n  \"published_date_iso8601\": \"2018-05-18T13:26:42.000Z\",\n  \"meta_description\": \"Welcome Post\",\n  \"meta_keywords\": \"BigCommerce, welcome, ecommerce\",\n  \"author\": \"BigCommerce\",\n  \"thumbnail_path\": \"\"\n}"
+        },
+        {
+          "statusCode": "207",
+          "description": "Multiple operations have taken place and the status for each operation can be viewed in the body of the response. Typically indicates that a partial failure has occured, such as when a `POST` or `PUT` request is successful, but saving the URL has failed.",
+          "content": "{}"
+        }
+      ],
+      "description": "Creates a *Blog Post*.\n\n**Required Fields**\n*   `title`\n*   `body`\n\n**Notes**\n\n* When including `published_date` in a request, supply it as a flat date string (not an object) in valid <a href=\"http://tools.ietf.org/html/rfc2822#section-3.3\" target=\"_blank\">RFC 2822</a>. The&#160;example request below includes a `published_date` in RFC 2822 format.\n* Blog posts default to draft status. To publish blog posts to the storefront, set the `is_published` property to `true`.\n* If a custom URL is not provided, the post’s URL will be generated based on the value of `title`."
+    },
+    {
+      "id": "293ea8d3-fa7f-4f29-9c04-3e6ced07bd75",
+      "name": "Delete Blog Posts",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/blog/posts",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": ""
+        }
+      ],
+      "description": "Deletes a page of `Blog Posts`."
+    },
+    {
+      "id": "69ee70b4-b73b-47be-9709-93ae91ebb05f",
+      "name": "Get a Blog Post",
+      "method": "GET",
+      "url": "{{BASE_URL}}/blog/posts/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 3,\n  \"title\": \"Welcome to BigCommerce\",\n  \"url\": \"/blog/welcome-bigcommerce/\",\n  \"preview_url\": \"/blog/welcome-bigcommerce/\",\n  \"body\": \"<p>Customize your site, manage shipping and payments, and list your products on Amazon, eBay, and Facebook by Meta with the #1 ecommerce platform. </p>\",\n  \"tags\": [\n    \"BigCommerce\",\n    \"welcome\",\n    \"ecommerce\"\n  ],\n  \"summary\": \"<p>We power ecommerce websites for successful retailers all over the world</p>\",\n  \"is_published\": true,\n  \"published_date\": {\n    \"date\": \"2018-05-18T08:26:42.000Z\",\n    \"timezone_type\": 1,\n    \"timezone\": \"+00:00\"\n  },\n  \"published_date_iso8601\": \"2018-05-18T13:26:42.000Z\",\n  \"meta_description\": \"Welcome Post\",\n  \"meta_keywords\": \"BigCommerce, welcome, ecommerce\",\n  \"author\": \"BigCommerce\",\n  \"thumbnail_path\": \"\"\n}"
+        }
+      ],
+      "description": "Returns a single *Blog Post*."
+    },
+    {
+      "id": "eee139c1-b48b-494f-b0b4-730d4bcaa9ee",
+      "name": "Update a Blog Post",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/blog/posts/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"title\": \"Welcome to BigCommerce\",\n  \"url\": \"/blog/welcome-bigcommerce/\",\n  \"body\": \"<p>Customize your site, manage shipping and payments, and list your products on Amazon, eBay, and Facebook by Meta with the #1 ecommerce platform. </p>\",\n  \"tags\": [\n    \"\"\n  ],\n  \"is_published\": true,\n  \"meta_description\": \"Welcome Post\",\n  \"meta_keywords\": \"BigCommerce, welcome, ecommerce\",\n  \"author\": \"BigCommerce\",\n  \"thumbnail_path\": \"\",\n  \"published_date\": \"Wed, 10 Aug 2022 15:39:15 -0500\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 3,\n  \"title\": \"Welcome to BigCommerce\",\n  \"url\": \"/blog/welcome-bigcommerce/\",\n  \"preview_url\": \"/blog/welcome-bigcommerce/\",\n  \"body\": \"<p>Customize your site, manage shipping and payments, and list your products on Amazon, eBay, and Facebook by Meta with the #1 ecommerce platform. </p>\",\n  \"tags\": [\n    \"BigCommerce\",\n    \"welcome\",\n    \"ecommerce\"\n  ],\n  \"summary\": \"<p>We power ecommerce websites for successful retailers all over the world</p>\",\n  \"is_published\": true,\n  \"published_date\": {\n    \"date\": \"2018-05-18T08:26:42.000Z\",\n    \"timezone_type\": 1,\n    \"timezone\": \"+00:00\"\n  },\n  \"published_date_iso8601\": \"2018-05-18T13:26:42.000Z\",\n  \"meta_description\": \"Welcome Post\",\n  \"meta_keywords\": \"BigCommerce, welcome, ecommerce\",\n  \"author\": \"BigCommerce\",\n  \"thumbnail_path\": \"\"\n}"
+        },
+        {
+          "statusCode": "207",
+          "description": "Multiple operations have taken place and the status for each operation can be viewed in the body of the response. Typically indicates that a partial failure has occurred, such as when a `POST` or `PUT` request is successful, but saving the URL has failed.",
+          "content": "{}"
+        }
+      ],
+      "description": "Updates a *Blog Post*.\n\n**Notes**\n\n* When including `published_date` in a request, supply it as a flat date string (not an object) in valid <a href=\"http://tools.ietf.org/html/rfc2822#section-3.3\" target=\"_blank\">RFC 2822</a>. The&#160;example request below includes a `published_date` in RFC 2822 format.\n\n* Blog posts default to draft status. To publish blog posts to the storefront, set the `is_published` property to `true`."
+    },
+    {
+      "id": "abb45198-fd91-4dd1-8a78-c96716400448",
+      "name": "Delete a Blog Post",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/blog/posts/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": ""
+        }
+      ],
+      "description": "Deletes a *Blog Post*."
+    },
+    {
+      "id": "9541491f-015a-43d6-8966-6d9b80459c0b",
+      "name": "Get A Count of All Blog Posts",
+      "method": "GET",
+      "url": "{{BASE_URL}}/blog/posts/count",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"count\": 27\n}"
+        }
+      ],
+      "description": "Returns a count of all *Blog Posts*."
+    },
+    {
+      "id": "f9351950-2cfb-4942-8efe-53995a8d0667",
+      "name": "Get All Pages",
+      "method": "GET",
+      "url": "{{BASE_URL}}/pages",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "[\n  {\n    \"id\": null\n  }\n]"
+        }
+      ],
+      "description": "Returns a list of *Pages*. Default sorting is by auto-generated ID from oldest to newest.\n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To get one or more pages, use Pages V3ʼs [Get pages](/docs/rest-content/pages#get-pages) endpoint. To get a single page, use Pages V3ʼs [Get a page](/docs/rest-content/pages#get-a-page) endpoint.\n"
+    },
+    {
+      "id": "9478e568-6328-4ed2-abe8-ec549d595fb7",
+      "name": "Create a Page",
+      "method": "POST",
+      "url": "{{BASE_URL}}/pages",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"parent_id\": 5,\n  \"type\": \"\",\n  \"contact_fields\": \"fullname,companyname,phone,orderno,rma\",\n  \"email\": \"janedoes@example.com\",\n  \"name\": \"Contact Form\",\n  \"url\": \"/contact-us/\",\n  \"meta_description\": \"\",\n  \"body\": \"<p>We're happy to answer questions or help you with returns.<br />Please fill out the form below if you need assistance.</p>\",\n  \"mobile_body\": \"0\",\n  \"has_mobile_version\": false,\n  \"is_visible\": true,\n  \"is_homepage\": false,\n  \"meta_title\": \"\",\n  \"layout_file\": \"page.html\",\n  \"sort_order\": 3,\n  \"search_keywords\": \"\",\n  \"meta_keywords\": \"\",\n  \"feed\": \"\",\n  \"link\": \"\",\n  \"content_type\": \"text/html\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 6,\n  \"parent_id\": 5,\n  \"type\": \"page\",\n  \"contact_fields\": \"fullname,companyname,phone,orderno,rma\",\n  \"email\": \"janedoes@example.com\",\n  \"name\": \"Contact Form\",\n  \"url\": \"/contact-us/\",\n  \"meta_description\": \"\",\n  \"body\": \"We're happy to answer questions or help you with returns.<br />Please fill out the form below if you need assistance.\",\n  \"mobile_body\": \"\",\n  \"has_mobile_version\": false,\n  \"feed\": \"\",\n  \"link\": \"\",\n  \"is_visible\": true,\n  \"is_homepage\": false,\n  \"layout_file\": \"page.html\",\n  \"sort_order\": 3,\n  \"meta_title\": \"\",\n  \"search_keywords\": \"\",\n  \"meta_keywords\": \"\"\n}"
+        },
+        {
+          "statusCode": "207",
+          "description": "Multiple operations have taken place and the status for each operation can be viewed in the body of the response. Typically indicates that a partial failure has occurred, such as when a `POST` or `PUT` request is successful, but saving the URL has failed.",
+          "content": "{}"
+        }
+      ],
+      "description": "Creates a *Page*. The request payload limit is 1MB.\n\n**Required Fields**\n*   `type`\n*   `name`\n*   `link` (for a page of `type: link`)\n*   `feed` (for a page of `type: rss_feed`)\n*   `body` (for a page of `type: raw`)\n\n**Read Only Fields**\n*   `id`\n\n## Content Type\n\nThe default value for `content_type` is `text/html`; however, if `page_type` is set to `raw`, `content_type` can be changed to `text/javascript` or `application/json`. Updating this field allows you to place a JavaScript or a JSON file in the root directory.\n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To create one or more pages, use Pages V3ʼs [Create pages](/docs/rest-content/pages#create-pages) endpoint. "
+    },
+    {
+      "id": "ef2ed755-0b24-4414-9fac-66a1d2086b48",
+      "name": "Get A Page",
+      "method": "GET",
+      "url": "{{BASE_URL}}/pages/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 1,\n  \"name\": \"RSS Syndication\",\n  \"meta_title\": \"\",\n  \"body\": \"%%Syndicate%%\",\n  \"is_visible\": true,\n  \"parent_id\": 0,\n  \"sort_order\": 5,\n  \"meta_keywords\": \"0\",\n  \"type\": \"page\",\n  \"meta_description\": \"\",\n  \"is_homepage\": false,\n  \"layout_file\": \"\",\n  \"is_customers_only\": false,\n  \"search_keywords\": \"0\",\n  \"has_mobile_version\": false,\n  \"feed\": \"\",\n  \"link\": \"\",\n  \"mobile_body\": \"0\",\n  \"url\": \"/rss-syndication/\"\n}"
+        }
+      ],
+      "description": "Returns a *Page*. \n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To get a single page, use Pages V3ʼs [Get a page](/docs/rest-content/pages#get-a-page) endpoint.\n"
+    },
+    {
+      "id": "3cdbc03f-3278-418c-8a5a-27f1b40c9162",
+      "name": "Update a Page",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/pages/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"parent_id\": 5,\n  \"type\": \"\",\n  \"contact_fields\": \"fullname,companyname,phone,orderno,rma\",\n  \"email\": \"janedoes@example.com\",\n  \"name\": \"Contact Form\",\n  \"url\": \"/contact-us/\",\n  \"meta_description\": \"\",\n  \"body\": \"<p>We're happy to answer questions or help you with returns.<br />Please fill out the form below if you need assistance.</p>\",\n  \"mobile_body\": \"0\",\n  \"has_mobile_version\": false,\n  \"is_visible\": true,\n  \"is_homepage\": false,\n  \"meta_title\": \"\",\n  \"layout_file\": \"page.html\",\n  \"sort_order\": 3,\n  \"search_keywords\": \"\",\n  \"meta_keywords\": \"\",\n  \"feed\": \"\",\n  \"link\": \"\",\n  \"content_type\": \"text/html\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 2,\n  \"name\": \"Shipping & Returns\",\n  \"meta_title\": \"\",\n  \"body\": \"<em>To edit this page simply login to the control panel, click the <strong style='font-weight: 400'>Website Content</strong> tab and choose the </em> <strong style='font-weight: 400'><em>View Web Pages option. Click Edit next to the Shipping & Returns page and you can change this text. A sample returns policy is shown below which you can edit as needed.</em><em style='font-style: normal'><br/><br/></em></strong><em style='font-style: normal'><strong>Returns Policy</strong></em><strong style='font-weight: 400'></em></em><em style='font-style: normal'><br/><br/></em>You may return most new, unopened items within 30 days of delivery for a full refund. We'll also pay the return shipping costs if the return is a result of our error (you received an incorrect or defective item, etc.).<br/><br/>You should expect to receive your refund within four weeks of giving your package to the return shipper, however, in many cases you will receive a refund more quickly. This time period includes the transit time for us to receive your return from the shipper (5 to 10 business days), the time it takes us to process your return once we receive it (3 to 5 business days), and the time it takes your bank to process our refund request (5 to 10 business days).<br/><br/>If you need to return an item, please <a href='/contact-us/'>Contact Us</a> with your order number and details about the product you would like to return. We will respond quickly with instructions for how to return items from your order.<br/><br/></strong><strong>Shipping</em></em></em></strong><strong style='font-weight: 400'><em style='font-style: normal'><br/><br/></em>We can ship to virtually any address in the world. Note that there are restrictions on some products, and some products cannot be shipped to international destinations.<br/><br/>When you place an order, we will estimate shipping and delivery dates for you based on the availability of your items and the shipping options you choose. Depending on the shipping provider you choose, shipping date estimates may appear on the shipping quotes page.<br/><br/>Please also note that the shipping rates for many items we sell are weight-based. The weight of any such item can be found on its detail page. To reflect the policies of the shipping companies we use, all weights will be rounded up to the next full pound.<br/>\",\n  \"is_visible\": true,\n  \"parent_id\": 0,\n  \"sort_order\": 2,\n  \"meta_keywords\": \"\",\n  \"type\": \"page\",\n  \"meta_description\": \"\",\n  \"is_homepage\": false,\n  \"layout_file\": \"page.html\",\n  \"is_customers_only\": false,\n  \"search_keywords\": \"\",\n  \"has_mobile_version\": false,\n  \"feed\": \"\",\n  \"link\": \"\",\n  \"mobile_body\": \"\",\n  \"url\": \"/shipping-returns/\"\n}"
+        },
+        {
+          "statusCode": "207",
+          "description": "Multiple operations have taken place and the status for each operation can be viewed in the body of the response. Typically indicates that a partial failure has occurred, such as when a `POST` or `PUT` request is successful, but saving the URL has failed.",
+          "content": "{}"
+        }
+      ],
+      "description": "Updates a *Page*. The request payload limit is 1MB.\n\n**Read Only Fields**\n* id\n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To update multiple pages, use Pages V3ʼs [Update pages](/docs/rest-content/pages#update-pages) endpoint. To update a single page, use Pages V3ʼs [Update a page](/docs/rest-content/pages#update-a-page) endpoint."
+    },
+    {
+      "id": "9caa91b5-977a-4252-bd73-42e78cfaeb22",
+      "name": "Delete a Page",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/pages/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": ""
+        }
+      ],
+      "description": "Deletes a *Page*.\n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To delete multiple pages, use Pages V3ʼs [Delete pages](/docs/rest-content/pages#delete-pages) endpoint. To delete a single page, use Pages V3ʼs [Delete a page](/docs/rest-content/pages#delete-a-page) endpoint. \n"
+    },
+    {
+      "id": "6c68d925-cf96-47c6-ba6b-5c9c1d9ff3ce",
+      "name": "Get All Redirects",
+      "method": "GET",
+      "url": "{{BASE_URL}}/redirects",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "[\n  {\n    \"id\": 1,\n    \"path\": \"/smith-journal-13/\",\n    \"forward\": null,\n    \"url\": \"http://store-url.mybigcommerce.com/towels/bath-towels/hand-towels/\"\n  }\n]"
+        }
+      ],
+      "description": "Returns a list all *Redirect URLs*. \n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To get redirect URLs, use Redirects V3ʼs [Get redirects](/docs/rest-management/redirects#get-redirects) endpoint."
+    },
+    {
+      "id": "b87e7bb3-085d-4f81-8a4b-91f704372233",
+      "name": "Create a Redirect",
+      "method": "POST",
+      "url": "{{BASE_URL}}/redirects",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"id\": 1,\n  \"path\": \"/smith-journal-13/\",\n  \"forward\": {\n    \"type\": \"product\",\n    \"ref\": 111\n  },\n  \"url\": \"http://store-url.mybigcommerce.com/towels/bath-towels/hand-towels/\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 3,\n  \"path\": \"/mens_clothing\",\n  \"forward\": {\n    \"type\": \"category\",\n    \"ref\": 3\n  },\n  \"url\": \"http://store.example.com/mens\"\n}"
+        }
+      ],
+      "description": "Creates a *Redirect URL*.\n\n**Required Fields**\n*   path\n*   forward\n\n**Read Only**\n*   url\n\n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To upsert new redirect data, use Redirects V3ʼs [Upsert redirects](/docs/rest-management/redirects#upsert-redirects) endpoint."
+    },
+    {
+      "id": "f39973b1-3d50-498d-a667-ea472d65119d",
+      "name": "Delete All Redirects",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/redirects",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": ""
+        }
+      ],
+      "description": "By default, it deletes all *Redirect URLs* in a store. \n\n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To delete redirect URLs, use Redirects V3ʼs [Delete redirects](/docs/rest-management/redirects#delete-redirects) endpoint."
+    },
+    {
+      "id": "8183b3e9-7983-4b94-a2c8-18616d89a1b1",
+      "name": "Get a Redirect",
+      "method": "GET",
+      "url": "{{BASE_URL}}/redirects/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 1,\n  \"path\": \"/smith-journal-13/\",\n  \"forward\": {\n    \"type\": \"product\",\n    \"ref\": 111\n  },\n  \"url\": \"http://store-url.mybigcommerce.com/towels/bath-towels/hand-towels/\"\n}"
+        }
+      ],
+      "description": "Returns a single *Redirect URL*.\n\n> #### Warning\n> **Deprecated** \n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To get a redirect URL, use Redirects V3ʼs [Get redirects](/docs/rest-management/redirects#get-redirects) endpoint."
+    },
+    {
+      "id": "3c5ea456-b2d9-4b10-a654-418c2580cc95",
+      "name": "Update a Redirect",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/redirects/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "Content-Type",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"id\": 1,\n  \"path\": \"/smith-journal-13/\",\n  \"forward\": {\n    \"type\": \"product\",\n    \"ref\": \"111\"\n  },\n  \"url\": \"http://store-url.mybigcommerce.com/towels/bath-towels/hand-towels/\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"id\": 1,\n  \"path\": \"/smith-journal-13/\",\n  \"forward\": {\n    \"type\": \"product\",\n    \"ref\": 111\n  },\n  \"url\": \"http://store-url.mybigcommerce.com/towels/bath-towels/hand-towels/\"\n}"
+        }
+      ],
+      "description": "Updates a *Redirect URL*.\n\n**Required Fields**\n*   path\n*   forward\n\n**Read Only Fields**\n*   url\n\n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To update redirect data, use Redirects V3ʼs [Upsert redirects](/docs/rest-management/redirects#upsert-redirects) endpoint."
+    },
+    {
+      "id": "2044a285-8812-4fae-921d-8090d8cdec8a",
+      "name": "Delete a Redirect",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/redirects/{id}",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": ""
+        }
+      ],
+      "description": "Deletes a *Redirect URL*.\n\n> #### Warning\n> **Deprecated** \n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To delete a redirect URL, use Redirects V3ʼs [Delete redirects](/docs/rest-management/redirects#delete-redirects) endpoint."
+    },
+    {
+      "id": "5b7101e8-ddc7-4115-a1f5-72f66ad7bb45",
+      "name": "Get a Count of Redirects",
+      "method": "GET",
+      "url": "{{BASE_URL}}/redirects/count",
+      "headers": [
+        {
+          "key": "X-Auth-Token",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "Accept",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "",
+          "content": "{\n  \"count\": 27\n}"
+        }
+      ],
+      "description": "Gets a count of *Redirect URLs* in a store.\n\n> #### Warning\n> **Deprecated**\n> * This API operation is deprecated. Avoid using this API operation if possible. It will be removed in a future version.\n> * To get a count of redirects, use the `meta` object data returned with the Redirects V3ʼs [Get redirects](/docs/rest-management/redirects#get-redirects) endpoint."
+    }
+  ]
+}

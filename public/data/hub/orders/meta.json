@@ -1,0 +1,11 @@
+{
+  "name": "PayPal",
+  "providerName": "orders",
+  "description": "An order represents a payment between two or more parties. Use the Orders API to create, update, retrieve, authorize, and capture orders.",
+  "category": "Payments",
+  "logoUrl": "https://cdn.simpleicons.org/paypal",
+  "docsUrl": "",
+  "specUrl": "https://raw.githubusercontent.com/paypal/paypal-rest-api-specifications/main/openapi/checkout_orders_v2.json",
+  "version": "2.32",
+  "requestCount": 9
+}

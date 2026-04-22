@@ -1,0 +1,1106 @@
+{
+  "id": "9723140d-2827-4267-85c0-b76f4e4c675b",
+  "name": "Alpaca (Trading)",
+  "description": "Alpaca's Trading API is a modern platform for algorithmic trading.\n\nFor complete documentation on the Trading API and to obtain your keys head to https://alpaca.markets/docs/api-documentation/api-v2/. Once you have your keys, head to the environments tab to quickly get started.",
+  "createdAt": 1776830121877,
+  "requests": [
+    {
+      "id": "2803dd88-b102-4cfd-96f0-447a544e185e",
+      "name": "Get account",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/account",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"account_number\": \"\",\n  \"status\": \"ACTIVE\",\n  \"currency\": \"USD\",\n  \"cash\": \"\",\n  \"portfolio_value\": \"\",\n  \"pattern_day_trader\": false,\n  \"trade_suspended_by_user\": false,\n  \"trading_blocked\": false,\n  \"transfers_blocked\": false,\n  \"account_blocked\": false,\n  \"created_at\": \"\",\n  \"shorting_enabled\": false,\n  \"long_market_value\": \"\",\n  \"short_market_value\": \"\",\n  \"equity\": \"\",\n  \"last_equity\": \"\",\n  \"multiplier\": \"\",\n  \"buying_power\": \"\",\n  \"initial_margin\": \"\",\n  \"maintenance_margin\": \"\",\n  \"sma\": \"\",\n  \"daytrade_count\": 0,\n  \"last_maintenance_margin\": \"\",\n  \"daytrading_buying_power\": \"\",\n  \"regt_buying_power\": \"\"\n}"
+        }
+      ],
+      "description": "Returns the account associated with the API key."
+    },
+    {
+      "id": "d314768b-46de-456e-aef2-71d621783ac3",
+      "name": "Order",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/orders",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"id\": \"\",\n  \"client_order_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"submitted_at\": \"\",\n  \"filled_at\": \"\",\n  \"expired_at\": \"\",\n  \"canceled_at\": \"\",\n  \"failed_at\": \"\",\n  \"replaced_at\": \"\",\n  \"replaced_by\": \"\",\n  \"replaces\": \"\",\n  \"asset_id\": \"\",\n  \"symbol\": \"\",\n  \"asset_class\": \"us_equity\",\n  \"notional\": \"\",\n  \"qty\": \"\",\n  \"filled_qty\": \"\",\n  \"filled_avg_price\": \"\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"day\",\n  \"limit_price\": \"\",\n  \"stop_price\": \"\",\n  \"status\": \"new\",\n  \"extended_hours\": false,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_percent\": null,\n      \"trail_price\": null,\n      \"hwm\": null\n    }\n  ],\n  \"trail_percent\": \"\",\n  \"trail_price\": \"\",\n  \"hwm\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"client_order_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"submitted_at\": \"\",\n  \"filled_at\": \"\",\n  \"expired_at\": \"\",\n  \"canceled_at\": \"\",\n  \"failed_at\": \"\",\n  \"replaced_at\": \"\",\n  \"replaced_by\": \"\",\n  \"replaces\": \"\",\n  \"asset_id\": \"\",\n  \"symbol\": \"\",\n  \"asset_class\": \"us_equity\",\n  \"notional\": \"\",\n  \"qty\": \"\",\n  \"filled_qty\": \"\",\n  \"filled_avg_price\": \"\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"day\",\n  \"limit_price\": \"\",\n  \"stop_price\": \"\",\n  \"status\": \"new\",\n  \"extended_hours\": false,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_percent\": null,\n      \"trail_price\": null,\n      \"hwm\": null\n    }\n  ],\n  \"trail_percent\": \"\",\n  \"trail_price\": \"\",\n  \"hwm\": \"\"\n}"
+        },
+        {
+          "statusCode": "403",
+          "description": "Forbidden\n\nBuying power or shares is not sufficient."
+        },
+        {
+          "statusCode": "422",
+          "description": "Unprocessable\n\nInput parameters are not recognized."
+        }
+      ],
+      "description": "Places a new order for the given account. An order request may be rejected if the account is not authorized for trading, or if the tradable balance is insufficient to fill the order.."
+    },
+    {
+      "id": "eb2b2143-5a9d-4733-89ce-30aa6d2c26d5",
+      "name": "All Orders",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/orders",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "direction",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "nested",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "symbols",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response\n\nAn array of Order objects",
+          "content": "[\n  {\n    \"id\": \"\",\n    \"client_order_id\": \"\",\n    \"created_at\": \"\",\n    \"updated_at\": \"\",\n    \"submitted_at\": \"\",\n    \"filled_at\": \"\",\n    \"expired_at\": \"\",\n    \"canceled_at\": \"\",\n    \"failed_at\": \"\",\n    \"replaced_at\": \"\",\n    \"replaced_by\": \"\",\n    \"replaces\": \"\",\n    \"asset_id\": \"\",\n    \"symbol\": \"\",\n    \"asset_class\": null,\n    \"notional\": \"\",\n    \"qty\": \"\",\n    \"filled_qty\": \"\",\n    \"filled_avg_price\": \"\",\n    \"order_class\": null,\n    \"order_type\": \"\",\n    \"type\": null,\n    \"side\": null,\n    \"time_in_force\": null,\n    \"limit_price\": \"\",\n    \"stop_price\": \"\",\n    \"status\": null,\n    \"extended_hours\": false,\n    \"legs\": [\n      null\n    ],\n    \"trail_percent\": \"\",\n    \"trail_price\": \"\",\n    \"hwm\": \"\"\n  }\n]"
+        }
+      ],
+      "description": "Retrieves a list of orders for the account, filtered by the supplied query parameters."
+    },
+    {
+      "id": "242e281a-a470-4485-9ed5-3fde9ad0efff",
+      "name": "All Orders",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v2/orders",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "207",
+          "description": "Multi-Status with body.\n\nan array of objects that include the order id and http status code for each status request.",
+          "content": "[\n  {\n    \"id\": \"\",\n    \"status\": 200\n  }\n]"
+        },
+        {
+          "statusCode": "500",
+          "description": "Failed to cancel order."
+        }
+      ],
+      "description": "Attempts to cancel all open orders. A response will be provided for each order that is attempted to be cancelled. If an order is no longer cancelable, the server will respond with status 500 and reject the request."
+    },
+    {
+      "id": "84decda5-4132-4f22-9385-2649a3f7f85c",
+      "name": "Order by Order ID",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/orders/{order_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "nested",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"client_order_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"submitted_at\": \"\",\n  \"filled_at\": \"\",\n  \"expired_at\": \"\",\n  \"canceled_at\": \"\",\n  \"failed_at\": \"\",\n  \"replaced_at\": \"\",\n  \"replaced_by\": \"\",\n  \"replaces\": \"\",\n  \"asset_id\": \"\",\n  \"symbol\": \"\",\n  \"asset_class\": \"us_equity\",\n  \"notional\": \"\",\n  \"qty\": \"\",\n  \"filled_qty\": \"\",\n  \"filled_avg_price\": \"\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"day\",\n  \"limit_price\": \"\",\n  \"stop_price\": \"\",\n  \"status\": \"new\",\n  \"extended_hours\": false,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_percent\": null,\n      \"trail_price\": null,\n      \"hwm\": null\n    }\n  ],\n  \"trail_percent\": \"\",\n  \"trail_price\": \"\",\n  \"hwm\": \"\"\n}"
+        }
+      ],
+      "description": "Retrieves a single order for the given order_id."
+    },
+    {
+      "id": "769403fc-6b89-488d-84c2-b7af36b44a76",
+      "name": "Order",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/v2/orders/{order_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"qty\": \"\",\n  \"time_in_force\": \"day\",\n  \"limit_price\": \"\",\n  \"stop_price\": \"\",\n  \"trail\": \"\",\n  \"client_order_id\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response\n\nThe new Order object with the new order ID.",
+          "content": "{\n  \"id\": \"\",\n  \"client_order_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"submitted_at\": \"\",\n  \"filled_at\": \"\",\n  \"expired_at\": \"\",\n  \"canceled_at\": \"\",\n  \"failed_at\": \"\",\n  \"replaced_at\": \"\",\n  \"replaced_by\": \"\",\n  \"replaces\": \"\",\n  \"asset_id\": \"\",\n  \"symbol\": \"\",\n  \"asset_class\": \"us_equity\",\n  \"notional\": \"\",\n  \"qty\": \"\",\n  \"filled_qty\": \"\",\n  \"filled_avg_price\": \"\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"day\",\n  \"limit_price\": \"\",\n  \"stop_price\": \"\",\n  \"status\": \"new\",\n  \"extended_hours\": false,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_percent\": null,\n      \"trail_price\": null,\n      \"hwm\": null\n    }\n  ],\n  \"trail_percent\": \"\",\n  \"trail_price\": \"\",\n  \"hwm\": \"\"\n}"
+        }
+      ],
+      "description": "Replaces a single order with updated parameters. Each parameter overrides the corresponding attribute of the existing order. The other attributes remain the same as the existing order.\n\nA success return code from a replaced order does NOT guarantee the existing open order has been replaced. If the existing open order is filled before the replacing (new) order reaches the execution venue, the replacing (new) order is rejected, and these events are sent in the trade_updates stream channel. \n\nWhile an order is being replaced, buying power is reduced by the larger of the two orders that have been placed (the old order being replaced, and the newly placed order to replace it). If you are replacing a buy entry order with a higher limit price than the original order, the buying power is calculated based on the newly placed order. If you are replacing it with a lower limit price, the buying power is calculated based on the old order.\n"
+    },
+    {
+      "id": "ca3ea9b5-dec9-4d90-9c93-1ec376f20a6b",
+      "name": "Order by Order ID",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v2/orders/{order_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "No Content"
+        },
+        {
+          "statusCode": "422",
+          "description": "The order status is not cancelable."
+        }
+      ],
+      "description": "Attempts to cancel an Open Order. If the order is no longer cancelable, the request will be rejected with status 422; otherwise accepted with return status 204."
+    },
+    {
+      "id": "80368af5-2371-49d4-910e-ab874edfac1f",
+      "name": "All Open Positions",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/positions",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "[\n  {\n    \"asset_id\": \"\",\n    \"symbol\": \"AAPL\",\n    \"exchange\": null,\n    \"asset_class\": null,\n    \"avg_entry_price\": \"\",\n    \"qty\": \"\",\n    \"qty_available\": \"\",\n    \"side\": \"\",\n    \"market_value\": \"\",\n    \"cost_basis\": \"\",\n    \"unrealized_pl\": \"\",\n    \"unrealized_plpc\": \"\",\n    \"unrealized_intraday_pl\": \"\",\n    \"unrealized_intraday_plpc\": \"\",\n    \"current_price\": \"\",\n    \"lastday_price\": \"\",\n    \"change_today\": \"\",\n    \"asset_marginable\": false\n  }\n]"
+        }
+      ],
+      "description": "The positions API provides information about an account’s current open positions. The response will include information such as cost basis, shares traded, and market value, which will be updated live as price information is updated. Once a position is closed, it will no longer be queryable through this API\n\nRetrieves a list of the account’s open positions"
+    },
+    {
+      "id": "40b48b36-642d-4935-82a2-765efbed0865",
+      "name": "All Positions",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v2/positions",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "cancel_orders",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "207",
+          "description": "Multi-Status with body.\n\nan array of PositionClosed responses",
+          "content": "[\n  {\n    \"symbol\": \"\",\n    \"status\": \"\",\n    \"body\": null\n  }\n]"
+        },
+        {
+          "statusCode": "500",
+          "description": "Failed to liquidate"
+        }
+      ],
+      "description": "Closes (liquidates) all of the account’s open long and short positions. A response will be provided for each order that is attempted to be cancelled. If an order is no longer cancelable, the server will respond with status 500 and reject the request."
+    },
+    {
+      "id": "84cde3dd-1cc3-47a6-b9ec-ce59ea41fff1",
+      "name": "Open Position",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/positions/{symbol_or_asset_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"asset_id\": \"\",\n  \"symbol\": \"AAPL\",\n  \"exchange\": \"NYSE\",\n  \"asset_class\": \"us_equity\",\n  \"avg_entry_price\": \"\",\n  \"qty\": \"\",\n  \"qty_available\": \"\",\n  \"side\": \"\",\n  \"market_value\": \"\",\n  \"cost_basis\": \"\",\n  \"unrealized_pl\": \"\",\n  \"unrealized_plpc\": \"\",\n  \"unrealized_intraday_pl\": \"\",\n  \"unrealized_intraday_plpc\": \"\",\n  \"current_price\": \"\",\n  \"lastday_price\": \"\",\n  \"change_today\": \"\",\n  \"asset_marginable\": false\n}"
+        }
+      ],
+      "description": "Retrieves the account’s open position for the given symbol or assetId."
+    },
+    {
+      "id": "059b8707-7e03-4916-9c65-e3ccc0787acc",
+      "name": "Position",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v2/positions/{symbol_or_asset_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "qty",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "percentage",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response\n\nReturns the order created to close out this position",
+          "content": "{\n  \"id\": \"\",\n  \"client_order_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"submitted_at\": \"\",\n  \"filled_at\": \"\",\n  \"expired_at\": \"\",\n  \"canceled_at\": \"\",\n  \"failed_at\": \"\",\n  \"replaced_at\": \"\",\n  \"replaced_by\": \"\",\n  \"replaces\": \"\",\n  \"asset_id\": \"\",\n  \"symbol\": \"\",\n  \"asset_class\": \"us_equity\",\n  \"notional\": \"\",\n  \"qty\": \"\",\n  \"filled_qty\": \"\",\n  \"filled_avg_price\": \"\",\n  \"order_class\": \"bracket\",\n  \"order_type\": \"\",\n  \"type\": \"stop\",\n  \"side\": \"buy\",\n  \"time_in_force\": \"day\",\n  \"limit_price\": \"\",\n  \"stop_price\": \"\",\n  \"status\": \"new\",\n  \"extended_hours\": false,\n  \"legs\": [\n    {\n      \"id\": null,\n      \"client_order_id\": null,\n      \"created_at\": null,\n      \"updated_at\": null,\n      \"submitted_at\": null,\n      \"filled_at\": null,\n      \"expired_at\": null,\n      \"canceled_at\": null,\n      \"failed_at\": null,\n      \"replaced_at\": null,\n      \"replaced_by\": null,\n      \"replaces\": null,\n      \"asset_id\": null,\n      \"symbol\": null,\n      \"asset_class\": null,\n      \"notional\": null,\n      \"qty\": null,\n      \"filled_qty\": null,\n      \"filled_avg_price\": null,\n      \"order_class\": null,\n      \"order_type\": null,\n      \"type\": null,\n      \"side\": null,\n      \"time_in_force\": null,\n      \"limit_price\": null,\n      \"stop_price\": null,\n      \"status\": null,\n      \"extended_hours\": null,\n      \"legs\": null,\n      \"trail_percent\": null,\n      \"trail_price\": null,\n      \"hwm\": null\n    }\n  ],\n  \"trail_percent\": \"\",\n  \"trail_price\": \"\",\n  \"hwm\": \"\"\n}"
+        }
+      ],
+      "description": "Closes (liquidates) the account’s open position for the given symbol. Works for both long and short positions."
+    },
+    {
+      "id": "b5ff67de-7a03-43bc-b787-06dfa779fc35",
+      "name": "Account Portfolio History",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/account/portfolio/history",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "period",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "timeframe",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "date_end",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "extended_hours",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"timestamp\": [\n    0\n  ],\n  \"equity\": [\n    0\n  ],\n  \"profit_loss\": [\n    0\n  ],\n  \"profit_loss_pct\": [\n    0\n  ],\n  \"base_value\": 0,\n  \"timeframe\": \"15Min\"\n}"
+        }
+      ],
+      "description": "Returns timeseries data about equity and profit/loss (P/L) of the account in requested timespan."
+    },
+    {
+      "id": "97d558c3-d312-4cda-9f66-d9848a1dbf9e",
+      "name": "Watchlists",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/watchlists",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "[\n  {\n    \"id\": \"\",\n    \"account_id\": \"\",\n    \"created_at\": \"\",\n    \"updated_at\": \"\",\n    \"name\": \"\",\n    \"assets\": [\n      null\n    ]\n  }\n]"
+        }
+      ],
+      "description": "Returns the list of watchlists registered under the account."
+    },
+    {
+      "id": "42de560a-1f9e-4312-8cf0-d2090eeac90b",
+      "name": "Watchlist",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/watchlists",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"symbols\": [\n    \"\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Create a new watchlist with initial set of assets."
+    },
+    {
+      "id": "b2ab00c3-89ec-4a54-bce0-0060ed7ebd0c",
+      "name": "Get Watchlist by ID",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/watchlists/{watchlist_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Returns a watchlist identified by the ID."
+    },
+    {
+      "id": "8b69cc63-8e7f-478c-99ca-811581c5f04d",
+      "name": "Update Watchlist By Id",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/v2/watchlists/{watchlist_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"symbols\": [\n    \"\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Update the name and/or content of watchlist"
+    },
+    {
+      "id": "1770a705-51a8-4064-8342-27a9a5d49d52",
+      "name": "Add Asset to Watchlist",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/watchlists/{watchlist_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"symbol\": \"AAPL\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Append an asset for the symbol to the end of watchlist asset list"
+    },
+    {
+      "id": "5151b3da-2be4-4bb8-b669-59674f7fcd91",
+      "name": "Delete Watchlist By Id",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v2/watchlists/{watchlist_id}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "No Content"
+        }
+      ],
+      "description": "Delete a watchlist. This is a permanent deletion."
+    },
+    {
+      "id": "9755717e-9084-4703-b2fe-3432bf0a98bb",
+      "name": "Get Watchlist by Name",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/watchlists:by_name",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "name",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Returns a watchlist by name"
+    },
+    {
+      "id": "a961d8a3-d860-4f7d-b83d-cbd739bb2d01",
+      "name": "Update Watchlist By Name",
+      "method": "PUT",
+      "url": "{{BASE_URL}}/v2/watchlists:by_name",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "name",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"symbols\": [\n    \"\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Update the name and/or content of watchlist"
+    },
+    {
+      "id": "3d779941-0673-4103-b1e2-4c54e026d309",
+      "name": "Add Asset to Watchlist By Name",
+      "method": "POST",
+      "url": "{{BASE_URL}}/v2/watchlists:by_name",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "name",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"symbol\": \"AAPL\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Append an asset for the symbol to the end of watchlist asset list"
+    },
+    {
+      "id": "30a45137-b6c7-4640-83ae-586f0bf7c1c2",
+      "name": "Delete Watchlist By Name",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v2/watchlists:by_name",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "name",
+          "value": "",
+          "enabled": true
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "204",
+          "description": "No Content"
+        }
+      ],
+      "description": "Delete a watchlist. This is a permanent deletion."
+    },
+    {
+      "id": "91160236-6730-492f-89a5-65ca4112cc46",
+      "name": "Symbol from Watchlist",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/v2/watchlists/{watchlist_id}/{symbol}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Returns the updated watchlist",
+          "content": "{\n  \"id\": \"\",\n  \"account_id\": \"\",\n  \"created_at\": \"\",\n  \"updated_at\": \"\",\n  \"name\": \"\",\n  \"assets\": [\n    {\n      \"id\": null,\n      \"class\": null,\n      \"exchange\": null,\n      \"symbol\": null,\n      \"name\": null,\n      \"status\": null,\n      \"tradable\": null,\n      \"marginable\": null,\n      \"shortable\": null,\n      \"easy_to_borrow\": null,\n      \"fractionable\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": "Delete one entry for an asset by symbol name"
+    },
+    {
+      "id": "466ba5b0-8ab4-497a-88aa-d9becc139940",
+      "name": "Account Configurations",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/account/configurations",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"dtbp_check\": \"\",\n  \"trade_confirm_email\": \"\",\n  \"suspend_trade\": false,\n  \"no_shorting\": false,\n  \"fractional_trading\": false,\n  \"max_margin_multiplier\": \"\",\n  \"pdt_check\": \"entry\"\n}"
+        }
+      ],
+      "description": "gets the current account configuration values"
+    },
+    {
+      "id": "e8fe0218-3b34-4f9e-abc4-18907653b65b",
+      "name": "Account Configurations",
+      "method": "PATCH",
+      "url": "{{BASE_URL}}/v2/account/configurations",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"dtbp_check\": \"\",\n  \"trade_confirm_email\": \"\",\n  \"suspend_trade\": false,\n  \"no_shorting\": false,\n  \"fractional_trading\": false,\n  \"max_margin_multiplier\": \"\",\n  \"pdt_check\": \"entry\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successful response",
+          "content": "{\n  \"dtbp_check\": \"\",\n  \"trade_confirm_email\": \"\",\n  \"suspend_trade\": false,\n  \"no_shorting\": false,\n  \"fractional_trading\": false,\n  \"max_margin_multiplier\": \"\",\n  \"pdt_check\": \"entry\"\n}"
+        }
+      ],
+      "description": "Updates and returns the current account configuration values"
+    },
+    {
+      "id": "542d766b-200a-404d-9464-bf069a06b1fe",
+      "name": "Get account activities of one type",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/account/activities",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "date",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "direction",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page_size",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page_token",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "activity_types",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "returns an array of Account activities",
+          "content": "[\n  {\n    \"activity_type\": null,\n    \"id\": null,\n    \"cum_qty\": null,\n    \"leaves_qty\": null,\n    \"price\": null,\n    \"qty\": null,\n    \"side\": null,\n    \"symbol\": null,\n    \"transaction_time\": null,\n    \"order_id\": null,\n    \"type\": null,\n    \"order_status\": null\n  }\n]"
+        }
+      ],
+      "description": "Returns account activity entries for many types of activities."
+    },
+    {
+      "id": "fc7888d7-82b3-4bef-aaf1-48d079babb73",
+      "name": "Get account activities of one type",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/account/activities/{activity_type}",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "date",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "until",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "direction",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page_size",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page_token",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "returns an array of Account activities",
+          "content": "[\n  {\n    \"activity_type\": null,\n    \"id\": null,\n    \"cum_qty\": null,\n    \"leaves_qty\": null,\n    \"price\": null,\n    \"qty\": null,\n    \"side\": null,\n    \"symbol\": null,\n    \"transaction_time\": null,\n    \"order_id\": null,\n    \"type\": null,\n    \"order_status\": null\n  }\n]"
+        }
+      ],
+      "description": "Returns account activity entries for a specific type of activity."
+    },
+    {
+      "id": "f6de88c5-82c5-4fc9-9159-38a95cb4b8c2",
+      "name": "Get Market Calendar info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/calendar",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "end",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "[\n  {\n    \"date\": \"\",\n    \"open\": \"\",\n    \"close\": \"\",\n    \"session_open\": \"\",\n    \"session_close\": \"\"\n  }\n]"
+        }
+      ],
+      "description": "Returns the market calendar."
+    },
+    {
+      "id": "bb6f16c6-aa35-4b95-98c3-e1a138979958",
+      "name": "Get Market Clock info",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v2/clock",
+      "headers": [
+        {
+          "key": "APCA-API-KEY-ID",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        },
+        {
+          "key": "APCA-API-SECRET-KEY",
+          "value": "{{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"timestamp\": \"\",\n  \"is_open\": false,\n  \"next_open\": \"\",\n  \"next_close\": \"\"\n}"
+        }
+      ],
+      "description": "The clock API serves the current market timestamp, whether or not the market is currently open, as well as the times of the next market open and close.\n\nReturns the market clock."
+    }
+  ]
+}

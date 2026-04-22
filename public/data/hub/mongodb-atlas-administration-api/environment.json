@@ -1,0 +1,16 @@
+{
+  "id": "mongodb-atlas-administration-api-default-env",
+  "name": "MongoDB Atlas",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://cloud.mongodb.com",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

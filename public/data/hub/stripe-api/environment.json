@@ -1,0 +1,16 @@
+{
+  "id": "stripe-api-default-env",
+  "name": "Stripe",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.stripe.com/",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

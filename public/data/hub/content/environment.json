@@ -1,0 +1,16 @@
+{
+  "id": "content-default-env",
+  "name": "BigCommerce (Store Content)",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.bigcommerce.com/stores/{store_hash}/v2",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

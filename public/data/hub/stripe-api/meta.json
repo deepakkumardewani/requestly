@@ -1,0 +1,11 @@
+{
+  "name": "Stripe",
+  "providerName": "stripe-api",
+  "description": "The Stripe REST API. Please see https://stripe.com/docs/api for more details.",
+  "category": "Payments",
+  "logoUrl": "https://cdn.simpleicons.org/stripe",
+  "docsUrl": "https://stripe.com",
+  "specUrl": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+  "version": "2026-04-22.dahlia",
+  "requestCount": 587
+}

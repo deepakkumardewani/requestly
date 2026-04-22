@@ -1,0 +1,16 @@
+{
+  "id": "twitter-default-env",
+  "name": "Twitter / X v2",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.twitter.com",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

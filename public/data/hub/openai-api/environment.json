@@ -1,0 +1,16 @@
+{
+  "id": "openai-api-default-env",
+  "name": "OpenAI",
+  "variables": [
+    {
+      "key": "BASE_URL",
+      "value": "https://api.openai.com/v1",
+      "secret": false
+    },
+    {
+      "key": "API_KEY",
+      "value": "",
+      "secret": true
+    }
+  ]
+}

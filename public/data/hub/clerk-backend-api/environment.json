@@ -1,10 +1,10 @@
 {
-  "id": "stripe.com-default-env",
-  "name": "stripe.com",
+  "id": "clerk-backend-api-default-env",
+  "name": "Clerk (Backend API)",
   "variables": [
     {
       "key": "BASE_URL",
-      "value": "https://api.stripe.com/",
+      "value": "https://api.clerk.com/v1",
       "secret": false
     },
     {

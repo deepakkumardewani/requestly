@@ -1,0 +1,298 @@
+{
+  "id": "3d9107fa-9b7b-4569-b1b4-fda27b4ae65f",
+  "name": "Polygon.io",
+  "description": "The future of fintech.",
+  "createdAt": 1776830122468,
+  "requests": [
+    {
+      "id": "a34bda24-d159-4991-b7eb-3af6f8794371",
+      "name": "Available Companies",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/companies",
+      "headers": [],
+      "params": [
+        {
+          "key": "sort",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "perpage",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "An array of companies"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get a list of the traded companies that polygon.io streams. Company includes some details about the company which we hope to add more to soon.\n"
+    },
+    {
+      "id": "cbdbf979-3894-4c67-8208-9f5902514da3",
+      "name": "Available Currencies",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/currencies",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "An array of currencies"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get a list of the currencies that polygon.io streams.\n"
+    },
+    {
+      "id": "2266b512-508d-4a08-afcb-6d3640a17200",
+      "name": "Historic Aggregates",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/historic/agg/{size}/{symbol}/{date}",
+      "headers": [],
+      "params": [
+        {
+          "key": "offset",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "An array of aggregates"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get historic aggregations for a symbol.\n"
+    },
+    {
+      "id": "a806d121-a090-42cd-b5de-3b86314b7d00",
+      "name": "Historic Forex Ticks",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/historic/forex/{from}/{to}/{date}",
+      "headers": [],
+      "params": [
+        {
+          "key": "offset",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "An array of forex ticks"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get historic ticks for a currency pair. Example for **USD/JPY** the from would be **USD** and to would be **JPY**. The date formatted like **2017-6-22**\n"
+    },
+    {
+      "id": "04ea502e-f265-4957-b309-4359ebeee404",
+      "name": "Historic Quotes",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/historic/quotes/{symbol}/{date}",
+      "headers": [],
+      "params": [
+        {
+          "key": "offset",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "An array of quotes"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get historic quotes for a symbol.\n"
+    },
+    {
+      "id": "3011a02b-f682-4b81-b198-153f52431442",
+      "name": "Historic Trades",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/historic/trades/{symbol}/{date}",
+      "headers": [],
+      "params": [
+        {
+          "key": "offset",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "An array of trades"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get historic trades for a symbol.\n"
+    },
+    {
+      "id": "166c6098-6963-47c9-bad6-2fcdb34acf47",
+      "name": "Last Trade for a Currency Pair",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/last/currencies/{from}/{to}",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Last tick for this currency pair"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get Last Trade Tick for a Currency Pair.\n"
+    },
+    {
+      "id": "f4ecbc51-62be-4fa8-b387-7b60aab012b4",
+      "name": "Last Trade for a Symbol",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/last/stocks/{symbol}",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Last trade for this stock"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get the last trade for a given stock.\n"
+    },
+    {
+      "id": "0713e405-ca5e-4082-b016-6fc2ff87068a",
+      "name": "Last Quote for a Currency Pair",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/last_quote/currencies/{from}/{to}",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Last quote tick for this currency pair"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get Last Quote Tick for a Currency Pair.\n"
+    },
+    {
+      "id": "2076cc5b-46a1-4c5d-bd79-d4ae9b1684a0",
+      "name": "Last Quote for a Symbol",
+      "method": "GET",
+      "url": "{{BASE_URL}}/v1/last_quote/stocks/{symbol}",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Last quote tick for this stock"
+        },
+        {
+          "statusCode": "default",
+          "description": "Unexpected error"
+        }
+      ],
+      "description": "Get the last quote tick for a given stock.\n"
+    }
+  ]
+}

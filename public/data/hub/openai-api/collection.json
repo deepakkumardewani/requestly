@@ -1,0 +1,4946 @@
+{
+  "id": "633fb364-52c4-490c-9ee2-24e70d84d135",
+  "name": "OpenAI",
+  "description": "The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.",
+  "createdAt": 1776830114972,
+  "requests": [
+    {
+      "id": "d723cc00-d460-4df0-93bd-f28123c17baf",
+      "name": "Returns a list of assistants.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/assistants",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"created_at\": null,\n      \"name\": null,\n      \"description\": null,\n      \"model\": null,\n      \"instructions\": null,\n      \"tools\": null,\n      \"tool_resources\": null,\n      \"metadata\": null,\n      \"temperature\": null,\n      \"top_p\": null,\n      \"response_format\": null\n    }\n  ],\n  \"first_id\": \"asst_abc123\",\n  \"last_id\": \"asst_abc456\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "dc282649-d419-4caa-a476-cbc44f6092e2",
+      "name": "Create an assistant with a model and instructions.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/assistants",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"model\": \"\",\n  \"name\": \"\",\n  \"description\": \"\",\n  \"instructions\": \"\",\n  \"reasoning_effort\": \"medium\",\n  \"tools\": [\n    {}\n  ],\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {}\n  },\n  \"metadata\": {},\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"response_format\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"name\": \"\",\n  \"description\": \"\",\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {},\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4021325b-6c4b-42a0-a53f-0c6e35dec893",
+      "name": "Retrieves an assistant.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/assistants/{assistant_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"name\": \"\",\n  \"description\": \"\",\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {},\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c416393d-4865-4487-9979-7a1ddafb3531",
+      "name": "Modifies an assistant.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/assistants/{assistant_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"model\": \"\",\n  \"reasoning_effort\": \"medium\",\n  \"name\": \"\",\n  \"description\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {},\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"response_format\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"name\": \"\",\n  \"description\": \"\",\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {},\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "993e185f-993b-4d04-bc74-1411ca3e9159",
+      "name": "Delete an assistant.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/assistants/{assistant_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"deleted\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "00115570-c352-43a1-bd4c-36cea3d56877",
+      "name": "Generates audio from the input text.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/audio/speech",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"model\": \"\",\n  \"input\": \"\",\n  \"instructions\": \"\",\n  \"voice\": \"\",\n  \"response_format\": \"mp3\",\n  \"speed\": 1\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "99457775-96e6-4b2d-86ce-63559c751e68",
+      "name": "Transcribes audio into the input language.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/audio/transcriptions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "form-data",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"text\": \"\",\n  \"logprobs\": [\n    null\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "948c5a15-4dfe-454c-bf4f-8bb8a11f8a58",
+      "name": "Translates audio into English.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/audio/translations",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "form-data",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"text\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "9360fca5-8a51-48e1-9df6-89bc7153e5d6",
+      "name": "Creates and executes a batch from an uploaded file of requests",
+      "method": "POST",
+      "url": "{{BASE_URL}}/batches",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"input_file_id\": \"\",\n  \"endpoint\": \"\",\n  \"completion_window\": \"\",\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Batch created successfully.",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"endpoint\": \"\",\n  \"errors\": {\n    \"object\": \"\",\n    \"data\": [\n      {\n        \"code\": null,\n        \"message\": null,\n        \"param\": null,\n        \"line\": null\n      }\n    ]\n  },\n  \"input_file_id\": \"\",\n  \"completion_window\": \"\",\n  \"status\": \"\",\n  \"output_file_id\": \"\",\n  \"error_file_id\": \"\",\n  \"created_at\": 0,\n  \"in_progress_at\": 0,\n  \"expires_at\": 0,\n  \"finalizing_at\": 0,\n  \"completed_at\": 0,\n  \"failed_at\": 0,\n  \"expired_at\": 0,\n  \"cancelling_at\": 0,\n  \"cancelled_at\": 0,\n  \"request_counts\": {\n    \"total\": 0,\n    \"completed\": 0,\n    \"failed\": 0\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "02140e70-e55b-4900-a100-991c86e69dff",
+      "name": "List your organization's batches.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/batches",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Batch listed successfully.",
+          "content": "{\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"endpoint\": null,\n      \"errors\": null,\n      \"input_file_id\": null,\n      \"completion_window\": null,\n      \"status\": null,\n      \"output_file_id\": null,\n      \"error_file_id\": null,\n      \"created_at\": null,\n      \"in_progress_at\": null,\n      \"expires_at\": null,\n      \"finalizing_at\": null,\n      \"completed_at\": null,\n      \"failed_at\": null,\n      \"expired_at\": null,\n      \"cancelling_at\": null,\n      \"cancelled_at\": null,\n      \"request_counts\": null,\n      \"metadata\": null\n    }\n  ],\n  \"first_id\": \"batch_abc123\",\n  \"last_id\": \"batch_abc456\",\n  \"has_more\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "81f24b4d-f98c-4616-9eec-d4186c659a29",
+      "name": "Retrieves a batch.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/batches/{batch_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Batch retrieved successfully.",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"endpoint\": \"\",\n  \"errors\": {\n    \"object\": \"\",\n    \"data\": [\n      {\n        \"code\": null,\n        \"message\": null,\n        \"param\": null,\n        \"line\": null\n      }\n    ]\n  },\n  \"input_file_id\": \"\",\n  \"completion_window\": \"\",\n  \"status\": \"\",\n  \"output_file_id\": \"\",\n  \"error_file_id\": \"\",\n  \"created_at\": 0,\n  \"in_progress_at\": 0,\n  \"expires_at\": 0,\n  \"finalizing_at\": 0,\n  \"completed_at\": 0,\n  \"failed_at\": 0,\n  \"expired_at\": 0,\n  \"cancelling_at\": 0,\n  \"cancelled_at\": 0,\n  \"request_counts\": {\n    \"total\": 0,\n    \"completed\": 0,\n    \"failed\": 0\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "86b81107-7357-46ca-9fb2-d42ec5b1fc30",
+      "name": "Cancels an in-progress batch. The batch will be in status `cancelling` for up to 10 minutes, before changing to `cancelled`, where it will have partial results (if any) available in the output file.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/batches/{batch_id}/cancel",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Batch is cancelling. Returns the cancelling batch's details.",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"endpoint\": \"\",\n  \"errors\": {\n    \"object\": \"\",\n    \"data\": [\n      {\n        \"code\": null,\n        \"message\": null,\n        \"param\": null,\n        \"line\": null\n      }\n    ]\n  },\n  \"input_file_id\": \"\",\n  \"completion_window\": \"\",\n  \"status\": \"\",\n  \"output_file_id\": \"\",\n  \"error_file_id\": \"\",\n  \"created_at\": 0,\n  \"in_progress_at\": 0,\n  \"expires_at\": 0,\n  \"finalizing_at\": 0,\n  \"completed_at\": 0,\n  \"failed_at\": 0,\n  \"expired_at\": 0,\n  \"cancelling_at\": 0,\n  \"cancelled_at\": 0,\n  \"request_counts\": {\n    \"total\": 0,\n    \"completed\": 0,\n    \"failed\": 0\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f750c595-95c7-40b9-9ae1-09b1fbe9a499",
+      "name": "List stored Chat Completions. Only Chat Completions that have been stored\nwith the `store` parameter set to `true` will be returned.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/chat/completions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "model",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "metadata",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A list of Chat Completions",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"choices\": null,\n      \"created\": null,\n      \"model\": null,\n      \"service_tier\": null,\n      \"system_fingerprint\": null,\n      \"object\": null,\n      \"usage\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d16f84c3-d7c9-4211-b8ca-36cec831d426",
+      "name": "**Starting a new project?** We recommend trying [Responses](/docs/api-reference/responses) \nto take advantage of the latest OpenAI platform features. Compare\n[Chat Completions with Responses](/docs/guides/responses-vs-chat-completions?api-mode=responses).\n\n---\n\nCreates a model response for the given chat conversation. Learn more in the\n[text generation](/docs/guides/text-generation), [vision](/docs/guides/vision),\nand [audio](/docs/guides/audio) guides.\n\nParameter support can differ depending on the model used to generate the\nresponse, particularly for newer reasoning models. Parameters that are only\nsupported for reasoning models are noted below. For the current state of \nunsupported parameters in reasoning models, \n[refer to the reasoning guide](/docs/guides/reasoning).\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat/completions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"choices\": [\n    {\n      \"finish_reason\": \"\",\n      \"index\": 0,\n      \"message\": null,\n      \"logprobs\": {\n        \"content\": null,\n        \"refusal\": null\n      }\n    }\n  ],\n  \"created\": 0,\n  \"model\": \"\",\n  \"service_tier\": \"auto\",\n  \"system_fingerprint\": \"\",\n  \"object\": \"\",\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0,\n    \"completion_tokens_details\": {\n      \"accepted_prediction_tokens\": null,\n      \"audio_tokens\": null,\n      \"reasoning_tokens\": null,\n      \"rejected_prediction_tokens\": null\n    },\n    \"prompt_tokens_details\": {\n      \"audio_tokens\": null,\n      \"cached_tokens\": null\n    }\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "21d83150-f737-4ef0-b8b2-663fae30e9b7",
+      "name": "Get a stored chat completion. Only Chat Completions that have been created\nwith the `store` parameter set to `true` will be returned.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/chat/completions/{completion_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A chat completion",
+          "content": "{\n  \"id\": \"\",\n  \"choices\": [\n    {\n      \"finish_reason\": \"\",\n      \"index\": 0,\n      \"message\": null,\n      \"logprobs\": {\n        \"content\": null,\n        \"refusal\": null\n      }\n    }\n  ],\n  \"created\": 0,\n  \"model\": \"\",\n  \"service_tier\": \"auto\",\n  \"system_fingerprint\": \"\",\n  \"object\": \"\",\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0,\n    \"completion_tokens_details\": {\n      \"accepted_prediction_tokens\": null,\n      \"audio_tokens\": null,\n      \"reasoning_tokens\": null,\n      \"rejected_prediction_tokens\": null\n    },\n    \"prompt_tokens_details\": {\n      \"audio_tokens\": null,\n      \"cached_tokens\": null\n    }\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d53b6e26-a4de-4e07-9c4d-581be3a4163f",
+      "name": "Modify a stored chat completion. Only Chat Completions that have been\ncreated with the `store` parameter set to `true` can be modified. Currently,\nthe only supported modification is to update the `metadata` field.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/chat/completions/{completion_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A chat completion",
+          "content": "{\n  \"id\": \"\",\n  \"choices\": [\n    {\n      \"finish_reason\": \"\",\n      \"index\": 0,\n      \"message\": null,\n      \"logprobs\": {\n        \"content\": null,\n        \"refusal\": null\n      }\n    }\n  ],\n  \"created\": 0,\n  \"model\": \"\",\n  \"service_tier\": \"auto\",\n  \"system_fingerprint\": \"\",\n  \"object\": \"\",\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0,\n    \"completion_tokens_details\": {\n      \"accepted_prediction_tokens\": null,\n      \"audio_tokens\": null,\n      \"reasoning_tokens\": null,\n      \"rejected_prediction_tokens\": null\n    },\n    \"prompt_tokens_details\": {\n      \"audio_tokens\": null,\n      \"cached_tokens\": null\n    }\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "860b6b0e-e9de-402f-91ef-c9241f049e1b",
+      "name": "Delete a stored chat completion. Only Chat Completions that have been\ncreated with the `store` parameter set to `true` can be deleted.\n",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/chat/completions/{completion_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The chat completion was deleted successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"deleted\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f7df84e2-6210-4d07-aa12-105ae932331c",
+      "name": "Get the messages in a stored chat completion. Only Chat Completions that\nhave been created with the `store` parameter set to `true` will be\nreturned.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/chat/completions/{completion_id}/messages",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A list of messages",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {}\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "9e49d549-0818-4ac2-8a51-3175f07c8b0a",
+      "name": "Creates a completion for the provided prompt and parameters.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/completions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"model\": \"\",\n  \"prompt\": \"This is a test.\",\n  \"best_of\": 1,\n  \"echo\": false,\n  \"frequency_penalty\": 0,\n  \"logit_bias\": {},\n  \"logprobs\": 0,\n  \"max_tokens\": 16,\n  \"n\": 1,\n  \"presence_penalty\": 0,\n  \"seed\": 0,\n  \"stop\": \"\\n\",\n  \"stream\": false,\n  \"stream_options\": {\n    \"include_usage\": false\n  },\n  \"suffix\": \"test.\",\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"user\": \"user-1234\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"choices\": [\n    {\n      \"finish_reason\": \"\",\n      \"index\": 0,\n      \"logprobs\": {\n        \"text_offset\": null,\n        \"token_logprobs\": null,\n        \"tokens\": null,\n        \"top_logprobs\": null\n      },\n      \"text\": \"\"\n    }\n  ],\n  \"created\": 0,\n  \"model\": \"\",\n  \"system_fingerprint\": \"\",\n  \"object\": \"\",\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0,\n    \"completion_tokens_details\": {\n      \"accepted_prediction_tokens\": null,\n      \"audio_tokens\": null,\n      \"reasoning_tokens\": null,\n      \"rejected_prediction_tokens\": null\n    },\n    \"prompt_tokens_details\": {\n      \"audio_tokens\": null,\n      \"cached_tokens\": null\n    }\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f0c48e70-4bdf-4ad5-9760-fe28898e0cf8",
+      "name": "Creates an embedding vector representing the input text.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/embeddings",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"input\": \"This is a test.\",\n  \"model\": \"\",\n  \"encoding_format\": \"float\",\n  \"dimensions\": 0,\n  \"user\": \"user-1234\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"data\": [\n    {\n      \"index\": null,\n      \"embedding\": null,\n      \"object\": null\n    }\n  ],\n  \"model\": \"\",\n  \"object\": \"\",\n  \"usage\": {\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "127fcff5-45dd-4b4a-8163-1a9a90d46bc4",
+      "name": "List evaluations for a project.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/evals",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order_by",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A list of evals",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"data_source_config\": null,\n      \"testing_criteria\": null,\n      \"created_at\": null,\n      \"metadata\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "6516ed0c-653a-4ec4-9bd0-1e276862018a",
+      "name": "Create the structure of an evaluation that can be used to test a model's performance.\nAn evaluation is a set of testing criteria and a datasource. After creating an evaluation, you can run it on different models and model parameters. We support several types of graders and datasources.\nFor more information, see the [Evals guide](/docs/guides/evals).\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/evals",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"metadata\": {},\n  \"data_source_config\": {\n    \"type\": null,\n    \"item_schema\": null,\n    \"include_sample_schema\": null\n  },\n  \"testing_criteria\": [\n    {}\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "OK",
+          "content": "{\n  \"object\": \"eval\",\n  \"id\": \"\",\n  \"name\": \"Chatbot effectiveness Evaluation\",\n  \"data_source_config\": {\n    \"type\": null,\n    \"schema\": null\n  },\n  \"testing_criteria\": [\n    {}\n  ],\n  \"created_at\": 0,\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "3b3f0680-d28b-446f-9400-4dd74d74f15d",
+      "name": "Get an evaluation by ID.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/evals/{eval_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The evaluation",
+          "content": "{\n  \"object\": \"eval\",\n  \"id\": \"\",\n  \"name\": \"Chatbot effectiveness Evaluation\",\n  \"data_source_config\": {\n    \"type\": null,\n    \"schema\": null\n  },\n  \"testing_criteria\": [\n    {}\n  ],\n  \"created_at\": 0,\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c155467e-1808-4721-aa85-1b9093a3b46e",
+      "name": "Update certain properties of an evaluation.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/evals/{eval_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The updated evaluation",
+          "content": "{\n  \"object\": \"eval\",\n  \"id\": \"\",\n  \"name\": \"Chatbot effectiveness Evaluation\",\n  \"data_source_config\": {\n    \"type\": null,\n    \"schema\": null\n  },\n  \"testing_criteria\": [\n    {}\n  ],\n  \"created_at\": 0,\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "48a020df-29ec-4dec-b83e-027f309f4c45",
+      "name": "Delete an evaluation.\n",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/evals/{eval_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successfully deleted the evaluation.",
+          "content": "{\n  \"object\": \"eval.deleted\",\n  \"deleted\": true,\n  \"eval_id\": \"eval_abc123\"\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Evaluation not found.",
+          "content": "{\n  \"code\": \"\",\n  \"message\": \"\",\n  \"param\": \"\",\n  \"type\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "858f4713-13cd-41a7-b7e0-8c23282d4d79",
+      "name": "Get a list of runs for an evaluation.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/evals/{eval_id}/runs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A list of runs for the evaluation",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"eval_id\": null,\n      \"status\": null,\n      \"model\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"report_url\": null,\n      \"result_counts\": null,\n      \"per_model_usage\": null,\n      \"per_testing_criteria_results\": null,\n      \"data_source\": null,\n      \"metadata\": null,\n      \"error\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "0b0a62d8-b216-46de-9ff9-7951524d8752",
+      "name": "Create a new evaluation run. This is the endpoint that will kick off grading.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/evals/{eval_id}/runs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"metadata\": {},\n  \"data_source\": {\n    \"type\": null,\n    \"source\": null\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "201",
+          "description": "Successfully created a run for the evaluation",
+          "content": "{\n  \"object\": \"eval.run\",\n  \"id\": \"\",\n  \"eval_id\": \"\",\n  \"status\": \"\",\n  \"model\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"report_url\": \"\",\n  \"result_counts\": {\n    \"total\": 0,\n    \"errored\": 0,\n    \"failed\": 0,\n    \"passed\": 0\n  },\n  \"per_model_usage\": [\n    {\n      \"model_name\": \"\",\n      \"invocation_count\": 0,\n      \"prompt_tokens\": 0,\n      \"completion_tokens\": 0,\n      \"total_tokens\": 0,\n      \"cached_tokens\": 0\n    }\n  ],\n  \"per_testing_criteria_results\": [\n    {\n      \"testing_criteria\": \"\",\n      \"passed\": 0,\n      \"failed\": 0\n    }\n  ],\n  \"data_source\": {\n    \"type\": null,\n    \"source\": null\n  },\n  \"metadata\": {},\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  }\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Bad request (for example, missing eval object)",
+          "content": "{\n  \"code\": \"\",\n  \"message\": \"\",\n  \"param\": \"\",\n  \"type\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d3bc2459-4593-4772-96f2-8934c3fa93e2",
+      "name": "Get an evaluation run by ID.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/evals/{eval_id}/runs/{run_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The evaluation run",
+          "content": "{\n  \"object\": \"eval.run\",\n  \"id\": \"\",\n  \"eval_id\": \"\",\n  \"status\": \"\",\n  \"model\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"report_url\": \"\",\n  \"result_counts\": {\n    \"total\": 0,\n    \"errored\": 0,\n    \"failed\": 0,\n    \"passed\": 0\n  },\n  \"per_model_usage\": [\n    {\n      \"model_name\": \"\",\n      \"invocation_count\": 0,\n      \"prompt_tokens\": 0,\n      \"completion_tokens\": 0,\n      \"total_tokens\": 0,\n      \"cached_tokens\": 0\n    }\n  ],\n  \"per_testing_criteria_results\": [\n    {\n      \"testing_criteria\": \"\",\n      \"passed\": 0,\n      \"failed\": 0\n    }\n  ],\n  \"data_source\": {\n    \"type\": null,\n    \"source\": null\n  },\n  \"metadata\": {},\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "7e77a9ba-96bd-4909-9ea2-cc6234c8115b",
+      "name": "Cancel an ongoing evaluation run.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/evals/{eval_id}/runs/{run_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The canceled eval run object",
+          "content": "{\n  \"object\": \"eval.run\",\n  \"id\": \"\",\n  \"eval_id\": \"\",\n  \"status\": \"\",\n  \"model\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"report_url\": \"\",\n  \"result_counts\": {\n    \"total\": 0,\n    \"errored\": 0,\n    \"failed\": 0,\n    \"passed\": 0\n  },\n  \"per_model_usage\": [\n    {\n      \"model_name\": \"\",\n      \"invocation_count\": 0,\n      \"prompt_tokens\": 0,\n      \"completion_tokens\": 0,\n      \"total_tokens\": 0,\n      \"cached_tokens\": 0\n    }\n  ],\n  \"per_testing_criteria_results\": [\n    {\n      \"testing_criteria\": \"\",\n      \"passed\": 0,\n      \"failed\": 0\n    }\n  ],\n  \"data_source\": {\n    \"type\": null,\n    \"source\": null\n  },\n  \"metadata\": {},\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "0d4e34f8-6aab-4508-8795-335b854c6443",
+      "name": "Delete an eval run.\n",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/evals/{eval_id}/runs/{run_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Successfully deleted the eval run",
+          "content": "{\n  \"object\": \"eval.run.deleted\",\n  \"deleted\": true,\n  \"run_id\": \"evalrun_677469f564d48190807532a852da3afb\"\n}"
+        },
+        {
+          "statusCode": "404",
+          "description": "Run not found",
+          "content": "{\n  \"code\": \"\",\n  \"message\": \"\",\n  \"param\": \"\",\n  \"type\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c11105fb-2e81-4249-a413-befb1fff513c",
+      "name": "Get a list of output items for an evaluation run.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/evals/{eval_id}/runs/{run_id}/output_items",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "status",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A list of output items for the evaluation run",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"run_id\": null,\n      \"eval_id\": null,\n      \"created_at\": null,\n      \"status\": null,\n      \"datasource_item_id\": null,\n      \"datasource_item\": null,\n      \"results\": null,\n      \"sample\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f1c8981a-db38-4207-9147-790499746dde",
+      "name": "Get an evaluation run output item by ID.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The evaluation run output item",
+          "content": "{\n  \"object\": \"eval.run.output_item\",\n  \"id\": \"\",\n  \"run_id\": \"\",\n  \"eval_id\": \"\",\n  \"created_at\": 0,\n  \"status\": \"\",\n  \"datasource_item_id\": 0,\n  \"datasource_item\": {},\n  \"results\": [\n    {}\n  ],\n  \"sample\": {\n    \"input\": [\n      {\n        \"role\": null,\n        \"content\": null\n      }\n    ],\n    \"output\": [\n      {\n        \"role\": null,\n        \"content\": null\n      }\n    ],\n    \"finish_reason\": \"\",\n    \"model\": \"\",\n    \"usage\": {\n      \"total_tokens\": 0,\n      \"completion_tokens\": 0,\n      \"prompt_tokens\": 0,\n      \"cached_tokens\": 0\n    },\n    \"error\": {\n      \"code\": null,\n      \"message\": null\n    },\n    \"temperature\": 0,\n    \"max_completion_tokens\": 0,\n    \"top_p\": 0,\n    \"seed\": 0\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "ae66cbe2-f0db-49ba-b42a-c3fb2154e708",
+      "name": "Returns a list of files.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/files",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "purpose",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"bytes\": null,\n      \"created_at\": null,\n      \"expires_at\": null,\n      \"filename\": null,\n      \"object\": null,\n      \"purpose\": null,\n      \"status\": null,\n      \"status_details\": null\n    }\n  ],\n  \"first_id\": \"file-abc123\",\n  \"last_id\": \"file-abc456\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "99612f6f-88cf-42e8-9b31-6415439475cb",
+      "name": "Upload a file that can be used across various endpoints. Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB.\n\nThe Assistants API supports files up to 2 million tokens and of specific file types. See the [Assistants Tools guide](/docs/assistants/tools) for details.\n\nThe Fine-tuning API only supports `.jsonl` files. The input also has certain required formats for fine-tuning [chat](/docs/api-reference/fine-tuning/chat-input) or [completions](/docs/api-reference/fine-tuning/completions-input) models.\n\nThe Batch API only supports `.jsonl` files up to 200 MB in size. The input also has a specific required [format](/docs/api-reference/batch/request-input).\n\nPlease [contact us](https://help.openai.com/) if you need to increase these storage limits.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/files",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "form-data",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"bytes\": 0,\n  \"created_at\": 0,\n  \"expires_at\": 0,\n  \"filename\": \"\",\n  \"object\": \"\",\n  \"purpose\": \"\",\n  \"status\": \"\",\n  \"status_details\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "091dc318-77d9-4c35-92ec-90e687e33dfe",
+      "name": "Delete a file.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/files/{file_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"deleted\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "fb29b772-1a4e-4927-8076-01f5f7aef381",
+      "name": "Returns information about a specific file.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/files/{file_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"bytes\": 0,\n  \"created_at\": 0,\n  \"expires_at\": 0,\n  \"filename\": \"\",\n  \"object\": \"\",\n  \"purpose\": \"\",\n  \"status\": \"\",\n  \"status_details\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "649a67cd-65ba-40c1-b0e8-24ea22e364a4",
+      "name": "Returns the contents of the specified file.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/files/{file_id}/content",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "11788d5f-31c2-4d10-a40c-767a741590d6",
+      "name": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to view all permissions for a fine-tuned model checkpoint.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "project_id",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"data\": [\n    {\n      \"id\": null,\n      \"created_at\": null,\n      \"project_id\": null,\n      \"object\": null\n    }\n  ],\n  \"object\": \"\",\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "638ffca8-c5b0-40c6-98a8-9e47e243096d",
+      "name": "**NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).\n\nThis enables organization owners to share fine-tuned models with other projects in their organization.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"project_ids\": [\n    \"\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"data\": [\n    {\n      \"id\": null,\n      \"created_at\": null,\n      \"project_id\": null,\n      \"object\": null\n    }\n  ],\n  \"object\": \"\",\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d0fbeb74-fa41-4feb-8cbc-b66e171d035c",
+      "name": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to delete a permission for a fine-tuned model checkpoint.\n",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"deleted\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "ee152655-f2e6-4c4c-9e20-1b90fbe5e291",
+      "name": "Creates a fine-tuning job which begins the process of creating a new model from a given dataset.\n\nResponse includes details of the enqueued job including job status and the name of the fine-tuned models once complete.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/fine_tuning/jobs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"model\": \"\",\n  \"training_file\": \"file-abc123\",\n  \"hyperparameters\": {\n    \"batch_size\": \"\",\n    \"learning_rate_multiplier\": \"\",\n    \"n_epochs\": \"\"\n  },\n  \"suffix\": \"\",\n  \"validation_file\": \"file-abc123\",\n  \"integrations\": [\n    {\n      \"type\": {},\n      \"wandb\": {\n        \"project\": null,\n        \"name\": null,\n        \"entity\": null,\n        \"tags\": null\n      }\n    }\n  ],\n  \"seed\": 42,\n  \"method\": {\n    \"type\": \"\",\n    \"supervised\": null,\n    \"dpo\": null\n  },\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"created_at\": 0,\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\"\n  },\n  \"fine_tuned_model\": \"\",\n  \"finished_at\": 0,\n  \"hyperparameters\": {\n    \"batch_size\": \"\",\n    \"learning_rate_multiplier\": \"\",\n    \"n_epochs\": \"\"\n  },\n  \"model\": \"\",\n  \"object\": \"\",\n  \"organization_id\": \"\",\n  \"result_files\": [\n    \"file-abc123\"\n  ],\n  \"status\": \"\",\n  \"trained_tokens\": 0,\n  \"training_file\": \"\",\n  \"validation_file\": \"\",\n  \"integrations\": [\n    {}\n  ],\n  \"seed\": 0,\n  \"estimated_finish\": 0,\n  \"method\": {\n    \"type\": \"\",\n    \"supervised\": null,\n    \"dpo\": null\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "1a87a9ff-ea5d-447f-aad6-78a221726963",
+      "name": "List your organization's fine-tuning jobs\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/fine_tuning/jobs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "metadata",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"data\": [\n    {\n      \"id\": null,\n      \"created_at\": null,\n      \"error\": null,\n      \"fine_tuned_model\": null,\n      \"finished_at\": null,\n      \"hyperparameters\": null,\n      \"model\": null,\n      \"object\": null,\n      \"organization_id\": null,\n      \"result_files\": null,\n      \"status\": null,\n      \"trained_tokens\": null,\n      \"training_file\": null,\n      \"validation_file\": null,\n      \"integrations\": null,\n      \"seed\": null,\n      \"estimated_finish\": null,\n      \"method\": null,\n      \"metadata\": null\n    }\n  ],\n  \"has_more\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "6f0b7a37-9711-4382-a195-4d626f9faa08",
+      "name": "Get info about a fine-tuning job.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/fine_tuning/jobs/{fine_tuning_job_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"created_at\": 0,\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\"\n  },\n  \"fine_tuned_model\": \"\",\n  \"finished_at\": 0,\n  \"hyperparameters\": {\n    \"batch_size\": \"\",\n    \"learning_rate_multiplier\": \"\",\n    \"n_epochs\": \"\"\n  },\n  \"model\": \"\",\n  \"object\": \"\",\n  \"organization_id\": \"\",\n  \"result_files\": [\n    \"file-abc123\"\n  ],\n  \"status\": \"\",\n  \"trained_tokens\": 0,\n  \"training_file\": \"\",\n  \"validation_file\": \"\",\n  \"integrations\": [\n    {}\n  ],\n  \"seed\": 0,\n  \"estimated_finish\": 0,\n  \"method\": {\n    \"type\": \"\",\n    \"supervised\": null,\n    \"dpo\": null\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f004597f-c4c9-451f-9533-fb0c233398be",
+      "name": "Immediately cancel a fine-tune job.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/fine_tuning/jobs/{fine_tuning_job_id}/cancel",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"created_at\": 0,\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\"\n  },\n  \"fine_tuned_model\": \"\",\n  \"finished_at\": 0,\n  \"hyperparameters\": {\n    \"batch_size\": \"\",\n    \"learning_rate_multiplier\": \"\",\n    \"n_epochs\": \"\"\n  },\n  \"model\": \"\",\n  \"object\": \"\",\n  \"organization_id\": \"\",\n  \"result_files\": [\n    \"file-abc123\"\n  ],\n  \"status\": \"\",\n  \"trained_tokens\": 0,\n  \"training_file\": \"\",\n  \"validation_file\": \"\",\n  \"integrations\": [\n    {}\n  ],\n  \"seed\": 0,\n  \"estimated_finish\": 0,\n  \"method\": {\n    \"type\": \"\",\n    \"supervised\": null,\n    \"dpo\": null\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "cdbc10f9-2e5c-4f2c-a1a2-4351671e4a82",
+      "name": "List checkpoints for a fine-tuning job.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/fine_tuning/jobs/{fine_tuning_job_id}/checkpoints",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"data\": [\n    {\n      \"id\": null,\n      \"created_at\": null,\n      \"fine_tuned_model_checkpoint\": null,\n      \"step_number\": null,\n      \"metrics\": null,\n      \"fine_tuning_job_id\": null,\n      \"object\": null\n    }\n  ],\n  \"object\": \"\",\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "2a607d6a-2401-41db-b299-7c5f88a067b1",
+      "name": "Get status updates for a fine-tuning job.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/fine_tuning/jobs/{fine_tuning_job_id}/events",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"created_at\": null,\n      \"level\": null,\n      \"message\": null,\n      \"type\": null,\n      \"data\": null\n    }\n  ],\n  \"object\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "7e1a5d8c-5448-4c79-943e-31b045149122",
+      "name": "Creates an edited or extended image given one or more source images and a prompt. This endpoint only supports `gpt-image-1` and `dall-e-2`.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/images/edits",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "form-data",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"created\": 0,\n  \"data\": [\n    {\n      \"b64_json\": null,\n      \"url\": null,\n      \"revised_prompt\": null\n    }\n  ],\n  \"usage\": {\n    \"total_tokens\": 0,\n    \"input_tokens\": 0,\n    \"output_tokens\": 0,\n    \"input_tokens_details\": {\n      \"text_tokens\": 0,\n      \"image_tokens\": 0\n    }\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "8463fd9f-2c8d-45b2-a8ad-28f3ce829ee6",
+      "name": "Creates an image given a prompt. [Learn more](/docs/guides/images).\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/images/generations",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"prompt\": \"A cute baby sea otter\",\n  \"model\": \"\",\n  \"n\": 1,\n  \"quality\": \"medium\",\n  \"response_format\": \"url\",\n  \"output_format\": \"png\",\n  \"output_compression\": 100,\n  \"size\": \"1024x1024\",\n  \"moderation\": \"low\",\n  \"background\": \"transparent\",\n  \"style\": \"vivid\",\n  \"user\": \"user-1234\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"created\": 0,\n  \"data\": [\n    {\n      \"b64_json\": null,\n      \"url\": null,\n      \"revised_prompt\": null\n    }\n  ],\n  \"usage\": {\n    \"total_tokens\": 0,\n    \"input_tokens\": 0,\n    \"output_tokens\": 0,\n    \"input_tokens_details\": {\n      \"text_tokens\": 0,\n      \"image_tokens\": 0\n    }\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "0199c557-a2e0-467f-93d9-3eb90bc99c86",
+      "name": "Creates a variation of a given image. This endpoint only supports `dall-e-2`.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/images/variations",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "form-data",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"created\": 0,\n  \"data\": [\n    {\n      \"b64_json\": null,\n      \"url\": null,\n      \"revised_prompt\": null\n    }\n  ],\n  \"usage\": {\n    \"total_tokens\": 0,\n    \"input_tokens\": 0,\n    \"output_tokens\": 0,\n    \"input_tokens_details\": {\n      \"text_tokens\": 0,\n      \"image_tokens\": 0\n    }\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "31cce09f-a2d4-4705-ad94-b6f1797c13c3",
+      "name": "Lists the currently available models, and provides basic information about each one such as the owner and availability.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/models",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"created\": null,\n      \"object\": null,\n      \"owned_by\": null\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "2eefa547-babe-4bc0-ba87-c16c60c94e3b",
+      "name": "Retrieves a model instance, providing basic information about the model such as the owner and permissioning.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/models/{model}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"created\": 0,\n  \"object\": \"\",\n  \"owned_by\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "ebe8ee00-dcfb-4dc5-8e75-0d3c47c1c4ae",
+      "name": "Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/models/{model}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"deleted\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "9ece277e-e08b-4804-a480-4e12398677af",
+      "name": "Classifies if text and/or image inputs are potentially harmful. Learn\nmore in the [moderation guide](/docs/guides/moderation).\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/moderations",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"input\": \"I want to kill them.\",\n  \"model\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"model\": \"\",\n  \"results\": [\n    {\n      \"flagged\": false,\n      \"categories\": {\n        \"hate\": null,\n        \"hate/threatening\": null,\n        \"harassment\": null,\n        \"harassment/threatening\": null,\n        \"illicit\": null,\n        \"illicit/violent\": null,\n        \"self-harm\": null,\n        \"self-harm/intent\": null,\n        \"self-harm/instructions\": null,\n        \"sexual\": null,\n        \"sexual/minors\": null,\n        \"violence\": null,\n        \"violence/graphic\": null\n      },\n      \"category_scores\": {\n        \"hate\": null,\n        \"hate/threatening\": null,\n        \"harassment\": null,\n        \"harassment/threatening\": null,\n        \"illicit\": null,\n        \"illicit/violent\": null,\n        \"self-harm\": null,\n        \"self-harm/intent\": null,\n        \"self-harm/instructions\": null,\n        \"sexual\": null,\n        \"sexual/minors\": null,\n        \"violence\": null,\n        \"violence/graphic\": null\n      },\n      \"category_applied_input_types\": {\n        \"hate\": null,\n        \"hate/threatening\": null,\n        \"harassment\": null,\n        \"harassment/threatening\": null,\n        \"illicit\": null,\n        \"illicit/violent\": null,\n        \"self-harm\": null,\n        \"self-harm/intent\": null,\n        \"self-harm/instructions\": null,\n        \"sexual\": null,\n        \"sexual/minors\": null,\n        \"violence\": null,\n        \"violence/graphic\": null\n      }\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "1c5ebf99-c263-4a00-96e6-d0a14a550708",
+      "name": "List organization API keys",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/admin_api_keys",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "A list of organization API keys.",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"redacted_value\": null,\n      \"value\": null,\n      \"created_at\": null,\n      \"last_used_at\": null,\n      \"owner\": null\n    }\n  ],\n  \"has_more\": false,\n  \"first_id\": \"key_abc\",\n  \"last_id\": \"key_xyz\"\n}"
+        }
+      ],
+      "description": "Retrieve a paginated list of organization admin API keys."
+    },
+    {
+      "id": "80a896e3-c97d-49eb-8871-3525ecf72659",
+      "name": "Create an organization admin API key",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/admin_api_keys",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"New Admin Key\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "The newly created admin API key.",
+          "content": "{\n  \"object\": \"organization.admin_api_key\",\n  \"id\": \"key_abc\",\n  \"name\": \"Administration Key\",\n  \"redacted_value\": \"sk-admin...def\",\n  \"value\": \"sk-admin-1234abcd\",\n  \"created_at\": 1711471533,\n  \"last_used_at\": 1711471534,\n  \"owner\": {\n    \"type\": \"user\",\n    \"object\": \"organization.user\",\n    \"id\": \"sa_456\",\n    \"name\": \"My Service Account\",\n    \"created_at\": 1711471533,\n    \"role\": \"owner\"\n  }\n}"
+        }
+      ],
+      "description": "Create a new admin-level API key for the organization."
+    },
+    {
+      "id": "50b046c5-0588-412d-b9fa-9bed66eaf368",
+      "name": "Retrieve a single organization API key",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/admin_api_keys/{key_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Details of the requested API key.",
+          "content": "{\n  \"object\": \"organization.admin_api_key\",\n  \"id\": \"key_abc\",\n  \"name\": \"Administration Key\",\n  \"redacted_value\": \"sk-admin...def\",\n  \"value\": \"sk-admin-1234abcd\",\n  \"created_at\": 1711471533,\n  \"last_used_at\": 1711471534,\n  \"owner\": {\n    \"type\": \"user\",\n    \"object\": \"organization.user\",\n    \"id\": \"sa_456\",\n    \"name\": \"My Service Account\",\n    \"created_at\": 1711471533,\n    \"role\": \"owner\"\n  }\n}"
+        }
+      ],
+      "description": "Get details for a specific organization API key by its ID."
+    },
+    {
+      "id": "58ee83e6-0aa4-4629-a806-5ff0483e174c",
+      "name": "Delete an organization admin API key",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/organization/admin_api_keys/{key_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Confirmation that the API key was deleted.",
+          "content": "{\n  \"id\": \"key_abc\",\n  \"object\": \"organization.admin_api_key.deleted\",\n  \"deleted\": true\n}"
+        }
+      ],
+      "description": "Delete the specified admin API key."
+    },
+    {
+      "id": "ef02d7f7-a589-45ef-8a3c-e856d3d23b2a",
+      "name": "List user actions and configuration changes within this organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/audit_logs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "effective_at",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids[]",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "event_types[]",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "actor_ids[]",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "actor_emails[]",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "resource_ids[]",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Audit logs listed successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"type\": null,\n      \"effective_at\": null,\n      \"project\": null,\n      \"actor\": null,\n      \"api_key.created\": null,\n      \"api_key.updated\": null,\n      \"api_key.deleted\": null,\n      \"checkpoint_permission.created\": null,\n      \"checkpoint_permission.deleted\": null,\n      \"invite.sent\": null,\n      \"invite.accepted\": null,\n      \"invite.deleted\": null,\n      \"login.failed\": null,\n      \"logout.failed\": null,\n      \"organization.updated\": null,\n      \"project.created\": null,\n      \"project.updated\": null,\n      \"project.archived\": null,\n      \"rate_limit.updated\": null,\n      \"rate_limit.deleted\": null,\n      \"service_account.created\": null,\n      \"service_account.updated\": null,\n      \"service_account.deleted\": null,\n      \"user.added\": null,\n      \"user.updated\": null,\n      \"user.deleted\": null,\n      \"certificate.created\": null,\n      \"certificate.updated\": null,\n      \"certificate.deleted\": null,\n      \"certificates.activated\": null,\n      \"certificates.deactivated\": null\n    }\n  ],\n  \"first_id\": \"audit_log-defb456h8dks\",\n  \"last_id\": \"audit_log-hnbkd8s93s\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "b155cf70-8719-471d-979a-9d62bb69433b",
+      "name": "List uploaded certificates for this organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/certificates",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificates listed successfully.",
+          "content": "{\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"certificate_details\": null,\n      \"active\": null\n    }\n  ],\n  \"first_id\": \"cert_abc\",\n  \"last_id\": \"cert_abc\",\n  \"has_more\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "53993773-caa0-4715-aa79-653cb6f3b491",
+      "name": "Upload a certificate to the organization. This does **not** automatically activate the certificate.\n\nOrganizations can upload up to 50 certificates.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/certificates",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"content\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificate uploaded successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"certificate_details\": {\n    \"valid_at\": 0,\n    \"expires_at\": 0,\n    \"content\": \"\"\n  },\n  \"active\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "824de658-6931-4040-899e-bb0bd3348e74",
+      "name": "Activate certificates at the organization level.\n\nYou can atomically and idempotently activate up to 10 certificates at a time.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/certificates/activate",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"certificate_ids\": [\n    \"cert_abc\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificates activated successfully.",
+          "content": "{\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"certificate_details\": null,\n      \"active\": null\n    }\n  ],\n  \"first_id\": \"cert_abc\",\n  \"last_id\": \"cert_abc\",\n  \"has_more\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "683107d3-7302-43df-8086-fc543b7f638a",
+      "name": "Deactivate certificates at the organization level.\n\nYou can atomically and idempotently deactivate up to 10 certificates at a time.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/certificates/deactivate",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"certificate_ids\": [\n    \"cert_abc\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificates deactivated successfully.",
+          "content": "{\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"certificate_details\": null,\n      \"active\": null\n    }\n  ],\n  \"first_id\": \"cert_abc\",\n  \"last_id\": \"cert_abc\",\n  \"has_more\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "39d3158c-20a7-4afa-ab78-0aca86c9c511",
+      "name": "Get a certificate that has been uploaded to the organization.\n\nYou can get a certificate regardless of whether it is active or not.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/certificates/{certificate_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "include",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificate retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"certificate_details\": {\n    \"valid_at\": 0,\n    \"expires_at\": 0,\n    \"content\": \"\"\n  },\n  \"active\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c5c85d4c-4eaa-4854-8d54-4af3ebf90ee0",
+      "name": "Modify a certificate. Note that only the name can be modified.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/certificates/{certificate_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificate modified successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"certificate_details\": {\n    \"valid_at\": 0,\n    \"expires_at\": 0,\n    \"content\": \"\"\n  },\n  \"active\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5f5be145-3fae-46d3-bb5e-7c5a12605b4c",
+      "name": "Delete a certificate from the organization.\n\nThe certificate must be inactive for the organization and all projects.\n",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/organization/certificates/{certificate_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificate deleted successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "e14cfc61-b293-4b54-93a9-93ad97640270",
+      "name": "Get costs details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/costs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Costs data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "ab7d65a7-366c-45b1-b65c-a59593487f74",
+      "name": "Returns a list of invites in the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/invites",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Invites listed successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"email\": null,\n      \"role\": null,\n      \"status\": null,\n      \"invited_at\": null,\n      \"expires_at\": null,\n      \"accepted_at\": null,\n      \"projects\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "8c3246cf-1f4b-4be7-a027-0e3962117fd4",
+      "name": "Create an invite for a user to the organization. The invite must be accepted by the user before they have access to the organization.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/invites",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"email\": \"\",\n  \"role\": \"\",\n  \"projects\": [\n    {\n      \"id\": \"\",\n      \"role\": \"\"\n    }\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "User invited successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"email\": \"\",\n  \"role\": \"\",\n  \"status\": \"\",\n  \"invited_at\": 0,\n  \"expires_at\": 0,\n  \"accepted_at\": 0,\n  \"projects\": [\n    {\n      \"id\": \"\",\n      \"role\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "1d3cb98d-dcc6-4edb-b3ad-d22681ca0ac5",
+      "name": "Retrieves an invite.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/invites/{invite_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Invite retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"email\": \"\",\n  \"role\": \"\",\n  \"status\": \"\",\n  \"invited_at\": 0,\n  \"expires_at\": 0,\n  \"accepted_at\": 0,\n  \"projects\": [\n    {\n      \"id\": \"\",\n      \"role\": \"\"\n    }\n  ]\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "a6ab650c-dbce-4083-ba26-6d38b8dfa72d",
+      "name": "Delete an invite. If the invite has already been accepted, it cannot be deleted.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/organization/invites/{invite_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Invite deleted successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"deleted\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4eb7e781-6922-47f8-81cb-5887915b4d22",
+      "name": "Returns a list of projects.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "include_archived",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Projects listed successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"archived_at\": null,\n      \"status\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "be5abd3f-dafa-4a16-9ae0-933905124813",
+      "name": "Create a new project in the organization. Projects can be created and archived, but cannot be deleted.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project created successfully.",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"archived_at\": 0,\n  \"status\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c67850d1-d4c9-4cbe-a9e2-76e3253022c2",
+      "name": "Retrieves a project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project retrieved successfully.",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"archived_at\": 0,\n  \"status\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "47bb921b-6d71-4d5c-8cad-a15161e4a393",
+      "name": "Modifies a project in the organization.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project updated successfully.",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"archived_at\": 0,\n  \"status\": \"\"\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response when updating the default project.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5e69e8b1-7f8d-4967-8831-905186928973",
+      "name": "Returns a list of API keys in the project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/api_keys",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project API keys listed successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"redacted_value\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"last_used_at\": null,\n      \"id\": null,\n      \"owner\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "7e7c6808-fbe8-4634-987f-ad6d7893fc34",
+      "name": "Retrieves an API key in the project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/api_keys/{key_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project API key retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"redacted_value\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"last_used_at\": 0,\n  \"id\": \"\",\n  \"owner\": {\n    \"type\": \"\",\n    \"user\": {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"email\": null,\n      \"role\": null,\n      \"added_at\": null\n    },\n    \"service_account\": {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"role\": null,\n      \"created_at\": null\n    }\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5c59dfba-e7b8-4e18-9ce5-f2e8a33c6bd4",
+      "name": "Deletes an API key from the project.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/api_keys/{key_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project API key deleted successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"deleted\": false\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response for various conditions.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "b544ac84-9441-4d3b-abfe-7998f2b47f65",
+      "name": "Archives a project in the organization. Archived projects cannot be used or updated.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/archive",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project archived successfully.",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"name\": \"\",\n  \"created_at\": 0,\n  \"archived_at\": 0,\n  \"status\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "2045ab8b-466e-4f3b-842f-4de8bd29e527",
+      "name": "List certificates for this project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/certificates",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificates listed successfully.",
+          "content": "{\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"certificate_details\": null,\n      \"active\": null\n    }\n  ],\n  \"first_id\": \"cert_abc\",\n  \"last_id\": \"cert_abc\",\n  \"has_more\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c9318556-5d90-4755-9057-f5f397edff91",
+      "name": "Activate certificates at the project level.\n\nYou can atomically and idempotently activate up to 10 certificates at a time.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/certificates/activate",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"certificate_ids\": [\n    \"cert_abc\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificates activated successfully.",
+          "content": "{\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"certificate_details\": null,\n      \"active\": null\n    }\n  ],\n  \"first_id\": \"cert_abc\",\n  \"last_id\": \"cert_abc\",\n  \"has_more\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5171ee67-dbcb-4270-8210-7872002e3d85",
+      "name": "Deactivate certificates at the project level.\n\nYou can atomically and idempotently deactivate up to 10 certificates at a time.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/certificates/deactivate",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"certificate_ids\": [\n    \"cert_abc\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Certificates deactivated successfully.",
+          "content": "{\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"created_at\": null,\n      \"certificate_details\": null,\n      \"active\": null\n    }\n  ],\n  \"first_id\": \"cert_abc\",\n  \"last_id\": \"cert_abc\",\n  \"has_more\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "ff0f0252-e5a5-4a45-9dbd-ea9b8f2d1331",
+      "name": "Returns the rate limits per model for a project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/rate_limits",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project rate limits listed successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"model\": null,\n      \"max_requests_per_1_minute\": null,\n      \"max_tokens_per_1_minute\": null,\n      \"max_images_per_1_minute\": null,\n      \"max_audio_megabytes_per_1_minute\": null,\n      \"max_requests_per_1_day\": null,\n      \"batch_1_day_max_input_tokens\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4615361b-8578-4790-aff5-d9c4b367ee1a",
+      "name": "Updates a project rate limit.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/rate_limits/{rate_limit_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"max_requests_per_1_minute\": 0,\n  \"max_tokens_per_1_minute\": 0,\n  \"max_images_per_1_minute\": 0,\n  \"max_audio_megabytes_per_1_minute\": 0,\n  \"max_requests_per_1_day\": 0,\n  \"batch_1_day_max_input_tokens\": 0\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project rate limit updated successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"model\": \"\",\n  \"max_requests_per_1_minute\": 0,\n  \"max_tokens_per_1_minute\": 0,\n  \"max_images_per_1_minute\": 0,\n  \"max_audio_megabytes_per_1_minute\": 0,\n  \"max_requests_per_1_day\": 0,\n  \"batch_1_day_max_input_tokens\": 0\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response for various conditions.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "00080df8-29d7-4898-a66e-ee7ba1f51de5",
+      "name": "Returns a list of service accounts in the project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/service_accounts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project service accounts listed successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"role\": null,\n      \"created_at\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response when project is archived.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "47c8b8d0-a0e2-4a38-8345-3e9dac0f3305",
+      "name": "Creates a new service account in the project. This also returns an unredacted API key for the service account.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/service_accounts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project service account created successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"role\": \"\",\n  \"created_at\": 0,\n  \"api_key\": {\n    \"object\": \"\",\n    \"value\": \"\",\n    \"name\": \"\",\n    \"created_at\": 0,\n    \"id\": \"\"\n  }\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response when project is archived.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "fcdbe158-0e6d-49bd-868d-5ae65bc97fd7",
+      "name": "Retrieves a service account in the project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/service_accounts/{service_account_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project service account retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"role\": \"\",\n  \"created_at\": 0\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "13ebee44-dd3d-4c94-b806-f9fab6bf7b65",
+      "name": "Deletes a service account from the project.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/service_accounts/{service_account_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project service account deleted successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"deleted\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d61ecd28-5b9f-4911-8839-ef818605db0a",
+      "name": "Returns a list of users in the project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/users",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project users listed successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"email\": null,\n      \"role\": null,\n      \"added_at\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response when project is archived.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "91a212ac-d6d4-43e1-91e8-05b9e9a475de",
+      "name": "Adds a user to the project. Users must already be members of the organization to be added to a project.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/users",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"user_id\": \"\",\n  \"role\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "User added to project successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"email\": \"\",\n  \"role\": \"\",\n  \"added_at\": 0\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response for various conditions.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "13f26697-127b-4507-a09c-3cdec2a8939f",
+      "name": "Retrieves a user in the project.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/users/{user_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project user retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"email\": \"\",\n  \"role\": \"\",\n  \"added_at\": 0\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f717d0dc-2d5e-43cd-bbaa-ffb5662e08ab",
+      "name": "Modifies a user's role in the project.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/users/{user_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"role\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project user's role updated successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"email\": \"\",\n  \"role\": \"\",\n  \"added_at\": 0\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response for various conditions.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "6d765508-c7d6-460f-95a4-8633efbecc00",
+      "name": "Deletes a user from the project.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/organization/projects/{project_id}/users/{user_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Project user deleted successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"deleted\": false\n}"
+        },
+        {
+          "statusCode": "400",
+          "description": "Error response for various conditions.",
+          "content": "{\n  \"error\": {\n    \"code\": \"\",\n    \"message\": \"\",\n    \"param\": \"\",\n    \"type\": \"\"\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d009a191-6a90-48fb-ae29-bfa8170c0a3d",
+      "name": "Get audio speeches usage details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/usage/audio_speeches",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "api_key_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "models",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Usage data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "00fe9d23-1a54-406a-ae2c-75c609dc040e",
+      "name": "Get audio transcriptions usage details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/usage/audio_transcriptions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "api_key_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "models",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Usage data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "25cdf865-087f-4d2c-b9c0-df771a2153c9",
+      "name": "Get code interpreter sessions usage details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/usage/code_interpreter_sessions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Usage data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c6883281-3270-4e2a-932a-fa04ffb569bc",
+      "name": "Get completions usage details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/usage/completions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "api_key_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "models",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "batch",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Usage data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "26156674-d860-4854-84d2-6f730e97c864",
+      "name": "Get embeddings usage details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/usage/embeddings",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "api_key_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "models",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Usage data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "e698fe9b-2d22-4b10-8f5c-c7ffa4ec9558",
+      "name": "Get images usage details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/usage/images",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "sources",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "sizes",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "api_key_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "models",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Usage data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "26c55ec2-2db4-4306-bbac-6d455ef344eb",
+      "name": "Get moderations usage details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/usage/moderations",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "user_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "api_key_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "models",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Usage data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5c5aa014-3fca-4c53-9a61-b5e438163372",
+      "name": "Get vector stores usage details for the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/usage/vector_stores",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "start_time",
+          "value": "",
+          "enabled": true
+        },
+        {
+          "key": "end_time",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "bucket_width",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "project_ids",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "group_by",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "page",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Usage data retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"start_time\": null,\n      \"end_time\": null,\n      \"result\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "b2f67b5e-04fb-43f8-bd67-3db7c8fc8bbf",
+      "name": "Lists all of the users in the organization.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/users",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "emails",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Users listed successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"object\": null,\n      \"id\": null,\n      \"name\": null,\n      \"email\": null,\n      \"role\": null,\n      \"added_at\": null\n    }\n  ],\n  \"first_id\": \"\",\n  \"last_id\": \"\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "26c47876-b517-41e7-a6a5-a17312a58ce4",
+      "name": "Retrieves a user by their identifier.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/organization/users/{user_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "User retrieved successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"email\": \"\",\n  \"role\": \"\",\n  \"added_at\": 0\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "2a94c9c9-32a6-437c-9ba2-8d264d595c1b",
+      "name": "Modifies a user's role in the organization.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/organization/users/{user_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"role\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "User role updated successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"name\": \"\",\n  \"email\": \"\",\n  \"role\": \"\",\n  \"added_at\": 0\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "234a952f-2f0a-4a30-92a5-d51c8ffe856a",
+      "name": "Deletes a user from the organization.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/organization/users/{user_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "User deleted successfully.",
+          "content": "{\n  \"object\": \"\",\n  \"id\": \"\",\n  \"deleted\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "614d7466-5398-4abf-80bb-fdc8c354e654",
+      "name": "Create an ephemeral API token for use in client-side applications with the\nRealtime API. Can be configured with the same session parameters as the\n`session.update` client event.\n\nIt responds with a session object, plus a `client_secret` key which contains\na usable ephemeral API token that can be used to authenticate browser clients\nfor the Realtime API.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/realtime/sessions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"modalities\": null,\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"voice\": \"\",\n  \"input_audio_format\": \"pcm16\",\n  \"output_audio_format\": \"pcm16\",\n  \"input_audio_transcription\": {\n    \"model\": \"\",\n    \"language\": \"\",\n    \"prompt\": \"\"\n  },\n  \"turn_detection\": {\n    \"type\": \"server_vad\",\n    \"eagerness\": \"auto\",\n    \"threshold\": 0,\n    \"prefix_padding_ms\": 0,\n    \"silence_duration_ms\": 0,\n    \"create_response\": true,\n    \"interrupt_response\": true\n  },\n  \"input_audio_noise_reduction\": {\n    \"type\": \"\"\n  },\n  \"tools\": [\n    {\n      \"type\": \"\",\n      \"name\": \"\",\n      \"description\": \"\",\n      \"parameters\": {}\n    }\n  ],\n  \"tool_choice\": \"auto\",\n  \"temperature\": 0.8,\n  \"max_response_output_tokens\": 0\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Session created successfully.",
+          "content": "{\n  \"client_secret\": {\n    \"value\": \"\",\n    \"expires_at\": 0\n  },\n  \"modalities\": null,\n  \"instructions\": \"\",\n  \"voice\": \"\",\n  \"input_audio_format\": \"\",\n  \"output_audio_format\": \"\",\n  \"input_audio_transcription\": {\n    \"model\": \"\"\n  },\n  \"turn_detection\": {\n    \"type\": \"\",\n    \"threshold\": 0,\n    \"prefix_padding_ms\": 0,\n    \"silence_duration_ms\": 0\n  },\n  \"tools\": [\n    {\n      \"type\": \"\",\n      \"name\": \"\",\n      \"description\": \"\",\n      \"parameters\": {}\n    }\n  ],\n  \"tool_choice\": \"\",\n  \"temperature\": 0,\n  \"max_response_output_tokens\": 0\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c28ad32e-7aaa-41ab-b97f-a165aeb2b261",
+      "name": "Create an ephemeral API token for use in client-side applications with the\nRealtime API specifically for realtime transcriptions. \nCan be configured with the same session parameters as the `transcription_session.update` client event.\n\nIt responds with a session object, plus a `client_secret` key which contains\na usable ephemeral API token that can be used to authenticate browser clients\nfor the Realtime API.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/realtime/transcription_sessions",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"modalities\": null,\n  \"input_audio_format\": \"pcm16\",\n  \"input_audio_transcription\": {\n    \"model\": \"\",\n    \"language\": \"\",\n    \"prompt\": \"\"\n  },\n  \"turn_detection\": {\n    \"type\": \"server_vad\",\n    \"eagerness\": \"auto\",\n    \"threshold\": 0,\n    \"prefix_padding_ms\": 0,\n    \"silence_duration_ms\": 0,\n    \"create_response\": true,\n    \"interrupt_response\": true\n  },\n  \"input_audio_noise_reduction\": {\n    \"type\": \"\"\n  },\n  \"include\": [\n    \"\"\n  ]\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "Session created successfully.",
+          "content": "{\n  \"client_secret\": {\n    \"value\": \"\",\n    \"expires_at\": 0\n  },\n  \"modalities\": null,\n  \"input_audio_format\": \"\",\n  \"input_audio_transcription\": {\n    \"model\": \"\",\n    \"language\": \"\",\n    \"prompt\": \"\"\n  },\n  \"turn_detection\": {\n    \"type\": \"\",\n    \"threshold\": 0,\n    \"prefix_padding_ms\": 0,\n    \"silence_duration_ms\": 0\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "8507b5ad-b237-493f-bb1d-17d226a46884",
+      "name": "Creates a model response. Provide [text](/docs/guides/text) or\n[image](/docs/guides/images) inputs to generate [text](/docs/guides/text)\nor [JSON](/docs/guides/structured-outputs) outputs. Have the model call\nyour own [custom code](/docs/guides/function-calling) or use built-in\n[tools](/docs/guides/tools) like [web search](/docs/guides/tools-web-search)\nor [file search](/docs/guides/tools-file-search) to use your own data\nas input for the model's response.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/responses",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"metadata\": null,\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"user\": \"user-1234\",\n  \"service_tier\": null\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "f43bec28-4e20-4330-8641-8a6ed339ae99",
+      "name": "Retrieves a model response with the given ID.\n",
+      "method": "GET",
+      "url": "{{BASE_URL}}/responses/{response_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "include",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"metadata\": null,\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"user\": \"user-1234\",\n  \"service_tier\": null\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "283100cb-dc87-4e36-998b-e768552e5db5",
+      "name": "Deletes a model response with the given ID.\n",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/responses/{response_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK"
+        },
+        {
+          "statusCode": "404",
+          "description": "Not Found",
+          "content": "{\n  \"code\": \"\",\n  \"message\": \"\",\n  \"param\": \"\",\n  \"type\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "451d752d-78dc-4433-9339-892ae92d790a",
+      "name": "Returns a list of input items for a given response.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/responses/{response_id}/input_items",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "include",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {}\n  ],\n  \"has_more\": false,\n  \"first_id\": \"\",\n  \"last_id\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "210cb1d9-3c8e-4d59-9c5d-60d710f24dc4",
+      "name": "Create a thread.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"messages\": [\n    {\n      \"role\": null,\n      \"content\": null,\n      \"attachments\": null,\n      \"metadata\": null\n    }\n  ],\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {}\n  },\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "298d6430-d6e3-4e14-8cd0-2e55f5ab03ea",
+      "name": "Create a thread and run it in one request.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads/runs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"assistant_id\": \"\",\n  \"thread\": {\n    \"messages\": [\n      null\n    ],\n    \"tool_resources\": {\n      \"code_interpreter\": null,\n      \"file_search\": null\n    },\n    \"metadata\": null\n  },\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {},\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"stream\": false,\n  \"max_prompt_tokens\": 0,\n  \"max_completion_tokens\": 0,\n  \"truncation_strategy\": {\n    \"type\": null,\n    \"last_messages\": null\n  },\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": true,\n  \"response_format\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"assistant_id\": \"\",\n  \"status\": \"\",\n  \"required_action\": {\n    \"type\": \"\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        null\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"expires_at\": 0,\n  \"started_at\": 0,\n  \"cancelled_at\": 0,\n  \"failed_at\": 0,\n  \"completed_at\": 0,\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"metadata\": {},\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0\n  },\n  \"temperature\": 0,\n  \"top_p\": 0,\n  \"max_prompt_tokens\": 0,\n  \"max_completion_tokens\": 0,\n  \"truncation_strategy\": {\n    \"type\": null,\n    \"last_messages\": null\n  },\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": true,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "5f147aa7-2b99-491e-ba6e-7fd11bcaf83d",
+      "name": "Retrieves a thread.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/threads/{thread_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4b05241a-6948-44a4-aefa-5c2c959724f7",
+      "name": "Modifies a thread.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads/{thread_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"tool_resources\": {\n    \"code_interpreter\": {\n      \"file_ids\": [\n        null\n      ]\n    },\n    \"file_search\": {\n      \"vector_store_ids\": [\n        null\n      ]\n    }\n  },\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "738a919b-2131-4f7a-aee1-9e9377dc24bd",
+      "name": "Delete a thread.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/threads/{thread_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"deleted\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "3591563a-6347-4d37-8412-7d1b9514b92b",
+      "name": "Returns a list of messages for a given thread.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/threads/{thread_id}/messages",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "run_id",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"created_at\": null,\n      \"thread_id\": null,\n      \"status\": null,\n      \"incomplete_details\": null,\n      \"completed_at\": null,\n      \"incomplete_at\": null,\n      \"role\": null,\n      \"content\": null,\n      \"assistant_id\": null,\n      \"run_id\": null,\n      \"attachments\": null,\n      \"metadata\": null\n    }\n  ],\n  \"first_id\": \"msg_abc123\",\n  \"last_id\": \"msg_abc123\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "295add89-8f98-45ca-95bf-97cafe6c4728",
+      "name": "Create a message.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads/{thread_id}/messages",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"role\": \"\",\n  \"content\": \"\",\n  \"attachments\": [\n    {\n      \"file_id\": \"\",\n      \"tools\": [\n        null\n      ]\n    }\n  ],\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"status\": \"\",\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"completed_at\": 0,\n  \"incomplete_at\": 0,\n  \"role\": \"\",\n  \"content\": [\n    {}\n  ],\n  \"assistant_id\": \"\",\n  \"run_id\": \"\",\n  \"attachments\": [\n    {\n      \"file_id\": \"\",\n      \"tools\": [\n        null\n      ]\n    }\n  ],\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "ca3640d4-abc4-4146-b40a-720379df9dc6",
+      "name": "Retrieve a message.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/threads/{thread_id}/messages/{message_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"status\": \"\",\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"completed_at\": 0,\n  \"incomplete_at\": 0,\n  \"role\": \"\",\n  \"content\": [\n    {}\n  ],\n  \"assistant_id\": \"\",\n  \"run_id\": \"\",\n  \"attachments\": [\n    {\n      \"file_id\": \"\",\n      \"tools\": [\n        null\n      ]\n    }\n  ],\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4681f118-b69d-4ada-98cd-63a04db241a8",
+      "name": "Modifies a message.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads/{thread_id}/messages/{message_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"status\": \"\",\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"completed_at\": 0,\n  \"incomplete_at\": 0,\n  \"role\": \"\",\n  \"content\": [\n    {}\n  ],\n  \"assistant_id\": \"\",\n  \"run_id\": \"\",\n  \"attachments\": [\n    {\n      \"file_id\": \"\",\n      \"tools\": [\n        null\n      ]\n    }\n  ],\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "8c0792e2-2592-4969-a5d6-e34ae25d5c04",
+      "name": "Deletes a message.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/threads/{thread_id}/messages/{message_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"deleted\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "d4ebc30d-18c3-4080-b1c4-f9231306a23e",
+      "name": "Returns a list of runs belonging to a thread.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/threads/{thread_id}/runs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"created_at\": null,\n      \"thread_id\": null,\n      \"assistant_id\": null,\n      \"status\": null,\n      \"required_action\": null,\n      \"last_error\": null,\n      \"expires_at\": null,\n      \"started_at\": null,\n      \"cancelled_at\": null,\n      \"failed_at\": null,\n      \"completed_at\": null,\n      \"incomplete_details\": null,\n      \"model\": null,\n      \"instructions\": null,\n      \"tools\": null,\n      \"metadata\": null,\n      \"usage\": null,\n      \"temperature\": null,\n      \"top_p\": null,\n      \"max_prompt_tokens\": null,\n      \"max_completion_tokens\": null,\n      \"truncation_strategy\": null,\n      \"tool_choice\": null,\n      \"parallel_tool_calls\": null,\n      \"response_format\": null\n    }\n  ],\n  \"first_id\": \"run_abc123\",\n  \"last_id\": \"run_abc456\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "a7c5468b-4178-4cbb-a9c9-2cb6d421953d",
+      "name": "Create a run.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads/{thread_id}/runs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "include[]",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"assistant_id\": \"\",\n  \"model\": \"\",\n  \"reasoning_effort\": \"medium\",\n  \"instructions\": \"\",\n  \"additional_instructions\": \"\",\n  \"additional_messages\": [\n    {\n      \"role\": null,\n      \"content\": null,\n      \"attachments\": null,\n      \"metadata\": null\n    }\n  ],\n  \"tools\": [\n    {}\n  ],\n  \"metadata\": {},\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"stream\": false,\n  \"max_prompt_tokens\": 0,\n  \"max_completion_tokens\": 0,\n  \"truncation_strategy\": {\n    \"type\": null,\n    \"last_messages\": null\n  },\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": true,\n  \"response_format\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"assistant_id\": \"\",\n  \"status\": \"\",\n  \"required_action\": {\n    \"type\": \"\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        null\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"expires_at\": 0,\n  \"started_at\": 0,\n  \"cancelled_at\": 0,\n  \"failed_at\": 0,\n  \"completed_at\": 0,\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"metadata\": {},\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0\n  },\n  \"temperature\": 0,\n  \"top_p\": 0,\n  \"max_prompt_tokens\": 0,\n  \"max_completion_tokens\": 0,\n  \"truncation_strategy\": {\n    \"type\": null,\n    \"last_messages\": null\n  },\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": true,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "dafc33b2-0efd-4cbf-97d4-7cfd2be14032",
+      "name": "Retrieves a run.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/threads/{thread_id}/runs/{run_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"assistant_id\": \"\",\n  \"status\": \"\",\n  \"required_action\": {\n    \"type\": \"\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        null\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"expires_at\": 0,\n  \"started_at\": 0,\n  \"cancelled_at\": 0,\n  \"failed_at\": 0,\n  \"completed_at\": 0,\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"metadata\": {},\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0\n  },\n  \"temperature\": 0,\n  \"top_p\": 0,\n  \"max_prompt_tokens\": 0,\n  \"max_completion_tokens\": 0,\n  \"truncation_strategy\": {\n    \"type\": null,\n    \"last_messages\": null\n  },\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": true,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "99aba434-27bc-4cbb-8287-045a8bd96ee2",
+      "name": "Modifies a run.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads/{thread_id}/runs/{run_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"assistant_id\": \"\",\n  \"status\": \"\",\n  \"required_action\": {\n    \"type\": \"\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        null\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"expires_at\": 0,\n  \"started_at\": 0,\n  \"cancelled_at\": 0,\n  \"failed_at\": 0,\n  \"completed_at\": 0,\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"metadata\": {},\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0\n  },\n  \"temperature\": 0,\n  \"top_p\": 0,\n  \"max_prompt_tokens\": 0,\n  \"max_completion_tokens\": 0,\n  \"truncation_strategy\": {\n    \"type\": null,\n    \"last_messages\": null\n  },\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": true,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "1f66743a-e458-47ba-a906-c3b3cfe98a57",
+      "name": "Cancels a run that is `in_progress`.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads/{thread_id}/runs/{run_id}/cancel",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"assistant_id\": \"\",\n  \"status\": \"\",\n  \"required_action\": {\n    \"type\": \"\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        null\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"expires_at\": 0,\n  \"started_at\": 0,\n  \"cancelled_at\": 0,\n  \"failed_at\": 0,\n  \"completed_at\": 0,\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"metadata\": {},\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0\n  },\n  \"temperature\": 0,\n  \"top_p\": 0,\n  \"max_prompt_tokens\": 0,\n  \"max_completion_tokens\": 0,\n  \"truncation_strategy\": {\n    \"type\": null,\n    \"last_messages\": null\n  },\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": true,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "8c0bc5ee-eff1-4b59-93fa-02d420547868",
+      "name": "Returns a list of run steps belonging to a run.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/threads/{thread_id}/runs/{run_id}/steps",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "include[]",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"created_at\": null,\n      \"assistant_id\": null,\n      \"thread_id\": null,\n      \"run_id\": null,\n      \"type\": null,\n      \"status\": null,\n      \"step_details\": null,\n      \"last_error\": null,\n      \"expired_at\": null,\n      \"cancelled_at\": null,\n      \"failed_at\": null,\n      \"completed_at\": null,\n      \"metadata\": null,\n      \"usage\": null\n    }\n  ],\n  \"first_id\": \"step_abc123\",\n  \"last_id\": \"step_abc456\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "cf8d33ff-2dc5-4e41-bb88-05d0bb5b12c1",
+      "name": "Retrieves a run step.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/threads/{thread_id}/runs/{run_id}/steps/{step_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "include[]",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"assistant_id\": \"\",\n  \"thread_id\": \"\",\n  \"run_id\": \"\",\n  \"type\": \"\",\n  \"status\": \"\",\n  \"step_details\": {\n    \"type\": null,\n    \"message_creation\": null\n  },\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"expired_at\": 0,\n  \"cancelled_at\": 0,\n  \"failed_at\": 0,\n  \"completed_at\": 0,\n  \"metadata\": {},\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "a58a173b-9c65-45f5-89e0-d69b8c81b860",
+      "name": "When a run has the `status: \"requires_action\"` and `required_action.type` is `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once they're all completed. All outputs must be submitted in a single request.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"tool_outputs\": [\n    {\n      \"tool_call_id\": \"\",\n      \"output\": \"\"\n    }\n  ],\n  \"stream\": false\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"thread_id\": \"\",\n  \"assistant_id\": \"\",\n  \"status\": \"\",\n  \"required_action\": {\n    \"type\": \"\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        null\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"expires_at\": 0,\n  \"started_at\": 0,\n  \"cancelled_at\": 0,\n  \"failed_at\": 0,\n  \"completed_at\": 0,\n  \"incomplete_details\": {\n    \"reason\": \"\"\n  },\n  \"model\": \"\",\n  \"instructions\": \"\",\n  \"tools\": [\n    {}\n  ],\n  \"metadata\": {},\n  \"usage\": {\n    \"completion_tokens\": 0,\n    \"prompt_tokens\": 0,\n    \"total_tokens\": 0\n  },\n  \"temperature\": 0,\n  \"top_p\": 0,\n  \"max_prompt_tokens\": 0,\n  \"max_completion_tokens\": 0,\n  \"truncation_strategy\": {\n    \"type\": null,\n    \"last_messages\": null\n  },\n  \"tool_choice\": {},\n  \"parallel_tool_calls\": true,\n  \"response_format\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "17bad3a5-c19a-4764-9af8-05a3a5e3cd26",
+      "name": "Creates an intermediate [Upload](/docs/api-reference/uploads/object) object\nthat you can add [Parts](/docs/api-reference/uploads/part-object) to.\nCurrently, an Upload can accept at most 8 GB in total and expires after an\nhour after you create it.\n\nOnce you complete the Upload, we will create a\n[File](/docs/api-reference/files/object) object that contains all the parts\nyou uploaded. This File is usable in the rest of our platform as a regular\nFile object.\n\nFor certain `purpose` values, the correct `mime_type` must be specified. \nPlease refer to documentation for the \n[supported MIME types for your use case](/docs/assistants/tools/file-search#supported-files).\n\nFor guidance on the proper filename extensions for each purpose, please\nfollow the documentation on [creating a\nFile](/docs/api-reference/files/create).\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/uploads",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"filename\": \"\",\n  \"purpose\": \"\",\n  \"bytes\": 0,\n  \"mime_type\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"created_at\": 0,\n  \"filename\": \"\",\n  \"bytes\": 0,\n  \"purpose\": \"\",\n  \"status\": \"\",\n  \"expires_at\": 0,\n  \"object\": \"\",\n  \"file\": {\n    \"id\": null,\n    \"bytes\": null,\n    \"created_at\": null,\n    \"expires_at\": null,\n    \"filename\": null,\n    \"object\": null,\n    \"purpose\": null,\n    \"status\": null,\n    \"status_details\": null\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "9a9b9b74-90cb-4965-89ae-1bdd3bbec0c4",
+      "name": "Cancels the Upload. No Parts may be added after an Upload is cancelled.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/uploads/{upload_id}/cancel",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"created_at\": 0,\n  \"filename\": \"\",\n  \"bytes\": 0,\n  \"purpose\": \"\",\n  \"status\": \"\",\n  \"expires_at\": 0,\n  \"object\": \"\",\n  \"file\": {\n    \"id\": null,\n    \"bytes\": null,\n    \"created_at\": null,\n    \"expires_at\": null,\n    \"filename\": null,\n    \"object\": null,\n    \"purpose\": null,\n    \"status\": null,\n    \"status_details\": null\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "87d5c635-e473-46aa-bc53-f905b93d98ce",
+      "name": "Completes the [Upload](/docs/api-reference/uploads/object). \n\nWithin the returned Upload object, there is a nested [File](/docs/api-reference/files/object) object that is ready to use in the rest of the platform.\n\nYou can specify the order of the Parts by passing in an ordered list of the Part IDs.\n\nThe number of bytes uploaded upon completion must match the number of bytes initially specified when creating the Upload object. No Parts may be added after an Upload is completed.\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/uploads/{upload_id}/complete",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"part_ids\": [\n    \"\"\n  ],\n  \"md5\": \"\"\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"created_at\": 0,\n  \"filename\": \"\",\n  \"bytes\": 0,\n  \"purpose\": \"\",\n  \"status\": \"\",\n  \"expires_at\": 0,\n  \"object\": \"\",\n  \"file\": {\n    \"id\": null,\n    \"bytes\": null,\n    \"created_at\": null,\n    \"expires_at\": null,\n    \"filename\": null,\n    \"object\": null,\n    \"purpose\": null,\n    \"status\": null,\n    \"status_details\": null\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "ee150d84-5908-4858-a727-310851a1e878",
+      "name": "Adds a [Part](/docs/api-reference/uploads/part-object) to an [Upload](/docs/api-reference/uploads/object) object. A Part represents a chunk of bytes from the file you are trying to upload. \n\nEach Part can be at most 64 MB, and you can add Parts until you hit the Upload maximum of 8 GB.\n\nIt is possible to add multiple Parts in parallel. You can decide the intended order of the Parts when you [complete the Upload](/docs/api-reference/uploads/complete).\n",
+      "method": "POST",
+      "url": "{{BASE_URL}}/uploads/{upload_id}/parts",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "form-data",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"created_at\": 0,\n  \"upload_id\": \"\",\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "e2f33954-be4b-4b06-a339-512619763a3a",
+      "name": "Returns a list of vector stores.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/vector_stores",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"created_at\": null,\n      \"name\": null,\n      \"usage_bytes\": null,\n      \"file_counts\": null,\n      \"status\": null,\n      \"expires_after\": null,\n      \"expires_at\": null,\n      \"last_active_at\": null,\n      \"metadata\": null\n    }\n  ],\n  \"first_id\": \"vs_abc123\",\n  \"last_id\": \"vs_abc456\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "4deacdf4-82df-4077-9b30-135d06e9c71d",
+      "name": "Create a vector store.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/vector_stores",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"file_ids\": [\n    \"\"\n  ],\n  \"name\": \"\",\n  \"expires_after\": {\n    \"anchor\": \"\",\n    \"days\": 0\n  },\n  \"chunking_strategy\": {\n    \"type\": null\n  },\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"name\": \"\",\n  \"usage_bytes\": 0,\n  \"file_counts\": {\n    \"in_progress\": 0,\n    \"completed\": 0,\n    \"failed\": 0,\n    \"cancelled\": 0,\n    \"total\": 0\n  },\n  \"status\": \"\",\n  \"expires_after\": {\n    \"anchor\": \"\",\n    \"days\": 0\n  },\n  \"expires_at\": 0,\n  \"last_active_at\": 0,\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "9a270c84-d942-457f-8114-0ce1e46e2696",
+      "name": "Retrieves a vector store.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"name\": \"\",\n  \"usage_bytes\": 0,\n  \"file_counts\": {\n    \"in_progress\": 0,\n    \"completed\": 0,\n    \"failed\": 0,\n    \"cancelled\": 0,\n    \"total\": 0\n  },\n  \"status\": \"\",\n  \"expires_after\": {\n    \"anchor\": \"\",\n    \"days\": 0\n  },\n  \"expires_at\": 0,\n  \"last_active_at\": 0,\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "3b786969-e2ec-431d-878c-c5d4c037d9b1",
+      "name": "Modifies a vector store.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"name\": \"\",\n  \"expires_after\": {\n    \"anchor\": null,\n    \"days\": null\n  },\n  \"metadata\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"name\": \"\",\n  \"usage_bytes\": 0,\n  \"file_counts\": {\n    \"in_progress\": 0,\n    \"completed\": 0,\n    \"failed\": 0,\n    \"cancelled\": 0,\n    \"total\": 0\n  },\n  \"status\": \"\",\n  \"expires_after\": {\n    \"anchor\": \"\",\n    \"days\": 0\n  },\n  \"expires_at\": 0,\n  \"last_active_at\": 0,\n  \"metadata\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "30900fb7-407e-42b4-8bce-d22b7ad5e689",
+      "name": "Delete a vector store.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"deleted\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "897516bc-e26b-4f41-ba68-64c759dedcaa",
+      "name": "Create a vector store file batch.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/file_batches",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"file_ids\": [\n    \"\"\n  ],\n  \"chunking_strategy\": {},\n  \"attributes\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"vector_store_id\": \"\",\n  \"status\": \"\",\n  \"file_counts\": {\n    \"in_progress\": 0,\n    \"completed\": 0,\n    \"failed\": 0,\n    \"cancelled\": 0,\n    \"total\": 0\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "ca788f41-89f2-474b-a042-67c27cb8df40",
+      "name": "Retrieves a vector store file batch.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/file_batches/{batch_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"vector_store_id\": \"\",\n  \"status\": \"\",\n  \"file_counts\": {\n    \"in_progress\": 0,\n    \"completed\": 0,\n    \"failed\": 0,\n    \"cancelled\": 0,\n    \"total\": 0\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "c27da327-56d9-4914-b8aa-897b9eab1c02",
+      "name": "Cancel a vector store file batch. This attempts to cancel the processing of files in this batch as soon as possible.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"created_at\": 0,\n  \"vector_store_id\": \"\",\n  \"status\": \"\",\n  \"file_counts\": {\n    \"in_progress\": 0,\n    \"completed\": 0,\n    \"failed\": 0,\n    \"cancelled\": 0,\n    \"total\": 0\n  }\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "118224e1-67d7-42fc-8fa3-de13ec651100",
+      "name": "Returns a list of vector store files in a batch.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "filter",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"usage_bytes\": null,\n      \"created_at\": null,\n      \"vector_store_id\": null,\n      \"status\": null,\n      \"last_error\": null,\n      \"chunking_strategy\": null,\n      \"attributes\": null\n    }\n  ],\n  \"first_id\": \"file-abc123\",\n  \"last_id\": \"file-abc456\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "000e4ad8-6da1-4b4a-90e1-0354b9c4f55e",
+      "name": "Returns a list of vector store files.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/files",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [
+        {
+          "key": "limit",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "order",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "after",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "before",
+          "value": "",
+          "enabled": false
+        },
+        {
+          "key": "filter",
+          "value": "",
+          "enabled": false
+        }
+      ],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": null,\n      \"object\": null,\n      \"usage_bytes\": null,\n      \"created_at\": null,\n      \"vector_store_id\": null,\n      \"status\": null,\n      \"last_error\": null,\n      \"chunking_strategy\": null,\n      \"attributes\": null\n    }\n  ],\n  \"first_id\": \"file-abc123\",\n  \"last_id\": \"file-abc456\",\n  \"has_more\": false\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "42c41b87-9f25-4c53-a9f9-6d770cd6964f",
+      "name": "Create a vector store file by attaching a [File](/docs/api-reference/files) to a [vector store](/docs/api-reference/vector-stores/object).",
+      "method": "POST",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/files",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"file_id\": \"\",\n  \"chunking_strategy\": {},\n  \"attributes\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"usage_bytes\": 0,\n  \"created_at\": 0,\n  \"vector_store_id\": \"\",\n  \"status\": \"\",\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"chunking_strategy\": {\n    \"type\": null,\n    \"static\": null\n  },\n  \"attributes\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "0aa09213-23b4-4334-929d-33b509cb614e",
+      "name": "Retrieves a vector store file.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/files/{file_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"usage_bytes\": 0,\n  \"created_at\": 0,\n  \"vector_store_id\": \"\",\n  \"status\": \"\",\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"chunking_strategy\": {\n    \"type\": null,\n    \"static\": null\n  },\n  \"attributes\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "b289989c-f3ca-475f-bda4-c897f06cbc51",
+      "name": "Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/docs/api-reference/files/delete) endpoint.",
+      "method": "DELETE",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/files/{file_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"deleted\": false,\n  \"object\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "b93bae33-6988-4977-9d65-81e74358d385",
+      "name": "Update attributes on a vector store file.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/files/{file_id}",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"attributes\": {}\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"id\": \"\",\n  \"object\": \"\",\n  \"usage_bytes\": 0,\n  \"created_at\": 0,\n  \"vector_store_id\": \"\",\n  \"status\": \"\",\n  \"last_error\": {\n    \"code\": \"\",\n    \"message\": \"\"\n  },\n  \"chunking_strategy\": {\n    \"type\": null,\n    \"static\": null\n  },\n  \"attributes\": {}\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "cd8ba2d5-2e80-490d-8828-48e6d6d76962",
+      "name": "Retrieve the parsed contents of a vector store file.",
+      "method": "GET",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/files/{file_id}/content",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "none",
+        "content": ""
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"\",\n  \"data\": [\n    {\n      \"type\": \"\",\n      \"text\": \"\"\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "id": "3daf6397-3574-413a-bd8c-f47813a3346a",
+      "name": "Search a vector store for relevant chunks based on a query and file attributes filter.",
+      "method": "POST",
+      "url": "{{BASE_URL}}/vector_stores/{vector_store_id}/search",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "Bearer {{API_KEY}}",
+          "enabled": true
+        }
+      ],
+      "params": [],
+      "body": {
+        "type": "json",
+        "content": "{\n  \"query\": \"\",\n  \"rewrite_query\": false,\n  \"max_num_results\": 10,\n  \"filters\": {\n    \"type\": null,\n    \"key\": null,\n    \"value\": null\n  },\n  \"ranking_options\": {\n    \"ranker\": \"auto\",\n    \"score_threshold\": 0\n  }\n}"
+      },
+      "responses": [
+        {
+          "statusCode": "200",
+          "description": "OK",
+          "content": "{\n  \"object\": \"\",\n  \"search_query\": [\n    \"\"\n  ],\n  \"data\": [\n    {\n      \"file_id\": null,\n      \"filename\": null,\n      \"score\": null,\n      \"attributes\": null,\n      \"content\": null\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"\"\n}"
+        }
+      ],
+      "description": ""
+    }
+  ]
+}

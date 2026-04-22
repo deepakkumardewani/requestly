@@ -1,0 +1,11 @@
+{
+  "name": "BigCommerce (Checkouts)",
+  "providerName": "checkouts",
+  "description": "For more information on authenticating BigCommerce APIs, see [Authentication](/docs/start/authentication).\n\nCreate and manage checkouts from existing carts using BigCommerce checkout logic.",
+  "category": "E-commerce",
+  "logoUrl": "https://cdn.simpleicons.org/bigcommerce",
+  "docsUrl": "https://www.bigcommerce.com",
+  "specUrl": "https://raw.githubusercontent.com/bigcommerce/api-specs/main/reference/checkouts.v3.yml",
+  "version": "3.0",
+  "requestCount": 14
+}
