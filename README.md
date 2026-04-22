@@ -1,8 +1,8 @@
-# Requestly
+# Requestr
 
 A browser-native API testing tool. No install, no account, no CORS headaches — just open and test.
 
-> Inspired by Postman and Bruno, built entirely for the browser with all data stored locally.
+> Inspired by Postman and Requestr, built entirely for the browser with all data stored locally.
 
 ---
 
@@ -24,20 +24,20 @@ A browser-native API testing tool. No install, no account, no CORS headaches —
 
 ## Tech Stack
 
-| Category | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| UI | React 19 + Tailwind CSS v4 + shadcn/ui |
-| State | Zustand |
-| Persistence | IndexedDB (via `idb`) |
-| Code editor | CodeMirror 6 |
-| Drag and drop | dnd-kit |
-| Panels | react-resizable-panels |
-| Command palette | cmdk |
-| Toasts | Sonner |
-| Icons | Lucide React |
-| Linter/formatter | Biome |
-| Package manager | Bun |
+| Category         | Technology                             |
+| ---------------- | -------------------------------------- |
+| Framework        | Next.js 16 (App Router)                |
+| UI               | React 19 + Tailwind CSS v4 + shadcn/ui |
+| State            | Zustand                                |
+| Persistence      | IndexedDB (via `idb`)                  |
+| Code editor      | CodeMirror 6                           |
+| Drag and drop    | dnd-kit                                |
+| Panels           | react-resizable-panels                 |
+| Command palette  | cmdk                                   |
+| Toasts           | Sonner                                 |
+| Icons            | Lucide React                           |
+| Linter/formatter | Biome                                  |
+| Package manager  | Bun                                    |
 
 ---
 
@@ -107,14 +107,14 @@ All outbound API requests are routed through `/api/proxy` — a Next.js Route Ha
 
 All data is stored in IndexedDB via `idb`. There is no backend, no database, and no account required. Zustand stores are hydrated from IndexedDB on app load; writes are async and fire-and-forget.
 
-| IndexedDB Store | Contents |
-|---|---|
-| `collections` | Collection folders |
-| `requests` | Individual requests (method, URL, headers, body, params, auth, scripts) |
-| `environments` | Environment definitions and variables |
-| `history` | Last 200 requests with responses |
-| `tabs` | Open tab state |
-| `settings` | Theme, proxy URL, SSL toggle, follow-redirects, active env |
+| IndexedDB Store | Contents                                                                |
+| --------------- | ----------------------------------------------------------------------- |
+| `collections`   | Collection folders                                                      |
+| `requests`      | Individual requests (method, URL, headers, body, params, auth, scripts) |
+| `environments`  | Environment definitions and variables                                   |
+| `history`       | Last 200 requests with responses                                        |
+| `tabs`          | Open tab state                                                          |
+| `settings`      | Theme, proxy URL, SSL toggle, follow-redirects, active env              |
 
 ### Method-Driven Theming
 
@@ -124,12 +124,12 @@ The HTTP method updates CSS custom properties (`--method-accent-r/g/b`) via the 
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|---|---|
-| `Cmd + Enter` | Send request |
-| `Cmd + S` | Save request |
-| `Cmd + N` | New tab |
-| `Cmd + K` | Open command palette |
+| Shortcut      | Action               |
+| ------------- | -------------------- |
+| `Cmd + Enter` | Send request         |
+| `Cmd + S`     | Save request         |
+| `Cmd + N`     | New tab              |
+| `Cmd + K`     | Open command palette |
 
 ---
 
@@ -147,7 +147,7 @@ Designed for [Vercel](https://vercel.com). The proxy route deploys as a serverle
 
 ## Roadmap
 
-- `requestly-agent` CLI for testing localhost APIs
+- `requestr-agent` CLI for testing localhost APIs
 - HAR file import
 - WebSocket and SSE testing
 - Automated test runner with assertions
