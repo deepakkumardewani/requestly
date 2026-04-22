@@ -40,14 +40,28 @@ type CodeEditorProps = {
   className?: string;
   envVariables?: string[];
   placeholder?: string;
-  /** Parent-owned ref; update `.current` without passing new props to refresh completions. */
+  /**
+   * Parent-owned ref; update `.current` without passing new props to refresh completions.
+   * Gated by `ENABLE_STRUCTURE_COMPLETION` in this file (off until autocomplete ships).
+   */
   structureCompletionRef?: MutableRefObject<StructureCompletionState | null>;
+  /**
+   * When the editor language is `json` and this is `true`, pasting valid JSON replaces the
+   * selection (or insert point) with pretty-printed JSON.
+   */
+  jsonAutoFormatOnPaste?: boolean;
 };
 
 export type {
   StructureCompletionMode,
   StructureCompletionState,
 } from "@/lib/structureCompletion";
+
+/**
+ * JSON/Transform structure autocomplete (ref + `structureCompletionSource`) is implemented
+ * but turned off until we ship it. Set to `true` to enable without further code changes.
+ */
+const ENABLE_STRUCTURE_COMPLETION = false;
 
 /** Light theme aligned with app `card` / `foreground` tokens */
 const lightEditorTheme = EditorView.theme({
@@ -127,6 +141,7 @@ export default function CodeEditor({
   envVariables,
   placeholder,
   structureCompletionRef: structureCompletionRefProp,
+  jsonAutoFormatOnPaste = false,
 }: CodeEditorProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -149,10 +164,16 @@ export default function CodeEditor({
   const envVariablesRef = useRef(envVariables ?? []);
   envVariablesRef.current = envVariables ?? [];
 
+  const languageRef = useRef(language);
+  languageRef.current = language;
+
   const structureCompletionFallbackRef =
     useRef<StructureCompletionState | null>(null);
   const structureCompletionRef =
     structureCompletionRefProp ?? structureCompletionFallbackRef;
+
+  const jsonAutoFormatOnPasteRef = useRef(jsonAutoFormatOnPaste);
+  jsonAutoFormatOnPasteRef.current = jsonAutoFormatOnPaste;
 
   useEffect(() => {
     const parent = containerRef.current;
@@ -191,6 +212,8 @@ export default function CodeEditor({
     function structureCompletionSource(
       context: CompletionContext,
     ): CompletionResult | null {
+      if (!ENABLE_STRUCTURE_COMPLETION) return null;
+
       const completion = structureCompletionRef.current;
       if (!completion || completion.paths.length === 0) return null;
 
@@ -232,6 +255,29 @@ export default function CodeEditor({
 
       const extensions: Extension[] = [
         basicSetup,
+        EditorView.domEventHandlers({
+          paste(event, view) {
+            if (!jsonAutoFormatOnPasteRef.current) return false;
+            if (languageRef.current !== "json") return false;
+            const text = event.clipboardData?.getData("text/plain");
+            if (text == null) return false;
+            const t = text.trim();
+            if (!t) return false;
+            let parsed: unknown;
+            try {
+              parsed = JSON.parse(t);
+            } catch {
+              return false;
+            }
+            event.preventDefault();
+            const formatted = JSON.stringify(parsed, null, 2);
+            const { from, to } = view.state.selection.main;
+            view.dispatch({
+              changes: { from, to, insert: formatted },
+            });
+            return true;
+          },
+        }),
         themeCompartment.of(themeExtension(initialDark)),
         ...(Array.isArray(languageExtension)
           ? [...languageExtension]

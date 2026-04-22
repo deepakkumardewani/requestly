@@ -1,14 +1,21 @@
 "use client";
 
-import { Braces, Eraser, Wand2 } from "lucide-react";
+import { ArrowUpToLine, Braces, Eraser, Wand2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { formatJson } from "@/lib/jsonDiff";
 import { buildJsonPathSuggestionsFromText } from "@/lib/jsonStructurePaths";
 import type { StructureCompletionState } from "@/lib/structureCompletion";
 import { runJs, runJsonPath } from "@/lib/transformRunner";
@@ -26,7 +33,8 @@ const DEBOUNCE_MS = 300;
 export function TransformPage() {
   const {
     inputBody,
-    code,
+    codeJsonPath,
+    codeJs,
     mode,
     output,
     error,
@@ -37,8 +45,22 @@ export function TransformPage() {
     clear,
   } = useTransformStore();
 
+  const code = mode === "js" ? codeJs : codeJsonPath;
+
+  useLayoutEffect(() => {
+    const raw = useTransformStore.getState().inputBody;
+    if (!raw.trim()) return;
+    const next = formatJson(raw);
+    if (next !== raw) {
+      setInputBody(next);
+    }
+  }, [setInputBody]);
+
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isExecutingRef = useRef(false);
+  const leftInputEditorWrapRef = useRef<HTMLDivElement | null>(null);
+
+  /** Wired to CodeEditor; apply is gated by `ENABLE_STRUCTURE_COMPLETION` in CodeEditor until we ship. */
   const structureCompletionRef = useRef<StructureCompletionState | null>(null);
 
   const structurePaths = useMemo(() => {
@@ -123,6 +145,14 @@ export function TransformPage() {
     }
   }, [inputBody, parsedInputJson, setInputBody]);
 
+  const handleScrollInputToTop = useCallback(() => {
+    const scroller =
+      leftInputEditorWrapRef.current?.querySelector<HTMLElement>(
+        ".cm-scroller",
+      );
+    scroller?.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   function computePlaceholder(
     text: string,
     currentMode: TransformMode,
@@ -182,21 +212,11 @@ export function TransformPage() {
   return (
     <div className="flex flex-col h-full overflow-hidden bg-background">
       {/* Toolbar */}
-      <div className="flex shrink-0 items-center gap-2 border-b px-3 py-2">
-        <div className="flex items-center gap-2 text-sm font-semibold text-foreground mr-4 px-2">
+      <div className="flex shrink-0 items-center border-b px-3 py-2">
+        <div className="flex items-center gap-2 text-sm font-semibold text-foreground px-2">
           <Braces className="h-4 w-4 text-method-accent" />
           Transform Playground
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={clear}
-          disabled={!inputBody.trim() && !code.trim() && !output && !error}
-          className="gap-1.5"
-        >
-          <Eraser className="h-3.5 w-3.5" />
-          Clear
-        </Button>
       </div>
 
       <ResizablePanelGroup orientation="horizontal" className="min-h-0 flex-1">
@@ -207,22 +227,52 @@ export function TransformPage() {
               <span className="text-xs font-medium text-muted-foreground">
                 Input Data (JSON)
               </span>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={handleFormatJson}
-                disabled={!inputBody.trim()}
-                title="Format JSON"
-              >
-                <Wand2 className="h-3.5 w-3.5" />
-              </Button>
+              <div className="flex items-center gap-0.5">
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={handleScrollInputToTop}
+                  disabled={!inputBody.trim()}
+                  title="Scroll to top"
+                >
+                  <ArrowUpToLine className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={clear}
+                  disabled={
+                    !inputBody.trim() &&
+                    !codeJsonPath.trim() &&
+                    !codeJs.trim() &&
+                    !output &&
+                    !error
+                  }
+                  title="Clear all"
+                >
+                  <Eraser className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={handleFormatJson}
+                  disabled={!inputBody.trim()}
+                  title="Format JSON"
+                >
+                  <Wand2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
-            <div className="flex-1 overflow-hidden min-h-0">
+            <div
+              ref={leftInputEditorWrapRef}
+              className="flex-1 overflow-hidden min-h-0"
+            >
               <CodeEditor
                 value={inputBody}
                 language="json"
                 onChange={setInputBody}
                 placeholder='{ "paste": "your JSON here" }'
+                jsonAutoFormatOnPaste
               />
             </div>
           </div>

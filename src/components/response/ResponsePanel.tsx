@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, Download, GitCompare, Send, Trash2 } from "lucide-react";
+import { Braces, Copy, Download, GitCompare, Send, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -24,6 +24,7 @@ import { cn, formatBytes, formatDuration } from "@/lib/utils";
 import { useJsonCompareStore } from "@/stores/useJsonCompareStore";
 import { useResponseStore } from "@/stores/useResponseStore";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { useTransformStore } from "@/stores/useTransformStore";
 import type { ResponseData } from "@/types";
 import { ConsoleViewer } from "./ConsoleViewer";
 import { ErrorExplainer } from "./ErrorExplainer";
@@ -315,6 +316,13 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
     router.push("/json-compare");
   }
 
+  function handleTransform() {
+    const raw = (response?.body ?? "").trim();
+    const input = raw === "" ? "" : formatJson(raw);
+    useTransformStore.getState().setInputBody(input);
+    router.push("/transform");
+  }
+
   function handleDownload() {
     const ext = contentType.includes("json")
       ? "json"
@@ -407,6 +415,15 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
               data-testid="response-compare-btn"
             >
               <GitCompare className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={handleTransform}
+              title="Open in Transform"
+              data-testid="response-transform-btn"
+            >
+              <Braces className="h-3.5 w-3.5" />
             </Button>
             <Button
               variant="ghost"
