@@ -137,6 +137,11 @@ export default function CodeEditor({
     themeCompartmentRef.current = new Compartment();
   }
 
+  const placeholderCompartmentRef = useRef<Compartment | null>(null);
+  if (!placeholderCompartmentRef.current) {
+    placeholderCompartmentRef.current = new Compartment();
+  }
+
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
@@ -154,6 +159,7 @@ export default function CodeEditor({
 
     let cancelled = false;
     const themeCompartment = themeCompartmentRef.current;
+    const placeholderCompartment = placeholderCompartmentRef.current;
 
     function envCompletionSource(
       context: CompletionContext,
@@ -210,7 +216,14 @@ export default function CodeEditor({
 
     (async () => {
       const languageExtension = await loadLanguageExtension(language);
-      if (cancelled || !containerRef.current || !themeCompartment) return;
+      if (
+        cancelled ||
+        !containerRef.current ||
+        !themeCompartment ||
+        !placeholderCompartment
+      ) {
+        return;
+      }
 
       const initialDark =
         typeof document !== "undefined" &&
@@ -236,7 +249,9 @@ export default function CodeEditor({
           },
         }),
         EditorState.readOnly.of(readOnly),
-        ...(placeholder ? [cmPlaceholder(placeholder)] : []),
+        placeholderCompartment.of(
+          placeholder ? cmPlaceholder(placeholder) : [],
+        ),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             onChangeRef.current?.(update.state.doc.toString());
@@ -267,7 +282,7 @@ export default function CodeEditor({
       viewRef.current = null;
     };
     // value synced separately — including it here would recreate the editor every keystroke
-  }, [language, readOnly, placeholder]);
+  }, [language, readOnly]);
 
   useEffect(() => {
     const view = viewRef.current;
@@ -277,6 +292,15 @@ export default function CodeEditor({
       effects: comp.reconfigure(themeExtension(isDark)),
     });
   }, [isDark]);
+
+  useEffect(() => {
+    const view = viewRef.current;
+    const ph = placeholderCompartmentRef.current;
+    if (!view || !ph) return;
+    view.dispatch({
+      effects: ph.reconfigure(placeholder ? cmPlaceholder(placeholder) : []),
+    });
+  }, [placeholder]);
 
   useEffect(() => {
     const view = viewRef.current;

@@ -22,8 +22,10 @@
 
 **Dependencies:** Task 2
 
-- [ ] Impl
-- [ ] Test
+**Test targets:** `src/lib/codeMirrorPlaceholderCompartment.spec.ts` — documents Compartment reconfigure pattern (placeholder updates without new EditorView).
+
+- [x] Impl
+- [x] Test
 
 ## Task 4: Wire TransformPage
 
