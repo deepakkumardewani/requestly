@@ -134,7 +134,7 @@ function ChainNodeInner({ data }: { data: ChainNodeData }) {
         <div className="flex items-start gap-2">
           <span
             className={cn(
-              "mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide",
+              "mt-0.5 inline-flex h-5 min-w-[3.25rem] shrink-0 items-center justify-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tabular-nums tracking-wide",
               METHOD_BADGE_CLASSES[method],
             )}
           >

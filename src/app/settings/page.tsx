@@ -25,7 +25,6 @@ export default function SettingsPage() {
     proxyUrl,
     showHealthMonitor,
     showCodeGen,
-    autoExpandExplainer,
     setSetting,
   } = useSettingsStore();
   const { clearHistory } = useHistoryStore();
@@ -48,7 +47,6 @@ export default function SettingsPage() {
           <GeneralSection
             showHealthMonitor={showHealthMonitor}
             showCodeGen={showCodeGen}
-            autoExpandExplainer={autoExpandExplainer}
             setSetting={setSetting}
             onClearHistoryClick={() => setClearHistoryOpen(true)}
           />

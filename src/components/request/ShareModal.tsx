@@ -11,7 +11,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { encodeShareLink } from "@/lib/shareLink";
-import type { HttpTab } from "@/types";
+import type { BodyConfig, HttpTab } from "@/types";
+
+function hasNonEmptyBody(body: BodyConfig): boolean {
+  if (body.type === "none") return false;
+  if (["json", "xml", "text", "html"].includes(body.type)) {
+    return body.content.trim().length > 0;
+  }
+  if (body.type === "form-data" || body.type === "urlencoded") {
+    const fields = (body.formData ?? []).filter((f) => f.enabled && f.key);
+    if (fields.length > 0) return true;
+    return body.content.trim().length > 0;
+  }
+  return false;
+}
 
 type ShareModalProps = {
   open: boolean;
@@ -65,6 +78,8 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
 
   const enabledHeaderCount = tab.headers.filter((h) => h.enabled).length;
   const enabledParamCount = tab.params.filter((p) => p.enabled).length;
+  const showSecretsWarning =
+    enabledHeaderCount > 0 || hasNonEmptyBody(tab.body);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -114,14 +129,15 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
             </div>
           )}
 
-          {/* Security warning — always shown */}
-          <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-sm text-amber-600 dark:text-amber-400">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>
-              Headers and body are included in this link. Remove any API keys or
-              secrets before sharing.
-            </span>
-          </div>
+          {showSecretsWarning && (
+            <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-sm text-amber-600 dark:text-amber-400">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                Headers and body are included in this link. Remove any API keys
+                or secrets before sharing.
+              </span>
+            </div>
+          )}
 
           {/* Expandable "What's included" */}
           <div>

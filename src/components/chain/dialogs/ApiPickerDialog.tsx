@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, FolderOpen, Plus } from "lucide-react";
+import { MethodBadge } from "@/components/common/MethodBadge";
 import {
   Accordion,
   AccordionContent,
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { METHOD_BADGE_CLASSES } from "@/lib/constants";
 import { cn, generateId, getRelativeTime } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
@@ -49,19 +49,6 @@ function historyEntryToChainNode(entry: HistoryEntry): ChainHistoryNode {
     auth: entry.request.auth,
     body: entry.request.body,
   };
-}
-
-function MethodBadge({ method }: { method: HttpMethod }) {
-  return (
-    <span
-      className={cn(
-        "shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide min-w-[52px] text-center",
-        METHOD_BADGE_CLASSES[method],
-      )}
-    >
-      {method}
-    </span>
-  );
 }
 
 type RequestRowProps = {

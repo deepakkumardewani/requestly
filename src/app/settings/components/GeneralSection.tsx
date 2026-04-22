@@ -9,7 +9,6 @@ type SettingsStore = ReturnType<typeof useSettingsStore.getState>;
 type Props = {
   showHealthMonitor: boolean;
   showCodeGen: boolean;
-  autoExpandExplainer: boolean;
   setSetting: SettingsStore["setSetting"];
   onClearHistoryClick: () => void;
 };
@@ -41,7 +40,6 @@ function FeatureRow({
 export function GeneralSection({
   showHealthMonitor,
   showCodeGen,
-  autoExpandExplainer,
   setSetting,
   onClearHistoryClick,
 }: Props) {
@@ -66,12 +64,6 @@ export function GeneralSection({
             description="Show code snippets for the current request (cURL, fetch, axios, Python, Go)"
             checked={showCodeGen}
             onCheckedChange={(v) => setSetting("showCodeGen", v)}
-          />
-          <FeatureRow
-            label="Auto-expand error explainer"
-            description='Automatically expand the "Why did this fail?" panel on 4xx/5xx responses'
-            checked={autoExpandExplainer}
-            onCheckedChange={(v) => setSetting("autoExpandExplainer", v)}
           />
         </div>
       </div>

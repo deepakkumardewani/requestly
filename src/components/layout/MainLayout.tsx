@@ -19,6 +19,7 @@ import { decodeShareLink } from "@/lib/shareLink";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
 import { LeftPanel } from "./LeftPanel";
+import { MobileDesktopNotice } from "./MobileDesktopNotice";
 import { RightPanel } from "./RightPanel";
 
 export function MainLayout() {
@@ -153,15 +154,7 @@ export function MainLayout() {
         )}
       </div>
 
-      {/* Mobile: full RightPanel + Sheet for sidebar */}
-      {/* <div className="flex w-full md:hidden" data-testid="mobile-layout">
-        <RightPanel />
-      </div> */}
-      {/* <Sheet open={mobileSidebarOpen} onOpenChange={toggleMobileSidebar}>
-        <SheetContent side="left" className="w-72 p-0">
-          <LeftPanel />
-        </SheetContent>
-      </Sheet> */}
+      <MobileDesktopNotice />
 
       {/* Command Palette — always mounted, visibility controlled by store */}
       <CommandPalette />

@@ -266,7 +266,7 @@ export function NodeDetailsPanel({
           </div>
           {/* Row 2: method badge + full URL (wraps, no ellipsis) */}
           <div className="flex items-start gap-1.5 mt-2">
-            <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground mt-0.5">
+            <span className="mt-0.5 inline-flex h-5 min-w-[3.25rem] shrink-0 items-center justify-center rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold uppercase tabular-nums tracking-wide text-muted-foreground">
               {method}
             </span>
             <span className="text-xs text-muted-foreground font-mono break-all leading-relaxed">
