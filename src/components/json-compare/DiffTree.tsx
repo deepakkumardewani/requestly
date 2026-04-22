@@ -32,8 +32,11 @@ type DiffNodeRowProps = {
 };
 
 function DiffNodeRow({ node, depth }: DiffNodeRowProps) {
-  const [expanded, setExpanded] = useState(true);
   const hasChildren = node.children !== null && node.children.length > 0;
+  // Collapse unchanged containers by default so real edits stay easy to scan.
+  const [expanded, setExpanded] = useState(
+    () => !(node.kind === "unchanged" && hasChildren),
+  );
   const indentPx = depth * 16;
 
   // Skip rendering unchanged leaf nodes to reduce noise — only show structure

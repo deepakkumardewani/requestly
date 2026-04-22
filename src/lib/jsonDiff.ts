@@ -195,6 +195,27 @@ export function diffJson(left: unknown, right: unknown): DiffResult {
   return { nodes, stats };
 }
 
+/** Keep only branches that lead to added / removed / changed leaves (hides unchanged noise). */
+export function filterDiffToChangesOnly(nodes: DiffNode[]): DiffNode[] {
+  const out: DiffNode[] = [];
+  for (const node of nodes) {
+    if (node.children === null) {
+      if (node.kind !== "unchanged") {
+        out.push(node);
+      }
+      continue;
+    }
+    const filteredChildren = filterDiffToChangesOnly(node.children);
+    if (filteredChildren.length > 0) {
+      out.push({
+        ...node,
+        children: filteredChildren,
+      });
+    }
+  }
+  return out;
+}
+
 export function parseJsonSafe(
   input: string,
 ): { value: unknown; error: null } | { value: null; error: string } {
