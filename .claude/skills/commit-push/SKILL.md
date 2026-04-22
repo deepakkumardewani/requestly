@@ -9,9 +9,7 @@ Create atomic commits and push to remote.
 
 1. **Verify App**:
 
-- run `bun run lint` first and check if there are any errors/warnings then fix them.
-- then run `bun run format` to format the code.
-- then `bun run typecheck` to check for any ts issues. if there are any issues then fix them
+- run `bun run verify` first and check if there are any errors/warnings then fix them. `bun run verify` checks for lint errors/warnings, format errors/warnings, and typescript errors/warnings.
 - make sure there are no errors/warnings before commiting and pushing.
 
 2. **Analyze Changes**: Review git status and diff
