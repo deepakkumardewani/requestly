@@ -31,5 +31,7 @@
 
 **Dependencies:** Tasks 1–3
 
-- [ ] Impl
-- [ ] Test
+**Test targets:** `src/lib/structureCompletion.spec.ts` — `getStructureCompletionRange` (JS vs JSONPath prefix extraction).
+
+- [x] Impl
+- [x] Test

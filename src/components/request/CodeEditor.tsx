@@ -16,6 +16,7 @@ import type { MutableRefObject } from "react";
 import { useEffect, useRef } from "react";
 import {
   buildStructurePathCompletionOptions,
+  getStructureCompletionRange,
   type StructureCompletionState,
   shouldSuppressStructureCompletion,
 } from "@/lib/structureCompletion";
@@ -197,18 +198,18 @@ export default function CodeEditor({
       const linePrefix = context.state.doc.sliceString(line.from, context.pos);
       if (shouldSuppressStructureCompletion(linePrefix)) return null;
 
-      const match = context.matchBefore(/[\w.[\]*]+$/);
-      if (!match) return null;
+      const range = getStructureCompletionRange(completion.mode, linePrefix);
+      if (!range) return null;
 
       const options = buildStructurePathCompletionOptions(
         completion.paths,
-        match.text,
+        range.typedPrefix,
       );
       if (options.length === 0) return null;
 
       return {
-        from: match.from,
-        to: match.to,
+        from: line.from + range.fromOffset,
+        to: context.pos,
         options,
         validFor: /^[\w.[\]*]*$/,
       };

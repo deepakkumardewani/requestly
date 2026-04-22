@@ -9,6 +9,8 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { buildJsonPathSuggestionsFromText } from "@/lib/jsonStructurePaths";
+import type { StructureCompletionState } from "@/lib/structureCompletion";
 import { runJs, runJsonPath } from "@/lib/transformRunner";
 import {
   type TransformMode,
@@ -37,6 +39,29 @@ export function TransformPage() {
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isExecutingRef = useRef(false);
+  const structureCompletionRef = useRef<StructureCompletionState | null>(null);
+
+  const structurePaths = useMemo(() => {
+    return buildJsonPathSuggestionsFromText(inputBody, {
+      maxDepth: 8,
+      maxPaths: 500,
+      maxArrayNumericSamples: 2,
+    });
+  }, [inputBody]);
+
+  const structureCompletionPaths = useMemo(() => {
+    if (mode === "js") {
+      return [
+        ...new Set([...structurePaths, "json", "text", "status", "headers"]),
+      ];
+    }
+    return structurePaths;
+  }, [mode, structurePaths]);
+
+  structureCompletionRef.current = {
+    mode: mode === "js" ? "js" : "jsonpath",
+    paths: structureCompletionPaths,
+  };
 
   const parsedInputJson = useMemo(() => {
     try {
@@ -237,6 +262,7 @@ export function TransformPage() {
                     language={editorLanguage}
                     onChange={setCode}
                     placeholder={computePlaceholder(inputBody, mode)}
+                    structureCompletionRef={structureCompletionRef}
                   />
                 </div>
               </div>
