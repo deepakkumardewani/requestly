@@ -13,8 +13,10 @@
 
 **Dependencies:** Task 1
 
-- [ ] Impl
-- [ ] Test
+**Test targets:** `src/lib/structureCompletion.spec.ts` — pure helpers (`shouldSuppressStructureCompletion`, `buildStructurePathCompletionOptions`).
+
+- [x] Impl
+- [x] Test
 
 ## Task 3: Fix dynamic placeholder remount
 

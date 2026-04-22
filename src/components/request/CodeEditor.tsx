@@ -12,7 +12,13 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import { placeholder as cmPlaceholder, EditorView } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { useTheme } from "next-themes";
+import type { MutableRefObject } from "react";
 import { useEffect, useRef } from "react";
+import {
+  buildStructurePathCompletionOptions,
+  type StructureCompletionState,
+  shouldSuppressStructureCompletion,
+} from "@/lib/structureCompletion";
 
 export type CodeEditorLanguage =
   | "json"
@@ -33,7 +39,14 @@ type CodeEditorProps = {
   className?: string;
   envVariables?: string[];
   placeholder?: string;
+  /** Parent-owned ref; update `.current` without passing new props to refresh completions. */
+  structureCompletionRef?: MutableRefObject<StructureCompletionState | null>;
 };
+
+export type {
+  StructureCompletionMode,
+  StructureCompletionState,
+} from "@/lib/structureCompletion";
 
 /** Light theme aligned with app `card` / `foreground` tokens */
 const lightEditorTheme = EditorView.theme({
@@ -112,6 +125,7 @@ export default function CodeEditor({
   className,
   envVariables,
   placeholder,
+  structureCompletionRef: structureCompletionRefProp,
 }: CodeEditorProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -128,6 +142,11 @@ export default function CodeEditor({
 
   const envVariablesRef = useRef(envVariables ?? []);
   envVariablesRef.current = envVariables ?? [];
+
+  const structureCompletionFallbackRef =
+    useRef<StructureCompletionState | null>(null);
+  const structureCompletionRef =
+    structureCompletionRefProp ?? structureCompletionFallbackRef;
 
   useEffect(() => {
     const parent = containerRef.current;
@@ -162,6 +181,33 @@ export default function CodeEditor({
       };
     }
 
+    function structureCompletionSource(
+      context: CompletionContext,
+    ): CompletionResult | null {
+      const completion = structureCompletionRef.current;
+      if (!completion || completion.paths.length === 0) return null;
+
+      const line = context.state.doc.lineAt(context.pos);
+      const linePrefix = context.state.doc.sliceString(line.from, context.pos);
+      if (shouldSuppressStructureCompletion(linePrefix)) return null;
+
+      const match = context.matchBefore(/[\w.[\]*]+$/);
+      if (!match) return null;
+
+      const options = buildStructurePathCompletionOptions(
+        completion.paths,
+        match.text,
+      );
+      if (options.length === 0) return null;
+
+      return {
+        from: match.from,
+        to: match.to,
+        options,
+        validFor: /^[\w.[\]*]*$/,
+      };
+    }
+
     (async () => {
       const languageExtension = await loadLanguageExtension(language);
       if (cancelled || !containerRef.current || !themeCompartment) return;
@@ -178,7 +224,7 @@ export default function CodeEditor({
           : [languageExtension]),
         Prec.highest(
           autocompletion({
-            override: [envCompletionSource],
+            override: [envCompletionSource, structureCompletionSource],
             activateOnTyping: true,
           }),
         ),
