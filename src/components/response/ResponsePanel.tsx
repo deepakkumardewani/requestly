@@ -9,8 +9,22 @@ import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatBytes, formatDuration } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { formatJson } from "@/lib/jsonDiff";
+import {
+  estimateHeaderBlockBytes,
+  estimateHttpTabRequestBytes,
+} from "@/lib/responseMetrics";
+import { cn, formatBytes, formatDuration } from "@/lib/utils";
+import { useJsonCompareStore } from "@/stores/useJsonCompareStore";
 import { useResponseStore } from "@/stores/useResponseStore";
+import { useTabsStore } from "@/stores/useTabsStore";
+import type { ResponseData } from "@/types";
 import { ConsoleViewer } from "./ConsoleViewer";
 import { ErrorExplainer } from "./ErrorExplainer";
 import { HeadersViewer } from "./HeadersViewer";
@@ -40,6 +54,168 @@ const RESPONSE_TABS = [
   "preview",
   "timing",
 ] as const;
+
+function formatTimingMs(ms: number): string {
+  return `${Math.round(ms * 100) / 100} ms`;
+}
+
+function TimingDetailTooltip({ response }: { response: ResponseData }) {
+  const timing = response.timing;
+  const total = timing?.total ?? response.duration;
+
+  const rows: { label: string; value: number | null }[] = timing
+    ? [
+        { label: "DNS lookup", value: timing.dns },
+        { label: "TCP handshake", value: timing.tcp },
+        { label: "TLS handshake", value: timing.tls },
+        { label: "Transfer start (TTFB)", value: timing.ttfb },
+        { label: "Download", value: timing.download },
+      ]
+    : [{ label: "Total (client)", value: response.duration }];
+
+  const denom = total > 0 ? total : 1;
+
+  return (
+    <div className="w-72 space-y-2 p-1" data-testid="response-timing-tooltip">
+      <p className="text-[11px] font-medium text-foreground">Timing</p>
+      <div className="space-y-1.5">
+        {rows.map((row) => {
+          const v = row.value;
+          const pct =
+            v !== null && v > 0 ? Math.min(100, (v / denom) * 100) : 0;
+          return (
+            <div
+              key={row.label}
+              className="grid grid-cols-[1fr_auto] gap-x-2 text-[11px]"
+            >
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={
+                      v === null
+                        ? "text-muted-foreground/70"
+                        : "text-muted-foreground"
+                    }
+                  >
+                    {row.label}
+                  </span>
+                </div>
+                {v !== null && v > 0 && (
+                  <div className="mt-0.5 h-1 overflow-hidden rounded-full bg-emerald-500/15">
+                    <div
+                      className="h-full rounded-full bg-emerald-500/80"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                )}
+              </div>
+              <span
+                className={cn(
+                  "shrink-0 tabular-nums",
+                  v === null ? "text-muted-foreground/60" : "text-emerald-400",
+                )}
+              >
+                {v === null ? "—" : formatTimingMs(v)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex items-center justify-between border-t border-border pt-1.5 text-[11px]">
+        <span className="text-muted-foreground">Total</span>
+        <span className="font-medium tabular-nums text-emerald-400">
+          {formatTimingMs(total)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function SizeDetailTooltip({
+  response,
+  tabId,
+}: {
+  response: ResponseData;
+  tabId: string;
+}) {
+  const { tabs } = useTabsStore();
+  const tab = tabs.find((t) => t.tabId === tabId);
+
+  const respHeaders = estimateHeaderBlockBytes(response.headers);
+  const respBody = response.size;
+  const respTotal = respHeaders + respBody;
+
+  let reqHeaders = 0;
+  let reqBody = 0;
+  if (tab?.type === "http") {
+    const est = estimateHttpTabRequestBytes(tab);
+    reqHeaders = est.headers;
+    reqBody = est.body;
+  }
+  const reqTotal = reqHeaders + reqBody;
+
+  function Row({
+    label,
+    value,
+    muted,
+  }: {
+    label: string;
+    value: number;
+    muted?: boolean;
+  }) {
+    return (
+      <div
+        className={cn(
+          "flex items-center justify-between text-[11px]",
+          muted ? "text-muted-foreground" : "text-foreground",
+        )}
+      >
+        <span>{label}</span>
+        <span className="tabular-nums">{formatBytes(value)}</span>
+      </div>
+    );
+  }
+
+  function SectionHeader({
+    title,
+    total,
+    accent,
+  }: {
+    title: string;
+    total: number;
+    accent: boolean;
+  }) {
+    return (
+      <div
+        className={cn(
+          "flex items-center justify-between text-[11px] font-medium",
+          accent ? "text-emerald-400" : "text-muted-foreground",
+        )}
+      >
+        <span>{title}</span>
+        <span className="tabular-nums">{formatBytes(total)}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-72 space-y-2 p-1" data-testid="response-size-tooltip">
+      <div className="space-y-1">
+        <SectionHeader title="Response size" total={respTotal} accent />
+        <Row label="Body" value={respBody} />
+        <Row label="Headers" value={respHeaders} />
+      </div>
+      <div className="space-y-1 border-t border-border pt-2">
+        <SectionHeader title="Request size" total={reqTotal} accent={false} />
+        <Row label="Body" value={reqBody} muted />
+        <Row label="Headers" value={reqHeaders} muted />
+      </div>
+      <p className="border-t border-border pt-2 text-[10px] text-muted-foreground">
+        All size calculations are approximate.
+      </p>
+    </div>
+  );
+}
 
 export function ResponsePanel({ tabId }: ResponsePanelProps) {
   const router = useRouter();
@@ -115,7 +291,27 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
   }
 
   function handleCompare() {
-    sessionStorage.setItem(SESSION_STORAGE_SEED_KEY, response?.body ?? "");
+    const raw = (response?.body ?? "").trim();
+    const left = raw === "" ? "" : formatJson(raw);
+    const {
+      setLeftInput,
+      setRightInput,
+      setLeftError,
+      setRightError,
+      setDiffResult,
+    } = useJsonCompareStore.getState();
+    setLeftError(null);
+    setRightError(null);
+    setDiffResult(null);
+    setLeftInput(left);
+    setRightInput("");
+    if (left) {
+      try {
+        sessionStorage.setItem(SESSION_STORAGE_SEED_KEY, left);
+      } catch {
+        // QuotaExceededError or private mode: compare still works from store.
+      }
+    }
     router.push("/json-compare");
   }
 
@@ -136,83 +332,112 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
     URL.revokeObjectURL(url);
   }
 
+  const statusRow = (
+    <>
+      <StatusBadge
+        status={response.status}
+        data-testid="response-status-badge"
+      />
+      <span
+        className="text-xs text-muted-foreground"
+        data-testid="response-status-text"
+      >
+        {response.statusText}
+      </span>
+    </>
+  );
+
   return (
     <div className="flex h-full flex-col overflow-hidden">
       {/* Meta row */}
-      <div
-        className="flex items-center gap-3 border-b px-3 py-1.5"
-        data-testid="response-meta"
-      >
-        <StatusBadge
-          status={response.status}
-          data-testid="response-status-badge"
-        />
-        <span
-          className="text-xs text-muted-foreground"
-          data-testid="response-status-text"
+      <TooltipProvider delay={250}>
+        <div
+          className="flex items-center gap-3 border-b px-3 py-1.5"
+          data-testid="response-meta"
         >
-          {response.statusText}
-        </span>
-        <span
-          className="text-xs text-muted-foreground"
-          data-testid="response-duration"
-        >
-          {formatDuration(response.duration)}
-        </span>
-        <span
-          className="text-xs text-muted-foreground"
-          data-testid="response-size"
-        >
-          {formatBytes(response.size)}
-        </span>
-        <div className="ml-auto flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={handleCompare}
-            title="Compare in JSON Compare"
-            data-testid="response-compare-btn"
-          >
-            <GitCompare className="h-3.5 w-3.5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={handleCopy}
-            title="Copy"
-            data-testid="response-copy-btn"
-          >
-            <Copy className="h-3.5 w-3.5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={handleDownload}
-            title="Download"
-            data-testid="response-download-btn"
-          >
-            <Download className="h-3.5 w-3.5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => clearResponse(tabId)}
-            title="Clear"
-            data-testid="response-clear-btn"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          {response.status >= 400 ? (
+            <ErrorExplainer
+              status={response.status}
+              body={response.body}
+              responseKey={response.timestamp}
+            >
+              {statusRow}
+            </ErrorExplainer>
+          ) : (
+            statusRow
+          )}
+          <Tooltip>
+            <TooltipTrigger
+              type="button"
+              className="cursor-help border-0 bg-transparent p-0 text-left text-xs text-muted-foreground underline decoration-dotted decoration-muted-foreground/50 underline-offset-2"
+              data-testid="response-duration"
+            >
+              {formatDuration(response.duration)}
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              align="start"
+              className="max-w-none border border-border bg-popover p-2 text-popover-foreground shadow-md"
+            >
+              <TimingDetailTooltip response={response} />
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger
+              type="button"
+              className="cursor-help border-0 bg-transparent p-0 text-left text-xs text-muted-foreground underline decoration-dotted decoration-muted-foreground/50 underline-offset-2"
+              data-testid="response-size"
+            >
+              {formatBytes(response.size)}
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              align="start"
+              className="max-w-none border border-border bg-popover p-2 text-popover-foreground shadow-md"
+            >
+              <SizeDetailTooltip response={response} tabId={tabId} />
+            </TooltipContent>
+          </Tooltip>
+          <div className="ml-auto flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={handleCompare}
+              title="Compare in JSON Compare"
+              data-testid="response-compare-btn"
+            >
+              <GitCompare className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={handleCopy}
+              title="Copy"
+              data-testid="response-copy-btn"
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={handleDownload}
+              title="Download"
+              data-testid="response-download-btn"
+            >
+              <Download className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => clearResponse(tabId)}
+              title="Clear"
+              data-testid="response-clear-btn"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
-      </div>
-
-      {/* Error explainer — only shown on 4xx/5xx */}
-      {response.status >= 400 && (
-        <ErrorExplainer
-          status={response.status}
-          body={response.body}
-          responseKey={response.timestamp}
-        />
-      )}
+      </TooltipProvider>
 
       {/* Response tabs */}
       <Tabs

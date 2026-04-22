@@ -204,6 +204,10 @@ test.describe("Response Viewing", () => {
 
     const explainer = page.getByTestId("error-explainer");
     await expect(explainer).toBeVisible();
+    await page.getByTestId("error-explainer-trigger").hover();
+    await expect(page.getByTestId("error-explainer-content")).toBeVisible({
+      timeout: 5000,
+    });
   });
 
   // Scenario: Network error is shown
