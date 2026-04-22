@@ -1,6 +1,6 @@
+import { SHORTCUT_GROUPS, type Shortcut } from "@/app/settings/constants";
 import { Kbd } from "@/components/ui/kbd";
 import { isMac } from "@/lib/platform";
-import { SHORTCUT_GROUPS, type Shortcut } from "../constants";
 
 const CMD = "⌘";
 const CTRL = "Ctrl";

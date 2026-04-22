@@ -3,14 +3,14 @@
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AppearanceSection } from "@/components/settings/AppearanceSection";
+import { ClearHistoryDialog } from "@/components/settings/ClearHistoryDialog";
+import { GeneralSection } from "@/components/settings/GeneralSection";
+import { ProxySection } from "@/components/settings/ProxySection";
+import { SettingsNav } from "@/components/settings/SettingsNav";
+import { ShortcutsSection } from "@/components/settings/ShortcutsSection";
 import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
-import { AppearanceSection } from "./components/AppearanceSection";
-import { ClearHistoryDialog } from "./components/ClearHistoryDialog";
-import { GeneralSection } from "./components/GeneralSection";
-import { ProxySection } from "./components/ProxySection";
-import { SettingsNav } from "./components/SettingsNav";
-import { ShortcutsSection } from "./components/ShortcutsSection";
 import type { SettingsSection } from "./constants";
 
 export default function SettingsPage() {

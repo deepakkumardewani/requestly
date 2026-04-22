@@ -1,6 +1,6 @@
+import { THEME_OPTIONS } from "@/app/settings/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { THEME_OPTIONS } from "../constants";
 
 type Props = {
   theme: string | undefined;

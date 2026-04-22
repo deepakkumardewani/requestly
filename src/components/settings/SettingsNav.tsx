@@ -1,5 +1,9 @@
 import Link from "next/link";
 import {
+  SETTINGS_SECTIONS,
+  type SettingsSection,
+} from "@/app/settings/constants";
+import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -8,7 +12,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { cn } from "@/lib/utils";
-import { SETTINGS_SECTIONS, type SettingsSection } from "../constants";
 
 type Props = {
   activeSection: SettingsSection;
