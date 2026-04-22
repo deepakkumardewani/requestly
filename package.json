@@ -10,7 +10,7 @@
     "lint:write": "biome check --write",
     "format": "biome format --write",
     "typecheck": "tsc --noEmit",
-    "verify": "bun run format && bun run typecheck",
+    "verify": "bun run lint:write && bun run format && bun run typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
