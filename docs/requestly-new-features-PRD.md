@@ -16,14 +16,14 @@ Requestly is a browser-native, zero-install, zero-account API testing tool compe
 | # | Feature | One-line description |
 |---|---|---|
 | 1 | Code Generation Panel | Live multi-language code snippets for every request |
-| 2 | Diff Two Environments | Run same request against two envs; diff responses side-by-side |
+| 2 | Diff Two Environments | Run same request against two envs; diff responses side-by-side | - dont want to do it now
 | 3 | "Why Did This Fail?" Explainer | Plain-English 4xx/5xx diagnosis with actionable fixes |
-| 4 | HAR Replay | Import Chrome/Firefox DevTools HAR; replay full request sequence |
+| 4 | HAR Replay | Import Chrome/Firefox DevTools HAR; replay full request sequence | - dont want to do it now
 | 5 | Request Timing Waterfall | DNS → TCP → TLS → TTFB → Download waterfall per request |
-| 6 | Offline Cached Responses | Serve last known response when offline; PWA-backed |
-| 7 | Changelog Detection | Auto-detect response structure changes vs. last week's history |
-| 8 | Collection Run + Timeline | Run entire collection sequentially; visual pass/fail timeline |
-| 9 | Annotated Collections + Docs Export | Markdown notes on requests; export collection as static HTML docs |
+| 6 | Offline Cached Responses | Serve last known response when offline; PWA-backed | - dont want to do it now
+| 7 | Changelog Detection | Auto-detect response structure changes vs. last week's history | - dont want to do it now
+| 8 | Collection Run + Timeline | Run entire collection sequentially; visual pass/fail timeline | - dont want to do it now
+| 9 | Annotated Collections + Docs Export | Markdown notes on requests; export collection as static HTML docs | - dont want to do it now
 | 10 | Request Dependencies / Chaining UI | Visual node graph to chain requests; zero-code token passing |
 
 ---

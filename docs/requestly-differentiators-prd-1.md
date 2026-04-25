@@ -41,7 +41,7 @@ Four discrete features added to the existing Requestly interface, each independe
 
 | # | Feature | One-line description |
 |---|---|---|
-| 1 | Request Snapshots & Visual Diff | Pin a golden response; flag future deviations automatically |
+| 1 | Request Snapshots & Visual Diff | Pin a golden response; flag future deviations automatically | - dont want to do it now
 | 2 | Shareable Request Links | One URL encodes the full request; recipient opens it pre-populated |
 | 3 | Response Transformation Playground | Write JS/JSONPath in-app to filter/reshape the response |
 | 4 | Request Health Monitor | Per-endpoint reliability score derived from local history |
