@@ -27,6 +27,35 @@
 - [x] Impl
 - [x] Test
 
+## Share DB E2E encryption — Phase 1: Infrastructure
+
+### Share-1: Install dependencies and configure Upstash Redis
+
+**Dependencies:** None
+
+**Test targets:** `src/lib/redis.spec.ts` — ensure singleton exports with stubbed env (no network).
+
+- [x] Impl
+- [x] Test
+
+### Share-2: `src/lib/anonUser.ts`
+
+**Dependencies:** Share-1 done (soft — none for code, ordering only)
+
+**Test targets:** `src/lib/anonUser.spec.ts` — SSR guard, idempotence, new UUID on empty storage.
+
+- [ ] Impl
+- [ ] Test
+
+### Share-3: `src/lib/crypto.ts`
+
+**Dependencies:** None
+
+**Test targets:** `src/lib/crypto.spec.ts` — round-trip, non-deterministic encrypt, decrypt failure cases.
+
+- [ ] Impl
+- [ ] Test
+
 ## Task 4: Wire TransformPage
 
 **Dependencies:** Tasks 1–3
