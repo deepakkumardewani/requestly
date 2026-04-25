@@ -62,26 +62,59 @@ export function rateLimitKeyForUser(userId: string): string {
   return `ratelimit:${userId}`;
 }
 
-type RedisIncrTtl = {
+type ShareRateLimitRedis = {
+  get: (key: string) => Promise<string | number | null>;
   incr: (key: string) => Promise<number>;
+  decr: (key: string) => Promise<number>;
   expire: (key: string, sec: number) => Promise<0 | 1 | boolean>;
 };
 
+function parseIntFromRedisGet(raw: string | number | null): number | null {
+  if (raw === null) {
+    return null;
+  }
+  const s = String(raw);
+  const n = Number.parseInt(s, 10);
+  return Number.isNaN(n) ? null : n;
+}
+
 /**
- * Increments the per-user counter and sets TTL on first use.
- * @returns "rate_limited" when this request is over the hourly cap (caller must not store).
+ * If the per-user key already shows **at least** the max allowed count, the
+ * request is rejected **without** `INCR` / `DECR` so at-cap 429s do not touch
+ * Redis. Otherwise we `INCR` (atomic) and, only when that single increment
+ * goes over the cap, we `DECR` once to keep the stored value at the limit.
  */
 export async function enforceShareRateLimit(
-  client: RedisIncrTtl,
+  client: ShareRateLimitRedis,
   userId: string,
 ): Promise<"ok" | "rate_limited"> {
   const key = rateLimitKeyForUser(userId);
+  const existing = await client.get(key);
+  const n0 = parseIntFromRedisGet(existing);
+  if (n0 !== null && n0 >= SHARE_RATE_LIMIT_MAX) {
+    return "rate_limited";
+  }
   const count = await client.incr(key);
   if (count === 1) {
     await client.expire(key, SHARE_RATE_LIMIT_TTL_SEC);
   }
   if (count > SHARE_RATE_LIMIT_MAX) {
+    await client.decr(key);
     return "rate_limited";
   }
   return "ok";
+}
+
+/**
+ * `Date` (ms) when the rate-limit key expires, or `null` if unknown (no TTL / missing key).
+ */
+export async function getRateLimitResetAtMs(
+  client: { pttl: (key: string) => Promise<number> },
+  userId: string,
+): Promise<number | null> {
+  const pttl = await client.pttl(rateLimitKeyForUser(userId));
+  if (pttl <= 0) {
+    return null;
+  }
+  return Date.now() + pttl;
 }

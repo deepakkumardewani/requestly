@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import {
   enforceShareRateLimit,
+  getRateLimitResetAtMs,
   SharePostBodySchema,
   shareStorageKey,
 } from "@/lib/shareServer";
@@ -40,8 +41,13 @@ export async function POST(req: Request): Promise<NextResponse> {
   const { ciphertext, iv, userId } = result.data;
   const rate = await enforceShareRateLimit(redis, userId);
   if (rate === "rate_limited") {
+    const resetAt = await getRateLimitResetAtMs(redis, userId);
     return NextResponse.json(
-      { error: "Rate limit exceeded", code: "RATE_LIMIT" },
+      {
+        error: "Rate limit exceeded",
+        code: "RATE_LIMIT",
+        ...(resetAt != null && { resetAt }),
+      },
       { status: 429 },
     );
   }

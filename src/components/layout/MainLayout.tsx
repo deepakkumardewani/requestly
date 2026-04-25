@@ -74,8 +74,9 @@ export function MainLayout() {
     const search = new URLSearchParams(window.location.search);
     const shareId = search.get("s");
     if (shareId) {
-      void (async () => {
-        const payload = await fetchSharePayload(shareId);
+      const id = shareId;
+      async function importFromShareQuery() {
+        const payload = await fetchSharePayload(id);
         if (payload) {
           openTab({
             type: "http",
@@ -97,7 +98,8 @@ export function MainLayout() {
         const qs = u.search;
         const next = qs.length > 0 ? `${u.pathname}${qs}` : u.pathname;
         history.replaceState({}, "", next);
-      })();
+      }
+      void importFromShareQuery();
       return;
     }
 

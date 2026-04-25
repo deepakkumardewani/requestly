@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   enforceShareRateLimit,
+  getRateLimitResetAtMs,
   parseStoredShareRecord,
   rateLimitKeyForUser,
   SharePostBodySchema,
@@ -85,34 +86,95 @@ describe("shareServer", () => {
 
   describe("enforceShareRateLimit", () => {
     it("returns ok and sets expire on first increment", async () => {
+      const get = vi.fn().mockResolvedValue(null);
       const incr = vi.fn().mockResolvedValue(1);
+      const decr = vi.fn();
       const expire = vi.fn().mockResolvedValue(1);
-      const out = await enforceShareRateLimit({ incr, expire }, "user-a");
+      const out = await enforceShareRateLimit(
+        { get, incr, decr, expire },
+        "user-a",
+      );
       expect(out).toBe("ok");
+      expect(get).toHaveBeenCalledWith("ratelimit:user-a");
       expect(incr).toHaveBeenCalledWith("ratelimit:user-a");
       expect(expire).toHaveBeenCalledWith("ratelimit:user-a", 3600);
+      expect(decr).not.toHaveBeenCalled();
     });
 
     it("does not call expire when count is not 1", async () => {
+      const get = vi.fn().mockResolvedValue(null);
       const incr = vi.fn().mockResolvedValue(2);
+      const decr = vi.fn();
       const expire = vi.fn();
-      const out = await enforceShareRateLimit({ incr, expire }, "user-b");
+      const out = await enforceShareRateLimit(
+        { get, incr, decr, expire },
+        "user-b",
+      );
       expect(out).toBe("ok");
       expect(expire).not.toHaveBeenCalled();
     });
 
-    it("returns rate_limited when count exceeds cap", async () => {
+    it("returns rate_limited and decrements to undo the over-cap increment", async () => {
+      const get = vi.fn().mockResolvedValue(null);
       const incr = vi.fn().mockResolvedValue(21);
+      const decr = vi.fn().mockResolvedValue(20);
       const expire = vi.fn();
-      const out = await enforceShareRateLimit({ incr, expire }, "user-c");
+      const out = await enforceShareRateLimit(
+        { get, incr, decr, expire },
+        "user-c",
+      );
       expect(out).toBe("rate_limited");
+      expect(decr).toHaveBeenCalledWith("ratelimit:user-c");
     });
 
     it("returns ok at exactly the cap", async () => {
+      const get = vi.fn().mockResolvedValue(null);
       const incr = vi.fn().mockResolvedValue(20);
+      const decr = vi.fn();
       const expire = vi.fn();
-      const out = await enforceShareRateLimit({ incr, expire }, "user-d");
+      const out = await enforceShareRateLimit(
+        { get, incr, decr, expire },
+        "user-d",
+      );
       expect(out).toBe("ok");
+      expect(decr).not.toHaveBeenCalled();
+    });
+
+    it("returns rate_limited when count is already at the cap (no incr)", async () => {
+      const get = vi.fn().mockResolvedValue("20");
+      const incr = vi.fn();
+      const decr = vi.fn();
+      const expire = vi.fn();
+      const out = await enforceShareRateLimit(
+        { get, incr, decr, expire },
+        "user-e",
+      );
+      expect(out).toBe("rate_limited");
+      expect(incr).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getRateLimitResetAtMs", () => {
+    it("returns null when pttl is not positive", async () => {
+      const pttl = vi.fn().mockResolvedValue(-1);
+      await expect(
+        getRateLimitResetAtMs(
+          { pttl } as { pttl: (k: string) => Promise<number> },
+          "u1",
+        ),
+      ).resolves.toBeNull();
+    });
+
+    it("returns now + pttl in milliseconds", async () => {
+      const pttl = vi.fn().mockResolvedValue(60_000);
+      const t0 = Date.now();
+      const out = await getRateLimitResetAtMs(
+        { pttl } as { pttl: (k: string) => Promise<number> },
+        "u2",
+      );
+      expect(out).toBeGreaterThanOrEqual(t0 + 60_000);
+      expect(out).toBeLessThanOrEqual(t0 + 60_000 + 500);
+      expect(pttl).toHaveBeenCalledWith("ratelimit:u2");
     });
   });
 

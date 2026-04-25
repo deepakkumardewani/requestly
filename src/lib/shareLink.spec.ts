@@ -28,14 +28,20 @@ afterEach(() => {
 });
 
 describe("createShareLink", () => {
-  it("returns null when userId is empty", async () => {
+  it("returns failed when userId is empty", async () => {
     const tab = minimalHttpTab();
-    await expect(createShareLink(tab, "")).resolves.toBeNull();
+    await expect(createShareLink(tab, "")).resolves.toEqual({
+      ok: false,
+      error: "failed",
+    });
   });
 
-  it("returns null when window is not available (SSR / Node)", async () => {
+  it("returns failed when window is not available (SSR / Node)", async () => {
     const tab = minimalHttpTab();
-    await expect(createShareLink(tab, "user-1")).resolves.toBeNull();
+    await expect(createShareLink(tab, "user-1")).resolves.toEqual({
+      ok: false,
+      error: "failed",
+    });
   });
 
   it("returns a well-formed share URL and POSTs ciphertext to /api/share", async () => {
@@ -65,12 +71,14 @@ describe("createShareLink", () => {
       fetch: post,
     } as unknown as Window & typeof globalThis);
 
-    const url = await createShareLink(minimalHttpTab(), "anon-xyz");
-    expect(url).not.toBeNull();
-    if (url === null) {
-      throw new Error("expected non-null share URL");
+    const out = await createShareLink(minimalHttpTab(), "anon-xyz");
+    expect(out.ok).toBe(true);
+    if (!out.ok) {
+      throw new Error("expected success");
     }
-    expect(url).toMatch(/^https:\/\/app\.test\/\?s=Xy7k2m9a#[A-Za-z0-9+/=]+$/);
+    expect(out.url).toMatch(
+      /^https:\/\/app\.test\/\?s=Xy7k2m9a#[A-Za-z0-9+/=]+$/,
+    );
     expect(post).toHaveBeenCalledWith(
       "/api/share",
       expect.objectContaining({
@@ -78,6 +86,52 @@ describe("createShareLink", () => {
         headers: { "Content-Type": "application/json" },
       }),
     );
+  });
+
+  it("returns rate_limited on HTTP 429 with optional resetAt", async () => {
+    const resetAt = 1_800_000_000_000;
+    const post = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 429,
+      json: () =>
+        Promise.resolve({
+          error: "Rate limit exceeded",
+          code: "RATE_LIMIT",
+          resetAt,
+        }),
+    });
+    vi.stubGlobal("window", {
+      location: { origin: "https://app.test" },
+      fetch: post,
+    } as unknown as Window & typeof globalThis);
+    await expect(createShareLink(minimalHttpTab(), "u1")).resolves.toEqual({
+      ok: false,
+      error: "rate_limited",
+      resetAt,
+    });
+  });
+
+  it("rethrows AbortError when POST is aborted", async () => {
+    const post = vi
+      .fn()
+      .mockImplementation((_url: string, init: RequestInit) => {
+        if (init.signal?.aborted) {
+          return Promise.reject(new DOMException("Aborted", "AbortError"));
+        }
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ id: "abcd1234" }),
+        });
+      });
+    vi.stubGlobal("window", {
+      location: { origin: "https://app.test" },
+      fetch: post,
+    } as unknown as Window & typeof globalThis);
+    const ac = new AbortController();
+    ac.abort();
+    await expect(
+      createShareLink(minimalHttpTab(), "u1", ac.signal),
+    ).rejects.toThrow(DOMException);
   });
 });
 

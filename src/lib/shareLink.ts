@@ -1,5 +1,10 @@
 import { z } from "zod";
 import { decryptPayload, encryptPayload } from "@/lib/crypto";
+import {
+  alignLocalStateWithServerRateLimit,
+  getLocalShareRateBlock,
+  recordLocalShareSuccess,
+} from "@/lib/shareRateLimitLocal";
 import type { HttpTab } from "@/types";
 
 const HTTP_METHODS = [
@@ -63,6 +68,11 @@ export const ShareRequestSchema = z.object({
 
 export type SharePayload = z.infer<typeof ShareRequestSchema>;
 
+export type CreateShareLinkResult =
+  | { ok: true; url: string }
+  | { ok: false; error: "failed" }
+  | { ok: false; error: "rate_limited"; resetAt?: number };
+
 function requireWindow(): Window | null {
   if (globalThis.window === undefined) {
     return null;
@@ -72,15 +82,26 @@ function requireWindow(): Window | null {
 
 /**
  * Creates an encrypted, DB-backed share URL: `origin/?s={id}#{keyB64}`.
- * Returns `null` on any failure (network, encryption, or empty userId).
+ * Returns `{ ok: false, error: ... }` on failure, or a discriminated `AbortError`
+ * from `fetch` when `signal` aborts. Pass `signal` to cancel the `POST` in-flight.
  */
 export async function createShareLink(
   tab: HttpTab,
   userId: string,
-): Promise<string | null> {
+  signal?: AbortSignal,
+): Promise<CreateShareLinkResult> {
   const win = requireWindow();
   if (!win || !userId) {
-    return null;
+    return { ok: false, error: "failed" };
+  }
+
+  const localBlock = getLocalShareRateBlock();
+  if (localBlock.blocked) {
+    return {
+      ok: false,
+      error: "rate_limited",
+      resetAt: localBlock.resetAtMs,
+    };
   }
 
   const payload: SharePayload = {
@@ -96,7 +117,7 @@ export async function createShareLink(
   try {
     plaintext = JSON.stringify(payload);
   } catch {
-    return null;
+    return { ok: false, error: "failed" };
   }
 
   let ciphertext: string;
@@ -108,7 +129,7 @@ export async function createShareLink(
     iv = out.iv;
     keyB64 = out.keyB64;
   } catch {
-    return null;
+    return { ok: false, error: "failed" };
   }
 
   try {
@@ -116,9 +137,41 @@ export async function createShareLink(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ciphertext, iv, userId }),
+      signal,
     });
     if (!res.ok) {
-      return null;
+      let errBody: unknown;
+      try {
+        errBody = await res.json();
+      } catch {
+        errBody = null;
+      }
+      const isRateLimited =
+        res.status === 429 ||
+        (typeof errBody === "object" &&
+          errBody !== null &&
+          "code" in errBody &&
+          (errBody as { code: string }).code === "RATE_LIMIT");
+      if (isRateLimited) {
+        let resetAt: number | undefined;
+        if (
+          typeof errBody === "object" &&
+          errBody !== null &&
+          "resetAt" in errBody
+        ) {
+          const v = (errBody as { resetAt: unknown }).resetAt;
+          if (typeof v === "number" && Number.isFinite(v)) {
+            resetAt = v;
+          }
+        }
+        alignLocalStateWithServerRateLimit(resetAt);
+        return {
+          ok: false,
+          error: "rate_limited",
+          ...(resetAt != null ? { resetAt } : {}),
+        };
+      }
+      return { ok: false, error: "failed" };
     }
     const data: unknown = await res.json();
     if (
@@ -127,15 +180,22 @@ export async function createShareLink(
       !("id" in data) ||
       typeof (data as { id: unknown }).id !== "string"
     ) {
-      return null;
+      return { ok: false, error: "failed" };
     }
     const { id } = data as { id: string };
     if (id.length === 0) {
-      return null;
+      return { ok: false, error: "failed" };
     }
-    return `${win.location.origin}/?s=${encodeURIComponent(id)}#${keyB64}`;
-  } catch {
-    return null;
+    recordLocalShareSuccess();
+    return {
+      ok: true,
+      url: `${win.location.origin}/?s=${encodeURIComponent(id)}#${keyB64}`,
+    };
+  } catch (e) {
+    if (e instanceof Error && e.name === "AbortError") {
+      throw e;
+    }
+    return { ok: false, error: "failed" };
   }
 }
 
