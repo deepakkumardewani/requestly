@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, Check, ChevronDown, Copy } from "lucide-react";
+import { AlertTriangle, Check, ChevronDown, Copy, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { encodeShareLink } from "@/lib/shareLink";
+import { getAnonUserId } from "@/lib/anonUser";
+import { createShareLink } from "@/lib/shareLink";
 import type { BodyConfig, HttpTab } from "@/types";
 
 function hasNonEmptyBody(body: BodyConfig): boolean {
@@ -34,7 +35,8 @@ type ShareModalProps = {
 
 export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [tooLarge, setTooLarge] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const copiedResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -48,18 +50,37 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
   }, []);
 
   useEffect(() => {
-    const url = encodeShareLink(tab);
-    if (url) {
-      setShareUrl(url);
-      setTooLarge(false);
-    } else {
-      setShareUrl(null);
-      setTooLarge(true);
+    if (!open) {
+      return;
     }
-  }, [tab]);
+    let cancelled = false;
+    setIsCreating(true);
+    setCreateError(false);
+    setShareUrl(null);
+
+    void (async () => {
+      const userId = getAnonUserId();
+      const url = await createShareLink(tab, userId);
+      if (cancelled) {
+        return;
+      }
+      setIsCreating(false);
+      if (url) {
+        setShareUrl(url);
+        setCreateError(false);
+      } else {
+        setShareUrl(null);
+        setCreateError(true);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tab, open]);
 
   async function handleCopy() {
-    if (!shareUrl) return;
+    if (!shareUrl || isCreating) return;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
@@ -89,19 +110,22 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Too-large warning */}
-          {tooLarge && (
+          {isCreating && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 shrink-0 animate-spin" aria-hidden />
+              <span>Creating link…</span>
+            </div>
+          )}
+
+          {createError && !isCreating && (
             <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2.5 text-sm text-destructive">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-              <span>
-                Request too large to share as a link — try exporting as a
-                collection instead.
-              </span>
+              <span>Failed to create share link</span>
             </div>
           )}
 
           {/* Share URL row */}
-          {shareUrl && (
+          {shareUrl && !isCreating && (
             <div className="flex items-center gap-2">
               <input
                 readOnly
@@ -112,7 +136,7 @@ export function ShareModal({ open, onOpenChange, tab }: ShareModalProps) {
                 size="sm"
                 className="h-8 shrink-0 gap-1.5 text-xs"
                 onClick={handleCopy}
-                disabled={copied}
+                disabled={copied || isCreating}
               >
                 {copied ? (
                   <>

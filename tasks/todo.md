@@ -76,6 +76,35 @@
 - [x] Impl
 - [x] Test
 
+## Share DB E2E encryption — Phase 3: Frontend wiring
+
+### Share-6: Rewrite `src/lib/shareLink.ts`
+
+**Dependencies:** Share-4, Share-5 (API)
+
+**Test targets:** `src/lib/shareLink.spec.ts` — `createShareLink` (empty userId, no window, success URL), `fetchSharePayload` (no window, no hash, round-trip, failed GET)
+
+- [x] Impl
+- [x] Test
+
+### Share-7: `ShareModal.tsx` — async link creation
+
+**Dependencies:** Share-6
+
+**Test targets:** covered via Share-6 + manual checklist (loading/error UX)
+
+- [x] Impl
+- [x] Test
+
+### Share-8: `MainLayout.tsx` — `?s=` import, legacy `?r=` strip
+
+**Dependencies:** Share-6
+
+**Test targets:** covered via Share-6 + manual checklist (import/clean URL)
+
+- [x] Impl
+- [x] Test
+
 ## Task 4: Wire TransformPage
 
 **Dependencies:** Tasks 1–3

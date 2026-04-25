@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { decryptPayload, encryptPayload } from "@/lib/crypto";
 import type { HttpTab } from "@/types";
 
 const HTTP_METHODS = [
@@ -62,14 +63,26 @@ export const ShareRequestSchema = z.object({
 
 export type SharePayload = z.infer<typeof ShareRequestSchema>;
 
-// 8KB — share URLs beyond this become unusable in most browsers/Slack/etc.
-const MAX_ENCODED_BYTES = 8 * 1024;
+function requireWindow(): Window | null {
+  if (globalThis.window === undefined) {
+    return null;
+  }
+  return globalThis.window;
+}
 
 /**
- * Encodes a tab's request state into a shareable URL.
- * Returns null when the encoded payload exceeds MAX_ENCODED_BYTES.
+ * Creates an encrypted, DB-backed share URL: `origin/?s={id}#{keyB64}`.
+ * Returns `null` on any failure (network, encryption, or empty userId).
  */
-export function encodeShareLink(tab: HttpTab): string | null {
+export async function createShareLink(
+  tab: HttpTab,
+  userId: string,
+): Promise<string | null> {
+  const win = requireWindow();
+  if (!win || !userId) {
+    return null;
+  }
+
   const payload: SharePayload = {
     method: tab.method,
     url: tab.url,
@@ -79,29 +92,112 @@ export function encodeShareLink(tab: HttpTab): string | null {
     auth: tab.auth,
   };
 
+  let plaintext: string;
   try {
-    // encodeURIComponent + btoa handles the full Unicode range correctly
-    const json = JSON.stringify(payload);
-    const encoded = btoa(unescape(encodeURIComponent(json)));
+    plaintext = JSON.stringify(payload);
+  } catch {
+    return null;
+  }
 
-    if (encoded.length > MAX_ENCODED_BYTES) return null;
+  let ciphertext: string;
+  let iv: string;
+  let keyB64: string;
+  try {
+    const out = await encryptPayload(plaintext);
+    ciphertext = out.ciphertext;
+    iv = out.iv;
+    keyB64 = out.keyB64;
+  } catch {
+    return null;
+  }
 
-    return `${window.location.origin}/?r=${encoded}`;
+  try {
+    const res = await win.fetch("/api/share", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ciphertext, iv, userId }),
+    });
+    if (!res.ok) {
+      return null;
+    }
+    const data: unknown = await res.json();
+    if (
+      typeof data !== "object" ||
+      data === null ||
+      !("id" in data) ||
+      typeof (data as { id: unknown }).id !== "string"
+    ) {
+      return null;
+    }
+    const { id } = data as { id: string };
+    if (id.length === 0) {
+      return null;
+    }
+    return `${win.location.origin}/?s=${encodeURIComponent(id)}#${keyB64}`;
   } catch {
     return null;
   }
 }
 
 /**
- * Decodes and validates a raw base64 share payload.
- * Returns null on any decode, parse, or schema-validation failure.
+ * Fetches ciphertext for `id`, reads the AES key from `window.location.hash`,
+ * decrypts, and validates. Returns `null` on any failure.
  */
-export function decodeShareLink(raw: string): SharePayload | null {
+export async function fetchSharePayload(
+  id: string,
+): Promise<SharePayload | null> {
+  const win = requireWindow();
+  if (!win) {
+    return null;
+  }
+
+  const hash = win.location.hash;
+  if (hash.length <= 1) {
+    return null;
+  }
+  const keyB64 = hash.slice(1);
+  if (!keyB64) {
+    return null;
+  }
+
+  let ciphertext: string;
+  let iv: string;
   try {
-    const decoded = decodeURIComponent(escape(atob(raw)));
-    const parsed = JSON.parse(decoded);
-    return ShareRequestSchema.parse(parsed);
+    const res = await win.fetch(`/api/share/${encodeURIComponent(id)}`);
+    if (!res.ok) {
+      return null;
+    }
+    const data: unknown = await res.json();
+    if (
+      typeof data !== "object" ||
+      data === null ||
+      !("ciphertext" in data) ||
+      !("iv" in data) ||
+      typeof (data as { ciphertext: unknown }).ciphertext !== "string" ||
+      typeof (data as { iv: unknown }).iv !== "string"
+    ) {
+      return null;
+    }
+    ciphertext = (data as { ciphertext: string }).ciphertext;
+    iv = (data as { iv: string }).iv;
   } catch {
     return null;
   }
+
+  let plaintext: string;
+  try {
+    plaintext = await decryptPayload(ciphertext, iv, keyB64);
+  } catch {
+    return null;
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(plaintext);
+  } catch {
+    return null;
+  }
+
+  const result = ShareRequestSchema.safeParse(parsed);
+  return result.success ? result.data : null;
 }

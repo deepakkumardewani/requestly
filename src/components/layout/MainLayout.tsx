@@ -15,7 +15,7 @@ import { useCloseTabGuard } from "@/hooks/useCloseTabGuard";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useMethodTheme } from "@/hooks/useMethodTheme";
 import { useSaveRequest } from "@/hooks/useSaveRequest";
-import { decodeShareLink } from "@/lib/shareLink";
+import { fetchSharePayload } from "@/lib/shareLink";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
 import { LeftPanel } from "./LeftPanel";
@@ -69,33 +69,45 @@ export function MainLayout() {
     setMounted(true);
   }, []);
 
-  // Hydrate a tab from a ?r= share link on first mount
+  // Hydrate a tab from `?s=` + `#key` share links, or drop legacy `?r=` from the URL
   useEffect(() => {
-    const raw = new URLSearchParams(window.location.search).get("r");
-    if (!raw) return;
-
-    const payload = decodeShareLink(raw);
-    if (payload) {
-      openTab({
-        type: "http",
-        name: `${payload.method} ${payload.url || "Shared Request"}`,
-        method: payload.method,
-        url: payload.url,
-        headers: payload.headers,
-        params: payload.params,
-        body: payload.body,
-        auth: payload.auth,
-      });
+    const search = new URLSearchParams(window.location.search);
+    const shareId = search.get("s");
+    if (shareId) {
+      void (async () => {
+        const payload = await fetchSharePayload(shareId);
+        if (payload) {
+          openTab({
+            type: "http",
+            name: `${payload.method} ${payload.url || "Shared Request"}`,
+            method: payload.method,
+            url: payload.url,
+            headers: payload.headers,
+            params: payload.params,
+            body: payload.body,
+            auth: payload.auth,
+          });
+          toast.success("Request loaded from shared link");
+        } else {
+          toast.error("Could not open shared request");
+        }
+        const u = new URL(window.location.href);
+        u.searchParams.delete("s");
+        u.hash = "";
+        const qs = u.search;
+        const next = qs.length > 0 ? `${u.pathname}${qs}` : u.pathname;
+        history.replaceState({}, "", next);
+      })();
+      return;
     }
 
-    if (payload) {
-      toast.success("Request loaded from shared link");
-    } else {
-      toast.error("Invalid share link");
+    if (search.get("r")) {
+      const u = new URL(window.location.href);
+      u.searchParams.delete("r");
+      const qs = u.search;
+      const next = qs.length > 0 ? `${u.pathname}${qs}` : u.pathname;
+      history.replaceState({}, "", next);
     }
-
-    // Strip the ?r= param from the URL without triggering a navigation
-    history.replaceState({}, "", window.location.pathname);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
