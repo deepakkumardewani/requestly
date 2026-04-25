@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   enforceShareRateLimit,
+  parseStoredShareRecord,
   rateLimitKeyForUser,
   SharePostBodySchema,
   shareStorageKey,
@@ -112,6 +113,40 @@ describe("shareServer", () => {
       const expire = vi.fn();
       const out = await enforceShareRateLimit({ incr, expire }, "user-d");
       expect(out).toBe("ok");
+    });
+  });
+
+  describe("parseStoredShareRecord", () => {
+    it("returns ciphertext and iv from a JSON string", () => {
+      const rec = parseStoredShareRecord(
+        JSON.stringify({ ciphertext: "YQ==", iv: "dGVz" }),
+      );
+      expect(rec).toEqual({ ciphertext: "YQ==", iv: "dGVz" });
+    });
+
+    it("returns ciphertext and iv from a plain object", () => {
+      const rec = parseStoredShareRecord({ ciphertext: "YQ==", iv: "dGVz" });
+      expect(rec).toEqual({ ciphertext: "YQ==", iv: "dGVz" });
+    });
+
+    it("returns null for null, invalid JSON, or non-record JSON", () => {
+      expect(parseStoredShareRecord(null)).toBeNull();
+      expect(parseStoredShareRecord("not json")).toBeNull();
+      expect(parseStoredShareRecord("[1,2,3]")).toBeNull();
+    });
+
+    it("returns null when fields are empty or required fields missing", () => {
+      expect(
+        parseStoredShareRecord(JSON.stringify({ ciphertext: "", iv: "a" })),
+      ).toBeNull();
+      expect(
+        parseStoredShareRecord(JSON.stringify({ ciphertext: "a" })),
+      ).toBeNull();
+    });
+
+    it("rejects number and boolean payloads", () => {
+      expect(parseStoredShareRecord(0)).toBeNull();
+      expect(parseStoredShareRecord(false)).toBeNull();
     });
   });
 });
