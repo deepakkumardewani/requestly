@@ -29,6 +29,13 @@ export type ShortcutGroup = {
  */
 export const SHORTCUT_GROUPS: readonly ShortcutGroup[] = [
   {
+    label: "General",
+    shortcuts: [
+      { action: "Keyboard Shortcuts", key: "/" },
+      { action: "Command Palette", key: "K" },
+    ],
+  },
+  {
     label: "Request",
     shortcuts: [
       { action: "Send Request", key: "Enter" },
@@ -40,7 +47,6 @@ export const SHORTCUT_GROUPS: readonly ShortcutGroup[] = [
     shortcuts: [
       { action: "New Request", key: "N", ctrlOnly: true },
       { action: "New Collection", key: "N", shift: true, ctrlOnly: true },
-      { action: "Command Palette", key: "K" },
       { action: "Manage Environments", key: "E", ctrlOnly: true },
       { action: "Open Settings", key: ",", ctrlOnly: true },
       { action: "Import Collection", key: "I", ctrlOnly: true },

@@ -16,6 +16,7 @@ type UIState = {
   isCreatingEnv: boolean;
   envManagerOpen: boolean;
   envManagerFocusEnvId: string | null;
+  keyboardShortcutsOpen: boolean;
 };
 
 type UIActions = {
@@ -31,6 +32,7 @@ type UIActions = {
   setIsCreatingCollection: (value: boolean) => void;
   setIsCreatingEnv: (value: boolean) => void;
   setEnvManagerOpen: (open: boolean, focusEnvId?: string | null) => void;
+  setKeyboardShortcutsOpen: (open: boolean) => void;
 };
 
 export const useUIStore = create<UIState & UIActions>((set) => ({
@@ -46,6 +48,7 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
   isCreatingEnv: false,
   envManagerOpen: false,
   envManagerFocusEnvId: null,
+  keyboardShortcutsOpen: false,
 
   setLeftPanelWidth(width) {
     set({ leftPanelWidth: width });
@@ -96,5 +99,9 @@ export const useUIStore = create<UIState & UIActions>((set) => ({
       envManagerOpen: open,
       envManagerFocusEnvId: open ? focusEnvId : null,
     });
+  },
+
+  setKeyboardShortcutsOpen(open) {
+    set({ keyboardShortcutsOpen: open });
   },
 }));
