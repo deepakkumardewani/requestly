@@ -53,8 +53,8 @@
 
 **Test targets:** `src/lib/crypto.spec.ts` — round-trip, non-deterministic encrypt, decrypt failure cases.
 
-- [ ] Impl
-- [ ] Test
+- [x] Impl
+- [x] Test
 
 ## Task 4: Wire TransformPage
 
