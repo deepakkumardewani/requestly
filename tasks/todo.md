@@ -44,8 +44,8 @@
 
 **Test targets:** `src/lib/anonUser.spec.ts` — SSR guard, idempotence, new UUID on empty storage.
 
-- [ ] Impl
-- [ ] Test
+- [x] Impl
+- [x] Test
 
 ### Share-3: `src/lib/crypto.ts`
 
