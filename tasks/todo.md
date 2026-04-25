@@ -56,6 +56,26 @@
 - [x] Impl
 - [x] Test
 
+## Share DB E2E encryption — Phase 2: API routes
+
+### Share-4: `POST /api/share`
+
+**Dependencies:** Share-1–3 (infrastructure / Redis, crypto context)
+
+**Test targets:** `src/lib/shareServer.spec.ts` — `SharePostBodySchema`, `enforceShareRateLimit`, `shareStorageKey`, `rateLimitKeyForUser`
+
+- [x] Impl
+- [x] Test
+
+### Share-5: `GET /api/share/[id]`
+
+**Dependencies:** Share-4
+
+**Test targets:** `src/lib/shareServer.spec.ts` — `parseStoredShareRecord` (and `ShareStoredRecordSchema` via round-trip)
+
+- [x] Impl
+- [x] Test
+
 ## Task 4: Wire TransformPage
 
 **Dependencies:** Tasks 1–3
