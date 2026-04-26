@@ -41,7 +41,7 @@ export function MobileDesktopNotice() {
               Best on desktop
             </h1>
             <p className="mt-3 text-center text-sm leading-relaxed text-muted-foreground">
-              Requestly is built for larger screens. For the full API testing
+              Requestr is built for larger screens. For the full API testing
               experience, open this app on a tablet or computer.
             </p>
           </div>

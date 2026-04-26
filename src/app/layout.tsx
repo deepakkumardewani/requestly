@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Requestly",
+  title: "Requestr",
   description: "Browser-native API testing tool",
 };
 
