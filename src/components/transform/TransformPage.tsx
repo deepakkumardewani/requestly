@@ -9,12 +9,12 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { TooltipIconButton } from "@/components/ui/tooltip-icon-button";
 import { formatJson } from "@/lib/jsonDiff";
 import { buildJsonPathSuggestionsFromText } from "@/lib/jsonStructurePaths";
 import type { StructureCompletionState } from "@/lib/structureCompletion";
@@ -228,18 +228,15 @@ export function TransformPage() {
                 Input Data (JSON)
               </span>
               <div className="flex items-center gap-0.5">
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
+                <TooltipIconButton
+                  label="Scroll to top"
                   onClick={handleScrollInputToTop}
                   disabled={!inputBody.trim()}
-                  title="Scroll to top"
                 >
                   <ArrowUpToLine className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
+                </TooltipIconButton>
+                <TooltipIconButton
+                  label="Clear all"
                   onClick={clear}
                   disabled={
                     !inputBody.trim() &&
@@ -248,19 +245,16 @@ export function TransformPage() {
                     !output &&
                     !error
                   }
-                  title="Clear all"
                 >
                   <Eraser className="h-3.5 w-3.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
+                </TooltipIconButton>
+                <TooltipIconButton
+                  label="Format JSON"
                   onClick={handleFormatJson}
                   disabled={!inputBody.trim()}
-                  title="Format JSON"
                 >
                   <Wand2 className="h-3.5 w-3.5" />
-                </Button>
+                </TooltipIconButton>
               </div>
             </div>
             <div

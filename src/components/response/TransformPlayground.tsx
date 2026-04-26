@@ -4,7 +4,7 @@ import { ChevronDown, ChevronRight, Copy } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { TooltipIconButton } from "@/components/ui/tooltip-icon-button";
 import { runJs, runJsonPath } from "@/lib/transformRunner";
 import type { PlaygroundMode } from "@/stores/usePlaygroundStore";
 import { usePlaygroundStore } from "@/stores/usePlaygroundStore";
@@ -169,15 +169,13 @@ export function TransformPlayground({
               ))}
             </div>
             <div className="ml-auto">
-              <Button
-                variant="ghost"
-                size="icon-sm"
+              <TooltipIconButton
+                label="Copy output"
                 onClick={handleCopyOutput}
                 disabled={!playground.output}
-                title="Copy output"
               >
                 <Copy className="h-3.5 w-3.5" />
-              </Button>
+              </TooltipIconButton>
             </div>
           </div>
 
