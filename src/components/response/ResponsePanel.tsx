@@ -6,6 +6,7 @@ import {
   Download,
   FileCode2,
   GitCompare,
+  Network,
   Send,
   Trash2,
 } from "lucide-react";
@@ -32,6 +33,7 @@ import {
 import { cn, formatBytes, formatDuration } from "@/lib/utils";
 import { useDataSchemaStore } from "@/stores/useDataSchemaStore";
 import { useJsonCompareStore } from "@/stores/useJsonCompareStore";
+import { useJsonVisualizeStore } from "@/stores/useJsonVisualizeStore";
 import { useResponseStore } from "@/stores/useResponseStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useTransformStore } from "@/stores/useTransformStore";
@@ -334,6 +336,15 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
     router.push("/transform");
   }
 
+  function handleVisualize() {
+    const raw = (response?.body ?? "").trim();
+    const input = raw === "" ? "" : formatJson(raw);
+    const store = useJsonVisualizeStore.getState();
+    store.setFormat("json");
+    store.setInputBody(input);
+    router.push("/json-visualize");
+  }
+
   function handleDownload() {
     const ext = contentType.includes("json")
       ? "json"
@@ -438,6 +449,13 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
               data-testid="response-transform-btn"
             >
               <Braces className="h-3.5 w-3.5" />
+            </TooltipIconButton>
+            <TooltipIconButton
+              label="Open in JSON Visualize"
+              onClick={handleVisualize}
+              data-testid="response-visualize-btn"
+            >
+              <Network className="h-3.5 w-3.5" />
             </TooltipIconButton>
             <TooltipIconButton
               label="Copy"
