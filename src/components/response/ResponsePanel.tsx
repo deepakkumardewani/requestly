@@ -1,6 +1,14 @@
 "use client";
 
-import { Braces, Copy, Download, GitCompare, Send, Trash2 } from "lucide-react";
+import {
+  Braces,
+  Copy,
+  Download,
+  FileCode2,
+  GitCompare,
+  Send,
+  Trash2,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -15,18 +23,21 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { TooltipIconButton } from "@/components/ui/tooltip-icon-button";
 import { formatJson } from "@/lib/jsonDiff";
 import {
   estimateHeaderBlockBytes,
   estimateHttpTabRequestBytes,
 } from "@/lib/responseMetrics";
 import { cn, formatBytes, formatDuration } from "@/lib/utils";
+import { useDataSchemaStore } from "@/stores/useDataSchemaStore";
 import { useJsonCompareStore } from "@/stores/useJsonCompareStore";
 import { useResponseStore } from "@/stores/useResponseStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useTransformStore } from "@/stores/useTransformStore";
 import type { ResponseData } from "@/types";
 import { ConsoleViewer } from "./ConsoleViewer";
+import { DataSchemaDialog } from "./DataSchemaDialog";
 import { ErrorExplainer } from "./ErrorExplainer";
 import { HeadersViewer } from "./HeadersViewer";
 import { PreviewFrame } from "./PreviewFrame";
@@ -407,51 +418,48 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
             </TooltipContent>
           </Tooltip>
           <div className="ml-auto flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon-sm"
+            <TooltipIconButton
+              label="Data Schema"
+              onClick={() => useDataSchemaStore.getState().open()}
+              data-testid="response-schema-btn"
+            >
+              <FileCode2 className="h-3.5 w-3.5" />
+            </TooltipIconButton>
+            <TooltipIconButton
+              label="Compare in JSON Compare"
               onClick={handleCompare}
-              title="Compare in JSON Compare"
               data-testid="response-compare-btn"
             >
               <GitCompare className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
+            </TooltipIconButton>
+            <TooltipIconButton
+              label="Open in Transform"
               onClick={handleTransform}
-              title="Open in Transform"
               data-testid="response-transform-btn"
             >
               <Braces className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
+            </TooltipIconButton>
+            <TooltipIconButton
+              label="Copy"
               onClick={handleCopy}
-              title="Copy"
               data-testid="response-copy-btn"
             >
               <Copy className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
+            </TooltipIconButton>
+            <TooltipIconButton
+              label="Download"
               onClick={handleDownload}
-              title="Download"
               data-testid="response-download-btn"
             >
               <Download className="h-3.5 w-3.5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
+            </TooltipIconButton>
+            <TooltipIconButton
+              label="Clear"
               onClick={() => clearResponse(tabId)}
-              title="Clear"
               data-testid="response-clear-btn"
             >
               <Trash2 className="h-3.5 w-3.5" />
-            </Button>
+            </TooltipIconButton>
           </div>
         </div>
       </TooltipProvider>
@@ -524,6 +532,7 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
         responseStatus={response.status}
         responseHeaders={response.headers}
       />
+      <DataSchemaDialog responseBody={response.body} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { Wand2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { Button } from "@/components/ui/button";
+import { TooltipIconButton } from "@/components/ui/tooltip-icon-button";
 
 const CodeEditor = dynamic(() => import("@/components/request/CodeEditor"), {
   ssr: false,
@@ -30,15 +30,13 @@ export function JsonCompareEditor({
         <span className="text-xs font-medium text-muted-foreground">
           {label}
         </span>
-        <Button
-          variant="ghost"
-          size="icon-sm"
+        <TooltipIconButton
+          label="Format JSON"
           onClick={onFormat}
           disabled={!value.trim()}
-          title="Format JSON"
         >
           <Wand2 className="h-3.5 w-3.5" />
-        </Button>
+        </TooltipIconButton>
       </div>
 
       {/* Editor */}

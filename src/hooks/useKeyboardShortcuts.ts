@@ -41,6 +41,9 @@ type ShortcutHandlers = {
  */
 export function useKeyboardShortcuts(handlers: ShortcutHandlers = {}) {
   const toggleCommandPalette = useUIStore((s) => s.toggleCommandPalette);
+  const setKeyboardShortcutsOpen = useUIStore(
+    (s) => s.setKeyboardShortcutsOpen,
+  );
   const { openTab, closeTab, activeTabId, tabs, setActiveTab } = useTabsStore();
 
   useEffect(() => {
@@ -138,6 +141,11 @@ export function useKeyboardShortcuts(handlers: ShortcutHandlers = {}) {
           e.preventDefault();
           handlers.onCompareJson?.();
           break;
+
+        case "/":
+          e.preventDefault();
+          setKeyboardShortcutsOpen(true);
+          break;
       }
     }
 
@@ -148,6 +156,7 @@ export function useKeyboardShortcuts(handlers: ShortcutHandlers = {}) {
   }, [
     handlers,
     toggleCommandPalette,
+    setKeyboardShortcutsOpen,
     openTab,
     closeTab,
     activeTabId,

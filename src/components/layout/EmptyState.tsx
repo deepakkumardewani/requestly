@@ -2,21 +2,27 @@
 
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { modKey } from "@/lib/platform";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { useUIStore } from "@/stores/useUIStore";
 
 type Shortcut = {
   keys: string[];
   label: string;
 };
 
-const SHORTCUTS: Shortcut[] = [
-  { keys: ["Ctrl", "T"], label: "New tab" },
-  { keys: ["Ctrl", "W"], label: "Close tab" },
-  { keys: ["Ctrl", "Enter"], label: "Send request" },
-  { keys: ["Ctrl", "S"], label: "Save request" },
-  { keys: ["Ctrl", "K"], label: "Command palette" },
-  { keys: ["Ctrl", "N"], label: "New collection" },
-];
+function getShortcuts(): Shortcut[] {
+  const mod = modKey();
+  return [
+    { keys: ["Ctrl", "T"], label: "New tab" },
+    { keys: ["Ctrl", "W"], label: "Close tab" },
+    { keys: [mod, "↵"], label: "Send request" },
+    { keys: [mod, "S"], label: "Save request" },
+    { keys: [mod, "K"], label: "Command palette" },
+    { keys: [mod, "/"], label: "Keyboard shortcuts" },
+    { keys: ["Ctrl", "N"], label: "New collection" },
+  ];
+}
 
 function KeyBadge({ label }: { label: string }) {
   return (
@@ -28,6 +34,9 @@ function KeyBadge({ label }: { label: string }) {
 
 export function EmptyState() {
   const openTab = useTabsStore((s) => s.openTab);
+  const setKeyboardShortcutsOpen = useUIStore(
+    (s) => s.setKeyboardShortcutsOpen,
+  );
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 p-8 text-center">
@@ -40,26 +49,23 @@ export function EmptyState() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/60">
+        <button
+          type="button"
+          onClick={() => setKeyboardShortcutsOpen(true)}
+          className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground/60 hover:text-muted-foreground transition-colors cursor-pointer"
+        >
           Keyboard Shortcuts
-        </p>
+        </button>
         <div className="flex flex-col gap-1.5">
-          {SHORTCUTS.map((s) => (
+          {getShortcuts().map((s) => (
             <div
               key={s.label}
               className="flex items-center justify-between gap-8"
             >
               <span className="text-xs text-muted-foreground">{s.label}</span>
               <div className="flex items-center gap-1">
-                {s.keys.map((k, i) => (
-                  <span key={k} className="flex items-center gap-1">
-                    {i > 0 && (
-                      <span className="text-[10px] text-muted-foreground/40">
-                        +
-                      </span>
-                    )}
-                    <KeyBadge label={k} />
-                  </span>
+                {s.keys.map((k) => (
+                  <KeyBadge key={k} label={k} />
                 ))}
               </div>
             </div>

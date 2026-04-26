@@ -18,6 +18,7 @@ import { useSaveRequest } from "@/hooks/useSaveRequest";
 import { fetchSharePayload } from "@/lib/shareLink";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
+import { KeyboardShortcutsModal } from "./KeyboardShortcutsModal";
 import { LeftPanel } from "./LeftPanel";
 import { MobileDesktopNotice } from "./MobileDesktopNotice";
 import { RightPanel } from "./RightPanel";
@@ -32,6 +33,8 @@ export function MainLayout() {
     setSaveModalOpen,
     setIsCreatingCollection,
     setPendingBulkClose,
+    keyboardShortcutsOpen,
+    setKeyboardShortcutsOpen,
   } = useUIStore();
   const { save, activeTab } = useSaveRequest();
   const { handleCloseTab } = useCloseTabGuard();
@@ -172,6 +175,12 @@ export function MainLayout() {
 
       {/* Command Palette — always mounted, visibility controlled by store */}
       <CommandPalette />
+
+      {/* Keyboard Shortcuts Modal — always mounted, visibility controlled by store */}
+      <KeyboardShortcutsModal
+        open={keyboardShortcutsOpen}
+        onOpenChange={setKeyboardShortcutsOpen}
+      />
 
       {/* Save Request Modal — opened by Cmd+S or Save button when tab has no collection */}
       {saveModalOpen && activeTab && activeTab.type === "http" && (
