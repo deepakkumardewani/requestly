@@ -1,0 +1,1147 @@
+{
+  "communities": {
+    "0": [
+      "collections_requestitem_handleduplicate",
+      "collections_requestitem_handleopen",
+      "collections_requestitem_handlerename",
+      "common_kvtable_commitdraft",
+      "common_kvtable_deleterow",
+      "common_kvtable_handledraftkeyblur",
+      "common_kvtable_updaterow",
+      "components_chain_dialogs_apipickerdialog_tsx",
+      "components_chain_panels_conditionconfigpanel_tsx",
+      "components_collections_requestitem_tsx",
+      "components_common_kvtable_tsx",
+      "components_environment_envvariabletable_tsx",
+      "components_hub_hubprovidercard_tsx",
+      "dialogs_apipickerdialog_historyentrytochainnode",
+      "environment_envvariabletable_addvariable",
+      "environment_envvariabletable_deletevariable",
+      "environment_envvariabletable_togglesecretvisibility",
+      "environment_envvariabletable_updatevariable",
+      "hooks_useimportedhubslugs_getserversnapshot",
+      "hooks_useimportedhubslugs_getsnapshot",
+      "hooks_useimportedhubslugs_subscribe",
+      "hooks_useimportedhubslugs_ts",
+      "hooks_useimportedhubslugs_useimportedhubslugs",
+      "hub_hubprovidercard_handleimport",
+      "lib_hub_getimportedslugs",
+      "lib_hub_importhubentry",
+      "lib_hub_maphubbodytype",
+      "lib_hub_maphubenvironment",
+      "lib_hub_maphubkvpairs",
+      "lib_hub_maphubrequest",
+      "lib_hub_markslugimported",
+      "lib_hub_ts",
+      "lib_utils_generateid",
+      "panels_conditionconfigpanel_handleaddbranch",
+      "panels_conditionconfigpanel_handledeletebranch",
+      "panels_conditionconfigpanel_handlesave",
+      "panels_conditionconfigpanel_makebranch",
+      "panels_conditionconfigpanel_updatebranch",
+      "stores_useconnectionstore_appendwslog",
+      "stores_useconnectionstore_formatsocketiopayload",
+      "stores_useconnectionstore_getconn",
+      "stores_useconnectionstore_isiosocket",
+      "stores_useconnectionstore_ts"
+    ],
+    "1": [
+      "app_api_proxy_route_ts",
+      "app_api_share_id_route_ts",
+      "app_api_share_route_ts",
+      "id_route_get",
+      "lib_chainassertions_assertionssummary",
+      "lib_chainassertions_evaluateallassertions",
+      "lib_chainassertions_evaluateassertion",
+      "lib_chainassertions_extractactualvalue",
+      "lib_chainassertions_ts",
+      "lib_chaincontrolflow_buildvarvalues",
+      "lib_chaincontrolflow_evaluatecondition",
+      "lib_chaincontrolflow_resolvedelay",
+      "lib_chaincontrolflow_testexpression",
+      "lib_chaincontrolflow_ts",
+      "lib_chainrunner_applyinjection",
+      "lib_chainrunner_buildexecutionorder",
+      "lib_chainrunner_circulardependencyerror",
+      "lib_chainrunner_circulardependencyerror_constructor",
+      "lib_chainrunner_extractjsonpath",
+      "lib_chainrunner_runchain",
+      "lib_chainrunner_ts",
+      "lib_insomniaparser_insomniaparseerror",
+      "lib_insomniaparser_insomniaparseerror_constructor",
+      "lib_insomniaparser_isinsomniaexport",
+      "lib_insomniaparser_parseinsomnia",
+      "lib_insomniaparser_parseinsomniaauth",
+      "lib_insomniaparser_parseinsomniabody",
+      "lib_insomniaparser_parseinsomniaheaders",
+      "lib_insomniaparser_ts",
+      "lib_shareserver_enforceshareratelimit",
+      "lib_shareserver_getratelimitresetatms",
+      "lib_shareserver_parseintfromredisget",
+      "lib_shareserver_parsestoredsharerecord",
+      "lib_shareserver_ratelimitkeyforuser",
+      "lib_shareserver_sharestoragekey",
+      "lib_shareserver_ts",
+      "proxy_route_post",
+      "share_route_post"
+    ],
+    "2": [
+      "components_layout_mainlayout_tsx",
+      "components_request_sharemodal_tsx",
+      "layout_mainlayout_handlebeforeunload",
+      "layout_mainlayout_handlecloseactivetab",
+      "layout_mainlayout_handleclosealltabs",
+      "layout_mainlayout_importfromsharequery",
+      "lib_anonuser_getanonuserid",
+      "lib_anonuser_ts",
+      "lib_crypto_base64touint8",
+      "lib_crypto_decryptpayload",
+      "lib_crypto_encryptpayload",
+      "lib_crypto_requiresubtle",
+      "lib_crypto_ts",
+      "lib_crypto_uint8tobase64",
+      "lib_sharelink_createsharelink",
+      "lib_sharelink_fetchsharepayload",
+      "lib_sharelink_requirewindow",
+      "lib_sharelink_ts",
+      "lib_shareratelimitlocal_alignlocalstatewithserverratelimit",
+      "lib_shareratelimitlocal_getlocalsharerateblock",
+      "lib_shareratelimitlocal_readstate",
+      "lib_shareratelimitlocal_recordlocalsharesuccess",
+      "lib_shareratelimitlocal_ts",
+      "lib_shareratelimitlocal_writestate",
+      "request_sharemodal_formatratelimitresetat",
+      "request_sharemodal_handlecopy",
+      "request_sharemodal_hasnonemptybody",
+      "request_sharemodal_runcreatesharelink"
+    ],
+    "3": [
+      "lib_idb_getdb",
+      "lib_idb_ts",
+      "stores_usechainstore_getorcreateconfig",
+      "stores_usechainstore_persistconfig",
+      "stores_usechainstore_ts",
+      "stores_usecollectionsstore_deletecollectionfromdb",
+      "stores_usecollectionsstore_deleterequestfromdb",
+      "stores_usecollectionsstore_persistcollection",
+      "stores_usecollectionsstore_persistrequest",
+      "stores_usecollectionsstore_ts",
+      "stores_useenvironmentsstore_deleteenvfromdb",
+      "stores_useenvironmentsstore_persistenv",
+      "stores_useenvironmentsstore_ts",
+      "stores_usehistorystore_clearhistoryfromdb",
+      "stores_usehistorystore_deleteentryfromdb",
+      "stores_usehistorystore_persistentry",
+      "stores_usehistorystore_ts",
+      "stores_usesettingsstore_persistsettings",
+      "stores_usesettingsstore_ts",
+      "stores_usestandalonechainstore_deletechainfromdb",
+      "stores_usestandalonechainstore_getorcreate",
+      "stores_usestandalonechainstore_persistchain",
+      "stores_usestandalonechainstore_ts",
+      "stores_usetabsstore_createemptytab",
+      "stores_usetabsstore_normalizepersistedtab",
+      "stores_usetabsstore_persisttabs",
+      "stores_usetabsstore_ts"
+    ],
+    "4": [
+      "components_chain_panels_editrequestpanel_tsx",
+      "components_history_historyitem_tsx",
+      "components_request_paramseditor_tsx",
+      "components_ui_badge_tsx",
+      "history_historyitem_historyitem",
+      "lib_utils_buildurlwithparams",
+      "lib_utils_cn",
+      "lib_utils_formatbytes",
+      "lib_utils_formatduration",
+      "lib_utils_getrelativetime",
+      "lib_utils_interpolatevariables",
+      "lib_utils_parsepathparams",
+      "lib_utils_parsequerystring",
+      "lib_utils_syncparamsfromurl",
+      "lib_utils_truncateurl",
+      "lib_utils_ts",
+      "panels_editrequestpanel_handlepathrowschange",
+      "panels_editrequestpanel_handlequerychange",
+      "panels_editrequestpanel_handlesave",
+      "panels_editrequestpanel_handleurlchange",
+      "panels_editrequestpanel_urlwithoutquery",
+      "request_paramseditor_handlepathchange",
+      "request_paramseditor_handlequerychange",
+      "request_paramseditor_sectionlabel",
+      "ui_badge_badge"
+    ],
+    "5": [
+      "components_request_codegenpanel_tsx",
+      "components_request_curleditor_tsx",
+      "lib_codegenerators_buildbodystring",
+      "lib_codegenerators_buildheadersobject",
+      "lib_codegenerators_capitalize",
+      "lib_codegenerators_generateaxios",
+      "lib_codegenerators_generatecsharp",
+      "lib_codegenerators_generatefetch",
+      "lib_codegenerators_generatego",
+      "lib_codegenerators_generatejava",
+      "lib_codegenerators_generatephp",
+      "lib_codegenerators_generatepython",
+      "lib_codegenerators_generateruby",
+      "lib_codegenerators_pythonrepr",
+      "lib_codegenerators_resolvetabstatevars",
+      "lib_codegenerators_ts",
+      "lib_curlgenerator_generatecurl",
+      "lib_curlgenerator_ts",
+      "lib_utils_buildfinalurl",
+      "request_codegenpanel_generatesnippet",
+      "request_codegenpanel_isvalidlanguage",
+      "request_curleditor_curleditor"
+    ],
+    "6": [
+      "components_json_compare_jsoncomparepage_tsx",
+      "components_response_responsepanel_tsx",
+      "json_compare_jsoncomparepage_handleformatleft",
+      "json_compare_jsoncomparepage_handleformatright",
+      "lib_jsondiff_accumulatestats",
+      "lib_jsondiff_buildpath",
+      "lib_jsondiff_diffjson",
+      "lib_jsondiff_diffvalues",
+      "lib_jsondiff_filterdifftochangesonly",
+      "lib_jsondiff_formatjson",
+      "lib_jsondiff_isplainobject",
+      "lib_jsondiff_parsejsonsafe",
+      "lib_jsondiff_ts",
+      "response_responsepanel_formattimingms",
+      "response_responsepanel_handlecompare",
+      "response_responsepanel_handlecopy",
+      "response_responsepanel_handledownload",
+      "response_responsepanel_handletransform",
+      "response_responsepanel_row",
+      "response_responsepanel_sectionheader"
+    ],
+    "7": [
+      "components_chain_panels_arrowconfigpanel_tsx",
+      "panels_arrowconfigpanel_addinjection",
+      "panels_arrowconfigpanel_autoreplaceurlsegment",
+      "panels_arrowconfigpanel_handledelete",
+      "panels_arrowconfigpanel_handlesave",
+      "panels_arrowconfigpanel_handleselectjsonpath",
+      "panels_arrowconfigpanel_handletargetfieldchange",
+      "panels_arrowconfigpanel_handletargetkeychange",
+      "panels_arrowconfigpanel_jsonpathtovarname",
+      "panels_arrowconfigpanel_removeinjection",
+      "panels_arrowconfigpanel_resolvejsonpathfromparsed",
+      "panels_arrowconfigpanel_striprowids",
+      "panels_arrowconfigpanel_updateactive",
+      "panels_arrowconfigpanel_withrowids"
+    ],
+    "8": [
+      "app_import_page_tsx",
+      "import_page_handlecurlimport",
+      "import_page_handlefileupload",
+      "import_page_importpostmancollection",
+      "import_page_importrequestlycollection",
+      "lib_curlparser_curlparseerror",
+      "lib_curlparser_curlparseerror_constructor",
+      "lib_curlparser_ishttpmethod",
+      "lib_curlparser_isjsonstring",
+      "lib_curlparser_joincontinuations",
+      "lib_curlparser_parsecurl",
+      "lib_curlparser_parseheader",
+      "lib_curlparser_tokenize",
+      "lib_curlparser_ts"
+    ],
+    "9": [
+      "components_ui_select_tsx",
+      "ui_select_selectcontent",
+      "ui_select_selectgroup",
+      "ui_select_selectitem",
+      "ui_select_selectlabel",
+      "ui_select_selectscrolldownbutton",
+      "ui_select_selectscrollupbutton",
+      "ui_select_selectseparator",
+      "ui_select_selecttrigger",
+      "ui_select_selectvalue"
+    ],
+    "10": [
+      "canvas_chaincanvas_buildallnodes",
+      "canvas_chaincanvas_buildapinodes",
+      "canvas_chaincanvas_buildconditionnodes",
+      "canvas_chaincanvas_builddelaynodes",
+      "canvas_chaincanvas_builddisplaynodes",
+      "canvas_chaincanvas_buildedges",
+      "canvas_chaincanvas_cansavebody",
+      "canvas_chaincanvas_onkeydown",
+      "canvas_chaincanvas_selectednodeid",
+      "components_chain_canvas_chaincanvas_tsx"
+    ],
+    "11": [
+      "components_chain_panels_nodeassertionspanel_tsx",
+      "panels_nodeassertionspanel_getoperatorsforsource",
+      "panels_nodeassertionspanel_handleadd",
+      "panels_nodeassertionspanel_handlechange",
+      "panels_nodeassertionspanel_handledelete",
+      "panels_nodeassertionspanel_handleoperatorchange",
+      "panels_nodeassertionspanel_handlesourcechange",
+      "panels_nodeassertionspanel_makeblankassertion",
+      "panels_nodeassertionspanel_update"
+    ],
+    "12": [
+      "lib_scriptrunner_execute",
+      "lib_scriptrunner_formatarg",
+      "lib_scriptrunner_makeconsoleinterceptor",
+      "lib_scriptrunner_makeenvapi",
+      "lib_scriptrunner_makerequestapi",
+      "lib_scriptrunner_makeresponseapi",
+      "lib_scriptrunner_runpostscript",
+      "lib_scriptrunner_runprescript",
+      "lib_scriptrunner_ts"
+    ],
+    "13": [
+      "lib_requestrunner_buildbody",
+      "lib_requestrunner_buildheaders",
+      "lib_requestrunner_executeproxy",
+      "lib_requestrunner_parsegraphqlvariables",
+      "lib_requestrunner_rungraphqlrequest",
+      "lib_requestrunner_runrequest",
+      "lib_requestrunner_ts",
+      "lib_timingparser_parsetimingheaders",
+      "lib_timingparser_ts"
+    ],
+    "14": [
+      "components_ui_breadcrumb_tsx",
+      "ui_breadcrumb_breadcrumb",
+      "ui_breadcrumb_breadcrumbellipsis",
+      "ui_breadcrumb_breadcrumblink",
+      "ui_breadcrumb_breadcrumbpage",
+      "ui_breadcrumb_breadcrumbseparator",
+      "ui_breadcrumb_cn"
+    ],
+    "15": [
+      "common_envautocompleteinput_applyselection",
+      "common_envautocompleteinput_getenvprefix",
+      "common_envautocompleteinput_handlechange",
+      "common_envautocompleteinput_handlekeydown",
+      "common_envautocompleteinput_ondocclick",
+      "common_envautocompleteinput_updatesuggestions",
+      "components_common_envautocompleteinput_tsx"
+    ],
+    "16": [
+      "components_layout_emptystate_tsx",
+      "layout_emptystate_emptystate",
+      "layout_emptystate_getshortcuts",
+      "layout_emptystate_keybadge",
+      "lib_platform_ismac",
+      "lib_platform_modkey",
+      "lib_platform_ts"
+    ],
+    "17": [
+      "lib_healthmonitor_computehealthmetrics",
+      "lib_healthmonitor_getentriesforkey",
+      "lib_healthmonitor_healthkey",
+      "lib_healthmonitor_normaliseurl",
+      "lib_healthmonitor_percentile",
+      "lib_healthmonitor_ts"
+    ],
+    "18": [
+      "lib_jsonstructurepaths_buildjsonpathsuggestions",
+      "lib_jsonstructurepaths_buildjsonpathsuggestionsfromtext",
+      "lib_jsonstructurepaths_extracttoplevelkeysfromjsonliketext",
+      "lib_jsonstructurepaths_segmentcount",
+      "lib_jsonstructurepaths_sortpathsshallowfirst",
+      "lib_jsonstructurepaths_ts"
+    ],
+    "19": [
+      "components_ui_alert_dialog_tsx",
+      "ui_alert_dialog_alertdialogcancel",
+      "ui_alert_dialog_alertdialogportal",
+      "ui_alert_dialog_alertdialogtrigger",
+      "ui_alert_dialog_cn"
+    ],
+    "20": [
+      "components_ui_tabs_tsx",
+      "ui_tabs_tabs",
+      "ui_tabs_tabscontent",
+      "ui_tabs_tabslist",
+      "ui_tabs_tabstrigger"
+    ],
+    "21": [
+      "components_ui_accordion_tsx",
+      "ui_accordion_accordion",
+      "ui_accordion_accordioncontent",
+      "ui_accordion_accordionitem",
+      "ui_accordion_accordiontrigger"
+    ],
+    "22": [
+      "components_ui_table_tsx",
+      "ui_table_cn",
+      "ui_table_table",
+      "ui_table_tablebody",
+      "ui_table_tableheader"
+    ],
+    "23": [
+      "components_chain_panels_nodedetailspanel_tsx",
+      "panels_nodedetailspanel_jsonpathtovarname",
+      "panels_nodedetailspanel_sectionheading",
+      "panels_nodedetailspanel_stateindicator",
+      "panels_nodedetailspanel_statusbadge"
+    ],
+    "24": [
+      "components_chain_dialogs_jsonpathexplorer_tsx",
+      "dialogs_jsonpathexplorer_buildpath",
+      "dialogs_jsonpathexplorer_cn",
+      "dialogs_jsonpathexplorer_formatprimitivepreview",
+      "dialogs_jsonpathexplorer_getprimitivecolor"
+    ],
+    "25": [
+      "common_errorboundary_errorboundary",
+      "common_errorboundary_errorboundary_componentdidcatch",
+      "common_errorboundary_errorboundary_getderivedstatefromerror",
+      "common_errorboundary_errorboundary_render",
+      "components_common_errorboundary_tsx"
+    ],
+    "26": [
+      "components_environment_envlistpanel_tsx",
+      "environment_envlistpanel_cn",
+      "environment_envlistpanel_commitname",
+      "environment_envlistpanel_handleaddenvironment",
+      "environment_envlistpanel_handleconfirmdelete"
+    ],
+    "27": [
+      "lib_responsemetrics_estimateheaderblockbytes",
+      "lib_responsemetrics_estimatehttptabrequestbytes",
+      "lib_responsemetrics_estimatekvheadersbytes",
+      "lib_responsemetrics_estimaterequestbodybytes",
+      "lib_responsemetrics_ts"
+    ],
+    "28": [
+      "components_request_connectbutton_tsx",
+      "lib_variableresolver_resolvevariables",
+      "lib_variableresolver_tokenizevariables",
+      "lib_variableresolver_ts",
+      "request_connectbutton_connectbutton"
+    ],
+    "29": [
+      "providers_appproviders_appproviders",
+      "providers_appproviders_cronitortracker",
+      "providers_appproviders_storehydrator",
+      "providers_appproviders_tsx"
+    ],
+    "30": [
+      "components_ui_popover_tsx",
+      "ui_popover_cn",
+      "ui_popover_popoverdescription",
+      "ui_popover_popovertitle"
+    ],
+    "31": [
+      "components_ui_sheet_tsx",
+      "ui_sheet_cn",
+      "ui_sheet_sheetdescription",
+      "ui_sheet_sheettitle"
+    ],
+    "32": [
+      "components_ui_context_menu_tsx",
+      "ui_context_menu_contextmenucontent",
+      "ui_context_menu_contextmenuitem",
+      "ui_context_menu_contextmenutrigger"
+    ],
+    "33": [
+      "components_response_errorexplainer_tsx",
+      "response_errorexplainer_cancelhide",
+      "response_errorexplainer_schedulehide",
+      "response_errorexplainer_scheduleshow"
+    ],
+    "34": [
+      "components_response_timingwaterfall_tsx",
+      "response_timingwaterfall_buildsegments",
+      "response_timingwaterfall_formatms",
+      "response_timingwaterfall_formatpct"
+    ],
+    "35": [
+      "components_chain_nodes_delaynode_tsx",
+      "nodes_delaynode_commitedit",
+      "nodes_delaynode_handlekeydown",
+      "nodes_delaynode_stateicon"
+    ],
+    "36": [
+      "components_chain_nodes_displaynode_tsx",
+      "nodes_displaynode_cn",
+      "nodes_displaynode_handlecopy",
+      "nodes_displaynode_stateicon"
+    ],
+    "37": [
+      "components_request_codeeditor_tsx",
+      "request_codeeditor_codeeditor",
+      "request_codeeditor_loadlanguageextension",
+      "request_codeeditor_themeextension"
+    ],
+    "38": [
+      "collections_healthdot_countstatusbuckets",
+      "collections_healthdot_formatms",
+      "collections_healthdot_getdotcolor",
+      "components_collections_healthdot_tsx"
+    ],
+    "39": [
+      "components_request_scripteditor_tsx",
+      "hooks_useenvvariablekeys_ts",
+      "hooks_useenvvariablekeys_useenvvariablekeys",
+      "request_scripteditor_scripteditor"
+    ],
+    "40": [
+      "lib_structurecompletion_buildstructurepathcompletionoptions",
+      "lib_structurecompletion_getstructurecompletionrange",
+      "lib_structurecompletion_shouldsuppressstructurecompletion",
+      "lib_structurecompletion_ts"
+    ],
+    "41": [
+      "app_chain_collectionid_page_tsx",
+      "collectionid_page_historynodetorequestmodel",
+      "collectionid_page_notifyexecutionorderfailure"
+    ],
+    "42": ["components_ui_card_tsx", "ui_card_cardaction", "ui_card_cn"],
+    "43": [
+      "components_ui_input_group_tsx",
+      "ui_input_group_cn",
+      "ui_input_group_inputgrouptext"
+    ],
+    "44": [
+      "components_ui_scroll_area_tsx",
+      "ui_scroll_area_scrollarea",
+      "ui_scroll_area_scrollbar"
+    ],
+    "45": [
+      "components_ui_tooltip_tsx",
+      "ui_tooltip_tooltipcontent",
+      "ui_tooltip_tooltipprovider"
+    ],
+    "46": [
+      "components_ui_command_tsx",
+      "ui_command_cn",
+      "ui_command_commanditem"
+    ],
+    "47": [
+      "components_settings_generalsection_tsx",
+      "settings_generalsection_featurerow",
+      "settings_generalsection_generalsection"
+    ],
+    "48": [
+      "components_settings_shortcutssection_tsx",
+      "settings_shortcutssection_getmodifierkeys",
+      "settings_shortcutssection_shortcutrow"
+    ],
+    "49": [
+      "components_response_dataschemadialog_tsx",
+      "response_dataschemadialog_handlecopy",
+      "response_dataschemadialog_handledownload"
+    ],
+    "50": [
+      "components_response_rawviewer_tsx",
+      "response_rawviewer_handlecopy",
+      "response_rawviewer_handledownload"
+    ],
+    "51": [
+      "components_layout_sidebarsearch_tsx",
+      "layout_sidebarsearch_getcollectionname",
+      "layout_sidebarsearch_handleopenrequest"
+    ],
+    "52": [
+      "components_layout_tablistdropdown_tsx",
+      "layout_tablistdropdown_handleopenchange",
+      "layout_tablistdropdown_handleselecttab"
+    ],
+    "53": [
+      "components_layout_keyboardshortcutsmodal_tsx",
+      "layout_keyboardshortcutsmodal_getmodifierkeys",
+      "layout_keyboardshortcutsmodal_shortcutrow"
+    ],
+    "54": [
+      "components_layout_tabbar_tsx",
+      "layout_tabbar_checkoverflow",
+      "layout_tabbar_confirmbulkclose"
+    ],
+    "55": [
+      "components_chain_nodes_chainnode_tsx",
+      "nodes_chainnode_handleactivatenode",
+      "nodes_chainnode_stateicon"
+    ],
+    "56": [
+      "components_chain_dialogs_valuepickerpopover_tsx",
+      "dialogs_valuepickerpopover_handleselect",
+      "dialogs_valuepickerpopover_resolvepathfromparsed"
+    ],
+    "57": [
+      "common_statusbadge_getstatusclasses",
+      "common_statusbadge_statusbadge",
+      "components_common_statusbadge_tsx"
+    ],
+    "58": [
+      "components_request_bodyeditor_tsx",
+      "request_bodyeditor_handleformdatachange",
+      "request_bodyeditor_handletypechange"
+    ],
+    "59": [
+      "components_request_messagelog_tsx",
+      "request_messagelog_formattime",
+      "request_messagelog_messagelog"
+    ],
+    "60": [
+      "lib_transformrunner_runjs",
+      "lib_transformrunner_runjsonpath",
+      "lib_transformrunner_ts"
+    ],
+    "61": ["types_chain_migrateedge", "types_chain_ts"],
+    "62": ["app_layout_rootlayout", "app_layout_tsx"],
+    "63": ["app_page_home", "app_page_tsx"],
+    "64": ["app_settings_page_tsx", "settings_page_handleclearhistory"],
+    "65": ["app_json_compare_page_tsx", "json_compare_page_jsoncomparepage"],
+    "66": ["app_environments_page_tsx", "environments_page_environmentspage"],
+    "67": [
+      "app_chain_collectionid_chainpagefooter_tsx",
+      "collectionid_chainpagefooter_chainpagefooter"
+    ],
+    "68": [
+      "app_chain_collectionid_chainpageemptystate_tsx",
+      "collectionid_chainpageemptystate_chainpageemptystate"
+    ],
+    "69": ["app_api_schema_route_ts", "schema_route_post"],
+    "70": ["app_api_hub_route_ts", "hub_route_get"],
+    "71": ["app_transform_page_tsx", "transform_page_transformpage"],
+    "72": [
+      "components_ui_tooltip_icon_button_tsx",
+      "ui_tooltip_icon_button_tooltipiconbutton"
+    ],
+    "73": ["components_ui_label_tsx", "ui_label_cn"],
+    "74": ["components_ui_switch_tsx", "ui_switch_switch"],
+    "75": ["components_ui_kbd_tsx", "ui_kbd_cn"],
+    "76": ["components_ui_dialog_tsx", "ui_dialog_cn"],
+    "77": ["components_ui_separator_tsx", "ui_separator_cn"],
+    "78": ["components_ui_button_tsx", "ui_button_cn"],
+    "79": ["components_ui_checkbox_tsx", "ui_checkbox_checkbox"],
+    "80": [
+      "components_ui_dropdown_menu_tsx",
+      "ui_dropdown_menu_dropdownmenuportal"
+    ],
+    "81": ["components_ui_textarea_tsx", "ui_textarea_cn"],
+    "82": ["components_ui_input_tsx", "ui_input_input"],
+    "83": ["components_ui_skeleton_tsx", "ui_skeleton_skeleton"],
+    "84": [
+      "components_settings_clearhistorydialog_tsx",
+      "settings_clearhistorydialog_clearhistorydialog"
+    ],
+    "85": [
+      "components_settings_settingsnav_tsx",
+      "settings_settingsnav_settingsnav"
+    ],
+    "86": [
+      "components_settings_appearancesection_tsx",
+      "settings_appearancesection_appearancesection"
+    ],
+    "87": [
+      "components_settings_proxysection_tsx",
+      "settings_proxysection_proxysection"
+    ],
+    "88": [
+      "components_json_compare_difftree_tsx",
+      "json_compare_difftree_formatvalue"
+    ],
+    "89": [
+      "components_response_previewframe_tsx",
+      "response_previewframe_previewframe"
+    ],
+    "90": [
+      "components_response_transformplayground_tsx",
+      "response_transformplayground_transformplayground"
+    ],
+    "91": [
+      "components_response_prettyviewer_tsx",
+      "response_prettyviewer_prettyviewer"
+    ],
+    "92": [
+      "components_response_headersviewer_tsx",
+      "response_headersviewer_copyheader"
+    ],
+    "93": ["components_layout_tab_tsx", "layout_tab_tab"],
+    "94": [
+      "components_layout_tabcontextmenu_tsx",
+      "layout_tabcontextmenu_commitrename"
+    ],
+    "95": [
+      "components_layout_createnewdropdown_tsx",
+      "layout_createnewdropdown_createnewdropdown"
+    ],
+    "96": [
+      "components_layout_sidebarmaintab_tsx",
+      "layout_sidebarmaintab_handleconfirmdelete"
+    ],
+    "97": [
+      "components_layout_mobiledesktopnotice_tsx",
+      "layout_mobiledesktopnotice_mobiledesktopnotice"
+    ],
+    "98": [
+      "components_layout_leftpanel_tsx",
+      "layout_leftpanel_handlequerychange"
+    ],
+    "99": [
+      "chain_chainlist_handlecreateconfirm",
+      "components_chain_chainlist_tsx"
+    ],
+    "100": [
+      "components_chain_nodes_conditionnode_tsx",
+      "nodes_conditionnode_stateicon"
+    ],
+    "101": [
+      "arrow_config_formattedjsonresponsebody_formattedjsonresponsebody",
+      "components_chain_panels_arrow_config_formattedjsonresponsebody_tsx"
+    ],
+    "102": [
+      "canvas_blockmenu_handleselect",
+      "components_chain_canvas_blockmenu_tsx"
+    ],
+    "103": [
+      "canvas_autolayoutcontrol_autolayoutcontrol",
+      "components_chain_canvas_autolayoutcontrol_tsx"
+    ],
+    "104": [
+      "canvas_ghostplacementhandler_ghostplacementhandler",
+      "components_chain_canvas_ghostplacementhandler_tsx"
+    ],
+    "105": [
+      "components_chain_dialogs_promotetoenvpopover_tsx",
+      "dialogs_promotetoenvpopover_promotetoenvpopover"
+    ],
+    "106": [
+      "common_commandpalette_commandpalette",
+      "components_common_commandpalette_tsx"
+    ],
+    "107": [
+      "common_sparklinechart_sparklinechart",
+      "components_common_sparklinechart_tsx"
+    ],
+    "108": [
+      "common_confirmdeletedialog_confirmdeletedialog",
+      "components_common_confirmdeletedialog_tsx"
+    ],
+    "109": [
+      "common_methodbadge_methodbadge",
+      "components_common_methodbadge_tsx"
+    ],
+    "110": [
+      "components_environment_envmanagerdialog_tsx",
+      "environment_envmanagerdialog_commit"
+    ],
+    "111": [
+      "components_environment_envselector_tsx",
+      "environment_envselector_envselector"
+    ],
+    "112": [
+      "components_request_urlbar_tsx",
+      "request_urlbar_handlegraphqlurlchange"
+    ],
+    "113": [
+      "components_request_headerseditor_tsx",
+      "request_headerseditor_headerseditor"
+    ],
+    "114": [
+      "components_request_sharebutton_tsx",
+      "request_sharebutton_sharebutton"
+    ],
+    "115": [
+      "components_request_autheditor_tsx",
+      "request_autheditor_handletypechange"
+    ],
+    "116": [
+      "components_request_requesttabs_tsx",
+      "request_requesttabs_requesttabs"
+    ],
+    "117": [
+      "components_request_tabs_websockettabs_tsx",
+      "tabs_websockettabs_websockettabs"
+    ],
+    "118": [
+      "components_request_tabs_socketiotabs_tsx",
+      "tabs_socketiotabs_socketiotabs"
+    ],
+    "119": [
+      "components_import_importdialog_tsx",
+      "import_importdialog_importdialog"
+    ],
+    "120": [
+      "collections_saverequestmodal_handlesave",
+      "components_collections_saverequestmodal_tsx"
+    ],
+    "121": [
+      "collections_healthpopover_formatms",
+      "components_collections_healthpopover_tsx"
+    ],
+    "122": [
+      "components_transform_transformpage_tsx",
+      "transform_transformpage_computeplaceholder"
+    ],
+    "123": ["components_hub_hubtab_tsx", "hub_hubtab_fetchproviders"],
+    "124": [
+      "hooks_useclosetabguard_ts",
+      "hooks_useclosetabguard_useclosetabguard"
+    ],
+    "125": ["hooks_usesaverequest_ts", "hooks_usesaverequest_usesaverequest"],
+    "126": ["hooks_usesendrequest_ts", "hooks_usesendrequest_usesendrequest"],
+    "127": ["hooks_usemethodtheme_ts", "hooks_usemethodtheme_usemethodtheme"],
+    "128": [
+      "hooks_usekeyboardshortcuts_ts",
+      "hooks_usekeyboardshortcuts_usekeyboardshortcuts"
+    ],
+    "129": ["lib_sharelink_spec_minimalhttptab", "lib_sharelink_spec_ts"],
+    "130": ["lib_errorexplainer_explainerror", "lib_errorexplainer_ts"],
+    "131": ["lib_hub_logo_resolvehublogourl", "lib_hub_logo_ts"],
+    "132": [
+      "lib_shareratelimitlocal_spec_mocklocalstorage",
+      "lib_shareratelimitlocal_spec_ts"
+    ],
+    "133": ["lib_chainlayout_computeautolayout", "lib_chainlayout_ts"],
+    "134": [
+      "lib_anonuser_spec_stubwindowwithlocalstorage",
+      "lib_anonuser_spec_ts"
+    ],
+    "135": ["types_hub_ts"],
+    "136": ["types_index_ts"],
+    "137": ["app_settings_constants_ts"],
+    "138": ["app_chain_collectionid_chainpageheader_tsx"],
+    "139": ["stores_usejsoncomparestore_ts"],
+    "140": ["stores_useplaygroundstore_ts"],
+    "141": ["stores_usedataschemastore_ts"],
+    "142": ["stores_useuistore_ts"],
+    "143": ["stores_usetransformstore_ts"],
+    "144": ["stores_useresponsestore_ts"],
+    "145": ["components_ui_resizable_tsx"],
+    "146": ["components_ui_sonner_tsx"],
+    "147": ["components_json_compare_jsoncompareeditor_tsx"],
+    "148": ["components_response_consoleviewer_tsx"],
+    "149": ["components_layout_appbreadcrumb_tsx"],
+    "150": ["components_layout_requestbreadcrumb_tsx"],
+    "151": ["components_layout_rightpanel_tsx"],
+    "152": ["components_chain_nodes_nodetoolbar_tsx"],
+    "153": [
+      "components_chain_panels_arrow_config_arrowconfiginjectionpreviewlist_tsx"
+    ],
+    "154": ["components_chain_canvas_ghostnode_tsx"],
+    "155": ["components_chain_canvas_deletableedge_tsx"],
+    "156": ["components_chain_canvas_nodecontextmenu_tsx"],
+    "157": ["components_common_emptystate_tsx"],
+    "158": ["components_history_historylist_tsx"],
+    "159": ["components_request_tabs_graphqltabs_tsx"],
+    "160": ["components_request_tabs_httptabs_tsx"],
+    "161": ["components_collections_virtualizedrequestlist_tsx"],
+    "162": ["components_collections_collectiontree_tsx"],
+    "163": ["lib_codemirrorplaceholdercompartment_spec_ts"],
+    "164": ["lib_shareserver_spec_ts"],
+    "165": ["lib_redis_ts"],
+    "166": ["lib_redis_spec_ts"],
+    "167": ["lib_quicktype_ts"],
+    "168": ["lib_constants_ts"],
+    "169": ["lib_jsonstructurepaths_spec_ts"],
+    "170": ["lib_structurecompletion_spec_ts"],
+    "171": ["lib_crypto_spec_ts"]
+  },
+  "cohesion": {
+    "0": 0.06,
+    "1": 0.07,
+    "2": 0.11,
+    "3": 0.09,
+    "4": 0.1,
+    "5": 0.24,
+    "6": 0.14,
+    "7": 0.27,
+    "8": 0.2,
+    "9": 0.2,
+    "10": 0.29,
+    "11": 0.31,
+    "12": 0.42,
+    "13": 0.39,
+    "14": 0.33,
+    "15": 0.43,
+    "16": 0.33,
+    "17": 0.47,
+    "18": 0.53,
+    "19": 0.4,
+    "20": 0.4,
+    "21": 0.4,
+    "22": 0.4,
+    "23": 0.4,
+    "24": 0.5,
+    "25": 0.4,
+    "26": 0.4,
+    "27": 0.6,
+    "28": 0.4,
+    "29": 0.5,
+    "30": 0.5,
+    "31": 0.5,
+    "32": 0.5,
+    "33": 0.5,
+    "34": 0.5,
+    "35": 0.67,
+    "36": 0.5,
+    "37": 0.5,
+    "38": 0.5,
+    "39": 0.5,
+    "40": 0.5,
+    "41": 0.67,
+    "42": 0.67,
+    "43": 0.67,
+    "44": 0.67,
+    "45": 0.67,
+    "46": 0.67,
+    "47": 0.67,
+    "48": 1.0,
+    "49": 0.67,
+    "50": 0.67,
+    "51": 0.67,
+    "52": 0.67,
+    "53": 1.0,
+    "54": 0.67,
+    "55": 0.67,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 0.67,
+    "59": 0.67,
+    "60": 0.67,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0,
+    "71": 1.0,
+    "72": 1.0,
+    "73": 1.0,
+    "74": 1.0,
+    "75": 1.0,
+    "76": 1.0,
+    "77": 1.0,
+    "78": 1.0,
+    "79": 1.0,
+    "80": 1.0,
+    "81": 1.0,
+    "82": 1.0,
+    "83": 1.0,
+    "84": 1.0,
+    "85": 1.0,
+    "86": 1.0,
+    "87": 1.0,
+    "88": 1.0,
+    "89": 1.0,
+    "90": 1.0,
+    "91": 1.0,
+    "92": 1.0,
+    "93": 1.0,
+    "94": 1.0,
+    "95": 1.0,
+    "96": 1.0,
+    "97": 1.0,
+    "98": 1.0,
+    "99": 1.0,
+    "100": 1.0,
+    "101": 1.0,
+    "102": 1.0,
+    "103": 1.0,
+    "104": 1.0,
+    "105": 1.0,
+    "106": 1.0,
+    "107": 1.0,
+    "108": 1.0,
+    "109": 1.0,
+    "110": 1.0,
+    "111": 1.0,
+    "112": 1.0,
+    "113": 1.0,
+    "114": 1.0,
+    "115": 1.0,
+    "116": 1.0,
+    "117": 1.0,
+    "118": 1.0,
+    "119": 1.0,
+    "120": 1.0,
+    "121": 1.0,
+    "122": 1.0,
+    "123": 1.0,
+    "124": 1.0,
+    "125": 1.0,
+    "126": 1.0,
+    "127": 1.0,
+    "128": 1.0,
+    "129": 1.0,
+    "130": 1.0,
+    "131": 1.0,
+    "132": 1.0,
+    "133": 1.0,
+    "134": 1.0,
+    "135": 1.0,
+    "136": 1.0,
+    "137": 1.0,
+    "138": 1.0,
+    "139": 1.0,
+    "140": 1.0,
+    "141": 1.0,
+    "142": 1.0,
+    "143": 1.0,
+    "144": 1.0,
+    "145": 1.0,
+    "146": 1.0,
+    "147": 1.0,
+    "148": 1.0,
+    "149": 1.0,
+    "150": 1.0,
+    "151": 1.0,
+    "152": 1.0,
+    "153": 1.0,
+    "154": 1.0,
+    "155": 1.0,
+    "156": 1.0,
+    "157": 1.0,
+    "158": 1.0,
+    "159": 1.0,
+    "160": 1.0,
+    "161": 1.0,
+    "162": 1.0,
+    "163": 1.0,
+    "164": 1.0,
+    "165": 1.0,
+    "166": 1.0,
+    "167": 1.0,
+    "168": 1.0,
+    "169": 1.0,
+    "170": 1.0,
+    "171": 1.0
+  },
+  "gods": [
+    {
+      "id": "lib_idb_getdb",
+      "label": "getDB()",
+      "degree": 15
+    },
+    {
+      "id": "lib_utils_generateid",
+      "label": "generateId()",
+      "degree": 13
+    },
+    {
+      "id": "request_codegenpanel_generatesnippet",
+      "label": "generateSnippet()",
+      "degree": 10
+    },
+    {
+      "id": "lib_utils_buildfinalurl",
+      "label": "buildFinalUrl()",
+      "degree": 10
+    },
+    {
+      "id": "lib_chainrunner_runchain",
+      "label": "runChain()",
+      "degree": 10
+    },
+    {
+      "id": "lib_codegenerators_buildheadersobject",
+      "label": "buildHeadersObject()",
+      "degree": 9
+    },
+    {
+      "id": "lib_codegenerators_buildbodystring",
+      "label": "buildBodyString()",
+      "degree": 9
+    },
+    {
+      "id": "id_route_get",
+      "label": "GET()",
+      "degree": 8
+    },
+    {
+      "id": "lib_sharelink_createsharelink",
+      "label": "createShareLink()",
+      "degree": 7
+    },
+    {
+      "id": "lib_curlparser_parsecurl",
+      "label": "parseCurl()",
+      "degree": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "createEmptyTab()",
+      "target": "generateId()",
+      "source_files": ["stores/useTabsStore.ts", "lib/utils.ts"],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; bridges separate communities; peripheral node `createEmptyTab()` unexpectedly reaches hub `generateId()`"
+    },
+    {
+      "source": "GET()",
+      "target": "parseStoredShareRecord()",
+      "source_files": ["app/api/share/[id]/route.ts", "lib/shareServer.ts"],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `parseStoredShareRecord()` unexpectedly reaches hub `GET()`"
+    },
+    {
+      "source": "parseInsomnia()",
+      "target": "GET()",
+      "source_files": ["lib/insomniaParser.ts", "app/api/share/[id]/route.ts"],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `parseInsomnia()` unexpectedly reaches hub `GET()`"
+    },
+    {
+      "source": "handleCurlImport()",
+      "target": "parseCurl()",
+      "source_files": ["app/import/page.tsx", "lib/curlParser.ts"],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `handleCurlImport()` unexpectedly reaches hub `parseCurl()`"
+    },
+    {
+      "source": "appendWsLog()",
+      "target": "generateId()",
+      "source_files": ["stores/useConnectionStore.ts", "lib/utils.ts"],
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; peripheral node `appendWsLog()` unexpectedly reaches hub `generateId()`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `generateId()` connect `Community 0` to `Community 11`, `Community 3`, `Community 4`, `Community 7`?",
+      "why": "High betweenness centrality (0.037) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `createEmptyTab()` connect `Community 3` to `Community 0`?",
+      "why": "High betweenness centrality (0.014) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 14 inferred relationships involving `getDB()` (e.g. with `persistChain()` and `deleteChainFromDB()`) actually correct?",
+      "why": "`getDB()` has 14 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 12 inferred relationships involving `generateId()` (e.g. with `appendWsLog()` and `createEmptyTab()`) actually correct?",
+      "why": "`generateId()` has 12 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 9 inferred relationships involving `generateSnippet()` (e.g. with `generateCurl()` and `generateFetch()`) actually correct?",
+      "why": "`generateSnippet()` has 9 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 9 inferred relationships involving `buildFinalUrl()` (e.g. with `generateFetch()` and `generateAxios()`) actually correct?",
+      "why": "`buildFinalUrl()` has 9 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 6 inferred relationships involving `runChain()` (e.g. with `GET()` and `resolveDelay()`) actually correct?",
+      "why": "`runChain()` has 6 INFERRED edges - model-reasoned connections that need verification."
+    }
+  ]
+}
