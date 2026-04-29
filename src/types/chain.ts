@@ -58,10 +58,11 @@ export type ChainEdge = {
 
 /** Coerce a legacy flat-shaped edge (pre-injections array) to the current shape. */
 export function migrateEdge(
-  raw: ChainEdge & {
+  raw: Omit<ChainEdge, "injections"> & {
     sourceJsonPath?: string;
     targetField?: string;
     targetKey?: string;
+    injections?: ChainInjection[];
   },
 ): ChainEdge {
   if (raw.injections?.length) return raw as ChainEdge;
