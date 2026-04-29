@@ -49,3 +49,7 @@ next-env.d.ts
 graphify-out/cache/
 graphify-out/manifest.json
 graphify-out/cost.json
+
+scripts
+monocart-report/
+coverage/
