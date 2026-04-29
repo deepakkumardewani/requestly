@@ -1,0 +1,125 @@
+/** @vitest-environment happy-dom */
+
+import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { useCollectionsStore } from "@/stores/useCollectionsStore";
+import { useHistoryStore } from "@/stores/useHistoryStore";
+import { useTabsStore } from "@/stores/useTabsStore";
+import { useUIStore } from "@/stores/useUIStore";
+import type { HistoryEntry, HttpTab } from "@/types";
+import { CommandPalette } from "./CommandPalette";
+
+const push = vi.fn();
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push }),
+}));
+
+vi.mock("@/lib/idb", () => ({
+  getDB: vi.fn(() => null),
+}));
+
+function httpTab(partial: Partial<HttpTab> = {}): HttpTab {
+  return {
+    tabId: "t0",
+    requestId: null,
+    name: "r",
+    isDirty: false,
+    type: "http",
+    url: "https://api.example.com",
+    method: "GET",
+    headers: [],
+    params: [],
+    auth: { type: "none" },
+    body: { type: "none", content: "" },
+    preScript: "",
+    postScript: "",
+    ...partial,
+  };
+}
+
+function hist(id: string, url: string): HistoryEntry {
+  const t = httpTab({ url });
+  return {
+    id,
+    method: "GET",
+    url,
+    status: 200,
+    duration: 1,
+    size: 1,
+    timestamp: 1,
+    request: t,
+    response: {
+      status: 200,
+      statusText: "OK",
+      headers: {},
+      body: "",
+      duration: 1,
+      size: 1,
+      url,
+      method: "GET",
+      timestamp: 1,
+    },
+  };
+}
+
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+  useTabsStore.setState({ tabs: [], activeTabId: null });
+  useCollectionsStore.setState({ collections: [], requests: [] });
+  useHistoryStore.setState({ entries: [] });
+  useUIStore.setState({ commandPaletteOpen: false });
+});
+
+beforeEach(() => {
+  globalThis.ResizeObserver ??= class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+});
+
+describe("CommandPalette", () => {
+  it("selecting New Request opens a tab and closes palette", async () => {
+    const user = userEvent.setup();
+    useUIStore.setState({ commandPaletteOpen: true });
+
+    render(<CommandPalette />);
+
+    const newReq = await screen.findByText("New Request");
+    await user.click(newReq);
+
+    expect(useTabsStore.getState().tabs.length).toBeGreaterThanOrEqual(1);
+    expect(useUIStore.getState().commandPaletteOpen).toBe(false);
+  });
+
+  it("navigates to settings when that action is chosen", async () => {
+    const user = userEvent.setup();
+    useUIStore.setState({ commandPaletteOpen: true });
+
+    render(<CommandPalette />);
+
+    await user.click(await screen.findByText("Open Settings"));
+    expect(push).toHaveBeenCalledWith("/settings");
+    expect(useUIStore.getState().commandPaletteOpen).toBe(false);
+  });
+
+  it("shows recent history entries as selectable items", async () => {
+    const user = userEvent.setup();
+    useHistoryStore.setState({
+      entries: [hist("h1", "https://history-only.test/z")],
+    });
+    useUIStore.setState({ commandPaletteOpen: true });
+
+    render(<CommandPalette />);
+
+    const item = await screen.findByText(/history-only\.test/i);
+    await user.click(item);
+
+    expect(useTabsStore.getState().tabs[0]?.url).toBe(
+      "https://history-only.test/z",
+    );
+  });
+});
