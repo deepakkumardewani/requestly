@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseDotEnvContent } from "./dotenvImport";
+import { consumeDotEnvBulkPaste, parseDotEnvContent } from "./dotenvImport";
 
 describe("parseDotEnvContent", () => {
   it("parses KEY=VALUE and skips blanks and comments", () => {
@@ -26,5 +26,18 @@ A=2`),
     expect(parseDotEnvContent(`X="hello"`)).toEqual([
       { key: "X", value: "hello" },
     ]);
+  });
+});
+
+describe("consumeDotEnvBulkPaste", () => {
+  it("returns pairs for multi-line paste", () => {
+    expect(consumeDotEnvBulkPaste("A=1\nB=2")).toEqual([
+      { key: "A", value: "1" },
+      { key: "B", value: "2" },
+    ]);
+  });
+
+  it("returns null for single-line (normal cell edit)", () => {
+    expect(consumeDotEnvBulkPaste("A=1")).toBeNull();
   });
 });

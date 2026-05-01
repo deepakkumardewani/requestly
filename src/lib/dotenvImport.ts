@@ -24,3 +24,16 @@ export function parseDotEnvContent(
   }
   return [...map.entries()].map(([key, value]) => ({ key, value }));
 }
+
+/**
+ * If clipboard text looks like a multi-line `.env` blob, returns parsed pairs; otherwise `null`
+ * (single-line `KEY=value` pastes stay normal so one cell can still receive a single assignment).
+ */
+export function consumeDotEnvBulkPaste(
+  text: string,
+): Array<{ key: string; value: string }> | null {
+  if (!/\r|\n/.test(text)) return null;
+  const pairs = parseDotEnvContent(text);
+  if (pairs.length === 0) return null;
+  return pairs;
+}

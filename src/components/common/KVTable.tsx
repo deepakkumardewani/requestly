@@ -104,7 +104,8 @@ export function KVTable({
 
       <div className="divide-y divide-border/50">
         {rows.map((row) => {
-          const masked = rowMasked(row);
+          const prefersMask = rowMasked(row);
+          const showMaskedDisplay = prefersMask && row.value.trim().length > 0;
           return (
             <div
               key={row.id}
@@ -144,7 +145,7 @@ export function KVTable({
                   placeholder={valuePlaceholder}
                   readOnly
                 />
-              ) : masked ? (
+              ) : showMaskedDisplay ? (
                 <Input
                   data-testid={`row-value-${row.id}`}
                   readOnly
@@ -170,9 +171,9 @@ export function KVTable({
                   data-testid={`row-mask-toggle-${row.id}`}
                   onClick={() => toggleRowMask(row)}
                   className="mx-auto flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground"
-                  title={masked ? "Show value" : "Hide value"}
+                  title={showMaskedDisplay ? "Show value" : "Hide value"}
                 >
-                  {masked ? (
+                  {showMaskedDisplay ? (
                     <EyeOff className="h-3.5 w-3.5" />
                   ) : (
                     <Eye className="h-3.5 w-3.5" />
