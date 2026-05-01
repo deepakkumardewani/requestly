@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { toast } from "sonner";
+import { evaluateAllAssertions } from "@/lib/chainAssertions";
 import { DEFAULT_REQUEST_TIMEOUT_MS } from "@/lib/constants";
 import { runGraphQLRequest, runRequest } from "@/lib/requestRunner";
 import { runPostScript, runPreScript } from "@/lib/scriptRunner";
@@ -23,8 +24,14 @@ export function useSendRequest(tabId: string) {
 
   const { tabs } = useTabsStore();
   const { resolveVariables, getVariable, setVariable } = useEnvironmentsStore();
-  const { setLoading, setResponse, setError, setScriptLogs, loading } =
-    useResponseStore();
+  const {
+    setLoading,
+    setResponse,
+    setError,
+    setScriptLogs,
+    setAssertionResults,
+    loading,
+  } = useResponseStore();
   const { addEntry } = useHistoryStore();
   const { sslVerify, followRedirects, globalBaseUrl, globalHeaders } =
     useSettingsStore();
@@ -79,6 +86,13 @@ export function useSendRequest(tabId: string) {
           resolvedHeaders,
         );
 
+        const effectiveSslVerify =
+          tab.sslVerify !== undefined ? tab.sslVerify : sslVerify;
+        const effectiveFollowRedirects =
+          tab.followRedirects !== undefined
+            ? tab.followRedirects
+            : followRedirects;
+
         const response = await runGraphQLRequest(
           {
             url: resolvedUrl,
@@ -87,8 +101,8 @@ export function useSendRequest(tabId: string) {
             query,
             variablesJson: resolveVariables(tab.variables),
             operationName: resolveVariables(tab.operationName),
-            sslVerify,
-            followRedirects,
+            sslVerify: effectiveSslVerify,
+            followRedirects: effectiveFollowRedirects,
             timeoutMs:
               tab.timeoutMs !== undefined
                 ? tab.timeoutMs
@@ -172,6 +186,13 @@ export function useSendRequest(tabId: string) {
       );
       const finalUrl = buildFinalUrl(urlAfterGlobalBase, resolvedParams);
 
+      const effectiveSslVerify =
+        tab.sslVerify !== undefined ? tab.sslVerify : sslVerify;
+      const effectiveFollowRedirects =
+        tab.followRedirects !== undefined
+          ? tab.followRedirects
+          : followRedirects;
+
       const response = await runRequest(
         {
           method: tab.method,
@@ -179,8 +200,8 @@ export function useSendRequest(tabId: string) {
           headers: mergedHeaders,
           body: effectiveBody,
           auth: tab.auth,
-          sslVerify,
-          followRedirects,
+          sslVerify: effectiveSslVerify,
+          followRedirects: effectiveFollowRedirects,
           timeoutMs:
             tab.timeoutMs !== undefined
               ? tab.timeoutMs
@@ -190,6 +211,12 @@ export function useSendRequest(tabId: string) {
       );
 
       setResponse(tabId, response);
+
+      // Evaluate no-code assertions if any are defined
+      if (tab.assertions && tab.assertions.length > 0) {
+        const results = evaluateAllAssertions(tab.assertions, response);
+        setAssertionResults(tabId, results);
+      }
 
       // ── Post-response script ───────────────────────────────────────────────
       if (tab.postScript.trim()) {

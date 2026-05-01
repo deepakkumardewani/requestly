@@ -36,6 +36,7 @@ import { useResponseStore } from "@/stores/useResponseStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useTransformStore } from "@/stores/useTransformStore";
 import type { ResponseData } from "@/types";
+import { AssertionsTab } from "./AssertionsTab";
 import { ConsoleViewer } from "./ConsoleViewer";
 import { DataSchemaDialog } from "./DataSchemaDialog";
 import { ErrorExplainer } from "./ErrorExplainer";
@@ -58,6 +59,11 @@ type ResponsePanelProps = {
 };
 
 const SESSION_STORAGE_SEED_KEY = "json-compare-seed-left";
+
+// Stable empty array — prevents Zustand selector from returning a new reference
+// each render when the tabId has no assertion results yet (which would cause an
+// infinite loop via the "getSnapshot should be cached" React invariant).
+const EMPTY_ASSERTION_RESULTS: import("@/types/chain").AssertionResult[] = [];
 
 const RESPONSE_TABS = [
   "pretty",
@@ -234,10 +240,21 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
   const { responses, loading, errors, scriptLogs, clearResponse } =
     useResponseStore();
 
+  const { tabs } = useTabsStore();
+  const activeTab = tabs.find((t) => t.tabId === tabId);
+  const assertionResults = useResponseStore(
+    (s) => s.assertionResults[tabId] ?? EMPTY_ASSERTION_RESULTS,
+  );
+
   const response = responses[tabId] ?? null;
   const isLoading = loading[tabId] ?? false;
   const error = errors[tabId] ?? null;
   const tabLogs = scriptLogs[tabId] ?? [];
+
+  const assertionCount =
+    activeTab?.type === "http" ? (activeTab.assertions?.length ?? 0) : 0;
+  const assertionPassedCount = assertionResults.filter((r) => r.passed).length;
+  const assertionFailedCount = assertionResults.filter((r) => !r.passed).length;
 
   if (isLoading) {
     return (
@@ -496,6 +513,31 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
               <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
             )}
           </TabsTrigger>
+          {activeTab?.type === "http" && (
+            <TabsTrigger
+              value="tests"
+              data-testid="response-tab-tests"
+              className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+            >
+              Tests
+              {assertionCount > 0 && assertionResults.length === 0 && (
+                <span className="ml-1 text-[10px] text-muted-foreground">
+                  ({assertionCount})
+                </span>
+              )}
+              {assertionFailedCount > 0 && (
+                <span className="ml-1 h-1.5 w-1.5 rounded-full bg-destructive" />
+              )}
+              {assertionResults.length > 0 && assertionFailedCount === 0 && (
+                <span className="ml-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              )}
+              {assertionResults.length > 0 && (
+                <span className="ml-1 text-[10px] text-muted-foreground">
+                  {assertionPassedCount}/{assertionResults.length}
+                </span>
+              )}
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <div className="flex-1 overflow-hidden">
@@ -522,6 +564,9 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
           </TabsContent>
           <TabsContent value="console" className="mt-0 h-full overflow-hidden">
             <ConsoleViewer logs={tabLogs} />
+          </TabsContent>
+          <TabsContent value="tests" className="mt-0 h-full overflow-hidden">
+            <AssertionsTab tabId={tabId} />
           </TabsContent>
         </div>
       </Tabs>
