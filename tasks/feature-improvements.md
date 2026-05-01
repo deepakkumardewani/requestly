@@ -159,16 +159,17 @@
 
 ---
 
-- [ ] **Task 6: Response Assertions (No-Code Tests Tab)**
+- [x] **Task 6: Response Assertions (No-Code Tests Tab)**
 
 **Description:** Add a "Tests" tab to `ResponsePanel` (next to Timing). The tab renders a list of assertion rows — each with a source selector (`status`, `header`, `jsonpath`), operator (`eq`, `contains`, `exists`, etc.), and expected value input. After every request, run `evaluateAllAssertions()` from `src/lib/chainAssertions.ts` and display pass/fail badges per row plus a summary.
 
 **Acceptance criteria:**
-- [ ] "Tests" tab appears in `ResponsePanel` alongside Pretty / Raw / Headers / Timing
-- [ ] Users can add/remove assertion rows without writing scripts
-- [ ] After sending, each row shows a green ✓ or red ✗ badge with the actual value
-- [ ] A summary line shows "3/3 passed" or "1/3 passed"
-- [ ] Assertions are persisted per-request in IndexedDB
+- [x] "Tests" tab appears in `ResponsePanel` alongside Pretty / Raw / Headers / Timing
+- [x] Users can add/remove assertion rows without writing scripts
+- [x] After sending, each row shows a green ✓ or red ✗ badge with the actual value
+- [x] A summary line shows "3/3 passed" or "1/3 passed"
+- [x] Assertions are persisted per-request in IndexedDB
+- [x] Also show users what kind of tests they can write
 
 **Verification:**
 - [ ] Manual: add assertion `status eq 200`; send a request to a 200 endpoint — should show green ✓
@@ -187,16 +188,16 @@
 
 ---
 
-- [ ] **Task 7: Tab Groups / Color Labels**
+- [x] **Task 7: Tab Groups / Color Labels**
 
-**Description:** Add an optional `group?: string` and `color?: string` field to `BaseTab` in `useTabsStore`. Right-clicking a tab shows a context menu option "Set Label" that opens a popover with color swatches and an optional group name. Tabs with the same group name are visually grouped in the tab bar with a faint separator.
+**Description:** Add an optional `group?: string` and `color?: string` field to `BaseTab` in `useTabsStore`. Right-clicking a tab shows a context menu option "Set Label" that opens a dialog with color swatches and an optional group name. Tabs with the same group name are visually grouped in the tab bar with a faint separator.
 
 **Acceptance criteria:**
-- [ ] Right-click on any tab → "Set Label" menu item appears
-- [ ] Label popover has 6 color swatches and a text input for group name
-- [ ] Tabs with matching group names show a subtle visual grouping in the tab bar
-- [ ] Color dot appears on the tab itself
-- [ ] Group/color persists across refreshes via tab hydration
+- [x] Right-click on any tab → "Set Label" menu item appears
+- [x] Label dialog has 6 color swatches and a text input for group name
+- [x] Tabs with matching group names show a subtle visual grouping in the tab bar
+- [x] Color dot appears on the tab itself
+- [x] Group/color persists across refreshes via tab hydration
 
 **Verification:**
 - [ ] Manual: open 4 tabs, assign 2 to "Auth group" with blue color — they should show grouped in the tab bar
@@ -213,15 +214,15 @@
 
 ---
 
-- [ ] **Task 8: Request Pinning**
+- [x] **Task 8: Request Pinning**
 
 **Description:** Add a `pinnedRequestIds: string[]` array to `AppSettings` in `useSettingsStore`. Right-clicking a request in the collection sidebar shows a "Pin to top" / "Unpin" toggle. Pinned requests appear in a dedicated "Pinned" section at the top of the sidebar, above collections.
 
 **Acceptance criteria:**
-- [ ] Right-click on a collection request → "Pin to top" option
-- [ ] Pinned requests appear in a "Pinned" section above all collections in the sidebar
-- [ ] Pinning/unpinning persists across refreshes
-- [ ] Removing a request from a collection also removes it from pinned
+- [x] Right-click on a collection request → "Pin to top" option
+- [x] Pinned requests appear in a "Pinned" section above all collections in the sidebar
+- [x] Pinning/unpinning persists across refreshes
+- [x] Removing a request from a collection also removes it from pinned (via store filtering)
 
 **Verification:**
 - [ ] Manual: pin 2 requests from different collections — both appear in "Pinned" section at top
@@ -231,21 +232,21 @@
 **Files likely touched:**
 - `src/stores/useSettingsStore.ts`
 - `src/components/layout/SidebarMainTab.tsx`
-- `src/components/collections/CollectionTree.tsx`
+- `src/components/collections/RequestItem.tsx`
 
 **Estimated scope:** S
 
 ---
 
-- [ ] **Task 9: Follow Redirects + SSL Verification Toggles (Per-Request)**
+- [x] **Task 9: Follow Redirects + SSL Verification Toggles (Per-Request)**
 
-**Description:** `AppSettings` already has global `sslVerify` and `followRedirects`. Add per-request overrides as optional fields on `RequestModel` and `TabState`. Surface them as toggles in the "Advanced" section added in Task 5. Pass them to the proxy route, which uses them to override global defaults.
+**Description:** `AppSettings` already has global `sslVerify` and `followRedirects`. Add per-request overrides as optional fields on `RequestModel` and `TabState`. Surface them as toggles in the "Advanced" tab (new). Pass them to the proxy route, which uses them to override global defaults.
 
 **Acceptance criteria:**
-- [ ] Advanced section in request editor shows "Follow Redirects" and "Verify SSL" toggles
-- [ ] Per-request value takes precedence over global Settings value when set
-- [ ] When not set on a request, the global Settings value is used (tri-state: on / off / inherit)
-- [ ] Proxy route reads the per-request override and adjusts the fetch call accordingly
+- [x] Advanced tab in request editor shows "Follow Redirects" and "Verify SSL" toggles
+- [x] Per-request value takes precedence over global Settings value when set
+- [x] When not set on a request, the global Settings value is used (tri-state: on / off / inherit)
+- [x] Proxy route reads the per-request override and adjusts the fetch call accordingly
 
 **Verification:**
 - [ ] Manual: set global SSL verify = ON; set per-request SSL verify = OFF; send to a self-signed endpoint — should succeed
@@ -256,20 +257,20 @@
 **Files likely touched:**
 - `src/types/index.ts`
 - `src/stores/useTabsStore.ts`
-- `src/stores/useSettingsStore.ts`
-- `src/app/api/proxy/route.ts`
-- `src/components/request/HttpTabs.tsx` *(Advanced section)*
+- `src/hooks/useSendRequest.ts`
+- `src/components/request/AdvancedTab.tsx` *(new)*
+- `src/components/request/tabs/HttpTabs.tsx` *(Advanced tab)*
 
 **Estimated scope:** S
 
 ---
 
 ### Checkpoint: After Tasks 6–9
-- [ ] `bun run build` succeeds
-- [ ] Tests tab appears in ResponsePanel and assertions evaluate correctly
-- [ ] Tab color labels persist
-- [ ] Pinned requests appear in sidebar
-- [ ] Per-request SSL/redirect toggles work
+- [x] `bun run build` succeeds
+- [x] Tests tab appears in ResponsePanel and assertions evaluate correctly
+- [x] Tab color labels persist
+- [x] Pinned requests appear in sidebar
+- [x] Per-request SSL/redirect toggles work
 
 ---
 
