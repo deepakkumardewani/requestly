@@ -56,6 +56,7 @@ function normalizePersistedTab(raw: TabState): TabState {
     body: legacy.body ?? DEFAULT_BODY,
     preScript: legacy.preScript ?? "",
     postScript: legacy.postScript ?? "",
+    timeoutMs: (legacy as HttpTab).timeoutMs,
   };
 }
 

@@ -1,7 +1,8 @@
 "use client";
 
-import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Eye, EyeOff, Plus, Trash2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { parseDotEnvContent } from "@/lib/dotenvImport";
 import { generateId } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import type { EnvironmentModel, EnvVariable } from "@/types";
@@ -22,7 +24,8 @@ type EnvVariableTableProps = {
 };
 
 export function EnvVariableTable({ env }: EnvVariableTableProps) {
-  const { updateEnv } = useEnvironmentsStore();
+  const { updateEnv, bulkImportEnvVars } = useEnvironmentsStore();
+  const envFileRef = useRef<HTMLInputElement>(null);
   const [visibleSecrets, setVisibleSecrets] = useState<Set<string>>(new Set());
 
   function toggleSecretVisibility(varId: string) {
@@ -66,6 +69,21 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
       next.delete(varId);
       return next;
     });
+  }
+
+  async function handleEnvFile(file: File) {
+    try {
+      const text = await file.text();
+      const pairs = parseDotEnvContent(text);
+      const n = bulkImportEnvVars(env.id, pairs);
+      if (n === 0) {
+        toast.error("No variables found in file");
+        return;
+      }
+      toast.success(`${n} variable${n === 1 ? "" : "s"} imported`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to read .env file");
+    }
   }
 
   return (
@@ -182,16 +200,39 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
         </Table>
       </div>
 
-      <Button
-        variant="outline"
-        size="sm"
-        data-testid="add-variable-btn"
-        className="mt-3 w-full border-dashed text-xs text-muted-foreground"
-        onClick={addVariable}
-      >
-        <Plus className="mr-1.5 h-3.5 w-3.5" />
-        Add Variable
-      </Button>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <Button
+          variant="outline"
+          size="sm"
+          data-testid="add-variable-btn"
+          className="flex-1 border-dashed text-xs text-muted-foreground"
+          onClick={addVariable}
+        >
+          <Plus className="mr-1.5 h-3.5 w-3.5" />
+          Add Variable
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          data-testid="import-env-btn"
+          className="flex-1 border-dashed text-xs text-muted-foreground"
+          onClick={() => envFileRef.current?.click()}
+        >
+          <Upload className="mr-1.5 h-3.5 w-3.5" />
+          Import .env
+        </Button>
+        <input
+          ref={envFileRef}
+          type="file"
+          className="hidden"
+          accept=".env,text/plain"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) void handleEnvFile(f);
+            e.target.value = "";
+          }}
+        />
+      </div>
 
       <div className="mt-4 rounded-md bg-muted/50 p-3">
         <p className="text-xs font-medium">About Environment Variables</p>

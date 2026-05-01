@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { MAX_PROXY_RESPONSE_BYTES } from "@/lib/constants";
+import {
+  DEFAULT_REQUEST_TIMEOUT_MS,
+  MAX_PROXY_RESPONSE_BYTES,
+} from "@/lib/constants";
 
 type ProxyRequest = {
   url: string;
@@ -7,6 +10,7 @@ type ProxyRequest = {
   headers?: Record<string, string>;
   body?: string;
   followRedirects?: boolean;
+  timeoutMs?: number;
 };
 
 export async function POST(req: Request): Promise<NextResponse> {
@@ -22,6 +26,11 @@ export async function POST(req: Request): Promise<NextResponse> {
   }
 
   const { url, method, headers = {}, body, followRedirects = true } = payload;
+  const timeoutRaw =
+    typeof payload.timeoutMs === "number"
+      ? payload.timeoutMs
+      : DEFAULT_REQUEST_TIMEOUT_MS;
+  const timeoutMs = Math.min(Math.max(timeoutRaw, 1_000), 600_000);
 
   if (!url) {
     return NextResponse.json(
@@ -43,13 +52,21 @@ export async function POST(req: Request): Promise<NextResponse> {
   try {
     const t0 = performance.now();
 
-    const upstream = await fetch(url, {
-      method: method.toUpperCase(),
-      headers,
-      body: body ?? undefined,
-      // Next.js fetch supports redirect option
-      redirect: followRedirects ? "follow" : "manual",
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    let upstream: Response;
+    try {
+      upstream = await fetch(url, {
+        method: method.toUpperCase(),
+        headers,
+        body: body ?? undefined,
+        redirect: followRedirects ? "follow" : "manual",
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     const ttfb = performance.now() - t0;
 
@@ -107,6 +124,15 @@ export async function POST(req: Request): Promise<NextResponse> {
       },
     );
   } catch (cause) {
+    if (cause instanceof Error && cause.name === "AbortError") {
+      return NextResponse.json(
+        {
+          error: "Request timed out",
+          code: "TIMEOUT",
+        },
+        { status: 504 },
+      );
+    }
     const message =
       cause instanceof Error ? cause.message : "Unknown network error";
 

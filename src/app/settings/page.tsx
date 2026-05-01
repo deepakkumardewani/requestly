@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { AppearanceSection } from "@/components/settings/AppearanceSection";
 import { ClearHistoryDialog } from "@/components/settings/ClearHistoryDialog";
 import { GeneralSection } from "@/components/settings/GeneralSection";
+import { GlobalSection } from "@/components/settings/GlobalSection";
 import { ProxySection } from "@/components/settings/ProxySection";
 import { SettingsNav } from "@/components/settings/SettingsNav";
 import { ShortcutsSection } from "@/components/settings/ShortcutsSection";
@@ -51,6 +52,7 @@ export default function SettingsPage() {
             onClearHistoryClick={() => setClearHistoryOpen(true)}
           />
         )}
+        {activeSection === "global" && <GlobalSection />}
         {activeSection === "appearance" && (
           <AppearanceSection theme={theme} onThemeChange={setTheme} />
         )}

@@ -2,9 +2,15 @@
 
 import { useRef } from "react";
 import { toast } from "sonner";
+import { DEFAULT_REQUEST_TIMEOUT_MS } from "@/lib/constants";
 import { runGraphQLRequest, runRequest } from "@/lib/requestRunner";
 import { runPostScript, runPreScript } from "@/lib/scriptRunner";
-import { buildFinalUrl, generateId } from "@/lib/utils";
+import {
+  buildFinalUrl,
+  generateId,
+  mergeKvHeaders,
+  prependGlobalBaseUrl,
+} from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
 import { useResponseStore } from "@/stores/useResponseStore";
@@ -20,7 +26,8 @@ export function useSendRequest(tabId: string) {
   const { setLoading, setResponse, setError, setScriptLogs, loading } =
     useResponseStore();
   const { addEntry } = useHistoryStore();
-  const { sslVerify, followRedirects } = useSettingsStore();
+  const { sslVerify, followRedirects, globalBaseUrl, globalHeaders } =
+    useSettingsStore();
 
   const tab = tabs.find((t) => t.tabId === tabId);
   const isLoading = loading[tabId] ?? false;
@@ -55,23 +62,37 @@ export function useSendRequest(tabId: string) {
           return;
         }
 
-        const resolvedUrl = resolveVariables(tab.url);
+        const gqlUrlRaw = resolveVariables(tab.url);
+        const resolvedUrl = prependGlobalBaseUrl(gqlUrlRaw, globalBaseUrl);
         const resolvedHeaders: KVPair[] = tab.headers.map((h) => ({
           ...h,
           key: resolveVariables(h.key),
           value: resolveVariables(h.value),
         }));
+        const resolvedGlobalHeaders: KVPair[] = globalHeaders.map((h) => ({
+          ...h,
+          key: resolveVariables(h.key),
+          value: resolveVariables(h.value),
+        }));
+        const mergedHeaders = mergeKvHeaders(
+          resolvedGlobalHeaders,
+          resolvedHeaders,
+        );
 
         const response = await runGraphQLRequest(
           {
             url: resolvedUrl,
-            headers: resolvedHeaders,
+            headers: mergedHeaders,
             auth: tab.auth,
             query,
             variablesJson: resolveVariables(tab.variables),
             operationName: resolveVariables(tab.operationName),
             sslVerify,
             followRedirects,
+            timeoutMs:
+              tab.timeoutMs !== undefined
+                ? tab.timeoutMs
+                : DEFAULT_REQUEST_TIMEOUT_MS,
           },
           abortRef.current.signal,
         );
@@ -82,6 +103,11 @@ export function useSendRequest(tabId: string) {
 
       // ── Resolve env variables ──────────────────────────────────────────────
       const resolvedUrl = resolveVariables(tab.url);
+      const resolvedGlobalHeaders: KVPair[] = globalHeaders.map((h) => ({
+        ...h,
+        key: resolveVariables(h.key),
+        value: resolveVariables(h.value),
+      }));
       const resolvedHeaders: KVPair[] = tab.headers.map((h) => ({
         ...h,
         key: resolveVariables(h.key),
@@ -97,7 +123,7 @@ export function useSendRequest(tabId: string) {
         content: resolveVariables(tab.body.content),
       };
 
-      // ── Pre-request script ─────────────────────────────────────────────────
+      // ── Pre-request script (sees tab URL/headers only, not globals) ─────────
       let effectiveUrl = resolvedUrl;
       let effectiveHeaders = resolvedHeaders;
       let effectiveBody = resolvedBody;
@@ -136,17 +162,29 @@ export function useSendRequest(tabId: string) {
         }
       }
 
-      const finalUrl = buildFinalUrl(effectiveUrl, resolvedParams);
+      const urlAfterGlobalBase = prependGlobalBaseUrl(
+        effectiveUrl,
+        globalBaseUrl,
+      );
+      const mergedHeaders = mergeKvHeaders(
+        resolvedGlobalHeaders,
+        effectiveHeaders,
+      );
+      const finalUrl = buildFinalUrl(urlAfterGlobalBase, resolvedParams);
 
       const response = await runRequest(
         {
           method: tab.method,
           url: finalUrl,
-          headers: effectiveHeaders,
+          headers: mergedHeaders,
           body: effectiveBody,
           auth: tab.auth,
           sslVerify,
           followRedirects,
+          timeoutMs:
+            tab.timeoutMs !== undefined
+              ? tab.timeoutMs
+              : DEFAULT_REQUEST_TIMEOUT_MS,
         },
         abortRef.current.signal,
       );

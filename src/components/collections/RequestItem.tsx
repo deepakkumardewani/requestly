@@ -67,6 +67,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
       body: request.body,
       preScript: request.preScript,
       postScript: request.postScript,
+      timeoutMs: request.timeoutMs,
       isDirty: false,
     });
   }
@@ -101,6 +102,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
       body: request.body,
       preScript: request.preScript,
       postScript: request.postScript,
+      timeoutMs: request.timeoutMs,
     };
     addRequest(request.collectionId, duplicateTab);
   }

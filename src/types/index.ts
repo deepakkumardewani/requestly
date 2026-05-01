@@ -69,6 +69,8 @@ export type HttpTab = BaseTab & {
   body: BodyConfig;
   preScript: string;
   postScript: string;
+  /** Request timeout in milliseconds (default 30_000 at send time if unset). */
+  timeoutMs?: number;
 };
 
 export type GraphQLTab = BaseTab & {
@@ -77,6 +79,8 @@ export type GraphQLTab = BaseTab & {
   variables: string;
   operationName: string;
   auth: AuthConfig;
+  /** Request timeout when sending GraphQL over HTTP (ms). */
+  timeoutMs?: number;
 };
 
 export type WebSocketTab = BaseTab & {
@@ -103,6 +107,8 @@ export type RequestModel = {
   body: BodyConfig;
   preScript: string;
   postScript: string;
+  /** Request timeout in milliseconds (optional; default 30_000 at send time). */
+  timeoutMs?: number;
   createdAt: number;
   updatedAt: number;
 };
@@ -175,6 +181,10 @@ export type AppSettings = {
   showCodeGen: boolean;
   codeGenLang: string;
   autoExpandExplainer: boolean;
+  /** Prepended to relative request URLs (path-only or no scheme). */
+  globalBaseUrl: string;
+  /** Default headers merged on send; per-request same key wins. */
+  globalHeaders: KVPair[];
 };
 
 export type HealthMetrics = {

@@ -1,3 +1,4 @@
+import { DEFAULT_REQUEST_TIMEOUT_MS } from "@/lib/constants";
 import { parseTimingHeaders } from "@/lib/timingParser";
 import type {
   AuthConfig,
@@ -16,6 +17,7 @@ type ResolvedRequest = {
   auth: AuthConfig;
   sslVerify?: boolean;
   followRedirects?: boolean;
+  timeoutMs?: number;
 };
 
 type ProxyResponse = {
@@ -89,6 +91,7 @@ type ProxyRequestPayload = {
   body?: string;
   sslVerify: boolean;
   followRedirects: boolean;
+  timeoutMs: number;
 };
 
 async function executeProxy(
@@ -128,6 +131,14 @@ async function executeProxy(
   }
 
   if (!proxyResponse.ok || data.error) {
+    if (data.code === "TIMEOUT") {
+      const error: RequestError = {
+        type: "timeout",
+        message: data.error ?? "Request timed out",
+        cause: data.code,
+      };
+      throw error;
+    }
     const error: RequestError = {
       type: "proxy",
       message: data.error ?? `Proxy returned ${proxyResponse.status}`,
@@ -180,6 +191,7 @@ export async function runRequest(
       body: body ?? undefined,
       sslVerify: request.sslVerify ?? true,
       followRedirects: request.followRedirects ?? true,
+      timeoutMs: request.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
     },
     { url: request.url, method: request.method },
     signal,
@@ -195,6 +207,7 @@ export type GraphQLResolvedRequest = {
   operationName: string;
   sslVerify?: boolean;
   followRedirects?: boolean;
+  timeoutMs?: number;
 };
 
 function parseGraphQLVariables(raw: string): Record<string, unknown> | null {
@@ -259,6 +272,7 @@ export async function runGraphQLRequest(
       body: bodyString,
       sslVerify: request.sslVerify ?? true,
       followRedirects: request.followRedirects ?? true,
+      timeoutMs: request.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
     },
     { url: request.url, method: "POST" },
     signal,

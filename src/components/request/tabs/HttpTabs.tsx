@@ -7,6 +7,7 @@ import { AuthEditor } from "../AuthEditor";
 import { CurlEditor } from "../CurlEditor";
 import { HeadersEditor } from "../HeadersEditor";
 import { ParamsEditor } from "../ParamsEditor";
+import { RequestAdvancedSection } from "../RequestAdvancedSection";
 
 const BodyEditor = dynamic(
   () => import("../BodyEditor").then((m) => ({ default: m.BodyEditor })),
@@ -38,6 +39,7 @@ export function HttpTabs({ tabId }: HttpTabsProps) {
 
   return (
     <Tabs defaultValue="params" className="flex h-full flex-col">
+      <RequestAdvancedSection tabId={tabId} />
       <TabsList className="h-9 shrink-0 rounded-none border-b bg-transparent px-3 justify-start gap-0">
         <TabsTrigger
           value="params"

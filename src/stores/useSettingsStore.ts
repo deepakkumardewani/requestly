@@ -26,6 +26,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   showCodeGen: true,
   codeGenLang: "cURL",
   autoExpandExplainer: true,
+  globalBaseUrl: "",
+  globalHeaders: [],
 };
 
 async function persistSettings(settings: AppSettings) {
@@ -58,6 +60,8 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
         showCodeGen: s.showCodeGen,
         codeGenLang: s.codeGenLang,
         autoExpandExplainer: s.autoExpandExplainer,
+        globalBaseUrl: s.globalBaseUrl,
+        globalHeaders: s.globalHeaders,
       });
     },
 
@@ -68,7 +72,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
         const instance = await db;
         const saved = await instance.get("settings", "app");
         if (saved) {
-          set({ ...saved, hydrated: true });
+          set({ ...DEFAULT_SETTINGS, ...saved, hydrated: true });
         } else {
           set({ hydrated: true });
         }

@@ -37,6 +37,21 @@ export const MAX_HISTORY_ENTRIES = 200;
 export const MAX_RESPONSE_DISPLAY_BYTES = 10_485_760; // 10MB
 export const MAX_PROXY_RESPONSE_BYTES = 52_428_800; // 50MB
 
+/** Default HTTP request timeout when `timeoutMs` is unset on the tab/request. */
+export const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
+
+/** Header names (case-insensitive) defaulting to masked value in the headers editor. */
+export const SENSITIVE_HEADER_KEY_LOWERCASE = [
+  "authorization",
+  "x-api-key",
+  "x-auth-token",
+] as const;
+
+export function isSensitiveHeaderKey(key: string): boolean {
+  const k = key.trim().toLowerCase();
+  return (SENSITIVE_HEADER_KEY_LOWERCASE as readonly string[]).includes(k);
+}
+
 export const IDB_DB_NAME = "requestly";
 export const IDB_VERSION = 3;
 
