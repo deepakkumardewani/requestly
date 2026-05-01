@@ -59,6 +59,10 @@ export type BaseTab = {
   type: TabType;
   url: string;
   headers: KVPair[];
+  /** Optional color label (hex or named color) for visual grouping. */
+  color?: string;
+  /** Optional group name shown as a subtle separator in the tab bar. */
+  group?: string;
 };
 
 export type HttpTab = BaseTab & {
@@ -71,6 +75,12 @@ export type HttpTab = BaseTab & {
   postScript: string;
   /** Request timeout in milliseconds (default 30_000 at send time if unset). */
   timeoutMs?: number;
+  /** No-code assertions evaluated after each response. */
+  assertions?: import("@/types/chain").ChainAssertion[];
+  /** Per-request SSL verification override (undefined = use global setting). */
+  sslVerify?: boolean;
+  /** Per-request follow-redirects override (undefined = use global setting). */
+  followRedirects?: boolean;
 };
 
 export type GraphQLTab = BaseTab & {
@@ -81,6 +91,10 @@ export type GraphQLTab = BaseTab & {
   auth: AuthConfig;
   /** Request timeout when sending GraphQL over HTTP (ms). */
   timeoutMs?: number;
+  /** Per-request SSL verification override (undefined = use global setting). */
+  sslVerify?: boolean;
+  /** Per-request follow-redirects override (undefined = use global setting). */
+  followRedirects?: boolean;
 };
 
 export type WebSocketTab = BaseTab & {
@@ -109,6 +123,10 @@ export type RequestModel = {
   postScript: string;
   /** Request timeout in milliseconds (optional; default 30_000 at send time). */
   timeoutMs?: number;
+  /** Per-request SSL verification override (undefined = use global setting). */
+  sslVerify?: boolean;
+  /** Per-request follow-redirects override (undefined = use global setting). */
+  followRedirects?: boolean;
   createdAt: number;
   updatedAt: number;
 };
@@ -185,6 +203,8 @@ export type AppSettings = {
   globalBaseUrl: string;
   /** Default headers merged on send; per-request same key wins. */
   globalHeaders: KVPair[];
+  /** Request IDs pinned to the top of the sidebar. */
+  pinnedRequestIds: string[];
 };
 
 export type HealthMetrics = {

@@ -38,6 +38,7 @@ export function TabBar() {
     closeOtherTabs,
     closeAllTabs,
     setActiveTab,
+    reorderTabs,
   } = useTabsStore();
   const {
     pendingCloseTabId,
@@ -50,6 +51,8 @@ export function TabBar() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevTabCountRef = useRef(tabs.length);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const dragIndexRef = useRef<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   function checkOverflow() {
     const el = scrollRef.current;
@@ -106,23 +109,73 @@ export function TabBar() {
             ref={scrollRef}
             className="flex items-center overflow-x-auto overflow-y-hidden scrollbar-none"
           >
-            {tabs.map((tab) => {
+            {tabs.map((tab, index) => {
               const isActive = tab.tabId === activeTabId;
+              const prevTab = tabs[index - 1];
+              const showGroupSeparator =
+                index > 0 && tab.group && prevTab?.group !== tab.group;
+              const isDropTarget = dragOverIndex === index;
+
               return (
-                <ContextMenu key={tab.tabId}>
-                  <ContextMenuTrigger>
-                    <Tab
-                      tab={tab}
-                      isActive={isActive}
-                      onSelect={() => setActiveTab(tab.tabId)}
-                      onClose={(e) => {
-                        e.stopPropagation();
-                        handleCloseTab(tab);
-                      }}
+                <div
+                  key={tab.tabId}
+                  className="flex items-center"
+                  draggable
+                  onDragStart={(e) => {
+                    dragIndexRef.current = index;
+                    e.dataTransfer.effectAllowed = "move";
+                    // Use a transparent ghost so the custom tab remains visible
+                    e.dataTransfer.setDragImage(
+                      e.currentTarget,
+                      e.currentTarget.offsetWidth / 2,
+                      e.currentTarget.offsetHeight / 2,
+                    );
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                    setDragOverIndex(index);
+                  }}
+                  onDragLeave={() => setDragOverIndex(null)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const from = dragIndexRef.current;
+                    if (from !== null && from !== index) {
+                      reorderTabs(from, index);
+                    }
+                    dragIndexRef.current = null;
+                    setDragOverIndex(null);
+                  }}
+                  onDragEnd={() => {
+                    dragIndexRef.current = null;
+                    setDragOverIndex(null);
+                  }}
+                >
+                  {/* Drop indicator line */}
+                  {isDropTarget && (
+                    <div className="pointer-events-none h-full w-0.5 bg-method-accent" />
+                  )}
+                  {showGroupSeparator && !isDropTarget && (
+                    <div
+                      className="mx-0.5 h-5 w-px shrink-0 bg-border"
+                      title={`Group: ${tab.group}`}
                     />
-                  </ContextMenuTrigger>
-                  <TabContextMenu tab={tab} />
-                </ContextMenu>
+                  )}
+                  <ContextMenu>
+                    <ContextMenuTrigger>
+                      <Tab
+                        tab={tab}
+                        isActive={isActive}
+                        onSelect={() => setActiveTab(tab.tabId)}
+                        onClose={(e) => {
+                          e.stopPropagation();
+                          handleCloseTab(tab);
+                        }}
+                      />
+                    </ContextMenuTrigger>
+                    <TabContextMenu tab={tab} />
+                  </ContextMenu>
+                </div>
               );
             })}
 
