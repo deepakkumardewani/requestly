@@ -1,6 +1,13 @@
 "use client";
 
-import { Copy, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  Copy,
+  MapPin,
+  MapPinOff,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import { HealthDot } from "@/components/collections/HealthDot";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
@@ -48,6 +55,11 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
   const deleteRequest = useCollectionsStore((s) => s.deleteRequest);
   const addRequest = useCollectionsStore((s) => s.addRequest);
   const showHealthMonitor = useSettingsStore((s) => s.showHealthMonitor);
+  const pinnedRequestIds = useSettingsStore((s) => s.pinnedRequestIds);
+  const pinRequest = useSettingsStore((s) => s.pinRequest);
+  const unpinRequest = useSettingsStore((s) => s.unpinRequest);
+
+  const isPinned = pinnedRequestIds.includes(request.id);
 
   function handleOpen() {
     if (isEditing) return;
@@ -68,6 +80,8 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
       preScript: request.preScript,
       postScript: request.postScript,
       timeoutMs: request.timeoutMs,
+      sslVerify: request.sslVerify,
+      followRedirects: request.followRedirects,
       isDirty: false,
     });
   }
@@ -175,6 +189,24 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
                 <Copy className="mr-2 h-3.5 w-3.5" />
                 Duplicate
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  isPinned ? unpinRequest(request.id) : pinRequest(request.id);
+                }}
+              >
+                {isPinned ? (
+                  <>
+                    <MapPinOff className="mr-2 h-3.5 w-3.5" />
+                    Unpin
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="mr-2 h-3.5 w-3.5" />
+                    Pin to top
+                  </>
+                )}
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
@@ -199,6 +231,23 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
         <ContextMenuItem onClick={handleDuplicate}>
           <Copy className="mr-2 h-3.5 w-3.5" />
           Duplicate
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() =>
+            isPinned ? unpinRequest(request.id) : pinRequest(request.id)
+          }
+        >
+          {isPinned ? (
+            <>
+              <MapPinOff className="mr-2 h-3.5 w-3.5" />
+              Unpin
+            </>
+          ) : (
+            <>
+              <MapPin className="mr-2 h-3.5 w-3.5" />
+              Pin to top
+            </>
+          )}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem
