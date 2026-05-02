@@ -6,6 +6,7 @@ import {
   GitCompare,
   Globe,
   History,
+  Network,
   Settings,
 } from "lucide-react";
 import Link from "next/link";
@@ -24,6 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useJsonVisualizeStore } from "@/stores/useJsonVisualizeStore";
 import { CreateNewDropdown } from "./CreateNewDropdown";
 import { SidebarMainTab } from "./SidebarMainTab";
 import { SidebarSearchInput, SidebarSearchResults } from "./SidebarSearch";
@@ -68,6 +70,29 @@ export function LeftPanel() {
                 <TooltipContent side="bottom">
                   Transform Playground
                 </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="JSON Visualize"
+                      render={
+                        <Link
+                          href="/json-visualize"
+                          onClick={() =>
+                            useJsonVisualizeStore.getState().clear()
+                          }
+                        />
+                      }
+                    />
+                  }
+                >
+                  <Network className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent side="bottom">JSON Visualize</TooltipContent>
               </Tooltip>
 
               <Tooltip>
