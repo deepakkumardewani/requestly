@@ -21,6 +21,9 @@ const DEFAULTS: AppSettings = {
   showCodeGen: true,
   codeGenLang: "cURL",
   autoExpandExplainer: true,
+  globalBaseUrl: "",
+  globalHeaders: [],
+  pinnedRequestIds: [],
 };
 
 describe("useSettingsStore", () => {
