@@ -25,15 +25,17 @@ export function ShareButton({ tabId }: ShareButtonProps) {
   return (
     <>
       <Tooltip>
-        <TooltipTrigger>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            disabled={disabled}
-            onClick={() => setOpen(true)}
-          >
-            <Link className="h-3.5 w-3.5" />
-          </Button>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              disabled={disabled}
+              onClick={() => setOpen(true)}
+            />
+          }
+        >
+          <Link className="h-3.5 w-3.5" />
         </TooltipTrigger>
         <TooltipContent>Share request link</TooltipContent>
       </Tooltip>

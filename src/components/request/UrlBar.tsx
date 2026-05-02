@@ -1,6 +1,6 @@
 "use client";
 
-import { BookmarkPlus, Copy, Loader2, Send } from "lucide-react";
+import { BookmarkPlus, Copy, Globe, Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
 import { MethodBadge } from "@/components/common/MethodBadge";
@@ -20,13 +20,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSaveRequest } from "@/hooks/useSaveRequest";
-import { useSendRequest } from "@/hooks/useSendRequest";
 import { HTTP_METHODS } from "@/lib/constants";
 import { generateCurl } from "@/lib/curlGenerator";
 import { CurlParseError, parseCurl } from "@/lib/curlParser";
 import { modKey } from "@/lib/platform";
-import { cn, syncParamsFromUrl } from "@/lib/utils";
+import { cn, isRelativeOrPathOnlyUrl, syncParamsFromUrl } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import type { HttpMethod, HttpTab } from "@/types";
 import { ConnectButton } from "./ConnectButton";
@@ -37,14 +37,18 @@ const TYPE_BADGE_CLASS =
 
 type UrlBarProps = {
   tabId: string;
+  send: () => void;
+  cancel: () => void;
+  isLoading: boolean;
 };
 
-export function UrlBar({ tabId }: UrlBarProps) {
+export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
   const { save } = useSaveRequest();
   const { tabs, updateTabState } = useTabsStore();
   const resolveVariables = useEnvironmentsStore((s) => s.resolveVariables);
+  const globalBaseUrl = useSettingsStore((s) => s.globalBaseUrl.trim());
   const tab = tabs.find((t) => t.tabId === tabId);
-  const { send, cancel, isLoading } = useSendRequest(tabId);
+  const handleSend = () => send();
 
   if (!tab) return null;
 
@@ -53,23 +57,40 @@ export function UrlBar({ tabId }: UrlBarProps) {
       updateTabState(tabId, { url });
     }
 
+    const gqlShowBase =
+      Boolean(globalBaseUrl) && isRelativeOrPathOnlyUrl(tab.url);
+
     return (
       <div className="flex items-center gap-2 border-b border-border bg-background px-3 py-2">
         <span className={cn(TYPE_BADGE_CLASS, "font-mono tracking-wide")}>
           GQL
         </span>
-        <EnvAutocompleteInput
-          value={tab.url}
-          placeholder="https://api.example.com/graphql"
-          onChange={(e) => handleGraphQLUrlChange(e.target.value)}
-          data-testid="url-input"
-          onKeyDown={(e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-              e.preventDefault();
-              send();
+        <div className="flex min-w-0 flex-1 overflow-hidden rounded-md border border-input bg-background shadow-xs">
+          {gqlShowBase ? (
+            <span
+              className="flex max-w-[min(42%,14rem)] shrink-0 items-center border-r border-border bg-muted/35 px-2 py-1.5 text-[11px] font-mono text-muted-foreground"
+              title={`${globalBaseUrl} + path in the field`}
+            >
+              <Globe className="mr-1 h-3 w-3 shrink-0 opacity-70" />
+              <span className="truncate">{globalBaseUrl}</span>
+            </span>
+          ) : null}
+          <EnvAutocompleteInput
+            value={tab.url}
+            placeholder={
+              gqlShowBase ? "/graphql" : "https://api.example.com/graphql"
             }
-          }}
-        />
+            onChange={(e) => handleGraphQLUrlChange(e.target.value)}
+            data-testid="url-input"
+            className="min-w-0 flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0"
+            onKeyDown={(e) => {
+              if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                e.preventDefault();
+                send();
+              }
+            }}
+          />
+        </div>
         <div className="flex shrink-0 items-center gap-1">
           <TooltipProvider delay={600}>
             <Tooltip>
@@ -99,7 +120,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
                   <Button
                     size="sm"
                     className="h-8 min-w-[80px] gap-1.5 bg-method-accent text-[#0d1117] text-xs font-semibold hover:bg-method-accent/90"
-                    onClick={isLoading ? cancel : send}
+                    onClick={isLoading ? cancel : handleSend}
                     data-testid="send-request-btn"
                   />
                 }
@@ -236,6 +257,9 @@ export function UrlBar({ tabId }: UrlBarProps) {
     }
   }
 
+  const httpShowBase =
+    Boolean(globalBaseUrl) && isRelativeOrPathOnlyUrl(httpTab.url);
+
   return (
     <div className="flex items-center gap-2 border-b border-border bg-background px-3 py-2">
       {/* Method Selector */}
@@ -261,28 +285,44 @@ export function UrlBar({ tabId }: UrlBarProps) {
         </SelectContent>
       </Select>
 
-      {/* URL Input */}
-      <EnvAutocompleteInput
-        value={httpTab.url}
-        placeholder="https://api.example.com/v1/users"
-        onChange={(e) => handleUrlChange(e.target.value)}
-        onPaste={handlePaste}
-        data-testid="url-input"
-        onKeyDown={(e) => {
-          if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-            e.preventDefault();
-            send();
+      {/* URL + global base hint */}
+      <div className="flex min-w-0 flex-1 overflow-hidden rounded-md border border-input bg-background shadow-xs">
+        {httpShowBase ? (
+          <span
+            className="flex max-w-[min(42%,14rem)] shrink-0 items-center border-r border-border bg-muted/35 px-2 py-1.5 text-[11px] font-mono text-muted-foreground"
+            title={`${globalBaseUrl} + path in the field`}
+          >
+            <Globe className="mr-1 h-3 w-3 shrink-0 opacity-70" />
+            <span className="truncate">{globalBaseUrl}</span>
+          </span>
+        ) : null}
+        <EnvAutocompleteInput
+          value={httpTab.url}
+          placeholder={
+            httpShowBase ? "/posts?user=1" : "https://api.example.com/v1/users"
           }
-        }}
-      />
+          onChange={(e) => handleUrlChange(e.target.value)}
+          onPaste={handlePaste}
+          data-testid="url-input"
+          className="min-w-0 flex-1 rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0"
+          onKeyDown={(e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+              e.preventDefault();
+              send();
+            }
+          }}
+        />
+      </div>
 
       {/* Actions */}
       <div className="flex shrink-0 items-center gap-1">
         <Tooltip>
-          <TooltipTrigger>
-            <Button variant="ghost" size="icon-sm" onClick={handleCopyCurl}>
-              <Copy className="h-3.5 w-3.5" />
-            </Button>
+          <TooltipTrigger
+            render={
+              <Button variant="ghost" size="icon-sm" onClick={handleCopyCurl} />
+            }
+          >
+            <Copy className="h-3.5 w-3.5" />
           </TooltipTrigger>
           <TooltipContent>Copy as cURL</TooltipContent>
         </Tooltip>
@@ -317,7 +357,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
                 <Button
                   size="sm"
                   className="h-8 min-w-[80px] gap-1.5 bg-method-accent text-[#0d1117] text-xs font-semibold hover:bg-method-accent/90"
-                  onClick={isLoading ? cancel : send}
+                  onClick={isLoading ? cancel : handleSend}
                   data-testid="send-request-btn"
                 />
               }

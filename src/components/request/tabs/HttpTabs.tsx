@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsStore } from "@/stores/useTabsStore";
+import { AdvancedTab } from "../AdvancedTab";
 import { AuthEditor } from "../AuthEditor";
 import { CurlEditor } from "../CurlEditor";
 import { HeadersEditor } from "../HeadersEditor";
@@ -97,6 +98,18 @@ export function HttpTabs({ tabId }: HttpTabsProps) {
         >
           Scripts
         </TabsTrigger>
+        <TabsTrigger
+          value="advanced"
+          data-testid="request-tab-advanced"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+        >
+          Advanced
+          {(tab.sslVerify !== undefined ||
+            tab.followRedirects !== undefined ||
+            tab.timeoutMs !== undefined) && (
+            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
+          )}
+        </TabsTrigger>
       </TabsList>
 
       <div className="flex-1 overflow-hidden">
@@ -117,6 +130,9 @@ export function HttpTabs({ tabId }: HttpTabsProps) {
         </TabsContent>
         <TabsContent value="scripts" className="mt-0 h-full overflow-hidden">
           <ScriptEditor tabId={tabId} />
+        </TabsContent>
+        <TabsContent value="advanced" className="mt-0 h-full overflow-auto">
+          <AdvancedTab tabId={tabId} />
         </TabsContent>
       </div>
     </Tabs>

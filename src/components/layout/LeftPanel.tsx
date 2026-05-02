@@ -58,6 +58,7 @@ export function LeftPanel() {
                       variant="ghost"
                       size="icon-sm"
                       aria-label="Transform Playground"
+                      nativeButton={false}
                       render={<Link href="/transform" />}
                     />
                   }
@@ -76,6 +77,7 @@ export function LeftPanel() {
                       variant="ghost"
                       size="icon-sm"
                       aria-label="JSON Compare"
+                      nativeButton={false}
                       render={<Link href="/json-compare" />}
                     />
                   }
@@ -93,6 +95,7 @@ export function LeftPanel() {
                       size="icon-sm"
                       aria-label="Settings"
                       data-testid="sidebar-settings-btn"
+                      nativeButton={false}
                       render={<Link href="/settings" />}
                     />
                   }

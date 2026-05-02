@@ -9,7 +9,7 @@
 
 ## 1. Product Overview
 
-Requestly is a browser-native API testing tool competing with Postman, Insomnia, Bruno, and Hoppscotch. While the core feature set (request builder, collections, environments, history) is table-stakes across all competitors, this document specifies four differentiating features that no other browser-based API tester ships natively. The four features are: Request Snapshots & Visual Diff, Shareable Request Links, Response Transformation Playground, and Request Health Monitor. Each feature is designed to be independently shippable and adds compounding value when used together. The target is solo developers and small teams who need a fast, zero-friction tool that is smarter than a plain HTTP client but less bloated than Postman.
+Requestly is a browser-native API testing tool competing with Postman, Insomnia, Bruno, and Hoppscotch. While the core feature set (request builder, collections, environments, history) is table-stakes across all competitors, this document specifies four differentiating features that no other browser-based API tester ships natively. The four features are: Visual Diff, Shareable Request Links, Response Transformation Playground, and Request Health Monitor. Each feature is designed to be independently shippable and adds compounding value when used together. The target is solo developers and small teams who need a fast, zero-friction tool that is smarter than a plain HTTP client but less bloated than Postman.
 
 ---
 
@@ -41,7 +41,6 @@ Four discrete features added to the existing Requestly interface, each independe
 
 | # | Feature | One-line description |
 |---|---|---|
-| 1 | Request Snapshots & Visual Diff | Pin a golden response; flag future deviations automatically | - dont want to do it now
 | 2 | Shareable Request Links | One URL encodes the full request; recipient opens it pre-populated |
 | 3 | Response Transformation Playground | Write JS/JSONPath in-app to filter/reshape the response |
 | 4 | Request Health Monitor | Per-endpoint reliability score derived from local history |
@@ -77,7 +76,6 @@ Four discrete features added to the existing Requestly interface, each independe
 
 | Feature | Description | Priority |
 |---|---|---|
-| Request Snapshots & Visual Diff | Pin a response as "golden"; future sends compared against it; diff highlighted | P0 |
 | Shareable Request Links | Encode request state as URL-safe base64 query param; decode on open | P0 |
 | Response Transformation Playground | Collapsible panel below response; JS sandbox + JSONPath; live output | P0 |
 | Request Health Monitor | Aggregate history entries per URL+method; compute avg time, success rate; show in sidebar | P0 |
@@ -85,25 +83,6 @@ Four discrete features added to the existing Requestly interface, each independe
 ---
 
 ## 6. User Journeys
-
-### Feature 1 — Request Snapshots & Visual Diff
-
-```
-User sends a request, sees the response
-→ Clicks "Pin as Snapshot" button in response meta row
-→ Current response body saved to IndexedDB as the "golden" snapshot for this request
-→ Snapshot icon in the left panel request item turns amber (indicating active snapshot)
-
-Next time user sends the same request:
-→ Response body compared against golden snapshot automatically
-→ If identical: green checkmark in meta row "Matches snapshot"
-→ If different: amber warning "Response changed" + count of changed fields
-→ User clicks warning → Diff view opens (side-by-side: golden left, current right)
-→ Added fields: green background; removed fields: red background; changed values: amber
-→ User can "Update Snapshot" to promote current response to new golden
-→ Or "Dismiss" to ignore the diff this time
-```
-
 ---
 
 ### Feature 2 — Shareable Request Links
@@ -180,23 +159,6 @@ User clicks the dot → opens Health Detail popover:
 ---
 
 ## 7. Functional Requirements
-
-### Feature 1 — Request Snapshots & Visual Diff
-
-- Snapshots stored in IndexedDB store: `snapshots` — `{ id, requestId, body, parsedJson, status, capturedAt }`
-- One snapshot per request (overwritten on "Update Snapshot")
-- "Pin as Snapshot" button in response meta row; only enabled when a response is present
-- Diff algorithm: deep JSON diff on parsed body; falls back to line-by-line text diff for non-JSON
-- Diff view is a full-screen modal (portaled to body): two-column layout, golden on left, current on right
-- Changed lines highlighted: green (added), red (removed), amber (modified value)
-- Non-JSON responses: unified text diff view (no two-column layout)
-- "Update Snapshot" button in diff modal header — overwrites the golden
-- "Dismiss" button closes modal without clearing the snapshot
-- Snapshot indicator on request item in left panel: small camera icon, amber if snapshot exists
-- Auto-diff can be disabled per-request via kebab menu → "Disable auto-diff"
-- Snapshots included in collection export JSON; restored on import
-- Orphaned snapshots (where requestId no longer exists) cleaned up on app load
-
 ---
 
 ### Feature 2 — Shareable Request Links
@@ -525,8 +487,6 @@ All events local-only — no external analytics in v1.
 ### Phase 2 — Medium complexity (Week 2)
 - Response Transformation Playground — new CodeMirror instance + jsonpath-plus + JS sandbox
 
-### Phase 3 — Most complex (Week 3)
-- Request Snapshots & Visual Diff — new IndexedDB store + diff algorithm + full-screen modal
 
 ### Phase 4 — Polish (Week 4)
 - Keyboard shortcuts: `Cmd+Shift+S` pin snapshot, `Cmd+Shift+L` copy share link

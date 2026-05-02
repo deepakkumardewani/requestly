@@ -14,6 +14,8 @@ type SettingsActions = {
     key: K,
     value: AppSettings[K],
   ) => void;
+  pinRequest: (requestId: string) => void;
+  unpinRequest: (requestId: string) => void;
   hydrate: () => Promise<void>;
 };
 
@@ -26,6 +28,9 @@ const DEFAULT_SETTINGS: AppSettings = {
   showCodeGen: true,
   codeGenLang: "cURL",
   autoExpandExplainer: true,
+  globalBaseUrl: "",
+  globalHeaders: [],
+  pinnedRequestIds: [],
 };
 
 async function persistSettings(settings: AppSettings) {
@@ -58,7 +63,25 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
         showCodeGen: s.showCodeGen,
         codeGenLang: s.codeGenLang,
         autoExpandExplainer: s.autoExpandExplainer,
+        globalBaseUrl: s.globalBaseUrl,
+        globalHeaders: s.globalHeaders,
+        pinnedRequestIds: s.pinnedRequestIds,
       });
+    },
+
+    pinRequest(requestId) {
+      const s = get() as SettingsState;
+      if (s.pinnedRequestIds.includes(requestId)) return;
+      const updated = [...s.pinnedRequestIds, requestId];
+      set({ pinnedRequestIds: updated });
+      persistSettings({ ...s, pinnedRequestIds: updated });
+    },
+
+    unpinRequest(requestId) {
+      const s = get() as SettingsState;
+      const updated = s.pinnedRequestIds.filter((id) => id !== requestId);
+      set({ pinnedRequestIds: updated });
+      persistSettings({ ...s, pinnedRequestIds: updated });
     },
 
     async hydrate() {
@@ -68,7 +91,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
         const instance = await db;
         const saved = await instance.get("settings", "app");
         if (saved) {
-          set({ ...saved, hydrated: true });
+          set({ ...DEFAULT_SETTINGS, ...saved, hydrated: true });
         } else {
           set({ hydrated: true });
         }

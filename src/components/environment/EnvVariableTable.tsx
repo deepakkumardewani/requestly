@@ -1,7 +1,8 @@
 "use client";
 
-import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Eye, EyeOff, Plus, Trash2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { consumeDotEnvBulkPaste, parseDotEnvContent } from "@/lib/dotenvImport";
 import { generateId } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import type { EnvironmentModel, EnvVariable } from "@/types";
@@ -22,8 +24,10 @@ type EnvVariableTableProps = {
 };
 
 export function EnvVariableTable({ env }: EnvVariableTableProps) {
-  const { updateEnv } = useEnvironmentsStore();
+  const { updateEnv, bulkImportEnvVars } = useEnvironmentsStore();
+  const envFileRef = useRef<HTMLInputElement>(null);
   const [visibleSecrets, setVisibleSecrets] = useState<Set<string>>(new Set());
+  const [dropHighlight, setDropHighlight] = useState(false);
 
   function toggleSecretVisibility(varId: string) {
     setVisibleSecrets((prev) => {
@@ -68,8 +72,57 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
     });
   }
 
+  async function handleEnvFile(file: File) {
+    try {
+      const text = await file.text();
+      const pairs = parseDotEnvContent(text);
+      const n = bulkImportEnvVars(env.id, pairs);
+      if (n === 0) {
+        toast.error("No variables found in file");
+        return;
+      }
+      toast.success(`${n} variable${n === 1 ? "" : "s"} imported`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to read .env file");
+    }
+  }
+
+  function handleBulkPaste(e: React.ClipboardEvent) {
+    const text = e.clipboardData.getData("text");
+    const pairs = consumeDotEnvBulkPaste(text);
+    if (!pairs) return;
+    e.preventDefault();
+    const n = bulkImportEnvVars(env.id, pairs);
+    if (n === 0) {
+      toast.error("No KEY=VALUE lines in paste");
+      return;
+    }
+    toast.success(`${n} variable${n === 1 ? "" : "s"} imported from paste`);
+  }
+
   return (
-    <div className="flex flex-1 flex-col overflow-auto p-4">
+    <div
+      className={`flex flex-1 flex-col overflow-auto p-4 transition-colors ${
+        dropHighlight
+          ? "bg-method-accent/10 ring-2 ring-method-accent/40 ring-inset rounded-md"
+          : ""
+      }`}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+        setDropHighlight(true);
+      }}
+      onDragLeave={(e) => {
+        if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+        setDropHighlight(false);
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDropHighlight(false);
+        const f = e.dataTransfer.files[0];
+        if (f) void handleEnvFile(f);
+      }}
+    >
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -95,6 +148,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                       className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
                       value={variable.key}
                       placeholder="VARIABLE_NAME"
+                      onPaste={handleBulkPaste}
                       onChange={(e) =>
                         updateVariable(variable.id, { key: e.target.value })
                       }
@@ -107,6 +161,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                       type={masked ? "password" : "text"}
                       value={variable.initialValue}
                       placeholder="Initial value"
+                      onPaste={handleBulkPaste}
                       onChange={(e) =>
                         updateVariable(variable.id, {
                           initialValue: e.target.value,
@@ -121,6 +176,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                       type={masked ? "password" : "text"}
                       value={variable.currentValue}
                       placeholder="Current value"
+                      onPaste={handleBulkPaste}
                       onChange={(e) =>
                         updateVariable(variable.id, {
                           currentValue: e.target.value,
@@ -182,25 +238,53 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
         </Table>
       </div>
 
-      <Button
-        variant="outline"
-        size="sm"
-        data-testid="add-variable-btn"
-        className="mt-3 w-full border-dashed text-xs text-muted-foreground"
-        onClick={addVariable}
-      >
-        <Plus className="mr-1.5 h-3.5 w-3.5" />
-        Add Variable
-      </Button>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <Button
+          variant="outline"
+          size="sm"
+          data-testid="add-variable-btn"
+          className="flex-1 border-dashed text-xs text-muted-foreground"
+          onClick={addVariable}
+        >
+          <Plus className="mr-1.5 h-3.5 w-3.5" />
+          Add Variable
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          data-testid="import-env-btn"
+          className="flex-1 border-dashed text-xs text-muted-foreground"
+          onClick={() => envFileRef.current?.click()}
+        >
+          <Upload className="mr-1.5 h-3.5 w-3.5" />
+          Import / drop .env
+        </Button>
+        <input
+          ref={envFileRef}
+          type="file"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) void handleEnvFile(f);
+            e.target.value = "";
+          }}
+        />
+      </div>
 
       <div className="mt-4 rounded-md bg-muted/50 p-3">
         <p className="text-xs font-medium">About Environment Variables</p>
         <p className="mt-1 text-[11px] text-muted-foreground">
-          Use{" "}
+          Drag &amp; drop a file onto this panel, use Import (all file types —
+          on Mac use <kbd className="rounded bg-muted px-0.5">⌘</kbd>+
+          <kbd className="rounded bg-muted px-0.5">Shift</kbd>+
+          <kbd className="rounded bg-muted px-0.5">.</kbd> in the picker to show
+          dotfiles), or paste multiple{" "}
+          <code className="rounded bg-muted px-1">KEY=value</code> lines into
+          any cell. In requests use{" "}
           <code className="rounded bg-muted px-1 text-method-accent">
             {"{{VARIABLE_NAME}}"}
           </code>{" "}
-          in your requests to substitute values from the active environment.
+          for substitution.
         </p>
       </div>
     </div>
