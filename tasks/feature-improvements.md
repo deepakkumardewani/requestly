@@ -278,16 +278,16 @@
 
 ---
 
-- [ ] **Task 10: GraphQL Schema Introspection & Explorer**
+- [x] **Task 10: GraphQL Schema Introspection & Explorer**
 
 **Description:** In the GraphQL tab, add a "Schema" panel (collapsible, right side) with a "Fetch Schema" button. Clicking it runs the standard GraphQL introspection query through the proxy and renders a searchable, collapsible tree of types, queries, mutations, and fields with their types.
 
 **Acceptance criteria:**
-- [ ] GraphQL tab has a "Schema" toggle button in its toolbar
-- [ ] "Fetch Schema" sends the introspection query and parses the response
-- [ ] Schema renders as a collapsible tree: Queries → fields, Mutations → fields, Types → fields
-- [ ] Each field shows its type (e.g. `String!`, `[User]`)
-- [ ] Clicking a field name inserts it at cursor in the query editor
+- [x] GraphQL tab has a "Schema" toggle button in its toolbar
+- [x] "Fetch Schema" sends the introspection query and parses the response
+- [x] Schema renders as a collapsible tree: Queries → fields, Mutations → fields, Types → fields
+- [x] Each field shows its type (e.g. `String!`, `[User]`)
+- [x] Clicking a field name inserts it at cursor in the query editor
 
 **Verification:**
 - [ ] Manual: point to `https://countries.trevorblades.com/`; fetch schema; tree should show Query type with `countries`, `country`, `continent` fields
@@ -303,15 +303,15 @@
 
 ---
 
-- [ ] **Task 11: Environment Variable Validation Before Send**
+- [x] **Task 11: Environment Variable Validation Before Send**
 
 **Description:** In `useSendRequest`, before dispatching the request, scan the resolved URL, headers, and body for any remaining `{{variable}}` placeholders (after `resolveVariables()` runs). If any are found, show a dismissible warning banner above the response panel listing the unresolved variables. The user can still send.
 
 **Acceptance criteria:**
-- [ ] If any `{{var}}` remains unresolved after variable substitution, an orange warning banner appears
-- [ ] Banner lists the specific unresolved variable names, e.g. "Unresolved variables: `base_url`, `token`"
-- [ ] Banner has a "Send anyway" confirmation and a "Fix" link that opens the Environment Manager
-- [ ] When all variables resolve, no banner is shown
+- [x] If any `{{var}}` remains unresolved after variable substitution, an orange warning banner appears
+- [x] Banner lists the specific unresolved variable names, e.g. "Unresolved variables: `base_url`, `token`"
+- [x] Banner has a "Send anyway" confirmation and a "Fix" link that opens the Environment Manager
+- [x] When all variables resolve, no banner is shown
 
 **Verification:**
 - [ ] Manual: add header `Authorization: Bearer {{token}}`; do not define `token` in env; send — banner should appear listing `token`
@@ -328,15 +328,15 @@
 
 ---
 
-- [ ] **Task 12: Export History as CSV / JSON**
+- [x] **Task 12: Export History as CSV / JSON**
 
 **Description:** Add an "Export" button to the History panel. A dropdown lets the user choose CSV or JSON. The export serializes all history entries from IndexedDB (url, method, status, duration, timestamp, requestId) and triggers a browser download.
 
 **Acceptance criteria:**
-- [ ] History panel has an "Export" button
-- [ ] CSV export produces a properly quoted CSV with headers: `timestamp,method,url,status,duration_ms`
-- [ ] JSON export produces an array of history objects
-- [ ] Download is triggered as a browser file download with a timestamped filename (e.g. `requestly-history-2026-04-29.csv`)
+- [x] History panel has an "Export" button
+- [x] CSV export produces a properly quoted CSV with headers: `timestamp,method,url,status,duration_ms`
+- [x] JSON export produces an array of history objects
+- [x] Download is triggered as a browser file download with a timestamped filename (e.g. `requestly-history-2026-04-29.csv`)
 
 **Verification:**
 - [ ] Manual: make 3 requests; export as CSV; open in spreadsheet — 3 data rows with correct values
@@ -352,15 +352,15 @@
 
 ---
 
-- [ ] **Task 13: Request Templates Gallery**
+- [x] **Task 13: Request Templates Gallery**
 
 **Description:** Add a "New from Template" option to the `CreateNewDropdown`. Clicking it opens a modal grid of template cards. Selecting a template creates a new tab pre-populated with the template's method, URL, headers, and body. Initial templates: REST CRUD set, Bearer auth, Multipart file upload, Webhook (POST with JSON payload).
 
 **Acceptance criteria:**
-- [ ] "New from Template" appears in the create dropdown
-- [ ] Template gallery modal shows cards with template name, method badge, and brief description
-- [ ] Selecting a template opens a new tab with pre-filled fields
-- [ ] Templates are defined as static data (no network call needed)
+- [x] "New from Template" appears in the create dropdown
+- [x] Template gallery modal shows cards with template name, method badge, and brief description
+- [x] Selecting a template opens a new tab with pre-filled fields
+- [x] Templates are defined as static data (no network call needed)
 
 **Verification:**
 - [ ] Manual: select "Bearer Auth" template — new tab should have `Authorization: Bearer {{token}}` header pre-filled
@@ -377,15 +377,15 @@
 
 ---
 
-- [ ] **Task 14: Postman Collection v2.1 Export**
+- [x] **Task 14: Postman Collection v2.1 Export**
 
 **Description:** Add an "Export as Postman" option to each collection's context menu in the sidebar. A `postmanExporter.ts` lib function converts `CollectionModel` + `RequestModel[]` to the Postman Collection v2.1 JSON schema and triggers a browser download.
 
 **Acceptance criteria:**
-- [ ] Right-clicking a collection in the sidebar shows "Export → Postman Collection"
-- [ ] Exported JSON validates against the Postman Collection v2.1 schema
-- [ ] Method, URL, headers, query params, body (raw/form), and auth are mapped correctly
-- [ ] Download filename is `{collection-name}.postman_collection.json`
+- [x] Right-clicking a collection in the sidebar shows "Export → Postman Collection"
+- [x] Exported JSON validates against the Postman Collection v2.1 schema
+- [x] Method, URL, headers, query params, body (raw/form), and auth are mapped correctly
+- [x] Download filename is `{collection-name}.postman_collection.json`
 
 **Verification:**
 - [ ] Manual: create a collection with 3 requests (GET, POST with JSON body, POST with Bearer auth); export; import into Postman — all 3 requests should appear correctly
@@ -402,12 +402,12 @@
 ---
 
 ### Checkpoint: After Tasks 10–14
-- [ ] `bun run build` succeeds
-- [ ] GraphQL schema explorer renders for public endpoints
-- [ ] Unresolved variable banner appears and links to env manager
-- [ ] History exports download correctly in CSV and JSON
-- [ ] Template gallery creates properly pre-filled tabs
-- [ ] Postman export opens in Postman without errors
+- [x] `bun run build` succeeds
+- [x] GraphQL schema explorer renders for public endpoints
+- [x] Unresolved variable banner appears and links to env manager
+- [x] History exports download correctly in CSV and JSON
+- [x] Template gallery creates properly pre-filled tabs (Task 13)
+- [x] Postman export opens in Postman without errors (Task 14)
 
 ---
 
@@ -415,15 +415,15 @@
 
 ---
 
-- [ ] **Task 15: In-App Script Linting**
+- [x] **Task 15: In-App Script Linting**
 
 **Description:** In `ScriptEditor` (pre/post request), add a "Check Syntax" button that runs the script content through a lightweight JS syntax check (using `new Function()` try/catch or `acorn` if already available). Show inline error markers or an error banner with line/column if invalid.
 
 **Acceptance criteria:**
-- [ ] "Check Syntax" button appears in the ScriptEditor toolbar
-- [ ] Valid JS shows a green "✓ No errors" toast
-- [ ] Invalid JS (syntax error) shows the error message with line and column number
-- [ ] The check is purely client-side — no server round-trip
+- [x] "Check Syntax" button appears in the ScriptEditor toolbar
+- [x] Valid JS shows a green "✓ No errors" toast
+- [x] Invalid JS (syntax error) shows the error message with line and column number
+- [x] The check is purely client-side — no server round-trip
 
 **Verification:**
 - [ ] Manual: type `const x = {` in script editor; click "Check Syntax" — should show `SyntaxError: Unexpected end of input`
@@ -439,15 +439,15 @@
 
 ---
 
-- [ ] **Task 16: Improved Empty States with Sample Requests**
+- [x] **Task 16: Improved Empty States with Sample Requests**
 
 **Description:** When the history list is empty and when collections contain no requests, replace the generic empty state with an interactive one that shows 3–4 clickable "Try it" sample request cards (e.g. JSONPlaceholder GET /posts, httpbin.org/get, a public GraphQL endpoint). Clicking a card opens that request in a new tab.
 
 **Acceptance criteria:**
-- [ ] Empty history panel shows sample request cards instead of a blank message
-- [ ] Empty collections sidebar shows a "Try a sample request" section
-- [ ] Clicking a sample card opens a pre-filled tab (same as a template) and focuses it
-- [ ] Once history/collections have entries, the empty state is not shown
+- [x] Empty history panel shows sample request cards instead of a blank message
+- [x] Empty collections sidebar shows a "Try a sample request" section
+- [x] Clicking a sample card opens a pre-filled tab (same as a template) and focuses it
+- [x] Once history/collections have entries, the empty state is not shown
 
 **Verification:**
 - [ ] Manual: fresh app with no history — empty state shows sample cards
@@ -466,10 +466,10 @@
 ---
 
 ### Checkpoint: Complete
-- [ ] `bun run build` — zero errors
+- [x] `bun run build` — zero errors
 - [ ] `bun run test` — all unit tests pass
-- [ ] Script linting shows errors on invalid JS
-- [ ] Empty states show sample cards and clicking them opens correct tabs
+- [x] Script linting shows errors on invalid JS
+- [x] Empty states show sample cards and clicking them opens correct tabs
 - [ ] Full manual smoke-test: import OpenAPI spec → send request → check assertions → export history
 
 ---
