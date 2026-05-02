@@ -287,13 +287,13 @@ export function SidebarMainTab({
             chevronLeft
             className="px-3 py-2 hover:no-underline hover:bg-muted/50"
           >
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="flex-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Collections
             </span>
             <Button
               variant="ghost"
               size="icon-sm"
-              className="ml-auto h-5 w-5 opacity-0 transition-opacity group-hover/accordion-trigger:opacity-100"
+              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
               aria-label="Add collection"
               onClick={(e) => {
                 e.stopPropagation();
@@ -316,13 +316,13 @@ export function SidebarMainTab({
             chevronLeft
             className="px-3 py-2 hover:no-underline hover:bg-muted/50"
           >
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="flex-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Environments
             </span>
             <Button
               variant="ghost"
               size="icon-sm"
-              className="ml-auto h-5 w-5 opacity-0 transition-opacity group-hover/accordion-trigger:opacity-100"
+              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
               aria-label="Add environment"
               onClick={(e) => {
                 e.stopPropagation();
@@ -345,13 +345,13 @@ export function SidebarMainTab({
             chevronLeft
             className="px-3 py-2 hover:no-underline hover:bg-muted/50"
           >
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <span className="flex-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Chains
             </span>
             <Button
               variant="ghost"
               size="icon-sm"
-              className="ml-auto h-5 w-5 opacity-0 transition-opacity group-hover/accordion-trigger:opacity-100"
+              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
               aria-label="New chain"
               onClick={(e) => {
                 e.stopPropagation();

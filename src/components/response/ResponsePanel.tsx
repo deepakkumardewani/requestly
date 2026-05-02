@@ -1,13 +1,16 @@
 "use client";
 
 import {
+  AlertTriangle,
   Braces,
   Copy,
   Download,
   FileCode2,
   GitCompare,
   Send,
+  Settings2,
   Trash2,
+  X,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -35,6 +38,7 @@ import { useJsonCompareStore } from "@/stores/useJsonCompareStore";
 import { useResponseStore } from "@/stores/useResponseStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useTransformStore } from "@/stores/useTransformStore";
+import { useUIStore } from "@/stores/useUIStore";
 import type { ResponseData } from "@/types";
 import { AssertionsTab } from "./AssertionsTab";
 import { ConsoleViewer } from "./ConsoleViewer";
@@ -56,7 +60,73 @@ const RawViewer = dynamic(
 
 type ResponsePanelProps = {
   tabId: string;
+  onSendForce: () => void;
 };
+
+type UnresolvedVarsBannerProps = {
+  vars: string[];
+  onSendAnyway: () => void;
+  onDismiss: () => void;
+  onFix: () => void;
+};
+
+function UnresolvedVarsBanner({
+  vars,
+  onSendAnyway,
+  onDismiss,
+  onFix,
+}: UnresolvedVarsBannerProps) {
+  return (
+    <div
+      role="alert"
+      className="flex items-start gap-2 border-b border-amber-500/30 bg-amber-500/10 px-3 py-2.5 text-xs"
+      data-testid="unresolved-vars-banner"
+    >
+      <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-amber-600 dark:text-amber-400">
+          Unresolved variables
+        </p>
+        <p className="mt-0.5 text-muted-foreground">
+          {vars.map((v) => (
+            <code
+              key={v}
+              className="mr-1 rounded bg-amber-500/10 px-1 font-mono text-amber-600 dark:text-amber-400"
+            >
+              {`{{${v}}}`}
+            </code>
+          ))}
+        </p>
+        <div className="mt-2 flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-6 text-[11px] border-amber-500/40 hover:bg-amber-500/10"
+            onClick={onSendAnyway}
+          >
+            Send anyway
+          </Button>
+          <button
+            type="button"
+            onClick={onFix}
+            className="flex items-center gap-1 text-[11px] text-amber-600 hover:underline dark:text-amber-400"
+          >
+            <Settings2 className="h-3 w-3" />
+            Fix in Environment Manager
+          </button>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="shrink-0 text-muted-foreground hover:text-foreground"
+        aria-label="Dismiss"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
 
 const SESSION_STORAGE_SEED_KEY = "json-compare-seed-left";
 
@@ -64,6 +134,11 @@ const SESSION_STORAGE_SEED_KEY = "json-compare-seed-left";
 // each render when the tabId has no assertion results yet (which would cause an
 // infinite loop via the "getSnapshot should be cached" React invariant).
 const EMPTY_ASSERTION_RESULTS: import("@/types/chain").AssertionResult[] = [];
+
+// Stable empty array — same pattern as EMPTY_ASSERTION_RESULTS above.
+// Without this, `?? []` in the selector creates a new reference every render,
+// causing React's useSyncExternalStore to schedule immediate re-renders (infinite loop).
+const EMPTY_UNRESOLVED_VARS: string[] = [];
 
 const RESPONSE_TABS = [
   "pretty",
@@ -235,10 +310,21 @@ function SizeDetailTooltip({
   );
 }
 
-export function ResponsePanel({ tabId }: ResponsePanelProps) {
+export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
   const router = useRouter();
-  const { responses, loading, errors, scriptLogs, clearResponse } =
-    useResponseStore();
+  const {
+    responses,
+    loading,
+    errors,
+    scriptLogs,
+    clearResponse,
+    setUnresolvedVars,
+  } = useResponseStore();
+  const unresolvedVarsList = useResponseStore(
+    (s) => s.unresolvedVars[tabId] ?? EMPTY_UNRESOLVED_VARS,
+  );
+
+  const { setEnvManagerOpen } = useUIStore();
 
   const { tabs } = useTabsStore();
   const activeTab = tabs.find((t) => t.tabId === tabId);
@@ -255,6 +341,17 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
     activeTab?.type === "http" ? (activeTab.assertions?.length ?? 0) : 0;
   const assertionPassedCount = assertionResults.filter((r) => r.passed).length;
   const assertionFailedCount = assertionResults.filter((r) => !r.passed).length;
+
+  const hasUnresolvedVars = unresolvedVarsList.length > 0;
+
+  function handleSendAnyway() {
+    setUnresolvedVars(tabId, []);
+    onSendForce();
+  }
+
+  function handleDismissVarsBanner() {
+    setUnresolvedVars(tabId, []);
+  }
 
   if (isLoading) {
     return (
@@ -277,33 +374,53 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
         role="alert"
         aria-live="assertive"
         data-testid="response-error-state"
-        className="h-full"
+        className="flex h-full flex-col"
       >
-        <EmptyState
-          title="Request failed"
-          description={error.message}
-          action={
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => clearResponse(tabId)}
-            >
-              Dismiss
-            </Button>
-          }
-        />
+        {hasUnresolvedVars && (
+          <UnresolvedVarsBanner
+            vars={unresolvedVarsList}
+            onSendAnyway={handleSendAnyway}
+            onDismiss={handleDismissVarsBanner}
+            onFix={() => setEnvManagerOpen(true)}
+          />
+        )}
+        <div className="flex-1">
+          <EmptyState
+            title="Request failed"
+            description={error.message}
+            action={
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => clearResponse(tabId)}
+              >
+                Dismiss
+              </Button>
+            }
+          />
+        </div>
       </div>
     );
   }
 
   if (!response) {
     return (
-      <div data-testid="response-empty-state" className="h-full">
-        <EmptyState
-          icon={<Send className="h-10 w-10" />}
-          title="Send a request"
-          description="Configure your request above and press Send or Ctrl+Enter"
-        />
+      <div data-testid="response-empty-state" className="flex h-full flex-col">
+        {hasUnresolvedVars && (
+          <UnresolvedVarsBanner
+            vars={unresolvedVarsList}
+            onSendAnyway={handleSendAnyway}
+            onDismiss={handleDismissVarsBanner}
+            onFix={() => setEnvManagerOpen(true)}
+          />
+        )}
+        <div className="flex-1">
+          <EmptyState
+            icon={<Send className="h-10 w-10" />}
+            title="Send a request"
+            description="Configure your request above and press Send or Ctrl+Enter"
+          />
+        </div>
       </div>
     );
   }
@@ -385,6 +502,14 @@ export function ResponsePanel({ tabId }: ResponsePanelProps) {
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
+      {hasUnresolvedVars && (
+        <UnresolvedVarsBanner
+          vars={unresolvedVarsList}
+          onSendAnyway={handleSendAnyway}
+          onDismiss={handleDismissVarsBanner}
+          onFix={() => setEnvManagerOpen(true)}
+        />
+      )}
       {/* Meta row */}
       <TooltipProvider delay={250}>
         <div

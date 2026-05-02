@@ -19,6 +19,19 @@ import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import type { KVPair, RequestError } from "@/types";
 
+const UNRESOLVED_VAR_REGEX = /\{\{(\w+)\}\}/g;
+
+/** Returns all `{{var}}` placeholder names still present in the given strings. */
+function extractUnresolvedVars(...texts: string[]): string[] {
+  const found = new Set<string>();
+  for (const text of texts) {
+    for (const match of text.matchAll(UNRESOLVED_VAR_REGEX)) {
+      found.add(match[1]);
+    }
+  }
+  return [...found];
+}
+
 export function useSendRequest(tabId: string) {
   const abortRef = useRef<AbortController | null>(null);
 
@@ -30,6 +43,7 @@ export function useSendRequest(tabId: string) {
     setError,
     setScriptLogs,
     setAssertionResults,
+    setUnresolvedVars,
     loading,
   } = useResponseStore();
   const { addEntry } = useHistoryStore();
@@ -42,7 +56,7 @@ export function useSendRequest(tabId: string) {
   const envGet = (key: string) => getVariable(key);
   const envSet = (key: string, value: string) => setVariable(key, value);
 
-  async function send() {
+  async function send(force = false) {
     if (!tab) return;
     if (tab.type !== "http" && tab.type !== "graphql") {
       toast.info("Send is not available for this tab type");
@@ -85,6 +99,22 @@ export function useSendRequest(tabId: string) {
           resolvedGlobalHeaders,
           resolvedHeaders,
         );
+
+        // Check for unresolved {{variable}} placeholders before dispatching
+        if (!force) {
+          const headerTexts = mergedHeaders.flatMap((h) => [h.key, h.value]);
+          const unresolved = extractUnresolvedVars(
+            resolvedUrl,
+            ...headerTexts,
+            query,
+          );
+          if (unresolved.length > 0) {
+            setUnresolvedVars(tabId, unresolved);
+            setLoading(tabId, false);
+            return;
+          }
+        }
+        setUnresolvedVars(tabId, []);
 
         const effectiveSslVerify =
           tab.sslVerify !== undefined ? tab.sslVerify : sslVerify;
@@ -186,6 +216,23 @@ export function useSendRequest(tabId: string) {
       );
       const finalUrl = buildFinalUrl(urlAfterGlobalBase, resolvedParams);
 
+      // Check for unresolved {{variable}} placeholders before dispatching
+      if (!force) {
+        const headerTexts = mergedHeaders.flatMap((h) => [h.key, h.value]);
+        const bodyText = effectiveBody.content ?? "";
+        const unresolved = extractUnresolvedVars(
+          finalUrl,
+          ...headerTexts,
+          bodyText,
+        );
+        if (unresolved.length > 0) {
+          setUnresolvedVars(tabId, unresolved);
+          setLoading(tabId, false);
+          return;
+        }
+      }
+      setUnresolvedVars(tabId, []);
+
       const effectiveSslVerify =
         tab.sslVerify !== undefined ? tab.sslVerify : sslVerify;
       const effectiveFollowRedirects =
@@ -268,5 +315,9 @@ export function useSendRequest(tabId: string) {
     setLoading(tabId, false);
   }
 
-  return { send, cancel, isLoading };
+  function sendForce() {
+    return send(true);
+  }
+
+  return { send, sendForce, cancel, isLoading };
 }

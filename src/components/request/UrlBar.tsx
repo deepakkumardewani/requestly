@@ -20,7 +20,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSaveRequest } from "@/hooks/useSaveRequest";
-import { useSendRequest } from "@/hooks/useSendRequest";
 import { HTTP_METHODS } from "@/lib/constants";
 import { generateCurl } from "@/lib/curlGenerator";
 import { CurlParseError, parseCurl } from "@/lib/curlParser";
@@ -38,15 +37,18 @@ const TYPE_BADGE_CLASS =
 
 type UrlBarProps = {
   tabId: string;
+  send: () => void;
+  cancel: () => void;
+  isLoading: boolean;
 };
 
-export function UrlBar({ tabId }: UrlBarProps) {
+export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
   const { save } = useSaveRequest();
   const { tabs, updateTabState } = useTabsStore();
   const resolveVariables = useEnvironmentsStore((s) => s.resolveVariables);
   const globalBaseUrl = useSettingsStore((s) => s.globalBaseUrl.trim());
   const tab = tabs.find((t) => t.tabId === tabId);
-  const { send, cancel, isLoading } = useSendRequest(tabId);
+  const handleSend = () => send();
 
   if (!tab) return null;
 
@@ -118,7 +120,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
                   <Button
                     size="sm"
                     className="h-8 min-w-[80px] gap-1.5 bg-method-accent text-[#0d1117] text-xs font-semibold hover:bg-method-accent/90"
-                    onClick={isLoading ? cancel : send}
+                    onClick={isLoading ? cancel : handleSend}
                     data-testid="send-request-btn"
                   />
                 }
@@ -315,10 +317,12 @@ export function UrlBar({ tabId }: UrlBarProps) {
       {/* Actions */}
       <div className="flex shrink-0 items-center gap-1">
         <Tooltip>
-          <TooltipTrigger>
-            <Button variant="ghost" size="icon-sm" onClick={handleCopyCurl}>
-              <Copy className="h-3.5 w-3.5" />
-            </Button>
+          <TooltipTrigger
+            render={
+              <Button variant="ghost" size="icon-sm" onClick={handleCopyCurl} />
+            }
+          >
+            <Copy className="h-3.5 w-3.5" />
           </TooltipTrigger>
           <TooltipContent>Copy as cURL</TooltipContent>
         </Tooltip>
@@ -353,7 +357,7 @@ export function UrlBar({ tabId }: UrlBarProps) {
                 <Button
                   size="sm"
                   className="h-8 min-w-[80px] gap-1.5 bg-method-accent text-[#0d1117] text-xs font-semibold hover:bg-method-accent/90"
-                  onClick={isLoading ? cancel : send}
+                  onClick={isLoading ? cancel : handleSend}
                   data-testid="send-request-btn"
                 />
               }
