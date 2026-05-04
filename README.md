@@ -116,9 +116,11 @@ All data is stored in IndexedDB via `idb`. There is no backend, no database, and
 | `tabs`          | Open tab state                                                          |
 | `settings`      | Theme, proxy URL, SSL toggle, follow-redirects, active env              |
 
-### Method-Driven Theming
+### Theming
 
-The HTTP method updates CSS custom properties (`--method-accent-r/g/b`) via the `useMethodTheme` hook. Tailwind's `accent` color token reads these at runtime, so every `bg-accent`, `border-accent`, `text-accent` class shifts in sync with the selected method.
+**Theme accent**: User-selected accent color from Settings → Appearance sets CSS custom properties (`--theme-accent-r/g/b`) via the `useThemeAccent` hook. Most UI elements use `theme-accent` Tailwind utilities.
+
+**Method accent**: The HTTP method sets CSS custom properties (`--method-accent-r/g/b`) via the `useMethodTheme` hook. Only the method dropdown background and tab bottom border use `method-accent` utilities, reflecting the active method's color.
 
 ---
 

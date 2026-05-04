@@ -1,5 +1,5 @@
 ---
-name: component-rules
+name: shadcn-component-rules
 description: >
   Use this skill for creating new components
 ---
