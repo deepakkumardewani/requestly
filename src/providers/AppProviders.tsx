@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useThemeAccent } from "@/hooks/useThemeAccent";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
@@ -20,6 +21,11 @@ function StoreHydrator() {
     useHistoryStore.getState().hydrate();
   }, []);
 
+  return null;
+}
+
+function ThemeAccentApplier() {
+  useThemeAccent();
   return null;
 }
 
@@ -40,6 +46,7 @@ export function AppProviders({ children }: AppProvidersProps) {
           <CronitorTracker />
         </Suspense>
         <StoreHydrator />
+        <ThemeAccentApplier />
         <Toaster richColors position="bottom-right" />
         {children}
       </TooltipProvider>
