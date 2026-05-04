@@ -85,7 +85,7 @@ describe("EnvListPanel", () => {
     );
 
     const row = screen.getByTestId("env-list-item-Active");
-    expect(row.querySelector(".bg-method-accent")).toBeTruthy();
+    expect(row.querySelector(".bg-theme-accent")).toBeTruthy();
     expect(container.textContent).toContain("Active");
   });
 

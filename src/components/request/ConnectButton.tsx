@@ -8,7 +8,7 @@ import { useTabsStore } from "@/stores/useTabsStore";
 
 /** Matches Send styling in `UrlBar` (HTTP / GraphQL). */
 const CONNECT_BTN_CLASS =
-  "h-8 min-w-[80px] gap-1.5 bg-method-accent text-[#0d1117] text-xs font-semibold hover:bg-method-accent/90";
+  "h-8 min-w-[80px] gap-1.5 bg-theme-accent text-[#0d1117] text-xs font-semibold hover:bg-theme-accent/90";
 
 type ConnectButtonProps = {
   tabId: string;

@@ -77,7 +77,7 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
         <Button
           data-testid="curl-import-btn"
           size="sm"
-          className="gap-1.5 bg-method-accent/10 text-method-accent hover:bg-method-accent/20"
+          className="gap-1.5 bg-theme-accent/10 text-theme-accent hover:bg-theme-accent/20"
           onClick={handleImport}
           disabled={!curlInput.trim()}
         >
@@ -107,7 +107,7 @@ export function CurlEditor({ tabId }: CurlEditorProps) {
         </div>
         <pre
           data-testid="generated-curl"
-          className="rounded-md bg-muted p-2 font-mono text-[11px] text-method-accent whitespace-pre-wrap break-all"
+          className="rounded-md bg-muted p-2 font-mono text-[11px] text-theme-accent whitespace-pre-wrap break-all"
         >
           {generatedCurl || "No URL configured"}
         </pre>

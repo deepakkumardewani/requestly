@@ -175,7 +175,7 @@ function FieldRow({
       title={field.description ?? field.name}
       className="group flex w-full items-center justify-between gap-2 rounded px-2 py-1 text-left text-xs hover:bg-muted/60 transition-colors"
     >
-      <span className="font-mono text-foreground group-hover:text-method-accent transition-colors">
+      <span className="font-mono text-foreground group-hover:text-theme-accent transition-colors">
         {field.name}
       </span>
       <span className="shrink-0 font-mono text-[10px] text-muted-foreground">

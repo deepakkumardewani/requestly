@@ -153,7 +153,7 @@ export function TabBar() {
                 >
                   {/* Drop indicator line */}
                   {isDropTarget && (
-                    <div className="pointer-events-none h-full w-0.5 bg-method-accent" />
+                    <div className="pointer-events-none h-full w-0.5 bg-theme-accent" />
                   )}
                   {showGroupSeparator && !isDropTarget && (
                     <div

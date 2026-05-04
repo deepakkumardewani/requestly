@@ -103,7 +103,7 @@ function EnvSidebarList() {
             <ContextMenuTrigger>
               <div
                 className={`group flex w-full items-center gap-2 rounded px-2 py-1.5 text-left hover:bg-muted ${
-                  env.id === activeEnvId ? "text-method-accent" : ""
+                  env.id === activeEnvId ? "text-theme-accent" : ""
                 }`}
                 onClick={() => {
                   setActiveEnv(env.id === activeEnvId ? null : env.id);
@@ -113,7 +113,7 @@ function EnvSidebarList() {
                 <Globe2 className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                 <span className="flex-1 truncate text-sm">{env.name}</span>
                 {env.id === activeEnvId && (
-                  <span className="text-[10px] font-medium text-method-accent group-hover:hidden">
+                  <span className="text-[10px] font-medium text-theme-accent group-hover:hidden">
                     active
                   </span>
                 )}

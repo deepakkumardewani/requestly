@@ -43,11 +43,11 @@ export function HttpTabs({ tabId }: HttpTabsProps) {
         <TabsTrigger
           value="params"
           data-testid="request-tab-params"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           Params
           {enabledParamsCount > 0 && (
-            <span className="ml-1 rounded-full bg-method-accent/20 px-1.5 py-0.5 text-[10px] text-method-accent">
+            <span className="ml-1 rounded-full bg-theme-accent/20 px-1.5 py-0.5 text-[10px] text-theme-accent">
               {enabledParamsCount}
             </span>
           )}
@@ -55,11 +55,11 @@ export function HttpTabs({ tabId }: HttpTabsProps) {
         <TabsTrigger
           value="headers"
           data-testid="request-tab-headers"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           Headers
           {enabledHeadersCount > 0 && (
-            <span className="ml-1 rounded-full bg-method-accent/20 px-1.5 py-0.5 text-[10px] text-method-accent">
+            <span className="ml-1 rounded-full bg-theme-accent/20 px-1.5 py-0.5 text-[10px] text-theme-accent">
               {enabledHeadersCount}
             </span>
           )}
@@ -67,47 +67,47 @@ export function HttpTabs({ tabId }: HttpTabsProps) {
         <TabsTrigger
           value="auth"
           data-testid="request-tab-auth"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           Auth
           {tab.auth.type !== "none" && (
-            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
+            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-theme-accent" />
           )}
         </TabsTrigger>
         <TabsTrigger
           value="body"
           data-testid="request-tab-body"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           Body
           {tab.body.type !== "none" && (
-            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
+            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-theme-accent" />
           )}
         </TabsTrigger>
         <TabsTrigger
           value="curl"
           data-testid="request-tab-curl"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           cURL
         </TabsTrigger>
         <TabsTrigger
           value="scripts"
           data-testid="request-tab-scripts"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           Scripts
         </TabsTrigger>
         <TabsTrigger
           value="advanced"
           data-testid="request-tab-advanced"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           Advanced
           {(tab.sslVerify !== undefined ||
             tab.followRedirects !== undefined ||
             tab.timeoutMs !== undefined) && (
-            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
+            <span className="ml-1 h-1.5 w-1.5 rounded-full bg-theme-accent" />
           )}
         </TabsTrigger>
       </TabsList>

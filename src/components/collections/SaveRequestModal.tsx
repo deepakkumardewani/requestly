@@ -96,7 +96,7 @@ export function SaveRequestModal({
                     onClick={() => setSelectedCollectionId(col.id)}
                     className={`w-full rounded px-2 py-1.5 text-left text-sm transition-colors ${
                       selectedCollectionId === col.id
-                        ? "bg-method-accent/20 text-method-accent"
+                        ? "bg-theme-accent/20 text-theme-accent"
                         : "hover:bg-muted"
                     }`}
                   >
@@ -108,7 +108,7 @@ export function SaveRequestModal({
                 type="button"
                 data-testid="create-new-collection-link"
                 onClick={() => setIsCreatingNew(true)}
-                className="text-xs text-method-accent hover:underline"
+                className="text-xs text-theme-accent hover:underline"
               >
                 + Create new collection
               </button>
@@ -128,7 +128,7 @@ export function SaveRequestModal({
                   type="button"
                   data-testid="select-existing-collection-link"
                   onClick={() => setIsCreatingNew(false)}
-                  className="text-xs text-method-accent hover:underline"
+                  className="text-xs text-theme-accent hover:underline"
                 >
                   ← Select existing collection
                 </button>

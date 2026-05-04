@@ -130,7 +130,7 @@ export const EnvAutocompleteInput = forwardRef<
                   : "text-popover-foreground hover:bg-accent hover:text-accent-foreground",
               )}
             >
-              <span className="font-mono text-method-accent opacity-70">
+              <span className="font-mono text-theme-accent opacity-70">
                 {"{{"}
               </span>
               <span>{name}</span>

@@ -9,6 +9,7 @@ import {
   Network,
   Settings,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { EnvManagerDialog } from "@/components/environment/EnvManagerDialog";
@@ -47,7 +48,13 @@ export function LeftPanel() {
         <div className="flex items-center justify-between px-3 pt-4 pb-2.5">
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center">
-              <img src="/logo.png" alt="Requestly Logo" className="h-6 w-6 object-contain" />
+              <Image
+                src="/logo.png"
+                alt="Requestly Logo"
+                width={24}
+                height={24}
+                className="object-contain"
+              />
             </div>
             <span className="text-sm font-semibold">Requestly</span>
           </div>

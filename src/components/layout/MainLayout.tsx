@@ -15,6 +15,7 @@ import { useCloseTabGuard } from "@/hooks/useCloseTabGuard";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useMethodTheme } from "@/hooks/useMethodTheme";
 import { useSaveRequest } from "@/hooks/useSaveRequest";
+import { useThemeAccent } from "@/hooks/useThemeAccent";
 import { fetchSharePayload } from "@/lib/shareLink";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
@@ -118,6 +119,8 @@ export function MainLayout() {
 
   // Drive the whole UI's accent color from the active method
   useMethodTheme(activeMethod);
+  // Drive the user-selected theme accent color
+  useThemeAccent();
   // Global keyboard shortcuts
   useKeyboardShortcuts({
     onSave: save,

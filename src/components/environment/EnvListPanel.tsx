@@ -112,7 +112,7 @@ export function EnvListPanel({ selectedEnvId, onSelect }: EnvListPanelProps) {
                   className={cn(
                     "h-1.5 w-1.5 shrink-0 rounded-full",
                     activeEnvId === env.id
-                      ? "bg-method-accent"
+                      ? "bg-theme-accent"
                       : "bg-transparent",
                   )}
                 />

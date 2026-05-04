@@ -130,7 +130,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
           data-testid="request-item"
           className={`group flex items-center gap-2 rounded px-2 py-1.5 text-sm transition-colors cursor-pointer ${
             isActive
-              ? "border-l-2 border-l-method-accent bg-method-accent/10 pl-[calc(0.5rem-2px)]"
+              ? "border-l-2 border-l-theme-accent bg-theme-accent/10 pl-[calc(0.5rem-2px)]"
               : "hover:bg-muted"
           }`}
           onClick={handleOpen}

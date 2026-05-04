@@ -16,7 +16,7 @@ export function MobileDesktopNotice() {
       >
         <div className="relative w-full max-w-md">
           <div
-            className="pointer-events-none absolute -inset-0.5 rounded-2xl bg-gradient-to-br from-primary/25 via-transparent to-method-accent/20 opacity-70 blur-md"
+            className="pointer-events-none absolute -inset-0.5 rounded-2xl bg-gradient-to-br from-primary/25 via-transparent to-theme-accent/20 opacity-70 blur-md"
             aria-hidden
           />
           <div className="relative rounded-2xl border border-border/90 bg-card/95 p-8 shadow-lg shadow-black/[0.04] backdrop-blur-sm dark:shadow-black/25">

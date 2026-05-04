@@ -104,7 +104,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
     <div
       className={`flex flex-1 flex-col overflow-auto p-4 transition-colors ${
         dropHighlight
-          ? "bg-method-accent/10 ring-2 ring-method-accent/40 ring-inset rounded-md"
+          ? "bg-theme-accent/10 ring-2 ring-theme-accent/40 ring-inset rounded-md"
           : ""
       }`}
       onDragOver={(e) => {
@@ -281,7 +281,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
           dotfiles), or paste multiple{" "}
           <code className="rounded bg-muted px-1">KEY=value</code> lines into
           any cell. In requests use{" "}
-          <code className="rounded bg-muted px-1 text-method-accent">
+          <code className="rounded bg-muted px-1 text-theme-accent">
             {"{{VARIABLE_NAME}}"}
           </code>{" "}
           for substitution.

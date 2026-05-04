@@ -26,6 +26,7 @@ export default function SettingsPage() {
     proxyUrl,
     showHealthMonitor,
     showCodeGen,
+    accentColor,
     setSetting,
   } = useSettingsStore();
   const { clearHistory } = useHistoryStore();
@@ -54,7 +55,12 @@ export default function SettingsPage() {
         )}
         {activeSection === "global" && <GlobalSection />}
         {activeSection === "appearance" && (
-          <AppearanceSection theme={theme} onThemeChange={setTheme} />
+          <AppearanceSection
+            theme={theme}
+            onThemeChange={setTheme}
+            accentColor={accentColor}
+            onAccentColorChange={(color) => setSetting("accentColor", color)}
+          />
         )}
         {activeSection === "proxy" && (
           <ProxySection

@@ -43,14 +43,14 @@ export function WebSocketTabs({ tabId }: WebSocketTabsProps) {
         <TabsTrigger
           value="messages"
           data-testid="request-tab-ws-messages"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           Messages
         </TabsTrigger>
         <TabsTrigger
           value="headers"
           data-testid="request-tab-headers"
-          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+          className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
         >
           Headers
         </TabsTrigger>

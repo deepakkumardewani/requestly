@@ -201,17 +201,6 @@ export function CollectionTree() {
                         </span>
                       </div>
                       {/* Action buttons — stopPropagation keeps trigger from toggling */}
-                      <button
-                        type="button"
-                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto hover:bg-foreground/10 dark:hover:bg-white/20"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push(`/chain/${collection.id}`);
-                        }}
-                        title="Open chain view"
-                      >
-                        <GitBranch className="h-3 w-3 text-muted-foreground" />
-                      </button>
                       <DropdownMenu>
                         <DropdownMenuTrigger
                           className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto hover:bg-foreground/10 dark:hover:bg-white/20"

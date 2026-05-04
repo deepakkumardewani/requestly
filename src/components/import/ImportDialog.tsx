@@ -384,7 +384,7 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
             {curlInput.trim() && (
               <Button
                 size="sm"
-                className="gap-1.5 bg-method-accent/10 text-method-accent hover:bg-method-accent/20"
+                className="gap-1.5 bg-theme-accent/10 text-theme-accent hover:bg-theme-accent/20"
                 onClick={handleCurlImport}
               >
                 Import cURL
@@ -415,8 +415,8 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
           <div
             className={`flex flex-1 flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
               dropState === "dragging"
-                ? "border-method-accent bg-method-accent/5"
-                : "border-border hover:border-method-accent/40"
+                ? "border-theme-accent bg-theme-accent/5"
+                : "border-border hover:border-theme-accent/40"
             }`}
             onDragOver={(e) => {
               e.preventDefault();

@@ -104,7 +104,7 @@ export function HealthPopoverContent({
                 values={recentTimes}
                 width={196}
                 height={36}
-                color="var(--color-method-accent)"
+                color="var(--color-theme-accent)"
               />
             </div>
           </div>
@@ -156,7 +156,7 @@ export function HealthPopoverContent({
         <button
           type="button"
           onClick={onViewHistory}
-          className="flex items-center gap-1 text-[11px] text-method-accent hover:underline"
+          className="flex items-center gap-1 text-[11px] text-theme-accent hover:underline"
         >
           View in History
           <ExternalLink className="h-3 w-3" />

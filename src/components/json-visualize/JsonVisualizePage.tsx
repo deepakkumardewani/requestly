@@ -345,7 +345,7 @@ export function JsonVisualizePage() {
       {/* Page toolbar */}
       <div className="flex shrink-0 items-center border-b px-3 py-2">
         <div className="flex items-center gap-2 px-2 text-sm font-semibold text-foreground">
-          <Network className="h-4 w-4 text-method-accent" />
+          <Network className="h-4 w-4 text-theme-accent" />
           JSON Visualize
         </div>
       </div>
@@ -407,7 +407,7 @@ export function JsonVisualizePage() {
                   type="button"
                   onClick={handleVisualize}
                   disabled={!inputBody.trim()}
-                  className="w-full rounded-md bg-method-accent px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="w-full rounded-md bg-theme-accent px-3 py-1.5 text-xs font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Visualize
                 </button>

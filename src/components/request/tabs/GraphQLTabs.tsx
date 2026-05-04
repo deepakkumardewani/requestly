@@ -70,25 +70,25 @@ export function GraphQLTabs({ tabId }: GraphQLTabsProps) {
           <TabsTrigger
             value="query"
             data-testid="request-tab-graphql-query"
-            className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+            className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
           >
             Query
           </TabsTrigger>
           <TabsTrigger
             value="variables"
             data-testid="request-tab-graphql-variables"
-            className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+            className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
           >
             Variables
           </TabsTrigger>
           <TabsTrigger
             value="headers"
             data-testid="request-tab-headers"
-            className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+            className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
           >
             Headers
             {enabledHeadersCount > 0 && (
-              <span className="ml-1 rounded-full bg-method-accent/20 px-1.5 py-0.5 text-[10px] text-method-accent">
+              <span className="ml-1 rounded-full bg-theme-accent/20 px-1.5 py-0.5 text-[10px] text-theme-accent">
                 {enabledHeadersCount}
               </span>
             )}
@@ -96,11 +96,11 @@ export function GraphQLTabs({ tabId }: GraphQLTabsProps) {
           <TabsTrigger
             value="auth"
             data-testid="request-tab-auth"
-            className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+            className="h-8 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
           >
             Auth
             {tab.auth.type !== "none" && (
-              <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
+              <span className="ml-1 h-1.5 w-1.5 rounded-full bg-theme-accent" />
             )}
           </TabsTrigger>
         </TabsList>

@@ -46,7 +46,7 @@ export function SettingsNav({ activeSection, onSectionChange }: Props) {
             className={cn(
               "flex w-full items-center rounded px-3 py-2 text-sm transition-colors",
               activeSection === id
-                ? "border-l-2 border-l-method-accent bg-method-accent/10 pl-[calc(0.75rem-2px)] text-method-accent font-medium"
+                ? "border-l-2 border-l-theme-accent bg-theme-accent/10 pl-[calc(0.75rem-2px)] text-theme-accent font-medium"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
             )}
           >

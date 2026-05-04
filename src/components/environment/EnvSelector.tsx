@@ -53,10 +53,10 @@ export function EnvSelector() {
       <DropdownMenu>
         <DropdownMenuTrigger
           data-testid="env-selector-trigger"
-          className="flex h-8 w-full items-center justify-between rounded-md border border-method-accent/20 bg-method-accent/5 px-2 text-xs hover:bg-method-accent/10"
+          className="flex h-8 w-full items-center justify-between rounded-md border border-theme-accent/20 bg-theme-accent/5 px-2 text-xs hover:bg-theme-accent/10"
         >
           <span className="flex items-center gap-1.5 truncate">
-            <Globe className="h-3 w-3 shrink-0 text-method-accent" />
+            <Globe className="h-3 w-3 shrink-0 text-theme-accent" />
             <span className="truncate">
               {activeEnv?.name ?? "No Environment"}
             </span>

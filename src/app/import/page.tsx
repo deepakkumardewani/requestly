@@ -197,8 +197,8 @@ export default function ImportPage() {
             <div
               className={`flex min-h-[180px] flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 transition-colors ${
                 importStatus === "dragging"
-                  ? "border-method-accent bg-method-accent/5"
-                  : "border-border hover:border-method-accent/50"
+                  ? "border-theme-accent bg-theme-accent/5"
+                  : "border-border hover:border-theme-accent/50"
               }`}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -254,7 +254,7 @@ export default function ImportPage() {
               <p className="text-xs text-destructive">{curlError}</p>
             )}
             <Button
-              className="gap-2 bg-method-accent/10 text-method-accent hover:bg-method-accent/20"
+              className="gap-2 bg-theme-accent/10 text-theme-accent hover:bg-theme-accent/20"
               onClick={handleCurlImport}
               disabled={!curlInput.trim()}
             >
@@ -276,7 +276,7 @@ export default function ImportPage() {
               onChange={(e) => setJsonInput(e.target.value)}
             />
             <Button
-              className="gap-2 bg-method-accent/10 text-method-accent hover:bg-method-accent/20"
+              className="gap-2 bg-theme-accent/10 text-theme-accent hover:bg-theme-accent/20"
               onClick={() => {
                 try {
                   const data = JSON.parse(jsonInput) as Record<string, unknown>;
