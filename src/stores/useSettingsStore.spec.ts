@@ -24,6 +24,7 @@ const DEFAULTS: AppSettings = {
   globalBaseUrl: "",
   globalHeaders: [],
   pinnedRequestIds: [],
+  accentColor: { r: 52, g: 211, b: 153 },
 };
 
 describe("useSettingsStore", () => {

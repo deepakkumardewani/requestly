@@ -93,3 +93,18 @@ export const TAB_TYPES = {
 } as const;
 
 export const MAX_WS_LOG_ENTRIES = 1000;
+
+export const ACCENT_COLORS: {
+  label: string;
+  r: number;
+  g: number;
+  b: number;
+}[] = [
+  { label: "Emerald", r: 52, g: 211, b: 153 },
+  { label: "Blue", r: 96, g: 165, b: 250 },
+  { label: "Amber", r: 251, g: 191, b: 36 },
+  { label: "Purple", r: 192, g: 132, b: 252 },
+  { label: "Red", r: 248, g: 113, b: 113 },
+  { label: "Cyan", r: 34, g: 211, b: 238 },
+  { label: "Pink", r: 244, g: 114, b: 182 },
+];

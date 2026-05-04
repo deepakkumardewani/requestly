@@ -31,6 +31,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   globalBaseUrl: "",
   globalHeaders: [],
   pinnedRequestIds: [],
+  accentColor: { r: 52, g: 211, b: 153 },
 };
 
 async function persistSettings(settings: AppSettings) {
@@ -66,6 +67,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
         globalBaseUrl: s.globalBaseUrl,
         globalHeaders: s.globalHeaders,
         pinnedRequestIds: s.pinnedRequestIds,
+        accentColor: s.accentColor,
       });
     },
 

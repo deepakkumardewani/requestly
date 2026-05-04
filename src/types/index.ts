@@ -205,6 +205,8 @@ export type AppSettings = {
   globalHeaders: KVPair[];
   /** Request IDs pinned to the top of the sidebar. */
   pinnedRequestIds: string[];
+  /** User-selected accent color RGB values for the app theme. */
+  accentColor: { r: number; g: number; b: number };
 };
 
 export type HealthMetrics = {
