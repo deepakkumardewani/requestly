@@ -1,6 +1,14 @@
 "use client";
 
-import { ArrowUpToLine, Braces, Eraser, Wand2 } from "lucide-react";
+import {
+  ArrowUpToLine,
+  Braces,
+  Eraser,
+  Loader2,
+  Sparkles,
+  Wand2,
+  X,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import {
   useCallback,
@@ -8,13 +16,16 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
+import { toast } from "sonner";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { TooltipIconButton } from "@/components/ui/tooltip-icon-button";
+import { useAI } from "@/hooks/useAI";
 import { formatJson } from "@/lib/jsonDiff";
 import { buildJsonPathSuggestionsFromText } from "@/lib/jsonStructurePaths";
 import type { StructureCompletionState } from "@/lib/structureCompletion";
@@ -44,6 +55,14 @@ export function TransformPage() {
     setResult,
     clear,
   } = useTransformStore();
+
+  const [showAiBar, setShowAiBar] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const { run: runAI, loading: aiLoading } = useAI<{ expression: string }>(
+    "suggest-jsonpath",
+  );
+
+  const hasInput = inputBody.trim().length > 0;
 
   const code = mode === "js" ? codeJs : codeJsonPath;
 
@@ -209,12 +228,27 @@ export function TransformPage() {
 
   const editorLanguage = mode === "js" ? "javascript" : "text";
 
+  async function handleAiGenerate() {
+    if (!aiPrompt.trim()) return;
+    const result = await runAI({
+      description: aiPrompt.trim(),
+      bodySnippet: inputBody.slice(0, 2000),
+    });
+    if (!result?.expression) {
+      toast.error("AI could not generate a JSONPath expression");
+      return;
+    }
+    setCode(result.expression);
+    setAiPrompt("");
+    setShowAiBar(false);
+  }
+
   return (
     <div className="flex flex-col h-full overflow-hidden bg-background">
       {/* Toolbar */}
       <div className="flex shrink-0 items-center border-b px-3 py-2">
         <div className="flex items-center gap-2 text-sm font-semibold text-foreground px-2">
-          <Braces className="h-4 w-4 text-method-accent" />
+          <Braces className="h-4 w-4 text-theme-accent" />
           Transform Playground
         </div>
       </div>
@@ -297,7 +331,59 @@ export function TransformPage() {
                       </button>
                     ))}
                   </div>
+                  {mode === "jsonpath" && hasInput && (
+                    <button
+                      type="button"
+                      className="ml-auto flex items-center gap-1 rounded px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                      onClick={() => setShowAiBar((v) => !v)}
+                      data-testid="jsonpath-ai-btn"
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      Ask AI
+                    </button>
+                  )}
                 </div>
+                {showAiBar && mode === "jsonpath" && hasInput && (
+                  <div
+                    className="flex items-center gap-2 border-b bg-muted/30 px-3 py-1.5"
+                    data-testid="jsonpath-ai-bar"
+                  >
+                    <input
+                      className="h-7 flex-1 rounded border border-input bg-transparent px-2.5 text-xs outline-none placeholder:text-muted-foreground focus:ring-1 focus:ring-ring"
+                      placeholder="Describe the value you want to extract..."
+                      value={aiPrompt}
+                      onChange={(e) => setAiPrompt(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") void handleAiGenerate();
+                      }}
+                      data-testid="jsonpath-ai-input"
+                    />
+                    <button
+                      type="button"
+                      className="flex h-7 items-center rounded bg-primary px-3 text-xs text-primary-foreground transition-opacity disabled:opacity-50"
+                      onClick={() => void handleAiGenerate()}
+                      disabled={aiLoading || !aiPrompt.trim()}
+                      data-testid="jsonpath-ai-generate-btn"
+                    >
+                      {aiLoading ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        "Generate"
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      className="flex h-7 w-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                      onClick={() => {
+                        setShowAiBar(false);
+                        setAiPrompt("");
+                      }}
+                      data-testid="jsonpath-ai-close-btn"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                )}
                 <div
                   className={`flex-1 overflow-hidden min-h-0 ${error ? "ring-1 ring-inset ring-destructive/50" : ""}`}
                 >

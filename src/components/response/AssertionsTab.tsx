@@ -1,6 +1,17 @@
 "use client";
 
-import { CheckCircle2, HelpCircle, Plus, Trash2, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  HelpCircle,
+  Loader2,
+  Plus,
+  Sparkles,
+  Trash2,
+  XCircle,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useAI } from "@/hooks/useAI";
 import { assertionsSummary } from "@/lib/chainAssertions";
 import { generateId } from "@/lib/utils";
 import { useResponseStore } from "@/stores/useResponseStore";
@@ -14,6 +25,7 @@ import {
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import {
   Select,
   SelectContent,
@@ -86,9 +98,27 @@ function AssertionRow({
   onChange: (updated: ChainAssertion) => void;
   onRemove: () => void;
 }) {
+  const [aiPopoverOpen, setAiPopoverOpen] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const { run: runAI, loading: aiLoading } = useAI<{ expression: string }>(
+    "suggest-jsonpath",
+  );
+
   const needsPath =
     assertion.source === "jsonpath" || assertion.source === "header";
   const needsValue = !OPERATORS_WITHOUT_VALUE.includes(assertion.operator);
+
+  async function handleJsonpathAI() {
+    if (!aiPrompt.trim()) return;
+    const aiResult = await runAI({ description: aiPrompt.trim() });
+    if (!aiResult?.expression) {
+      toast.error("AI could not generate a JSONPath expression");
+      return;
+    }
+    onChange({ ...assertion, sourcePath: aiResult.expression });
+    setAiPrompt("");
+    setAiPopoverOpen(false);
+  }
 
   return (
     <div className="flex items-center gap-2 rounded border border-border bg-card px-3 py-2">
@@ -141,16 +171,58 @@ function AssertionRow({
 
       {/* Source path (header name or JSONPath) */}
       {needsPath && (
-        <Input
-          className="h-7 w-36 text-xs font-mono"
-          placeholder={
-            assertion.source === "jsonpath" ? "$.data.id" : "content-type"
-          }
-          value={assertion.sourcePath ?? ""}
-          onChange={(e) =>
-            onChange({ ...assertion, sourcePath: e.target.value })
-          }
-        />
+        <div className="flex items-center gap-1">
+          <Input
+            className="h-7 w-36 text-xs font-mono"
+            placeholder={
+              assertion.source === "jsonpath" ? "$.data.id" : "content-type"
+            }
+            value={assertion.sourcePath ?? ""}
+            onChange={(e) =>
+              onChange({ ...assertion, sourcePath: e.target.value })
+            }
+          />
+          {assertion.source === "jsonpath" && (
+            <Popover open={aiPopoverOpen} onOpenChange={setAiPopoverOpen}>
+              <PopoverTrigger
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Ask AI for JSONPath"
+                data-testid="jsonpath-row-ai-btn"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+              </PopoverTrigger>
+              <PopoverContent className="w-72 p-3" align="start">
+                <p className="mb-2 text-xs font-medium">Ask AI for JSONPath</p>
+                <div className="flex gap-2">
+                  <Input
+                    className="h-7 flex-1 text-xs"
+                    placeholder="e.g. user's email"
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") void handleJsonpathAI();
+                    }}
+                    autoFocus
+                    data-testid="jsonpath-row-ai-input"
+                  />
+                  <Button
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={() => void handleJsonpathAI()}
+                    disabled={aiLoading || !aiPrompt.trim()}
+                    data-testid="jsonpath-row-ai-confirm"
+                  >
+                    {aiLoading ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      "Go"
+                    )}
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
       )}
 
       {/* Operator */}
@@ -197,16 +269,54 @@ function AssertionRow({
   );
 }
 
+type SuggestedAssertion = {
+  source: "status" | "jsonpath" | "header";
+  sourcePath?: string;
+  operator: AssertionOperator;
+  expectedValue?: string;
+};
+
 export function AssertionsTab({ tabId }: AssertionsTabProps) {
   const { tabs, updateTabState } = useTabsStore();
-  const { assertionResults } = useResponseStore();
+  const { assertionResults, responses } = useResponseStore();
+  const { run, loading } = useAI<SuggestedAssertion[]>("suggest-assertions");
 
   const tab = tabs.find((t) => t.tabId === tabId);
   if (!tab || tab.type !== "http") return null;
 
   const assertions = tab.assertions ?? [];
   const results = assertionResults[tabId] ?? [];
+  const response = responses[tabId] ?? null;
   const summary = results.length > 0 ? assertionsSummary(results) : null;
+
+  async function handleSuggest() {
+    if (!response) return;
+    const result = await run({
+      status: response.status,
+      headers: response.headers,
+      bodySnippet: response.body.slice(0, 2000),
+    });
+    if (!result) return;
+
+    const newAssertions: ChainAssertion[] = result.map((a) => ({
+      id: generateId(),
+      source: a.source,
+      sourcePath: a.sourcePath,
+      operator: a.operator,
+      expectedValue: a.expectedValue,
+      enabled: true,
+    }));
+
+    if (newAssertions.length === 0) {
+      toast.info("No assertions suggested for this response.");
+      return;
+    }
+
+    updateAssertions([...assertions, ...newAssertions]);
+    toast.success(
+      `Added ${newAssertions.length} assertion${newAssertions.length > 1 ? "s" : ""}`,
+    );
+  }
 
   function getResult(assertionId: string) {
     return results.find((r) => r.assertionId === assertionId);
@@ -269,16 +379,33 @@ export function AssertionsTab({ tabId }: AssertionsTabProps) {
         ))}
       </div>
 
-      {/* Add button */}
-      <Button
-        variant="outline"
-        size="sm"
-        className="w-fit gap-1.5 text-xs"
-        onClick={addAssertion}
-      >
-        <Plus className="h-3.5 w-3.5" />
-        Add Assertion
-      </Button>
+      {/* Add / AI suggest buttons */}
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-fit gap-1.5 text-xs"
+          onClick={addAssertion}
+        >
+          <Plus className="h-3.5 w-3.5" />
+          Add Assertion
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-7 gap-1 px-2 text-[11px] text-muted-foreground hover:text-foreground"
+          onClick={() => void handleSuggest()}
+          disabled={loading || !response}
+          data-testid="suggest-assertions-btn"
+        >
+          {loading ? (
+            <Loader2 className="h-3 w-3 animate-spin" />
+          ) : (
+            <Sparkles className="h-3 w-3" />
+          )}
+          Suggest with AI
+        </Button>
+      </div>
 
       {/* Help section */}
       {assertions.length === 0 && (

@@ -1,6 +1,12 @@
 "use client";
 
-import { AlertTriangle, ExternalLink, X } from "lucide-react";
+import {
+  AlertTriangle,
+  ExternalLink,
+  Loader2,
+  Sparkles,
+  X,
+} from "lucide-react";
 import {
   type PointerEventHandler,
   type ReactNode,
@@ -14,6 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useAI } from "@/hooks/useAI";
 import { explainError } from "@/lib/errorExplainer";
 
 type ErrorExplainerProps = {
@@ -31,12 +38,24 @@ export function ErrorExplainer({
 }: ErrorExplainerProps) {
   const [dismissed, setDismissed] = useState(false);
   const [open, setOpen] = useState(false);
+  const [aiExplanation, setAiExplanation] = useState<string | null>(null);
   const showTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const {
+    run: runAI,
+    loading: aiLoading,
+    error: aiError,
+    reset: resetAI,
+  } = useAI<{
+    explanation: string;
+  }>("explain-error");
+
   useEffect(() => {
     setDismissed(false);
-  }, [responseKey]);
+    setAiExplanation(null);
+    resetAI();
+  }, [responseKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     return () => {
@@ -46,6 +65,15 @@ export function ErrorExplainer({
   }, []);
 
   const explanation = explainError(status, body);
+
+  async function handleAskAI() {
+    const result = await runAI({
+      status,
+      bodySnippet: body.slice(0, 2000),
+      contentType: "",
+    });
+    if (result) setAiExplanation(result.explanation);
+  }
 
   function scheduleShow() {
     if (hideTimerRef.current) {
@@ -70,6 +98,84 @@ export function ErrorExplainer({
       clearTimeout(hideTimerRef.current);
       hideTimerRef.current = null;
     }
+  }
+
+  // Unknown error codes (≥ 400 but no static explanation) — AI-only path
+  if (!explanation && status >= 400 && !dismissed) {
+    return (
+      <span
+        data-testid="error-explainer"
+        className="inline-flex items-center gap-1.5"
+      >
+        {children}
+        <Popover>
+          <PopoverTrigger
+            data-testid="ai-explain-btn"
+            className="inline-flex h-5 items-center gap-1 rounded px-1.5 text-[10px] text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+            onClick={handleAskAI}
+          >
+            <Sparkles className="h-3 w-3" />
+            Explain with AI
+          </PopoverTrigger>
+          <PopoverContent
+            data-testid="ai-explain-content"
+            className="w-80 max-h-[min(70vh,28rem)] overflow-y-auto p-3"
+            side="bottom"
+            align="start"
+          >
+            <div className="flex items-start gap-2 border-b border-border pb-2">
+              <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-violet-400" />
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-medium text-muted-foreground">
+                  AI explanation
+                </p>
+                <p className="text-sm font-semibold text-foreground">
+                  HTTP {status}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="h-6 w-6 shrink-0 text-muted-foreground hover:text-foreground"
+                onClick={() => setDismissed(true)}
+                aria-label="Dismiss"
+              >
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            <div className="pt-2.5">
+              {aiLoading && (
+                <div
+                  className="flex items-center gap-2 text-xs text-muted-foreground"
+                  data-testid="ai-loading"
+                >
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Asking AI…
+                </div>
+              )}
+              {aiError && (
+                <p className="text-xs text-destructive" data-testid="ai-error">
+                  {aiError}
+                </p>
+              )}
+              {aiExplanation && (
+                <p
+                  className="text-xs text-muted-foreground"
+                  data-testid="ai-explanation"
+                >
+                  {aiExplanation}
+                </p>
+              )}
+              {!aiLoading && !aiError && !aiExplanation && (
+                <p className="text-xs text-muted-foreground">
+                  Click "Explain with AI" to get an explanation.
+                </p>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
+      </span>
+    );
   }
 
   if (!explanation || dismissed) {
@@ -157,6 +263,44 @@ export function ErrorExplainer({
               MDN docs for {status}
               <ExternalLink className="h-3 w-3" />
             </a>
+
+            {/* AI context-specific insight */}
+            <div className="border-t border-border pt-2">
+              {!aiExplanation && !aiLoading && (
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1 text-xs text-violet-400 underline-offset-2 hover:underline disabled:opacity-50"
+                  onClick={handleAskAI}
+                  disabled={aiLoading}
+                  data-testid="ai-insight-link"
+                >
+                  <Sparkles className="h-3 w-3" />
+                  Ask AI for context-specific insight →
+                </button>
+              )}
+              {aiLoading && (
+                <div
+                  className="flex items-center gap-1.5 text-xs text-muted-foreground"
+                  data-testid="ai-loading"
+                >
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Asking AI…
+                </div>
+              )}
+              {aiError && (
+                <p className="text-xs text-destructive" data-testid="ai-error">
+                  {aiError}
+                </p>
+              )}
+              {aiExplanation && (
+                <p
+                  className="text-xs text-muted-foreground"
+                  data-testid="ai-explanation"
+                >
+                  {aiExplanation}
+                </p>
+              )}
+            </div>
           </div>
         </PopoverContent>
       </Popover>

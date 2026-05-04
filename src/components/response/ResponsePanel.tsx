@@ -7,14 +7,17 @@ import {
   Download,
   FileCode2,
   GitCompare,
+  Loader2,
   Network,
   Send,
   Settings2,
+  Sparkles,
   Trash2,
   X,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/common/EmptyState";
 import { StatusBadge } from "@/components/common/StatusBadge";
@@ -28,6 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TooltipIconButton } from "@/components/ui/tooltip-icon-button";
+import { useAI } from "@/hooks/useAI";
 import { formatJson } from "@/lib/jsonDiff";
 import {
   estimateHeaderBlockBytes,
@@ -314,6 +318,12 @@ function SizeDetailTooltip({
 
 export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
   const router = useRouter();
+  const [summary, setSummary] = useState<string | null>(null);
+  const {
+    run: summarize,
+    loading: summarizeLoading,
+    reset: resetSummary,
+  } = useAI<{ summary: string }>("summarize-response");
   const {
     responses,
     loading,
@@ -428,6 +438,18 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
   }
 
   const contentType = response.headers["content-type"] ?? "";
+
+  async function handleSummarize() {
+    if (!response) return;
+    setSummary(null);
+    resetSummary();
+    const result = await summarize({
+      status: response.status,
+      headers: response.headers,
+      bodySnippet: response.body.slice(0, 2000),
+    });
+    if (result) setSummary(result.summary);
+  }
 
   async function handleCopy() {
     try {
@@ -571,6 +593,30 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
             </TooltipContent>
           </Tooltip>
           <div className="ml-auto flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 gap-1 px-1.5 text-[11px] text-muted-foreground hover:text-foreground"
+                    onClick={handleSummarize}
+                    disabled={summarizeLoading}
+                    data-testid="summarize-btn"
+                  />
+                }
+              >
+                {summarizeLoading ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Sparkles className="h-3 w-3" />
+                )}
+                Summarize
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                Summarize response with AI
+              </TooltipContent>
+            </Tooltip>
             <TooltipIconButton
               label="Data Schema"
               onClick={() => useDataSchemaStore.getState().open()}
@@ -624,6 +670,31 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
         </div>
       </TooltipProvider>
 
+      {/* AI summary banner */}
+      {summary && (
+        <div
+          className="flex items-start gap-2 border-b border-violet-500/30 bg-violet-500/10 px-3 py-2 text-xs"
+          data-testid="summary-banner"
+        >
+          <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-violet-400" />
+          <p
+            className="flex-1 text-muted-foreground"
+            data-testid="summary-text"
+          >
+            {summary}
+          </p>
+          <button
+            type="button"
+            onClick={() => setSummary(null)}
+            className="shrink-0 text-muted-foreground hover:text-foreground"
+            aria-label="Dismiss summary"
+            data-testid="summary-dismiss"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Response tabs */}
       <Tabs
         defaultValue="pretty"
@@ -636,7 +707,7 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
               key={tab}
               value={tab}
               data-testid={`response-tab-${tab}`}
-              className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+              className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
             >
               {tab}
               {tab === "headers" && (
@@ -649,18 +720,18 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
           <TabsTrigger
             value="console"
             data-testid="response-tab-console"
-            className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+            className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
           >
             Console
             {tabLogs.length > 0 && (
-              <span className="ml-1 h-1.5 w-1.5 rounded-full bg-method-accent" />
+              <span className="ml-1 h-1.5 w-1.5 rounded-full bg-theme-accent" />
             )}
           </TabsTrigger>
           {activeTab?.type === "http" && (
             <TabsTrigger
               value="tests"
               data-testid="response-tab-tests"
-              className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-method-accent data-[state=active]:text-method-accent"
+              className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs capitalize data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
             >
               Tests
               {assertionCount > 0 && assertionResults.length === 0 && (
