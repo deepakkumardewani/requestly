@@ -14,6 +14,8 @@ import { useTabsStore } from "@/stores/useTabsStore";
 import type { HttpTab } from "@/types";
 import { UrlBar } from "./UrlBar";
 
+const mockFetch = vi.fn();
+
 vi.mock("@/lib/idb", () => ({
   getDB: vi.fn(() => null),
 }));
@@ -52,11 +54,16 @@ function seedHttpTab(overrides: Partial<HttpTab> = {}) {
   return tab.tabId;
 }
 
+beforeEach(() => {
+  vi.stubGlobal("fetch", mockFetch);
+});
+
 afterEach(() => {
   cleanup();
   resetStores();
   urlBarMocks.isLoading = false;
   vi.clearAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe("UrlBar", () => {
@@ -176,5 +183,198 @@ describe("UrlBar", () => {
       />
     );
     expect(screen.queryByTestId("url-input")).toBeNull();
+  });
+
+  describe("AI Request Builder", () => {
+    it("wand button renders for HTTP tabs", () => {
+      const tabId = seedHttpTab({ url: "https://api.example.com" });
+      render(
+        <UrlBar
+          tabId={tabId}
+          send={urlBarMocks.send}
+          cancel={urlBarMocks.cancel}
+          isLoading={false}
+        />
+      );
+      expect(screen.getByTestId("ai-builder-wand-btn")).toBeTruthy();
+    });
+
+    it("wand button absent for GraphQL tabs", () => {
+      useTabsStore.getState().openTab({ type: "graphql", url: "https://gql.test" });
+      const tabId = (useTabsStore.getState().tabs[0] as { tabId: string }).tabId;
+      render(
+        <UrlBar
+          tabId={tabId}
+          send={urlBarMocks.send}
+          cancel={urlBarMocks.cancel}
+          isLoading={false}
+        />
+      );
+      expect(screen.queryByTestId("ai-builder-wand-btn")).toBeNull();
+    });
+
+    it("clicking wand button opens Sheet with textarea", async () => {
+      const user = userEvent.setup();
+      const tabId = seedHttpTab();
+      render(
+        <UrlBar
+          tabId={tabId}
+          send={urlBarMocks.send}
+          cancel={urlBarMocks.cancel}
+          isLoading={false}
+        />
+      );
+
+      await user.click(screen.getByTestId("ai-builder-wand-btn"));
+      expect(screen.getByTestId("ai-builder-input")).toBeTruthy();
+    });
+
+    it("submitting description calls /api/ai with build-request action", async () => {
+      const user = userEvent.setup();
+      const tabId = seedHttpTab({ url: "https://api.example.com" });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          method: "POST",
+          url: "https://jsonplaceholder.typicode.com/users",
+          headers: [{ key: "Content-Type", value: "application/json" }],
+          params: [],
+          bodyType: "json",
+          bodyContent: '{"name":"Alice"}',
+        }),
+      });
+
+      render(
+        <UrlBar
+          tabId={tabId}
+          send={urlBarMocks.send}
+          cancel={urlBarMocks.cancel}
+          isLoading={false}
+        />
+      );
+
+      await user.click(screen.getByTestId("ai-builder-wand-btn"));
+      await user.type(screen.getByTestId("ai-builder-input"), "POST a new user");
+      await user.click(screen.getByTestId("ai-builder-generate-btn"));
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith(
+          "/api/ai",
+          expect.objectContaining({
+            method: "POST",
+            body: expect.stringContaining('"action":"build-request"'),
+          }),
+        );
+      });
+    });
+
+    it("Sheet renders structured preview after generate", async () => {
+      const user = userEvent.setup();
+      const tabId = seedHttpTab();
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          method: "POST",
+          url: "https://jsonplaceholder.typicode.com/users",
+          headers: [{ key: "Content-Type", value: "application/json" }],
+          params: [],
+          bodyType: "json",
+          bodyContent: '{"name":"Alice"}',
+        }),
+      });
+
+      render(
+        <UrlBar
+          tabId={tabId}
+          send={urlBarMocks.send}
+          cancel={urlBarMocks.cancel}
+          isLoading={false}
+        />
+      );
+
+      await user.click(screen.getByTestId("ai-builder-wand-btn"));
+      await user.type(screen.getByTestId("ai-builder-input"), "POST a new user");
+      await user.click(screen.getByTestId("ai-builder-generate-btn"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("ai-builder-preview")).toBeTruthy();
+        expect(screen.getByTestId("preview-url")).toHaveTextContent(
+          "https://jsonplaceholder.typicode.com/users",
+        );
+      });
+    });
+
+    it("Apply calls updateTabState with correct fields", async () => {
+      const user = userEvent.setup();
+      const tabId = seedHttpTab({ url: "https://api.example.com" });
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          method: "POST",
+          url: "https://jsonplaceholder.typicode.com/users",
+          headers: [{ key: "Content-Type", value: "application/json" }],
+          params: [],
+          bodyType: "json",
+          bodyContent: '{"name":"Alice"}',
+        }),
+      });
+
+      render(
+        <UrlBar
+          tabId={tabId}
+          send={urlBarMocks.send}
+          cancel={urlBarMocks.cancel}
+          isLoading={false}
+        />
+      );
+
+      await user.click(screen.getByTestId("ai-builder-wand-btn"));
+      await user.type(screen.getByTestId("ai-builder-input"), "POST a user");
+      await user.click(screen.getByTestId("ai-builder-generate-btn"));
+
+      await waitFor(() =>
+        expect(screen.getByTestId("ai-builder-preview")).toBeTruthy(),
+      );
+
+      // Find and click the Apply button (rendered inside the AIRequestBuilder)
+      const applyBtn = screen.getByText("Apply");
+      await user.click(applyBtn);
+
+      await waitFor(() => {
+        const t = useTabsStore.getState().tabs[0] as HttpTab;
+        expect(t.method).toBe("POST");
+        expect(t.url).toBe("https://jsonplaceholder.typicode.com/users");
+      });
+    });
+
+    it("Discard closes Sheet without calling updateTabState", async () => {
+      const user = userEvent.setup();
+      const tabId = seedHttpTab({ url: "https://original.com", method: "GET" });
+
+      render(
+        <UrlBar
+          tabId={tabId}
+          send={urlBarMocks.send}
+          cancel={urlBarMocks.cancel}
+          isLoading={false}
+        />
+      );
+
+      await user.click(screen.getByTestId("ai-builder-wand-btn"));
+      expect(screen.getByTestId("ai-builder-input")).toBeTruthy();
+
+      await user.click(screen.getByTestId("ai-builder-discard-btn"));
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("ai-builder-input")).toBeNull();
+      });
+
+      const t = useTabsStore.getState().tabs[0] as HttpTab;
+      expect(t.url).toBe("https://original.com");
+      expect(t.method).toBe("GET");
+    });
   });
 });

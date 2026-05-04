@@ -3,6 +3,16 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+vi.mock("@/hooks/useAI", () => ({
+  useAI: vi.fn(() => ({
+    run: vi.fn().mockResolvedValue({ explanation: "AI says: bad token." }),
+    loading: false,
+    error: null,
+    reset: vi.fn(),
+  })),
+}));
+import { useAI } from "@/hooks/useAI";
 import { ErrorExplainer } from "./ErrorExplainer";
 
 afterEach(() => {
@@ -58,6 +68,66 @@ describe("ErrorExplainer", () => {
         /The token format is incorrect — check the expected format/i,
       ),
     ).toBeInTheDocument();
+  });
+
+  it("shows AI insight link inside known-error popover and renders result on click", async () => {
+    const mockRun = vi.fn().mockResolvedValue({ explanation: "Token expired." });
+    vi.mocked(useAI).mockReturnValue({
+      run: mockRun,
+      loading: false,
+      error: null,
+      reset: vi.fn(),
+    });
+
+    const user = userEvent.setup();
+
+    render(
+      <ErrorExplainer status={401} body="" responseKey={1}>
+        <span>Auth</span>
+      </ErrorExplainer>,
+    );
+
+    await user.hover(screen.getByTestId("error-explainer-trigger"));
+    await screen.findByTestId("error-explainer-content");
+
+    const aiLink = screen.getByTestId("ai-insight-link");
+    expect(aiLink).toBeInTheDocument();
+
+    await user.click(aiLink);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ai-explanation")).toHaveTextContent("Token expired.");
+    });
+  });
+
+  it("renders AI-only popover for unknown error codes (no static explanation)", async () => {
+    const mockRun = vi.fn().mockResolvedValue({ explanation: "Custom error." });
+    vi.mocked(useAI).mockReturnValue({
+      run: mockRun,
+      loading: false,
+      error: null,
+      reset: vi.fn(),
+    });
+
+    const user = userEvent.setup();
+
+    render(
+      <ErrorExplainer status={599} body="" responseKey={1}>
+        <span>Custom</span>
+      </ErrorExplainer>,
+    );
+
+    expect(screen.getByTestId("error-explainer")).toBeInTheDocument();
+    const aiBtn = screen.getByTestId("ai-explain-btn");
+    expect(aiBtn).toBeInTheDocument();
+
+    await user.click(aiBtn);
+
+    await waitFor(() => {
+      expect(mockRun).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 599 }),
+      );
+    });
   });
 
   it("dismiss hides explainer until responseKey changes", async () => {
