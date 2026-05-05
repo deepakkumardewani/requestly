@@ -27,7 +27,7 @@ Create atomic commits and push to remote.
 
 - Max 50 characters
 - Imperative mood: "Add" not "Added"
-- Capitalize first letter
+- Capitalize first letter of the description
 - No period at the end
 - NEVER include Claude branding
 
@@ -38,7 +38,17 @@ Create atomic commits and push to remote.
 - Create atomic, focused commits
 - Stage specific files explicitly
 
+Examples:
+chore(docs): update feature improvements task list
+refactor(ui): improve UI components and response panel
+feat(scripts): add script editor with linting
+
 ❌ DON'T:
 
 - Use `git add .` or `git add -A`
 - Commit forbidden files
+
+Examples:
+Refactor: add AI request builder and cURL import to UrlBar
+Feat: integrate AI into request editors and response panels
+Feat: add AI assistant infrastructure
