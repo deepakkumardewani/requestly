@@ -27,6 +27,7 @@ export function HeadersEditor({ tabId }: HeadersEditorProps) {
         onChange={handleChange}
         keyPlaceholder={t("headers.headerPlaceholder")}
         valuePlaceholder={t("headers.valuePlaceholder")}
+        enableHeaderValueMask
       />
     </div>
   );

@@ -1,0 +1,18 @@
+# .graphifyignore example
+AGENTS.md          # graphify install files — don't extract your own instructions as knowledge
+CLAUDE.md
+GEMINI.md
+.gemini/
+.claude/
+.cursor/
+.next/
+.playwright-cli
+e2e/
+features/
+monocart-report/
+node_modules/
+playwright-report/
+public/
+scripts/
+tasks/
+test-results/

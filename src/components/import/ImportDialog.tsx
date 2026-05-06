@@ -1,5 +1,6 @@
 "use client";
 
+import { load as loadYaml } from "js-yaml";
 import { ExternalLink, FileJson, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -15,6 +16,11 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { CurlParseError, parseCurl } from "@/lib/curlParser";
 import { isInsomniaExport, parseInsomnia } from "@/lib/insomniaParser";
+import {
+  isProbablyOpenApiDoc,
+  OpenApiParseError,
+  parseOpenApi,
+} from "@/lib/openapiParser";
 import { generateId } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
@@ -42,10 +48,15 @@ const HELP_LINKS = [
   },
 ];
 
+function isRecord(x: unknown): x is Record<string, unknown> {
+  return typeof x === "object" && x !== null && !Array.isArray(x);
+}
+
 export function ImportDialog({ open, onClose }: ImportDialogProps) {
   const [dropState, setDropState] = useState<DropState>("idle");
   const [curlInput, setCurlInput] = useState("");
   const [curlError, setCurlError] = useState<string | null>(null);
+  const [openApiPaste, setOpenApiPaste] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { createCollection, addRequest } = useCollectionsStore();
@@ -54,8 +65,39 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
   function handleClose() {
     setCurlInput("");
     setCurlError(null);
+    setOpenApiPaste("");
     setDropState("idle");
     onClose();
+  }
+
+  function importOpenApiText(text: string, label: string) {
+    const { collectionName, requests } = parseOpenApi(text);
+    const collection = createCollection(collectionName);
+    for (const req of requests) {
+      addRequest(collection.id, {
+        tabId: generateId(),
+        requestId: null,
+        isDirty: false,
+        ...req,
+      });
+    }
+    toast.success(
+      `Imported "${label}" — ${requests.length} request${requests.length === 1 ? "" : "s"}`,
+    );
+  }
+
+  function handleOpenApiPasteImport() {
+    if (!openApiPaste.trim()) return;
+    try {
+      importOpenApiText(openApiPaste.trim(), "OpenAPI");
+      handleClose();
+    } catch (err) {
+      toast.error(
+        err instanceof OpenApiParseError
+          ? err.message
+          : "Failed to parse OpenAPI document",
+      );
+    }
   }
 
   function handleCurlImport() {
@@ -89,9 +131,60 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
     reader.onload = (e) => {
       try {
         const text = e.target?.result as string;
-        const data = JSON.parse(text) as Record<string, unknown>;
-        importFileData(data, file.name);
-        handleClose();
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(text) as unknown;
+        } catch {
+          try {
+            parsed = loadYaml(text) as unknown;
+          } catch (yamlErr) {
+            setDropState("idle");
+            toast.error(
+              yamlErr instanceof Error ? yamlErr.message : "Invalid YAML/JSON",
+            );
+            return;
+          }
+        }
+
+        if (isRecord(parsed) && isInsomniaExport(parsed)) {
+          importFileData(parsed, file.name);
+          handleClose();
+          setDropState("idle");
+          return;
+        }
+
+        if (isRecord(parsed) && isProbablyOpenApiDoc(parsed)) {
+          try {
+            importOpenApiText(text, file.name);
+          } catch (err) {
+            toast.error(
+              err instanceof OpenApiParseError
+                ? err.message
+                : "Failed to import OpenAPI",
+            );
+          }
+          handleClose();
+          setDropState("idle");
+          return;
+        }
+
+        if (
+          isRecord(parsed) &&
+          parsed.info &&
+          isRecord(parsed.info) &&
+          parsed.info._postman_schema
+        ) {
+          importPostmanCollection(parsed);
+          toast.success(`Imported "${file.name}" successfully`);
+          handleClose();
+          setDropState("idle");
+          return;
+        }
+
+        setDropState("idle");
+        toast.error(
+          "Unrecognized format. Supported: OpenAPI 3 / Swagger 2, Postman v2.1, Insomnia v4",
+        );
       } catch (err) {
         setDropState("idle");
         toast.error(
@@ -130,7 +223,7 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
     }
 
     throw new Error(
-      "Unrecognized format. Supported: Postman Collection v2.1, Insomnia v4 export",
+      "Unrecognized format. Supported: OpenAPI 3 / Swagger 2, Postman Collection v2.1, Insomnia v4 export",
     );
   }
 
@@ -265,11 +358,11 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="sm:max-w-xl flex flex-col h-[540px]">
+      <DialogContent className="sm:max-w-xl flex flex-col h-[620px]">
         <DialogHeader>
           <DialogTitle>Import</DialogTitle>
           <DialogDescription>
-            Paste a cURL command or drop a Postman/Insomnia file.
+            Paste cURL or OpenAPI (YAML/JSON), or drop a collection / spec file.
           </DialogDescription>
         </DialogHeader>
 
@@ -295,6 +388,25 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
                 onClick={handleCurlImport}
               >
                 Import cURL
+              </Button>
+            )}
+          </div>
+
+          <div className="space-y-1.5">
+            <Textarea
+              className="min-h-[72px] max-h-[100px] font-mono text-xs resize-none break-all overflow-wrap-anywhere"
+              placeholder="Paste OpenAPI 3 or Swagger 2 (YAML or JSON)…"
+              value={openApiPaste}
+              onChange={(e) => setOpenApiPaste(e.target.value)}
+            />
+            {openApiPaste.trim() && (
+              <Button
+                size="sm"
+                variant="secondary"
+                className="gap-1.5"
+                onClick={handleOpenApiPasteImport}
+              >
+                Import OpenAPI
               </Button>
             )}
           </div>
@@ -329,7 +441,7 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
               {dropState === "processing" ? "Processing…" : "Drop file here"}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Postman Collection v2.1 or Insomnia v4 JSON
+              OpenAPI / Swagger YAML or JSON, Postman v2.1, Insomnia v4 JSON
             </p>
             <Button
               variant="outline"
@@ -344,7 +456,7 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
               ref={fileInputRef}
               type="file"
               className="hidden"
-              accept=".json"
+              accept=".json,.yaml,.yml,application/json,text/yaml"
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) handleFileUpload(file);

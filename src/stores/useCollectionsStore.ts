@@ -148,6 +148,7 @@ export const useCollectionsStore = create<
       body: tab.body,
       preScript: tab.preScript,
       postScript: tab.postScript,
+      timeoutMs: tab.timeoutMs,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };

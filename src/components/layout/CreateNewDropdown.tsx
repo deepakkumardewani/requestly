@@ -7,15 +7,19 @@ import {
   GitBranch,
   Globe,
   Globe2,
+  LayoutTemplate,
   Plus,
   Upload,
   Zap,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { TemplateGalleryModal } from "@/components/request/TemplateGalleryModal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -37,6 +41,7 @@ export function CreateNewDropdown({
   const { setIsCreatingCollection, setIsCreatingEnv } = useUIStore();
   const t = useTranslations("navigation");
   const ct = useTranslations("common");
+  const [showTemplates, setShowTemplates] = useState(false);
 
   return (
     <DropdownMenu>
@@ -73,8 +78,6 @@ export function CreateNewDropdown({
           {t("newSocketIO")}
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator />
-
         <DropdownMenuItem
           onClick={() => setIsCreatingCollection(true)}
           data-testid="create-collection-item"
@@ -91,7 +94,7 @@ export function CreateNewDropdown({
           {t("newChain")}
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator />
+          <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={onImport}>
           <Upload className="mr-2 h-3.5 w-3.5" />
@@ -100,4 +103,5 @@ export function CreateNewDropdown({
       </DropdownMenuContent>
     </DropdownMenu>
   );
+  
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Download,
   FolderOpen,
   GitBranch,
   MoreHorizontal,
@@ -12,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { EmptyState } from "@/components/common/EmptyState";
+import { SampleRequestCards } from "@/components/common/SampleRequestCards";
 import {
   Accordion,
   AccordionContent,
@@ -34,6 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { downloadPostmanCollection } from "@/lib/postmanExporter";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
@@ -71,10 +74,11 @@ export function CollectionTree() {
 
   if (collections.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 px-2 py-8 text-center">
+      <div className="flex flex-col gap-4 px-2 py-6">
         <EmptyState
           title="No collections"
           description="Create a collection to organize your requests"
+          className="py-0"
           action={
             !isCreatingCollection ? (
               <Button
@@ -107,6 +111,7 @@ export function CollectionTree() {
             onBlur={() => setIsCreatingCollection(false)}
           />
         )}
+        <SampleRequestCards />
       </div>
     );
   }
@@ -195,11 +200,10 @@ export function CollectionTree() {
                           {collectionRequests.length}
                         </span>
                       </div>
-
-                      {/* Direct chain button — visible on hover */}
+                      {/* Action buttons — stopPropagation keeps trigger from toggling */}
                       <button
                         type="button"
-                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-foreground/10 dark:hover:bg-white/20 transition-opacity"
+                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto hover:bg-foreground/10 dark:hover:bg-white/20"
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(`/chain/${collection.id}`);
@@ -208,11 +212,9 @@ export function CollectionTree() {
                       >
                         <GitBranch className="h-3 w-3 text-muted-foreground" />
                       </button>
-
-                      {/* Dropdown sits before the auto-chevron so chevron ends up at far right */}
                       <DropdownMenu>
                         <DropdownMenuTrigger
-                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-foreground/10 dark:hover:bg-white/20"
+                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto hover:bg-foreground/10 dark:hover:bg-white/20"
                           onClick={(e) => e.stopPropagation()}
                           data-testid={`collection-more-btn-${collection.id}`}
                         >
@@ -236,6 +238,17 @@ export function CollectionTree() {
                           >
                             <GitBranch className="mr-2 h-3.5 w-3.5 " />
                             Chain View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              downloadPostmanCollection(
+                                collection,
+                                collectionRequests,
+                              )
+                            }
+                          >
+                            <Download className="mr-2 h-3.5 w-3.5" />
+                            Export as Postman
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
@@ -266,6 +279,14 @@ export function CollectionTree() {
                   >
                     <GitBranch className="mr-2 h-3.5 w-3.5" />
                     Chain View
+                  </ContextMenuItem>
+                  <ContextMenuItem
+                    onClick={() =>
+                      downloadPostmanCollection(collection, collectionRequests)
+                    }
+                  >
+                    <Download className="mr-2 h-3.5 w-3.5" />
+                    Export as Postman
                   </ContextMenuItem>
                   <ContextMenuSeparator />
                   <ContextMenuItem

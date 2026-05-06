@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { HttpTab } from "@/types";
 import { encryptPayload } from "./crypto";
 import { createShareLink, fetchSharePayload } from "./shareLink";
+import * as shareRateLimitLocal from "./shareRateLimitLocal";
 
 function minimalHttpTab(overrides: Partial<HttpTab> = {}): HttpTab {
   return {
@@ -86,6 +87,69 @@ describe("createShareLink", () => {
         headers: { "Content-Type": "application/json" },
       }),
     );
+  });
+
+  it("returns rate_limited when local per-window cap is active", async () => {
+    vi.spyOn(shareRateLimitLocal, "getLocalShareRateBlock").mockReturnValueOnce(
+      {
+        blocked: true,
+        resetAtMs: 9_999_999,
+      },
+    );
+    vi.stubGlobal("window", {
+      location: { origin: "https://app.test" },
+      fetch: vi.fn(),
+    } as unknown as Window & typeof globalThis);
+    await expect(createShareLink(minimalHttpTab(), "u1")).resolves.toEqual({
+      ok: false,
+      error: "rate_limited",
+      resetAt: 9_999_999,
+    });
+  });
+
+  it("returns failed when tab state is not JSON-serialisable", async () => {
+    vi.stubGlobal("window", {
+      location: { origin: "https://app.test" },
+      fetch: vi.fn(),
+    } as unknown as Window & typeof globalThis);
+    const tab = minimalHttpTab();
+    const circular = tab as HttpTab & { loop?: HttpTab };
+    circular.loop = circular;
+    await expect(createShareLink(circular, "u1")).resolves.toEqual({
+      ok: false,
+      error: "failed",
+    });
+  });
+
+  it("returns failed on non-rate-limited API error", async () => {
+    const post = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({ error: "nope" }),
+    });
+    vi.stubGlobal("window", {
+      location: { origin: "https://app.test" },
+      fetch: post,
+    } as unknown as Window & typeof globalThis);
+    await expect(createShareLink(minimalHttpTab(), "u1")).resolves.toEqual({
+      ok: false,
+      error: "failed",
+    });
+  });
+
+  it("returns failed when POST succeeds but body omits share id", async () => {
+    const post = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({}),
+    });
+    vi.stubGlobal("window", {
+      location: { origin: "https://app.test" },
+      fetch: post,
+    } as unknown as Window & typeof globalThis);
+    await expect(createShareLink(minimalHttpTab(), "u1")).resolves.toEqual({
+      ok: false,
+      error: "failed",
+    });
   });
 
   it("returns rate_limited on HTTP 429 with optional resetAt", async () => {
@@ -189,5 +253,33 @@ describe("fetchSharePayload", () => {
       fetch: vi.fn().mockResolvedValue({ ok: false, status: 404 }),
     } as unknown as Window & typeof globalThis);
     await expect(fetchSharePayload("missing")).resolves.toBeNull();
+  });
+
+  it("returns null when decrypted JSON fails schema validation", async () => {
+    const plaintext = JSON.stringify({
+      method: "TEAPOT",
+      url: "https://x.test",
+      headers: [],
+      params: [],
+      body: { type: "none", content: "" },
+      auth: { type: "none" },
+    });
+    const { ciphertext, iv, keyB64 } = await encryptPayload(plaintext);
+    vi.stubGlobal("window", {
+      location: { hash: `#${keyB64}` },
+      fetch: vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ ciphertext, iv }),
+      }),
+    } as unknown as Window & typeof globalThis);
+    await expect(fetchSharePayload("id1")).resolves.toBeNull();
+  });
+
+  it("returns null when fetch throws", async () => {
+    vi.stubGlobal("window", {
+      location: { hash: `#${"k".repeat(12)}` },
+      fetch: vi.fn().mockRejectedValue(new Error("network")),
+    } as unknown as Window & typeof globalThis);
+    await expect(fetchSharePayload("id2")).resolves.toBeNull();
   });
 });

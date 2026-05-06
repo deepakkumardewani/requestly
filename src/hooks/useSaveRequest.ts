@@ -38,6 +38,7 @@ export function useSaveRequest() {
         body: activeTab.body,
         preScript: activeTab.preScript,
         postScript: activeTab.postScript,
+        timeoutMs: activeTab.timeoutMs,
       });
 
       updateTabState(activeTab.tabId, { isDirty: false });

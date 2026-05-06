@@ -1,0 +1,21 @@
+{
+  "0": "Collections & Request Items",
+  "1": "API Routes & Sharing",
+  "2": "Layout & Navigation",
+  "3": "IndexedDB Persistence",
+  "4": "Request & Chain UI",
+  "5": "Code Generation & cURL",
+  "6": "Response & JSON Compare",
+  "7": "Chain Arrow Config",
+  "8": "Import & File Handling",
+  "9": "UI Select Primitives",
+  "10": "Chain Canvas Rendering",
+  "11": "Node Assertions Panel",
+  "12": "Script Runner",
+  "13": "Request Execution Engine",
+  "14": "Breadcrumb UI",
+  "15": "Env Autocomplete Input",
+  "16": "Empty State & Shortcuts",
+  "17": "Health Monitor",
+  "18": "JSON Structure Paths"
+}

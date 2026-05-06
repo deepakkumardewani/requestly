@@ -26,6 +26,9 @@ type TabsActions = {
   closeTabsForRequests: (requestIds: string[]) => void;
   setActiveTab: (tabId: string) => void;
   updateTabState: (tabId: string, patch: Partial<TabState>) => void;
+  setTabLabel: (tabId: string, group: string, color: string) => void;
+  /** Move tab at `fromIndex` to `toIndex` (drag-and-drop reorder). */
+  reorderTabs: (fromIndex: number, toIndex: number) => void;
   hydrate: () => Promise<void>;
 };
 
@@ -56,6 +59,12 @@ function normalizePersistedTab(raw: TabState): TabState {
     body: legacy.body ?? DEFAULT_BODY,
     preScript: legacy.preScript ?? "",
     postScript: legacy.postScript ?? "",
+    timeoutMs: (legacy as HttpTab).timeoutMs,
+    assertions: (legacy as HttpTab).assertions ?? [],
+    sslVerify: (legacy as HttpTab).sslVerify,
+    followRedirects: (legacy as HttpTab).followRedirects,
+    color: legacy.color,
+    group: legacy.group,
   };
 }
 
@@ -115,12 +124,39 @@ function createEmptyTab(overrides: Partial<TabState> = {}): TabState {
         body: DEFAULT_BODY,
         preScript: "",
         postScript: "",
+        assertions: [],
         ...overrides,
         tabId,
         requestId: overrides.requestId ?? requestId,
         type: "http",
       };
   }
+}
+
+/**
+ * Move `movedTabId` to be adjacent to any existing tabs that share `group`.
+ * If no peers exist yet, the tab stays in place (it's the first in the group).
+ * Peers are clustered starting at the position of the first existing peer.
+ */
+function groupAdjacentTabs(
+  tabs: TabState[],
+  movedTabId: string,
+  group: string,
+): TabState[] {
+  const peers = tabs.filter((t) => t.tabId !== movedTabId && t.group === group);
+  if (peers.length === 0) return tabs; // first tab with this group — no move needed
+
+  // Find position of the first peer
+  const firstPeerIndex = tabs.findIndex((t) => t.tabId === peers[0].tabId);
+  const movedIndex = tabs.findIndex((t) => t.tabId === movedTabId);
+
+  const result = [...tabs];
+  const [tab] = result.splice(movedIndex, 1);
+  // Re-compute target after splice (peer index may shift)
+  const targetIndex =
+    movedIndex < firstPeerIndex ? firstPeerIndex - 1 : firstPeerIndex;
+  result.splice(targetIndex, 0, tab);
+  return result;
 }
 
 async function persistTabs(tabs: TabState[]) {
@@ -224,6 +260,37 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
     }));
     // No persistence here — tabs are only written to DB on explicit Save
     // (and on open/close to maintain the tab list across reloads).
+  },
+
+  setTabLabel(tabId, group, color) {
+    set((state) => {
+      // Update label fields first
+      const labeled = state.tabs.map((t) =>
+        t.tabId === tabId
+          ? ({
+              ...t,
+              group: group || undefined,
+              color: color || undefined,
+            } as TabState)
+          : t,
+      );
+
+      // If a group name was set, move this tab adjacent to other group members
+      const tabs = group ? groupAdjacentTabs(labeled, tabId, group) : labeled;
+      persistTabs(tabs);
+      return { tabs };
+    });
+  },
+
+  reorderTabs(fromIndex, toIndex) {
+    set((state) => {
+      if (fromIndex === toIndex) return state;
+      const tabs = [...state.tabs];
+      const [moved] = tabs.splice(fromIndex, 1);
+      tabs.splice(toIndex, 0, moved);
+      persistTabs(tabs);
+      return { tabs };
+    });
   },
 
   async hydrate() {

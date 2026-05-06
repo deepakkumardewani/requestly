@@ -87,6 +87,39 @@ export function buildFinalUrl(
   return finalUrl;
 }
 
+/** True when the URL is blank or has no `scheme:` — will combine with Settings → Global base URL on send. */
+export function isRelativeOrPathOnlyUrl(url: string): boolean {
+  const u = url.trim();
+  if (!u) return true;
+  return !/^[a-z][a-z0-9+.-]*:/i.test(u);
+}
+
+/** Prepends workspace base URL when the request URL has no scheme (e.g. `/users` or `users`). */
+export function prependGlobalBaseUrl(url: string, baseRaw: string): string {
+  const base = baseRaw.trim().replace(/\/+$/, "");
+  const u = url.trim();
+  if (!base) return u;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return u;
+  const path = u.startsWith("/") ? u : `/${u}`;
+  return `${base}${path}`;
+}
+
+/**
+ * Merge enabled header rows: `overlay` wins on case-insensitive key collision.
+ */
+export function mergeKvHeaders(base: KVPair[], overlay: KVPair[]): KVPair[] {
+  const map = new Map<string, KVPair>();
+  for (const h of base) {
+    if (!h.enabled || !h.key.trim()) continue;
+    map.set(h.key.trim().toLowerCase(), { ...h });
+  }
+  for (const h of overlay) {
+    if (!h.enabled || !h.key.trim()) continue;
+    map.set(h.key.trim().toLowerCase(), { ...h });
+  }
+  return [...map.values()];
+}
+
 export function buildUrlWithParams(
   baseUrl: string,
   params: Array<{ key: string; value: string; enabled: boolean }>,

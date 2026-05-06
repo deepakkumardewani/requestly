@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ChainList } from "@/components/chain/ChainList";
 import { CollectionTree } from "@/components/collections/CollectionTree";
+import { RequestItem } from "@/components/collections/RequestItem";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { EmptyState } from "@/components/common/EmptyState";
 import {
@@ -31,7 +32,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import { useSettingsStore } from "@/stores/useSettingsStore";
+import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
 
 function EnvSidebarList() {
@@ -181,6 +185,45 @@ function EnvSidebarList() {
   );
 }
 
+function PinnedSection() {
+  const { requests } = useCollectionsStore();
+  const pinnedRequestIds = useSettingsStore((s) => s.pinnedRequestIds);
+  const activeRequestId = useTabsStore((s) => {
+    const activeTab = s.tabs.find((t) => t.tabId === s.activeTabId);
+    return activeTab?.requestId ?? null;
+  });
+
+  const pinnedRequests = pinnedRequestIds
+    .map((id) => requests.find((r) => r.id === id))
+    .filter(Boolean) as (typeof requests)[number][];
+
+  if (pinnedRequests.length === 0) return null;
+
+  return (
+    <AccordionItem value="pinned" className="border-b border-border">
+      <AccordionTrigger
+        chevronLeft
+        className="px-3 py-2 hover:no-underline hover:bg-muted/50"
+      >
+        <span className="flex-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Pinned
+        </span>
+      </AccordionTrigger>
+      <AccordionContent className="pb-0">
+        <div className="pl-3 pr-1 py-1 space-y-0.5">
+          {pinnedRequests.map((request) => (
+            <RequestItem
+              key={request.id}
+              request={request}
+              isActive={activeRequestId === request.id}
+            />
+          ))}
+        </div>
+      </AccordionContent>
+    </AccordionItem>
+  );
+}
+
 type SidebarMainTabProps = {
   isCreatingChain: boolean;
   onCreatingChainDone: () => void;
@@ -201,6 +244,7 @@ export function SidebarMainTab({
   } = useUIStore();
 
   const [openSections, setOpenSections] = useState<string[]>([
+    "pinned",
     "collections",
     "environments",
     "chains",
@@ -239,6 +283,9 @@ export function SidebarMainTab({
         onValueChange={setOpenSections}
         className="w-full"
       >
+        {/* Pinned requests */}
+        <PinnedSection />
+
         {/* Collections */}
         <AccordionItem value="collections" className="border-b border-border">
           <AccordionTrigger
@@ -251,8 +298,8 @@ export function SidebarMainTab({
             <Button
               variant="ghost"
               size="icon-sm"
-              className="ml-auto h-5 w-5 opacity-0 transition-opacity group-hover/accordion-trigger:opacity-100"
               aria-label={t("addCollection")}
+              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsCreatingCollection(true);
@@ -280,8 +327,8 @@ export function SidebarMainTab({
             <Button
               variant="ghost"
               size="icon-sm"
-              className="ml-auto h-5 w-5 opacity-0 transition-opacity group-hover/accordion-trigger:opacity-100"
               aria-label={t("addEnvironment")}
+              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsCreatingEnv(true);
@@ -309,8 +356,8 @@ export function SidebarMainTab({
             <Button
               variant="ghost"
               size="icon-sm"
-              className="ml-auto h-5 w-5 opacity-0 transition-opacity group-hover/accordion-trigger:opacity-100"
               aria-label={t("newChainAria")}
+              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
               onClick={(e) => {
                 e.stopPropagation();
                 onNewChain();

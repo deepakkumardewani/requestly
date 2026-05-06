@@ -60,6 +60,14 @@ export function Tab({ tab, isActive, onSelect, onClose }: TabProps) {
           title="Connected"
         />
       )}
+      {tab.color && (
+        <span
+          data-testid="tab-color-dot"
+          className="h-2 w-2 shrink-0 rounded-full"
+          style={{ backgroundColor: tab.color }}
+          title={tab.group ? `Group: ${tab.group}` : undefined}
+        />
+      )}
       {tab.isDirty && (
         <span
           data-testid="tab-dirty-indicator"

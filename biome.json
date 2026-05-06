@@ -7,7 +7,16 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"],
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build",
+      "!test",
+      "!spec",
+      "!**/*.spec.*"
+    ],
     "maxSize": 5242880
   },
   "formatter": {

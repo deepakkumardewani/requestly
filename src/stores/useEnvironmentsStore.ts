@@ -24,6 +24,11 @@ type EnvironmentsActions = {
   getVariable: (key: string) => string | undefined;
   /** Upsert a variable in the active environment by key. No-op if no active env. */
   setVariable: (key: string, value: string) => void;
+  /** Bulk-set variables from parsed .env lines (duplicate keys overwrite). */
+  bulkImportEnvVars: (
+    envId: string,
+    pairs: Array<{ key: string; value: string }>,
+  ) => number;
   hydrate: () => Promise<void>;
 };
 
@@ -152,6 +157,34 @@ export const useEnvironmentsStore = create<
         ];
 
     updateEnv(activeEnv.id, { variables: updatedVariables });
+  },
+
+  bulkImportEnvVars(envId, pairs) {
+    const env = get().environments.find((e) => e.id === envId);
+    if (!env) return 0;
+
+    const vars = [...env.variables];
+    let count = 0;
+    for (const { key, value } of pairs) {
+      const k = key.trim();
+      if (!k) continue;
+      count += 1;
+      const idx = vars.findIndex((v) => v.key === k);
+      if (idx >= 0) {
+        vars[idx] = { ...vars[idx], currentValue: value };
+      } else {
+        vars.push({
+          id: generateId(),
+          key: k,
+          initialValue: "",
+          currentValue: value,
+          isSecret: false,
+        });
+      }
+    }
+    if (count === 0) return 0;
+    get().updateEnv(envId, { variables: vars });
+    return count;
   },
 
   async hydrate() {
