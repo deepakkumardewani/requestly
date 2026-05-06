@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { KVTable } from "@/components/common/KVTable";
 import { useTabsStore } from "@/stores/useTabsStore";
 import type { KVPair } from "@/types";
@@ -11,6 +12,7 @@ type HeadersEditorProps = {
 export function HeadersEditor({ tabId }: HeadersEditorProps) {
   const { tabs, updateTabState } = useTabsStore();
   const tab = tabs.find((t) => t.tabId === tabId);
+  const t = useTranslations("request");
 
   if (!tab) return null;
 
@@ -23,8 +25,8 @@ export function HeadersEditor({ tabId }: HeadersEditorProps) {
       <KVTable
         rows={tab.headers}
         onChange={handleChange}
-        keyPlaceholder="Header"
-        valuePlaceholder="Value"
+        keyPlaceholder={t("headers.headerPlaceholder")}
+        valuePlaceholder={t("headers.valuePlaceholder")}
       />
     </div>
   );
