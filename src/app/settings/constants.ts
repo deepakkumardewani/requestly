@@ -1,12 +1,18 @@
 import { Monitor, Moon, Sun } from "lucide-react";
 
-export type SettingsSection = "general" | "appearance" | "proxy" | "shortcuts";
+export type SettingsSection =
+  | "general"
+  | "appearance"
+  | "proxy"
+  | "shortcuts"
+  | "language";
 
 export const SETTINGS_SECTIONS = [
   ["general", "General"],
   ["appearance", "Appearance"],
   ["proxy", "Proxy & SSL"],
   ["shortcuts", "Shortcuts"],
+  ["language", "Language"],
 ] as const;
 
 export type Shortcut = {

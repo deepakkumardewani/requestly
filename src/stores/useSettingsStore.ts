@@ -26,6 +26,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   showCodeGen: true,
   codeGenLang: "cURL",
   autoExpandExplainer: true,
+  locale: "en",
 };
 
 async function persistSettings(settings: AppSettings) {
@@ -58,6 +59,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
         showCodeGen: s.showCodeGen,
         codeGenLang: s.codeGenLang,
         autoExpandExplainer: s.autoExpandExplainer,
+        locale: s.locale,
       });
     },
 

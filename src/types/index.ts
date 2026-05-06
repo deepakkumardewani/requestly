@@ -175,6 +175,7 @@ export type AppSettings = {
   showCodeGen: boolean;
   codeGenLang: string;
   autoExpandExplainer: boolean;
+  locale: "en" | "fr" | "ja";
 };
 
 export type HealthMetrics = {

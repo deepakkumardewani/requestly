@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { THEME_OPTIONS } from "@/app/settings/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -8,9 +11,11 @@ type Props = {
 };
 
 export function AppearanceSection({ theme, onThemeChange }: Props) {
+  const t = useTranslations("settings");
+
   return (
     <div className="max-w-lg space-y-6">
-      <h2 className="text-base font-semibold">Appearance & Theme</h2>
+      <h2 className="text-base font-semibold">{t("appearance.title")}</h2>
 
       <div className="grid grid-cols-3 gap-3">
         {THEME_OPTIONS.map(({ value, label, icon: Icon }) => {
