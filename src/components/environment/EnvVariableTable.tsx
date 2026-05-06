@@ -1,6 +1,7 @@
 "use client";
 
 import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,6 +23,7 @@ type EnvVariableTableProps = {
 };
 
 export function EnvVariableTable({ env }: EnvVariableTableProps) {
+  const t = useTranslations("environment");
   const { updateEnv } = useEnvironmentsStore();
   const [visibleSecrets, setVisibleSecrets] = useState<Set<string>>(new Set());
 
@@ -74,11 +76,11 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="h-8 text-xs">Variable</TableHead>
-              <TableHead className="h-8 text-xs">Initial Value</TableHead>
-              <TableHead className="h-8 text-xs">Current Value</TableHead>
+              <TableHead className="h-8 text-xs">{t("variable")}</TableHead>
+              <TableHead className="h-8 text-xs">{t("initialValue")}</TableHead>
+              <TableHead className="h-8 text-xs">{t("currentValue")}</TableHead>
               <TableHead className="h-8 w-20 text-center text-xs">
-                Secret
+                {t("secret")}
               </TableHead>
               <TableHead className="h-8 w-10" />
             </TableRow>
@@ -94,7 +96,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                       data-testid="var-key-input"
                       className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
                       value={variable.key}
-                      placeholder="VARIABLE_NAME"
+                      placeholder={t("variableNamePlaceholder")}
                       onChange={(e) =>
                         updateVariable(variable.id, { key: e.target.value })
                       }
@@ -106,7 +108,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                       className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
                       type={masked ? "password" : "text"}
                       value={variable.initialValue}
-                      placeholder="Initial value"
+                      placeholder={t("initialValuePlaceholder")}
                       onChange={(e) =>
                         updateVariable(variable.id, {
                           initialValue: e.target.value,
@@ -120,7 +122,7 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
                       className="h-7 border-0 bg-transparent font-mono text-xs shadow-none"
                       type={masked ? "password" : "text"}
                       value={variable.currentValue}
-                      placeholder="Current value"
+                      placeholder={t("currentValuePlaceholder")}
                       onChange={(e) =>
                         updateVariable(variable.id, {
                           currentValue: e.target.value,
@@ -190,17 +192,19 @@ export function EnvVariableTable({ env }: EnvVariableTableProps) {
         onClick={addVariable}
       >
         <Plus className="mr-1.5 h-3.5 w-3.5" />
-        Add Variable
+        {t("addVariable")}
       </Button>
 
       <div className="mt-4 rounded-md bg-muted/50 p-3">
-        <p className="text-xs font-medium">About Environment Variables</p>
+        <p className="text-xs font-medium">{t("about")}</p>
         <p className="mt-1 text-[11px] text-muted-foreground">
-          Use{" "}
-          <code className="rounded bg-muted px-1 text-method-accent">
-            {"{{VARIABLE_NAME}}"}
-          </code>{" "}
-          in your requests to substitute values from the active environment.
+          {t.rich("aboutDescription", {
+            token: () => (
+              <code className="rounded bg-muted px-1 text-method-accent">
+                {"{{VARIABLE_NAME}}"}
+              </code>
+            ),
+          })}
         </p>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import {
   AlertDialog,
@@ -30,6 +31,7 @@ import { TabContextMenu } from "./TabContextMenu";
 import { TabListDropdown } from "./TabListDropdown";
 
 export function TabBar() {
+  const t = useTranslations("common");
   const {
     tabs,
     activeTabId,
@@ -136,7 +138,7 @@ export function TabBar() {
                         variant="ghost"
                         size="icon-sm"
                         onClick={() => openTab()}
-                        aria-label="New Request"
+                        aria-label={t("newRequest")}
                         data-testid="new-tab-btn"
                       />
                     }
@@ -166,7 +168,7 @@ export function TabBar() {
                       variant="ghost"
                       size="icon-sm"
                       onClick={() => openTab()}
-                      aria-label="New Request"
+                      aria-label={t("newRequest")}
                       data-testid="new-tab-btn"
                     />
                   }
@@ -174,7 +176,7 @@ export function TabBar() {
                   <Plus className="h-4 w-4" />
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  New Request <Kbd>{modKey()}+N</Kbd>
+                  {t("newRequest")} <Kbd>{modKey()}+N</Kbd>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -190,20 +192,20 @@ export function TabBar() {
       >
         <AlertDialogContent data-testid="close-tab-dialog">
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
+            <AlertDialogTitle>{t("unsavedChanges")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This tab has unsaved changes. Close anyway?
+              {t("unsavedChangesDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 if (pendingCloseTabId) closeTab(pendingCloseTabId);
                 setPendingCloseTabId(null);
               }}
             >
-              Close
+              {t("close")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -216,18 +218,17 @@ export function TabBar() {
       >
         <AlertDialogContent data-testid="bulk-close-dialog">
           <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
+            <AlertDialogTitle>{t("unsavedChanges")}</AlertDialogTitle>
             <AlertDialogDescription>
               {dirtyOtherCount === 1
-                ? "1 tab has unsaved changes."
-                : `${dirtyOtherCount} tabs have unsaved changes.`}{" "}
-              Close anyway?
+                ? t("unsavedChangesBulkOne")
+                : t("unsavedChangesBulkMany", { count: dirtyOtherCount })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={confirmBulkClose}>
-              Close All
+              {t("closeAll")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

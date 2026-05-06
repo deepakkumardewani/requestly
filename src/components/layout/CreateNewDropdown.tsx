@@ -11,6 +11,7 @@ import {
   Upload,
   Zap,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -34,6 +35,8 @@ export function CreateNewDropdown({
 }: CreateNewDropdownProps) {
   const openTab = useTabsStore((s) => s.openTab);
   const { setIsCreatingCollection, setIsCreatingEnv } = useUIStore();
+  const t = useTranslations("navigation");
+  const ct = useTranslations("common");
 
   return (
     <DropdownMenu>
@@ -42,7 +45,7 @@ export function CreateNewDropdown({
           <Button
             variant="outline"
             size="icon-sm"
-            aria-label="Create new"
+            aria-label={t("createNew")}
             data-testid="create-new-dropdown-trigger"
           />
         }
@@ -53,21 +56,21 @@ export function CreateNewDropdown({
       <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem onClick={() => openTab({ type: TAB_TYPES.HTTP })}>
           <Globe className="mr-2 h-3.5 w-3.5" />
-          HTTP
+          {t("newHttp")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => openTab({ type: TAB_TYPES.GRAPHQL })}>
           <Braces className="mr-2 h-3.5 w-3.5" />
-          GraphQL
+          {t("newGraphql")}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => openTab({ type: TAB_TYPES.WEBSOCKET })}
         >
           <ArrowLeftRight className="mr-2 h-3.5 w-3.5" />
-          WebSocket
+          {t("newWebSocket")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => openTab({ type: TAB_TYPES.SOCKETIO })}>
           <Zap className="mr-2 h-3.5 w-3.5" />
-          Socket.IO
+          {t("newSocketIO")}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -77,22 +80,22 @@ export function CreateNewDropdown({
           data-testid="create-collection-item"
         >
           <FolderPlus className="mr-2 h-3.5 w-3.5" />
-          Collection
+          {t("newCollection")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setIsCreatingEnv(true)}>
           <Globe2 className="mr-2 h-3.5 w-3.5" />
-          Environment
+          {t("newEnvironment")}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={onNewChain}>
           <GitBranch className="mr-2 h-3.5 w-3.5" />
-          Chain
+          {t("newChain")}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem onClick={onImport}>
           <Upload className="mr-2 h-3.5 w-3.5" />
-          Import
+          {ct("import")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
