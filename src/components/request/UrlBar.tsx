@@ -1,6 +1,14 @@
 "use client";
 
-import { BookmarkPlus, Copy, Globe, Loader2, Send, Wand2 } from "lucide-react";
+import {
+  BookmarkPlus,
+  Copy,
+  Globe,
+  Loader2,
+  Send,
+  Terminal,
+  Wand2,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
@@ -8,6 +16,11 @@ import { MethodBadge } from "@/components/common/MethodBadge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -250,6 +263,8 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
   const tab = tabs.find((t) => t.tabId === tabId);
   const handleSend = () => send();
   const [builderOpen, setBuilderOpen] = useState(false);
+  const [importCurlOpen, setImportCurlOpen] = useState(false);
+  const [curlInput, setCurlInput] = useState("");
 
   if (!tab) return null;
 
@@ -262,7 +277,7 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
       Boolean(globalBaseUrl) && isRelativeOrPathOnlyUrl(tab.url);
 
     return (
-      <div className="flex items-center gap-2 border-b border-border bg-background px-3 py-2">
+      <div className="flex items-center gap-2 border-b-2 border-border/70 bg-muted/20 px-3 py-2.5">
         <span className={cn(TYPE_BADGE_CLASS, "font-mono tracking-wide")}>
           GQL
         </span>
@@ -320,8 +335,9 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
                 render={
                   <Button
                     size="sm"
-                    className="h-8 min-w-[80px] gap-1.5 bg-theme-accent text-[#0d1117] text-xs font-semibold hover:bg-theme-accent/90"
+                    className="h-9 min-w-[90px] gap-1.5 bg-theme-accent text-[#0d1117] text-xs font-bold shadow-sm hover:bg-theme-accent/90"
                     onClick={isLoading ? cancel : handleSend}
+                    disabled={!isLoading && !tab.url.trim()}
                     data-testid="send-request-btn"
                   />
                 }
@@ -354,7 +370,7 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
     }
 
     return (
-      <div className="flex items-center gap-2 border-b border-border bg-background px-3 py-2">
+      <div className="flex items-center gap-2 border-b-2 border-border/70 bg-muted/20 px-3 py-2.5">
         <span className={TYPE_BADGE_CLASS}>WS</span>
         <EnvAutocompleteInput
           value={tab.url}
@@ -373,7 +389,7 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
     }
 
     return (
-      <div className="flex items-center gap-2 border-b border-border bg-background px-3 py-2">
+      <div className="flex items-center gap-2 border-b-2 border-border/70 bg-muted/20 px-3 py-2.5">
         <span className={TYPE_BADGE_CLASS}>SIO</span>
         <EnvAutocompleteInput
           value={tab.url}
@@ -389,6 +405,30 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
   if (tab.type !== "http") return null;
 
   const httpTab: HttpTab = tab;
+
+  function handleImportCurl() {
+    if (!curlInput.trim()) return;
+    try {
+      const parsed = parseCurl(curlInput.trim());
+      updateTabState(tabId, {
+        url: parsed.url,
+        method: parsed.method,
+        headers: parsed.headers,
+        body: parsed.body,
+        auth: parsed.auth,
+      });
+      toast.success("cURL imported", {
+        description: `${parsed.method} ${parsed.url}`,
+      });
+      setImportCurlOpen(false);
+      setCurlInput("");
+    } catch (err) {
+      toast.error("Failed to parse cURL", {
+        description:
+          err instanceof CurlParseError ? err.message : "Invalid cURL command",
+      });
+    }
+  }
 
   function handleMethodChange(method: HttpMethod | null) {
     if (!method) return;
@@ -493,12 +533,12 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
         </SheetContent>
       </Sheet>
 
-      <div className="flex items-center gap-2 border-b border-border bg-background px-3 py-2">
+      <div className="flex items-center gap-2 border-b-2 border-border/70 bg-muted/20 px-3 py-2.5">
         {/* Method Selector */}
         <Select value={httpTab.method} onValueChange={handleMethodChange}>
           <SelectTrigger
             data-testid="method-selector"
-            className="h-8 w-[110px] shrink-0 border-method-accent/20 bg-method-accent/5 text-xs font-medium"
+            className="h-9 w-[110px] shrink-0 border-method-accent/20 bg-method-accent/5 text-xs font-medium"
           >
             <SelectValue>
               <MethodBadge method={httpTab.method} />
@@ -565,6 +605,65 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
             <TooltipContent>Copy as cURL</TooltipContent>
           </Tooltip>
 
+          <Popover open={importCurlOpen} onOpenChange={setImportCurlOpen}>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        data-testid="import-curl-btn"
+                      />
+                    }
+                  >
+                    <Terminal className="h-3.5 w-3.5" />
+                  </PopoverTrigger>
+                }
+              />
+              <TooltipContent>Import cURL</TooltipContent>
+            </Tooltip>
+            <PopoverContent side="bottom" align="end" className="w-96 p-3">
+              <p className="mb-2 text-xs font-medium text-foreground">
+                Import cURL
+              </p>
+              <Textarea
+                data-testid="import-curl-input"
+                className="min-h-[80px] resize-none font-mono text-xs"
+                placeholder="Paste a cURL command..."
+                value={curlInput}
+                onChange={(e) => setCurlInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                    e.preventDefault();
+                    handleImportCurl();
+                  }
+                }}
+              />
+              <div className="mt-2 flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setImportCurlOpen(false);
+                    setCurlInput("");
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={!curlInput.trim()}
+                  onClick={handleImportCurl}
+                  data-testid="import-curl-submit-btn"
+                >
+                  Import
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+
           <Tooltip>
             <TooltipTrigger
               render={
@@ -610,8 +709,9 @@ export function UrlBar({ tabId, send, cancel, isLoading }: UrlBarProps) {
                 render={
                   <Button
                     size="sm"
-                    className="h-8 min-w-[80px] gap-1.5 bg-theme-accent text-[#0d1117] text-xs font-semibold hover:bg-theme-accent/90"
+                    className="h-9 min-w-[90px] gap-1.5 bg-theme-accent text-[#0d1117] text-xs font-bold shadow-sm hover:bg-theme-accent/90"
                     onClick={isLoading ? cancel : handleSend}
+                    disabled={!isLoading && !httpTab.url.trim()}
                     data-testid="send-request-btn"
                   />
                 }

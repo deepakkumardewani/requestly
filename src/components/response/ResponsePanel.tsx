@@ -9,7 +9,6 @@ import {
   GitCompare,
   Loader2,
   Network,
-  Send,
   Settings2,
   Sparkles,
   Trash2,
@@ -90,10 +89,10 @@ function UnresolvedVarsBanner({
     >
       <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-amber-600 dark:text-amber-400">
+        <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wide">
           Unresolved variables
         </p>
-        <p className="mt-0.5 text-muted-foreground">
+        <p className="mt-0.5 text-xs text-muted-foreground">
           {vars.map((v) => (
             <code
               key={v}
@@ -176,7 +175,9 @@ function TimingDetailTooltip({ response }: { response: ResponseData }) {
 
   return (
     <div className="w-72 space-y-2 p-1" data-testid="response-timing-tooltip">
-      <p className="text-[11px] font-medium text-foreground">Timing</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        Timing
+      </p>
       <div className="space-y-1.5">
         {rows.map((row) => {
           const v = row.value;
@@ -185,7 +186,7 @@ function TimingDetailTooltip({ response }: { response: ResponseData }) {
           return (
             <div
               key={row.label}
-              className="grid grid-cols-[1fr_auto] gap-x-2 text-[11px]"
+              className="grid grid-cols-[1fr_auto] gap-x-2 text-xs"
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
@@ -220,7 +221,7 @@ function TimingDetailTooltip({ response }: { response: ResponseData }) {
           );
         })}
       </div>
-      <div className="flex items-center justify-between border-t border-border pt-1.5 text-[11px]">
+      <div className="flex items-center justify-between border-t border-border pt-1.5 text-xs">
         <span className="text-muted-foreground">Total</span>
         <span className="font-medium tabular-nums text-emerald-400">
           {formatTimingMs(total)}
@@ -309,7 +310,7 @@ function SizeDetailTooltip({
         <Row label="Body" value={reqBody} muted />
         <Row label="Headers" value={reqHeaders} muted />
       </div>
-      <p className="border-t border-border pt-2 text-[10px] text-muted-foreground">
+      <p className="border-t border-border pt-2 text-xs text-muted-foreground">
         All size calculations are approximate.
       </p>
     </div>
@@ -428,9 +429,9 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
         )}
         <div className="flex-1">
           <EmptyState
-            icon={<Send className="h-10 w-10" />}
-            title="Send a request"
-            description="Configure your request above and press Send or Ctrl+Enter"
+            title="Response will appear here"
+            description="Send a request to see the response, timing, headers, and more"
+            className="text-center"
           />
         </div>
       </div>
@@ -599,7 +600,7 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-6 gap-1 px-1.5 text-[11px] text-muted-foreground hover:text-foreground"
+                    className="h-6 gap-1 px-1.5 text-xs text-muted-foreground hover:text-foreground"
                     onClick={handleSummarize}
                     disabled={summarizeLoading}
                     data-testid="summarize-btn"
@@ -711,7 +712,7 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
             >
               {tab}
               {tab === "headers" && (
-                <span className="ml-1 text-[10px] text-muted-foreground">
+                <span className="ml-1 text-xs text-muted-foreground">
                   ({Object.keys(response.headers).length})
                 </span>
               )}
@@ -735,7 +736,7 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
             >
               Tests
               {assertionCount > 0 && assertionResults.length === 0 && (
-                <span className="ml-1 text-[10px] text-muted-foreground">
+                <span className="ml-1 text-xs text-muted-foreground">
                   ({assertionCount})
                 </span>
               )}
@@ -746,7 +747,7 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
                 <span className="ml-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
               )}
               {assertionResults.length > 0 && (
-                <span className="ml-1 text-[10px] text-muted-foreground">
+                <span className="ml-1 text-xs text-muted-foreground">
                   {assertionPassedCount}/{assertionResults.length}
                 </span>
               )}
