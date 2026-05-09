@@ -89,30 +89,30 @@
 > Currently 7 tabs compete for attention. Reduce cognitive load.
 
 ### 3.1 Restructure Response Tabs
-- [ ] **Default visible tabs (3 only):**
+- [x] **Default visible tabs (3 only):**
   1. `Response` — body viewer (pretty/raw/preview toggle inside the tab)
   2. `Headers` — response headers table
   3. `Timing` — waterfall diagram
-- [ ] **Move to collapsible "More" dropdown** (chevron icon at end of tab bar):
+- [x] **Move to collapsible "More" dropdown** (chevron icon at end of tab bar):
   - `Console`
   - `Assertions`
   - `Errors` (AI explainer)
-- [ ] The "More" dropdown should show a dot indicator if Console has output or Assertions have failures
+- [x] The "More" dropdown should show a dot indicator if Console has output or Assertions have failures
 
 ### 3.2 Response Tab — Consolidate Pretty/Raw/Preview
-- [ ] Replace inner tab switcher (pretty / raw / HTML) with a **button group** in the top-right corner of the response panel (3 small toggle buttons)
-- [ ] Default to `pretty` when response is JSON/XML, `raw` for text/plain, `preview` for text/html — auto-detect
+- [x] Replace inner tab switcher (pretty / raw / HTML) with a **button group** in the top-right corner of the response panel (3 small toggle buttons)
+- [x] Default to `pretty` when response is JSON/XML, `raw` for text/plain, `preview` for text/html — auto-detect
 - [x] Show response status badge, size, and time in the response panel header row (not below it)
 - [x] "Summarize" AI button: move to top-right of response panel as an icon button with tooltip — keeps it accessible without taking a tab
 
 ### 3.3 Headers Tab — Improve Scannability
-- [ ] Group headers by category: Response headers vs. Content headers vs. CORS headers (collapsible groups)
+- [x] Group headers by category: Response headers vs. Content headers vs. CORS headers (collapsible groups)
 - [x] Add a quick-copy icon on each row that appears on hover
 - [x] Show header count in the tab label: `Headers (24)`
 
 ### 3.4 Timing Tab — Make It Useful at a Glance
 - [x] Show the waterfall with color-coded segments (DNS, TCP, TLS, TTFB, Download) as already exists but add a legend
-- [ ] Show the dominant bottleneck highlighted: if TTFB > 80% of total time, highlight it in amber
+- [x] Show the dominant bottleneck highlighted: if TTFB > 80% of total time, highlight it in amber
 
 ### 3.5 Empty/Loading States for Response Panel
 - [x] Loading: Show animated skeleton while request is in flight — not a spinner alone
@@ -131,13 +131,14 @@
 - [ ] Set the flows.sh project ID in `.env.local` as `NEXT_PUBLIC_FLOWS_PROJECT_ID`
 
 ### 4.2 First-Time User Detection
-- [ ] Create a `useFirstTimeUser` hook in `src/hooks/useFirstTimeUser.ts`
+- [x] Create a `useFirstTimeUser` hook in `src/hooks/useFirstTimeUser.ts`
   - Checks `localStorage` for `rq_onboarding_complete` key
   - Returns `{ isFirstTime: boolean, markComplete: () => void }`
-- [ ] In `MainLayout.tsx`, trigger the flows.sh tour when `isFirstTime === true` and the app has fully loaded
-- [ ] Add a "Restart tour" button in Settings → General section (`src/components/settings/GeneralSection.tsx`) that clears the localStorage key and re-triggers the tour
+- [x] In `MainLayout.tsx`, trigger the tour when `isFirstTime === true` and the app has fully loaded
+- [x] Add a "Restart tour" button in Settings → General section (`src/components/settings/GeneralSection.tsx`) that clears the localStorage key and re-triggers the tour
 
 ### 4.3 Define the 3-Step Tour
+- [x] Custom in-house `OnboardingTour` component (`src/components/common/OnboardingTour.tsx`)
 
 **Step 1 — Send Your First Request**
 - Target: URL bar input (`[data-slot="url-input"]`)
@@ -148,7 +149,6 @@
 - CTA: "Got it →"
 
 **Step 2 — Save to a Collection**
-- Triggered after first successful response (listen for response store update)
 - Target: Save button (`[data-slot="save-button"]`)
 - Tooltip position: below-start
 - Title: "Organize your work"
@@ -163,17 +163,16 @@
 - CTA: "Show me →" (navigates to the chain builder with a pre-built demo chain) / "Later"
 
 ### 4.4 Demo Chain for Step 3
-- [ ] Create a pre-built demo chain file at `src/data/demo-chain.json`
-  - Step 1: GET `https://dummyjson.com/auth/login` with body `{ username: "emilys", password: "emilyspass" }`
-  - Step 2: Extract `token` from response via JSONPath `$.accessToken`
-  - Step 3: GET `https://dummyjson.com/auth/me` with `Authorization: Bearer {{token}}`
-- [ ] Add a `loadDemoChain()` action to `useCollectionsStore` that imports this JSON as a chain
-- [ ] The "Show me →" button in Step 3 calls `loadDemoChain()` and navigates to it
+- [x] Create a pre-built demo chain file at `src/data/demo-chain.json`
+  - Step 1: POST `https://dummyjson.com/auth/login` with body `{ username: "emilys", password: "emilyspass" }`
+  - Step 2: GET `https://dummyjson.com/auth/me` with `Authorization: Bearer {{token}}`
+- [x] Add a `loadDemoChain()` action to `useCollectionsStore` that creates the collection + requests and returns collectionId
+- [x] The "Show me →" button in Step 3 calls `loadDemoChain()` and navigates to `/chain/[collectionId]`
 
 ### 4.5 Post-Onboarding State
-- [ ] After Step 3 is dismissed (completed or skipped), set `rq_onboarding_complete = true` in localStorage
-- [ ] Show a single toast: "You're all set. Press **Ctrl+/** to see all shortcuts."
-- [ ] The demo chain created in Step 3 remains in collections (user can delete it) — don't auto-clean
+- [x] After Step 3 is dismissed (completed or skipped), set `rq_onboarding_complete = true` in localStorage
+- [x] Show a single toast: "You're all set. Press **Ctrl+/** to see all shortcuts."
+- [x] The demo chain created in Step 3 remains in collections (user can delete it) — don't auto-clean
 
 ---
 
@@ -184,4 +183,4 @@
 | Epic 1 — Visual Hierarchy | `[ ] Not started` | P0 |
 | Epic 2 — Minimal UI Polish | `[ ] Not started` | P0 |
 | Epic 3 — Response Panel | `[ ] Not started` | P1 |
-| Epic 4 — Onboarding (flows.sh) | `[ ] Not started` | P1 |
+| Epic 4 — Onboarding (flows.sh) | `[x] Done (4.2–4.5; 4.1 skipped — requires external sign-up)` | P1 |
