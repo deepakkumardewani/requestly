@@ -365,7 +365,11 @@ export function SidebarMainTab({
         </AccordionItem>
 
         {/* Chains */}
-        <AccordionItem value="chains" className="border-b-0">
+        <AccordionItem
+          value="chains"
+          className="border-b-0"
+          data-slot="chains-section"
+        >
           <AccordionTrigger
             chevronLeft
             className="px-3 py-2.5 hover:no-underline hover:bg-muted/50"
