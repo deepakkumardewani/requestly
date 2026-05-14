@@ -662,7 +662,7 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
               <Braces className="h-3.5 w-3.5" />
             </TooltipIconButton>
             <TooltipIconButton
-              label="Open in JSON Visualize"
+              label="Visualize"
               onClick={handleVisualize}
               data-testid="response-visualize-btn"
             >
