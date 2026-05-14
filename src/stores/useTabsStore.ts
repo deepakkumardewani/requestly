@@ -15,6 +15,8 @@ import type {
 type TabsState = {
   tabs: TabState[];
   activeTabId: string | null;
+  /** true once the IDB hydration attempt (success or failure) has completed */
+  hydrated: boolean;
 };
 
 type TabsActions = {
@@ -180,6 +182,7 @@ async function persistTabs(tabs: TabState[]) {
 export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
   tabs: [],
   activeTabId: null,
+  hydrated: false,
 
   openTab(initial) {
     const newTab = createEmptyTab(initial);
@@ -295,21 +298,24 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
 
   async hydrate() {
     const db = getDB();
-    if (!db) return;
+    if (!db) {
+      set({ hydrated: true });
+      return;
+    }
     try {
       const instance = await db;
       const saved = await instance.getAll("tabs");
       if (saved.length > 0) {
         const tabs = saved.map((t) => normalizePersistedTab(t as TabState));
-        set({ tabs, activeTabId: tabs[0].tabId });
+        set({ tabs, activeTabId: tabs[0].tabId, hydrated: true });
       } else {
-        set({ tabs: [], activeTabId: null });
+        set({ tabs: [], activeTabId: null, hydrated: true });
       }
     } catch (error) {
       toast.error("Failed to load tabs", {
         description: error instanceof Error ? error.message : "Unknown error",
       });
-      set({ tabs: [], activeTabId: null });
+      set({ tabs: [], activeTabId: null, hydrated: true });
     }
   },
 }));

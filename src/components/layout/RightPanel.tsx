@@ -21,7 +21,7 @@ import { TabBar } from "./TabBar";
 
 export function RightPanel() {
   const { setSplitRatio } = useUIStore();
-  const { activeTabId, tabs } = useTabsStore();
+  const { activeTabId, tabs, hydrated } = useTabsStore();
   const responsePanelRef = usePanelRef();
   const [responseCollapsed, setResponseCollapsed] = useState(false);
 
@@ -126,9 +126,9 @@ export function RightPanel() {
             </ResizablePanelGroup>
           )}
         </>
-      ) : (
+      ) : hydrated ? (
         <EmptyState />
-      )}
+      ) : null}
     </div>
   );
 }

@@ -31,7 +31,7 @@ describe("AppProviders", () => {
     useSettingsStore.setState({ hydrated: false } as Partial<
       ReturnType<typeof useSettingsStore.getState>
     >);
-    useTabsStore.setState({ tabs: [], activeTabId: null });
+    useTabsStore.setState({ tabs: [], activeTabId: null, hydrated: false });
     useCollectionsStore.setState({ collections: [], requests: [] });
     useEnvironmentsStore.setState({ environments: [], activeEnvId: null });
     useHistoryStore.setState({ entries: [] });

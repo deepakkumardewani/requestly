@@ -34,7 +34,7 @@ const httpTabFixture: Omit<HttpTab, "tabId"> = {
 };
 
 function resetTabsStore() {
-  useTabsStore.setState({ tabs: [], activeTabId: null });
+  useTabsStore.setState({ tabs: [], activeTabId: null, hydrated: false });
 }
 
 function mockDbWithTabs(tabsReturn: TabState[]) {
@@ -171,6 +171,7 @@ describe("useTabsStore", () => {
   it("hydrate early-returns when getDB is null", async () => {
     await useTabsStore.getState().hydrate();
     expect(useTabsStore.getState().tabs).toEqual([]);
+    expect(useTabsStore.getState().hydrated).toBe(true);
   });
 
   it("hydrate loads tabs and sets first active", async () => {
@@ -195,6 +196,7 @@ describe("useTabsStore", () => {
     expect(db.getAll).toHaveBeenCalledWith("tabs");
     expect(useTabsStore.getState().tabs[0]).toEqual(gql);
     expect(useTabsStore.getState().activeTabId).toBe("g1");
+    expect(useTabsStore.getState().hydrated).toBe(true);
   });
 
   it("hydrate normalizes legacy HTTP tab shape", async () => {
@@ -231,6 +233,7 @@ describe("useTabsStore", () => {
 
     expect(useTabsStore.getState().tabs).toEqual([]);
     expect(useTabsStore.getState().activeTabId).toBeNull();
+    expect(useTabsStore.getState().hydrated).toBe(true);
   });
 
   it("hydrate shows toast and clears on failure", async () => {
@@ -243,6 +246,7 @@ describe("useTabsStore", () => {
 
     expect(toast.error).toHaveBeenCalled();
     expect(useTabsStore.getState().tabs).toEqual([]);
+    expect(useTabsStore.getState().hydrated).toBe(true);
   });
 
   it("persist failure shows toast when DB returns and transaction fails", async () => {
