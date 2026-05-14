@@ -25,7 +25,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   sslVerify: true,
   followRedirects: true,
   showHealthMonitor: true,
-  showCodeGen: true,
+  showCodeGen: false,
   codeGenLang: "cURL",
   autoExpandExplainer: true,
   globalBaseUrl: "",

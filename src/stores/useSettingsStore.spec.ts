@@ -18,7 +18,7 @@ const DEFAULTS: AppSettings = {
   sslVerify: true,
   followRedirects: true,
   showHealthMonitor: true,
-  showCodeGen: true,
+  showCodeGen: false,
   codeGenLang: "cURL",
   autoExpandExplainer: true,
   globalBaseUrl: "",
@@ -55,7 +55,7 @@ describe("useSettingsStore", () => {
     expect(s.sslVerify).toBe(true);
     expect(s.followRedirects).toBe(true);
     expect(s.showHealthMonitor).toBe(true);
-    expect(s.showCodeGen).toBe(true);
+    expect(s.showCodeGen).toBe(false);
     expect(s.codeGenLang).toBe("cURL");
     expect(s.autoExpandExplainer).toBe(true);
     expect(s.hydrated).toBe(false);
