@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronRight, Copy } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -137,13 +138,14 @@ function HeaderGroupSection({
 
 export function HeadersViewer({ headers }: HeadersViewerProps) {
   const groups = classifyHeaders(headers);
+  const et = useTranslations("errors");
 
   async function copyHeader(key: string, value: string) {
     try {
       await navigator.clipboard.writeText(`${key}: ${value}`);
-      toast.success("Copied to clipboard");
+      toast.success(et("copiedToClipboard"));
     } catch {
-      toast.error("Failed to copy");
+      toast.error(et("failedToCopy"));
     }
   }
 

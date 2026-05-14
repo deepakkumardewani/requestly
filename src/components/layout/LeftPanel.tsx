@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { EnvManagerDialog } from "@/components/environment/EnvManagerDialog";
 import { EnvSelector } from "@/components/environment/EnvSelector";
@@ -33,6 +34,7 @@ import { SidebarMainTab } from "./SidebarMainTab";
 import { SidebarSearchInput, SidebarSearchResults } from "./SidebarSearch";
 
 export function LeftPanel() {
+  const t = useTranslations("tooltips");
   const [isCreatingChain, setIsCreatingChain] = useState(false);
   const [query, setQuery] = useState("");
   const { isImportOpen, setIsImportOpen } = useUIStore();
@@ -67,7 +69,7 @@ export function LeftPanel() {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="Transform Playground"
+                      aria-label={t("transformPlayground")}
                       nativeButton={false}
                       render={<Link href="/transform" />}
                     />
@@ -76,7 +78,7 @@ export function LeftPanel() {
                   <Braces className="h-4 w-4" />
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
-                  Transform Playground
+                  {t("transformPlayground")}
                 </TooltipContent>
               </Tooltip>
 
@@ -86,7 +88,7 @@ export function LeftPanel() {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="JSON Visualize"
+                      aria-label={t("jsonCompare")}
                       render={
                         <Link
                           href="/json-visualize"
@@ -117,7 +119,9 @@ export function LeftPanel() {
                 >
                   <GitCompare className="h-4 w-4" />
                 </TooltipTrigger>
-                <TooltipContent side="bottom">JSON Compare</TooltipContent>
+                <TooltipContent side="bottom">
+                  {t("jsonCompare")}
+                </TooltipContent>
               </Tooltip>
 
               <Tooltip>
@@ -126,7 +130,7 @@ export function LeftPanel() {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="Settings"
+                      aria-label={t("settings")}
                       data-testid="sidebar-settings-btn"
                       nativeButton={false}
                       render={<Link href="/settings" />}
@@ -135,7 +139,7 @@ export function LeftPanel() {
                 >
                   <Settings className="h-4 w-4" />
                 </TooltipTrigger>
-                <TooltipContent side="bottom">Settings</TooltipContent>
+                <TooltipContent side="bottom">{t("settings")}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
@@ -164,14 +168,16 @@ export function LeftPanel() {
                       <TabsTrigger
                         value="collections"
                         className="h-8 w-8 px-0"
-                        aria-label="Collections"
+                        aria-label={t("collections")}
                         data-testid="sidebar-tab-collections"
                       />
                     }
                   >
                     <FolderOpen className="h-4 w-4" />
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">Collections</TooltipContent>
+                  <TooltipContent side="bottom">
+                    {t("collections")}
+                  </TooltipContent>
                 </Tooltip>
 
                 <Tooltip>
@@ -180,14 +186,14 @@ export function LeftPanel() {
                       <TabsTrigger
                         value="history"
                         className="h-8 w-8 px-0"
-                        aria-label="History"
+                        aria-label={t("history")}
                         data-testid="sidebar-tab-history"
                       />
                     }
                   >
                     <History className="h-4 w-4" />
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">History</TooltipContent>
+                  <TooltipContent side="bottom">{t("history")}</TooltipContent>
                 </Tooltip>
 
                 <Tooltip>
@@ -196,13 +202,13 @@ export function LeftPanel() {
                       <TabsTrigger
                         value="hub"
                         className="h-8 w-8 px-0"
-                        aria-label="API Hub"
+                        aria-label={t("apiHub")}
                       />
                     }
                   >
                     <Globe className="h-4 w-4" />
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">API Hub</TooltipContent>
+                  <TooltipContent side="bottom">{t("apiHub")}</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </TabsList>

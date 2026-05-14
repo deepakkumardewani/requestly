@@ -2,6 +2,7 @@
 
 import { ArrowRight, Database, GitBranch, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { modKey } from "@/lib/platform";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
@@ -40,19 +41,26 @@ const SAMPLE_REQUESTS: Array<{
 
 type Shortcut = {
   keys: string[];
-  label: string;
+  labelKey:
+    | "newTab"
+    | "closeTab"
+    | "sendRequest"
+    | "saveRequest"
+    | "commandPalette"
+    | "keyboardShortcuts"
+    | "newCollection";
 };
 
 function getShortcuts(): Shortcut[] {
   const mod = modKey();
   return [
-    { keys: ["Ctrl", "T"], label: "New tab" },
-    { keys: ["Ctrl", "W"], label: "Close tab" },
-    { keys: [mod, "↵"], label: "Send request" },
-    { keys: [mod, "S"], label: "Save request" },
-    { keys: [mod, "K"], label: "Command palette" },
-    { keys: [mod, "/"], label: "Keyboard shortcuts" },
-    { keys: ["Ctrl", "N"], label: "New collection" },
+    { keys: ["Ctrl", "T"], labelKey: "newTab" },
+    { keys: ["Ctrl", "W"], labelKey: "closeTab" },
+    { keys: [mod, "↵"], labelKey: "sendRequest" },
+    { keys: [mod, "S"], labelKey: "saveRequest" },
+    { keys: [mod, "K"], labelKey: "commandPalette" },
+    { keys: [mod, "/"], labelKey: "keyboardShortcuts" },
+    { keys: ["Ctrl", "N"], labelKey: "newCollection" },
   ];
 }
 
@@ -112,6 +120,8 @@ function SampleRequestCard({
 }
 
 export function EmptyState() {
+  const t = useTranslations();
+  const tShortcuts = useTranslations("shortcuts");
   const openTab = useTabsStore((s) => s.openTab);
   const setKeyboardShortcutsOpen = useUIStore(
     (s) => s.setKeyboardShortcutsOpen,
@@ -136,7 +146,7 @@ export function EmptyState() {
           className="mt-2"
         >
           <Plus className="mr-1.5 h-3.5 w-3.5" />
-          New Request
+          {t("common.newRequest")}
         </Button>
       </div>
 
@@ -154,15 +164,17 @@ export function EmptyState() {
           onClick={() => setKeyboardShortcutsOpen(true)}
           className="text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
         >
-          Keyboard Shortcuts
+          {t("common.keyboardShortcuts")}
         </button>
         <div className="flex flex-col gap-1.5">
           {getShortcuts().map((s) => (
             <div
-              key={s.label}
+              key={s.labelKey}
               className="flex items-center justify-between gap-8"
             >
-              <span className="text-xs text-muted-foreground">{s.label}</span>
+              <span className="text-xs text-muted-foreground">
+                {tShortcuts(s.labelKey)}
+              </span>
               <div className="flex items-center gap-1">
                 {s.keys.map((k) => (
                   <KeyBadge key={k} label={k} />
