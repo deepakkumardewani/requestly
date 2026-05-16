@@ -129,3 +129,4 @@ function testExpression(value: string, expression: string): boolean {
 
 // Re-exported so callers can import from one place
 export type { ChainRunState };
+export { resolveJsonPathFromParsed } from "@/lib/chainUtils";

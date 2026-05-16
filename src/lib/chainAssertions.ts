@@ -1,6 +1,10 @@
 import { JSONPath } from "jsonpath-plus";
 import type { ResponseData } from "@/types";
-import type { AssertionResult, ChainAssertion } from "@/types/chain";
+import type {
+  AssertionOperator,
+  AssertionResult,
+  ChainAssertion,
+} from "@/types/chain";
 
 /**
  * Extract the actual value for an assertion based on its source type.
@@ -133,4 +137,38 @@ export function assertionsSummary(results: AssertionResult[]): {
 } {
   const passed = results.filter((r) => r.passed).length;
   return { passed, failed: results.length - passed, total: results.length };
+}
+
+// ── Operator registry ─────────────────────────────────────────────────────────
+
+/** All valid assertion operators in display order. */
+export const ALL_ASSERTION_OPERATORS: AssertionOperator[] = [
+  "eq",
+  "neq",
+  "contains",
+  "not_contains",
+  "gt",
+  "lt",
+  "exists",
+  "not_exists",
+  "matches_regex",
+];
+
+/** Operators that don't require an expected value. */
+export const NO_VALUE_OPERATORS = new Set<AssertionOperator>([
+  "exists",
+  "not_exists",
+]);
+
+/** Return the operators valid for a given assertion source. */
+export function getOperatorsForSource(
+  source: ChainAssertion["source"],
+): AssertionOperator[] {
+  if (source === "status") {
+    // Status is always numeric — filter out string/regex operators
+    return ALL_ASSERTION_OPERATORS.filter(
+      (op) => !["contains", "not_contains", "matches_regex"].includes(op),
+    );
+  }
+  return ALL_ASSERTION_OPERATORS;
 }
