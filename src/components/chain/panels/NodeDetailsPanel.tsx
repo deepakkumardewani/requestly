@@ -1,22 +1,13 @@
 "use client";
 
 import {
-  Check,
   CheckCircle,
   Clock,
-  Copy,
   Loader2,
   SkipForward,
   XCircle,
 } from "lucide-react";
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -25,6 +16,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { jsonPathToVarName } from "@/lib/chainUtils";
 import { cn } from "@/lib/utils";
 import type { ResponseData } from "@/types";
 import type {
@@ -35,12 +27,10 @@ import type {
   EnvPromotion,
 } from "@/types/chain";
 import { PromoteToEnvPopover } from "../dialogs/PromoteToEnvPopover";
+import { CopyButton } from "./CopyButton";
 import { NodeAssertionsPanel } from "./NodeAssertionsPanel";
-
-function jsonPathToVarName(path: string): string {
-  const parts = path.replace(/^\$\.?/, "").split(".");
-  return parts[parts.length - 1] || "value";
-}
+import { SectionHeading } from "./SectionHeading";
+import { useEditableBody } from "./useEditableBody";
 
 type ActiveTab = "details" | "assertions";
 
@@ -130,66 +120,6 @@ function StateIndicator({ state }: { state: ChainNodeState }) {
   }
 }
 
-/** Section heading with a trailing rule — creates clear visual rhythm between sections */
-function SectionHeading({
-  children,
-  id,
-}: {
-  children: React.ReactNode;
-  id?: string;
-}) {
-  return (
-    <div className="flex items-center gap-3" id={id}>
-      <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground shrink-0">
-        {children}
-      </span>
-    </div>
-  );
-}
-
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  const resetRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (resetRef.current !== null) {
-        clearTimeout(resetRef.current);
-      }
-    };
-  }, []);
-
-  const handleClick = useCallback(() => {
-    navigator.clipboard.writeText(text).catch((err) => {
-      console.error("Clipboard write failed", err);
-    });
-    setCopied(true);
-    if (resetRef.current !== null) {
-      clearTimeout(resetRef.current);
-    }
-    resetRef.current = setTimeout(() => {
-      resetRef.current = null;
-      setCopied(false);
-    }, 2000);
-  }, [text]);
-
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-6 w-6 shrink-0 text-muted-foreground hover:text-foreground hover:bg-muted/50"
-      onClick={handleClick}
-      aria-label={copied ? "Copied" : "Copy to clipboard"}
-    >
-      {copied ? (
-        <Check className="h-3.5 w-3.5 text-emerald-500" aria-hidden />
-      ) : (
-        <Copy className="h-3.5 w-3.5" aria-hidden />
-      )}
-    </Button>
-  );
-}
-
 export function NodeDetailsPanel({
   open,
   onClose,
@@ -221,14 +151,11 @@ export function NodeDetailsPanel({
     setActiveTab("details");
   }, [name]);
 
-  // Local editable body state
-  const [editedBody, setEditedBody] = useState(bodyContent ?? "");
-  // Sync when panel opens with a different request
-  useEffect(() => {
-    setEditedBody(bodyContent ?? "");
-  }, [bodyContent, name]);
-
-  const bodyChanged = editedBody !== (bodyContent ?? "");
+  const {
+    editedBody,
+    setEditedBody,
+    isDirty: bodyChanged,
+  } = useEditableBody(bodyContent, name);
   const hasBodyEditor =
     onSaveBody !== undefined &&
     ["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase());

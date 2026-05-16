@@ -12,6 +12,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import {
+  getOperatorsForSource,
+  NO_VALUE_OPERATORS,
+} from "@/lib/chainAssertions";
 import { generateId } from "@/lib/utils";
 import {
   ASSERTION_OPERATOR_LABELS,
@@ -31,34 +35,6 @@ const SOURCE_OPTIONS = [
   { value: "jsonpath", label: "JSONPath" },
   { value: "header", label: "Header" },
 ] as const;
-
-// Operators that don't need an expected value
-const NO_VALUE_OPERATORS = new Set<AssertionOperator>(["exists", "not_exists"]);
-
-function getOperatorsForSource(
-  source: ChainAssertion["source"],
-): AssertionOperator[] {
-  const all: AssertionOperator[] = [
-    "eq",
-    "neq",
-    "contains",
-    "not_contains",
-    "gt",
-    "lt",
-    "exists",
-    "not_exists",
-    "matches_regex",
-  ];
-  // gt/lt only make sense for status (numeric) or when the user knows the value is numeric
-  // For header/jsonpath we keep them available — users may extract numeric fields
-  if (source === "status") {
-    // Status is always numeric — filter out contains/regex
-    return all.filter(
-      (op) => !["contains", "not_contains", "matches_regex"].includes(op),
-    );
-  }
-  return all;
-}
 
 function makeBlankAssertion(): ChainAssertion {
   return {

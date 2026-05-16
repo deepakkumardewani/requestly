@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
@@ -49,7 +49,7 @@ type JsonNodeProps = {
   onSelect: (path: string) => void;
 };
 
-function JsonNode({
+const JsonNode = memo(function JsonNode({
   nodeKey,
   value,
   path,
@@ -150,7 +150,7 @@ function JsonNode({
       )}
     </button>
   );
-}
+});
 
 export function JsonPathExplorer({
   data,

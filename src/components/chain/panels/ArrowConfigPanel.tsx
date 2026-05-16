@@ -1,7 +1,6 @@
 "use client";
 
-import { JSONPath } from "jsonpath-plus";
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,15 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { generateId } from "@/lib/utils";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import type { RequestModel, ResponseData } from "@/types";
@@ -28,11 +24,12 @@ import type {
   DisplayNodeConfig,
   EnvPromotion,
 } from "@/types/chain";
-import { JsonPathExplorer } from "../dialogs/JsonPathExplorer";
-import { ArrowConfigInjectionPreviewList } from "./arrow-config/ArrowConfigInjectionPreviewList";
+import {
+  DisplayExtractor,
+  type DisplayExtractorData,
+} from "./arrow-config/DisplayExtractor";
 import { FormattedJsonResponseBody } from "./arrow-config/FormattedJsonResponseBody";
-
-type TargetField = ChainInjection["targetField"];
+import { InjectionEditor } from "./arrow-config/InjectionEditor";
 
 const DEFAULT_INJECTION: ChainInjection = {
   sourceJsonPath: "$.token",
@@ -59,94 +56,8 @@ type ArrowConfigPanelProps = {
   onDeleteDisplayNode?: (nodeId: string) => void;
 };
 
-// Extract a display variable name from a JSONPath, e.g. "$.data.token" → "token"
-function jsonPathToVarName(path: string): string {
-  const parts = path.replace(/^\$\.?/, "").split(".");
-  return parts[parts.length - 1] || "value";
-}
-
-/**
- * Given a URL and a param name + extracted value, try to auto-replace a matching
- * static segment (or last numeric segment) with :paramName.
- * Returns the updated URL, or the original if nothing was replaced.
- */
-function autoReplaceUrlSegment(
-  url: string,
-  paramName: string,
-  extractedValue: string | null,
-): string {
-  if (!paramName) return url;
-  // Already has this placeholder — nothing to do
-  if (url.includes(`:${paramName}`)) return url;
-
-  // Try to match the extracted value exactly as a URL segment
-  if (extractedValue) {
-    const escaped = extractedValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const exactPattern = new RegExp(`(/)${escaped}(/|$)`);
-    if (exactPattern.test(url)) {
-      return url.replace(exactPattern, `$1:${paramName}$2`);
-    }
-  }
-
-  // Fallback: replace the last numeric or UUID-like segment
-  const numericOrUuidPattern = /(\/)[a-f0-9-]{8,}(\/?$)|(\/)\d+(\/?$)/i;
-  const match = url.match(numericOrUuidPattern);
-  if (match) {
-    return url.replace(numericOrUuidPattern, (_, p1, p2, p3, p4) => {
-      const slash = p1 ?? p3;
-      const trail = p2 ?? p4 ?? "";
-      return `${slash}:${paramName}${trail}`;
-    });
-  }
-
-  return url;
-}
-
-/** Resolve the actual value for a JSONPath from an already-parsed response. */
-function resolveJsonPathFromParsed(
-  parsed: unknown,
-  jsonPath: string,
-): string | null {
-  if (
-    parsed === null ||
-    typeof parsed !== "object" ||
-    !jsonPath ||
-    !jsonPath.trim()
-  ) {
-    return null;
-  }
-  try {
-    const result = JSONPath({ path: jsonPath, json: parsed });
-    if (Array.isArray(result) && result.length > 0) return String(result[0]);
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-type InjectionRow = ChainInjection & { rowId: string };
-
-function withRowIds(injections: ChainInjection[]): InjectionRow[] {
-  return injections.map((inj) => ({ ...inj, rowId: generateId() }));
-}
-
-function stripRowIds(rows: InjectionRow[]): ChainInjection[] {
-  return rows.map(({ rowId: _id, ...inj }) => inj);
-}
-
-const TARGET_FIELD_LABEL: Record<TargetField, string> = {
-  url: "Query param name",
-  path: "Path param name (e.g. :id)",
-  header: "Header name",
-  body: "Body JSONPath",
-};
-
-const TARGET_FIELD_PLACEHOLDER: Record<TargetField, string> = {
-  url: "userId",
-  path: "id",
-  header: "Authorization",
-  body: "$.userId",
-};
+type InjState = { injections: ChainInjection[]; targetUrl: string };
+type DispState = DisplayExtractorData;
 
 export function ArrowConfigPanel({
   open,
@@ -165,75 +76,58 @@ export function ArrowConfigPanel({
   onSaveDisplayNode,
   onDeleteDisplayNode,
 }: ArrowConfigPanelProps) {
-  const fieldIdPrefix = useId();
-  const manualJsonPathInputId = `${fieldIdPrefix}-manual-jsonpath`;
-  const targetKeyInputId = `${fieldIdPrefix}-target-key`;
-  const targetUrlInputId = `${fieldIdPrefix}-target-url`;
-
   const { environments } = useEnvironmentsStore();
   const [viewerOpen, setViewerOpen] = useState(false);
+  const [isValid, setIsValid] = useState(true);
 
-  // ── Display-node mode uses a flat single-injection config ─────────────────
   const isDisplayNodeMode = Boolean(displayNodeId);
-
   const panelSessionKey = `${displayNodeId ?? ""}|${existingEdge?.id ?? ""}`;
 
-  const baseInjections = useMemo((): ChainInjection[] => {
-    if (isDisplayNodeMode) {
-      return [
-        {
-          sourceJsonPath:
-            existingDisplayNode?.sourceJsonPath ??
-            DEFAULT_INJECTION.sourceJsonPath,
-          targetField:
-            existingDisplayNode?.targetField ?? DEFAULT_INJECTION.targetField,
-          targetKey:
-            existingDisplayNode?.targetKey ?? DEFAULT_INJECTION.targetKey,
-        },
-      ];
-    }
+  // Computed initial values passed to child editors
+  const initialInjections = useMemo((): ChainInjection[] => {
     if (existingEdge?.injections?.length) {
       return existingEdge.injections.map((inj) => ({ ...inj }));
     }
     return [{ ...DEFAULT_INJECTION }];
-  }, [
-    isDisplayNodeMode,
-    existingDisplayNode?.sourceJsonPath,
-    existingDisplayNode?.targetField,
-    existingDisplayNode?.targetKey,
-    existingEdge?.id,
-    existingEdge?.injections,
-  ]);
+  }, [existingEdge?.id, existingEdge?.injections]);
 
-  const savedTargetUrl = useMemo(
-    () =>
-      existingDisplayNode?.targetUrl ??
-      existingEdge?.targetUrl ??
-      targetRequest?.url ??
-      "",
-    [
-      existingDisplayNode?.targetUrl,
-      existingEdge?.targetUrl,
-      targetRequest?.url,
-    ],
+  const initialTargetUrl = useMemo(
+    () => existingEdge?.targetUrl ?? targetRequest?.url ?? "",
+    [existingEdge?.targetUrl, targetRequest?.url],
   );
 
-  const [injections, setInjections] = useState<InjectionRow[]>(() =>
-    withRowIds([{ ...DEFAULT_INJECTION }]),
-  );
-  const [targetUrl, setTargetUrl] = useState("");
-  const [activeIdx, setActiveIdx] = useState(0);
+  // Refs hold current editor data without causing re-renders on every keystroke
+  const injDataRef = useRef<InjState>({
+    injections: initialInjections,
+    targetUrl: initialTargetUrl,
+  });
+  const dispDataRef = useRef<DispState>({
+    sourceJsonPath:
+      existingDisplayNode?.sourceJsonPath ?? DEFAULT_INJECTION.sourceJsonPath,
+    targetField:
+      existingDisplayNode?.targetField ?? DEFAULT_INJECTION.targetField,
+    targetKey: existingDisplayNode?.targetKey ?? DEFAULT_INJECTION.targetKey,
+    targetUrl: existingDisplayNode?.targetUrl,
+  });
 
+  // Keep refs primed for the current session when panel (re)opens
   useEffect(() => {
     if (!open) return;
-    setInjections(withRowIds(baseInjections));
-    setTargetUrl(savedTargetUrl);
-    setActiveIdx(0);
-  }, [open, panelSessionKey, baseInjections, savedTargetUrl]);
+    injDataRef.current = {
+      injections: initialInjections,
+      targetUrl: initialTargetUrl,
+    };
+    dispDataRef.current = {
+      sourceJsonPath:
+        existingDisplayNode?.sourceJsonPath ?? DEFAULT_INJECTION.sourceJsonPath,
+      targetField:
+        existingDisplayNode?.targetField ?? DEFAULT_INJECTION.targetField,
+      targetKey: existingDisplayNode?.targetKey ?? DEFAULT_INJECTION.targetKey,
+      targetUrl: existingDisplayNode?.targetUrl,
+    };
+    setIsValid(true);
+  }, [open, panelSessionKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const active = injections[activeIdx] ?? injections[0];
-
-  // ── Parsed response ───────────────────────────────────────────────────────
   const parsedResponseBody = useMemo(() => {
     if (!sourceResponse?.body) return null;
     try {
@@ -244,118 +138,51 @@ export function ArrowConfigPanel({
     }
   }, [sourceResponse?.body]);
 
-  const defaultTab = parsedResponseBody ? "explorer" : "manual";
-
-  // ── Helpers to mutate the active injection ────────────────────────────────
-  function updateActive(patch: Partial<ChainInjection>) {
-    setInjections((prev) =>
-      prev.map((inj, i) => (i === activeIdx ? { ...inj, ...patch } : inj)),
-    );
-  }
-
-  function handleSelectJsonPath(path: string) {
-    const extractedValue = resolveJsonPathFromParsed(parsedResponseBody, path);
-    const newKey = jsonPathToVarName(path);
-
-    if (active.targetField === "path") {
-      // Auto-replace a static URL segment with :paramName
-      const newUrl = autoReplaceUrlSegment(targetUrl, newKey, extractedValue);
-      if (newUrl !== targetUrl) setTargetUrl(newUrl);
-      updateActive({ sourceJsonPath: path, targetKey: newKey });
-    } else {
-      updateActive({ sourceJsonPath: path });
-    }
-  }
-
-  function handleTargetFieldChange(field: TargetField) {
-    // When switching to path, try to auto-replace URL segment immediately
-    if (field === "path") {
-      const extractedValue = resolveJsonPathFromParsed(
-        parsedResponseBody,
-        active.sourceJsonPath,
-      );
-      const paramName =
-        active.targetKey || jsonPathToVarName(active.sourceJsonPath);
-      const newUrl = autoReplaceUrlSegment(
-        targetUrl,
-        paramName,
-        extractedValue,
-      );
-      if (newUrl !== targetUrl) setTargetUrl(newUrl);
-    }
-    updateActive({ targetField: field });
-  }
-
-  function handleTargetKeyChange(key: string) {
-    updateActive({ targetKey: key });
-    // If we're in path mode, also attempt auto-replace in URL
-    if (active.targetField === "path" && key) {
-      const extractedValue = resolveJsonPathFromParsed(
-        parsedResponseBody,
-        active.sourceJsonPath,
-      );
-      const newUrl = autoReplaceUrlSegment(targetUrl, key, extractedValue);
-      if (newUrl !== targetUrl) setTargetUrl(newUrl);
-    }
-  }
-
-  function addInjection() {
-    setInjections((prev) => {
-      const row: InjectionRow = {
-        sourceJsonPath: "$.value",
-        targetField: "header",
-        targetKey: "",
-        rowId: generateId(),
-      };
-      setActiveIdx(prev.length);
-      return [...prev, row];
-    });
-  }
-
-  function removeInjection(idx: number) {
-    setInjections((prev) => prev.filter((_, i) => i !== idx));
-    setActiveIdx((prev) => Math.max(0, prev >= idx ? prev - 1 : prev));
-  }
-
-  // ── Validation ────────────────────────────────────────────────────────────
-  const isValid = injections.every(
-    (inj) => inj.sourceJsonPath.trim() !== "" && inj.targetKey.trim() !== "",
+  const handleInjChange = useCallback(
+    (injections: ChainInjection[], targetUrl: string, valid: boolean) => {
+      injDataRef.current = { injections, targetUrl };
+      setIsValid(valid);
+    },
+    [],
   );
 
-  // ── Save ──────────────────────────────────────────────────────────────────
+  const handleDispChange = useCallback(
+    (data: DisplayExtractorData, valid: boolean) => {
+      dispDataRef.current = data;
+      setIsValid(valid);
+    },
+    [],
+  );
+
   const handleSave = () => {
     if (!isValid) return;
 
-    const hasPathInjection = injections.some(
-      (inj) => inj.targetField === "path",
-    );
-
     if (displayNodeId) {
-      const first = injections[0];
+      const d = dispDataRef.current;
       const node: DisplayNodeConfig = {
         id: displayNodeId,
         type: "display",
-        sourceJsonPath: first.sourceJsonPath.trim(),
-        targetField: first.targetField,
-        targetKey: first.targetKey.trim(),
-        targetUrl:
-          (first.targetField === "path" || first.targetField === "url") &&
-          targetUrl.trim()
-            ? targetUrl.trim()
-            : undefined,
+        sourceJsonPath: d.sourceJsonPath.trim(),
+        targetField: d.targetField,
+        targetKey: d.targetKey.trim(),
+        targetUrl: d.targetUrl,
       };
       onSaveDisplayNode?.(node);
       onClose();
       return;
     }
 
+    const { injections, targetUrl } = injDataRef.current;
+    const hasPathInjection = injections.some(
+      (inj) => inj.targetField === "path",
+    );
     const edge: ChainEdge = {
       id: existingEdge?.id ?? generateId(),
       sourceRequestId: sourceRequest?.id ?? "",
       targetRequestId: targetRequest?.id ?? "",
       targetUrl:
         hasPathInjection && targetUrl.trim() ? targetUrl.trim() : undefined,
-      injections: stripRowIds(injections).map((inj) => ({
+      injections: injections.map((inj) => ({
         sourceJsonPath: inj.sourceJsonPath.trim(),
         targetField: inj.targetField,
         targetKey: inj.targetKey.trim(),
@@ -376,51 +203,6 @@ export function ArrowConfigPanel({
     }
     onClose();
   };
-
-  const isGet = targetRequest?.method === "GET";
-  const availableFields: TargetField[] = isGet
-    ? ["url", "path", "header"]
-    : ["url", "path", "header", "body"];
-
-  if (isGet && active.targetField === "body") {
-    updateActive({ targetField: "header" });
-  }
-
-  // ── Preview ───────────────────────────────────────────────────────────────
-  const buildInjectionPreview = useCallback(
-    (inj: ChainInjection): string => {
-      const varName = jsonPathToVarName(inj.sourceJsonPath);
-      const rawUrl =
-        inj.targetField === "path" || inj.targetField === "url"
-          ? targetUrl.trim() ||
-            targetRequest?.url ||
-            "https://api.example.com/endpoint"
-          : (targetRequest?.url ?? "https://api.example.com/endpoint");
-
-      if (inj.targetField === "url") {
-        const sep = rawUrl.includes("?") ? "&" : "?";
-        return `${rawUrl}${sep}${inj.targetKey}={{${varName}}}`;
-      }
-      if (inj.targetField === "path") {
-        const placeholder = `:${inj.targetKey}`;
-        if (rawUrl.includes(placeholder)) {
-          return rawUrl.replace(placeholder, `{{${varName}}}`);
-        }
-        return `${rawUrl.replace(/\/$/, "")}/{{${varName}}}`;
-      }
-      if (inj.targetField === "header") {
-        return `${inj.targetKey}: {{${varName}}}`;
-      }
-      return `${inj.targetKey}: {{${varName}}}`;
-    },
-    [targetUrl, targetRequest?.url],
-  );
-
-  const urlMissingPlaceholder =
-    active.targetField === "path" &&
-    active.targetKey &&
-    targetUrl &&
-    !targetUrl.includes(`:${active.targetKey}`);
 
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
@@ -445,275 +227,35 @@ export function ArrowConfigPanel({
         </SheetHeader>
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto px-5 py-6 flex flex-col gap-7">
-          {/* ── Injection pills (multi-injection list) ──────────── */}
-          {!isDisplayNodeMode && (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs font-semibold text-foreground">
-                  Injections
-                </Label>
-                <button
-                  type="button"
-                  onClick={addInjection}
-                  className="text-xs text-primary hover:text-primary/80 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-                  aria-label="Add injection"
-                >
-                  + Add
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {injections.map((inj, idx) => {
-                  const isActive = idx === activeIdx;
-                  const label = inj.sourceJsonPath
-                    ? `${jsonPathToVarName(inj.sourceJsonPath)} → ${inj.targetField}:${inj.targetKey || "?"}`
-                    : `Injection ${idx + 1}`;
-                  return (
-                    <div key={inj.rowId} className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        aria-pressed={isActive}
-                        aria-label={`Select injection ${label}`}
-                        className={`flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-mono cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                          isActive
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border bg-muted/30 text-muted-foreground hover:border-border/80 hover:text-foreground"
-                        }`}
-                        onClick={() => setActiveIdx(idx)}
-                      >
-                        <span className="truncate max-w-[160px]">{label}</span>
-                      </button>
-                      {injections.length > 1 && (
-                        <button
-                          type="button"
-                          aria-label={`Remove injection ${label}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeInjection(idx);
-                          }}
-                          className="text-muted-foreground hover:text-destructive ml-0.5 leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-                        >
-                          ×
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+        <div className="flex-1 overflow-y-auto px-5 py-6">
+          {isDisplayNodeMode ? (
+            <DisplayExtractor
+              parsedResponseBody={parsedResponseBody}
+              sourceRequest={sourceRequest}
+              targetRequest={targetRequest}
+              sourceRunState={sourceRunState}
+              sourceResponse={sourceResponse}
+              onRunSource={onRunSource}
+              existingDisplayNode={existingDisplayNode}
+              panelOpen={open}
+              panelSessionKey={panelSessionKey}
+              onChange={handleDispChange}
+            />
+          ) : (
+            <InjectionEditor
+              parsedResponseBody={parsedResponseBody}
+              sourceRequest={sourceRequest}
+              targetRequest={targetRequest}
+              sourceRunState={sourceRunState}
+              sourceResponse={sourceResponse}
+              onRunSource={onRunSource}
+              initialInjections={initialInjections}
+              initialTargetUrl={initialTargetUrl}
+              panelOpen={open}
+              panelSessionKey={panelSessionKey}
+              onChange={handleInjChange}
+            />
           )}
-
-          {/* ── Extraction group ─────────────────────────── */}
-          <div className="flex flex-col gap-3">
-            <Label className="text-xs font-semibold text-foreground">
-              Extract from source response
-            </Label>
-            <p className="text-xs text-muted-foreground -mt-1.5">
-              Pull a value from{" "}
-              <span className="font-medium text-foreground">
-                {sourceRequest?.name}
-              </span>
-              's response
-            </p>
-
-            {!sourceResponse ? (
-              <div className="rounded-md border border-border/50 bg-muted/20 px-4 py-3 flex flex-col gap-2">
-                <p className="text-xs text-muted-foreground">
-                  Run the source request first to use the visual explorer.
-                </p>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="text-xs self-start"
-                  onClick={() => onRunSource?.(sourceRequest?.id ?? "")}
-                  disabled={sourceRunState === "running" || !sourceRequest}
-                >
-                  {sourceRunState === "running"
-                    ? "Running..."
-                    : "Run Source API"}
-                </Button>
-              </div>
-            ) : (
-              <Tabs defaultValue={defaultTab}>
-                <TabsList className="h-7 text-xs">
-                  <TabsTrigger
-                    value="explorer"
-                    className="text-xs h-6 px-3"
-                    disabled={!parsedResponseBody}
-                  >
-                    Explorer
-                  </TabsTrigger>
-                  <TabsTrigger value="manual" className="text-xs h-6 px-3">
-                    Manual
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent
-                  value="explorer"
-                  className="mt-2 flex flex-col gap-2"
-                >
-                  {parsedResponseBody ? (
-                    <>
-                      <JsonPathExplorer
-                        data={parsedResponseBody}
-                        selectedPath={active.sourceJsonPath}
-                        onSelect={handleSelectJsonPath}
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Click any value to select its path.
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">
-                      Response is not JSON — use the Manual tab to enter a
-                      JSONPath.
-                    </p>
-                  )}
-                </TabsContent>
-
-                <TabsContent
-                  value="manual"
-                  className="mt-2 flex flex-col gap-2"
-                >
-                  <Label htmlFor={manualJsonPathInputId} className="sr-only">
-                    JSONPath to extract from source response
-                  </Label>
-                  <Input
-                    id={manualJsonPathInputId}
-                    value={active.sourceJsonPath}
-                    onChange={(e) =>
-                      updateActive({ sourceJsonPath: e.target.value })
-                    }
-                    placeholder="$.token"
-                    className="font-mono text-xs h-8"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    e.g.{" "}
-                    <code className="text-primary font-mono">$.data.token</code>{" "}
-                    or <code className="text-primary font-mono">$.user.id</code>
-                  </p>
-                </TabsContent>
-              </Tabs>
-            )}
-          </div>
-
-          {/* Connector */}
-          <div className="flex items-center gap-3 -my-1">
-            <div className="h-px flex-1 bg-border/60" />
-            <span className="text-xs text-muted-foreground font-mono shrink-0">
-              then inject as
-            </span>
-            <div className="h-px flex-1 bg-border/60" />
-          </div>
-
-          {/* ── Injection group ───────────────────────────── */}
-          <div className="flex flex-col gap-3">
-            <Label className="text-xs font-semibold text-foreground">
-              Inject into target
-            </Label>
-            <p className="text-xs text-muted-foreground -mt-1.5">
-              Where to place the value in{" "}
-              <span className="font-medium text-foreground">
-                {targetRequest?.name}
-              </span>
-            </p>
-
-            {/* Segment control */}
-            <div className="flex flex-wrap gap-1.5">
-              {availableFields.map((field) => (
-                <button
-                  key={field}
-                  type="button"
-                  aria-pressed={active.targetField === field}
-                  aria-label={`Inject into ${field}`}
-                  onClick={() => handleTargetFieldChange(field)}
-                  className={`flex-1 min-w-[60px] rounded-md border px-2 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    active.targetField === field
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border bg-muted/50 text-muted-foreground hover:border-border/80 hover:text-foreground"
-                  }`}
-                >
-                  {field === "url"
-                    ? "Query"
-                    : field === "path"
-                      ? "Path"
-                      : field === "header"
-                        ? "Header"
-                        : "Body"}
-                </button>
-              ))}
-            </div>
-
-            {/* Key input */}
-            <div className="flex flex-col gap-2">
-              <Label
-                htmlFor={targetKeyInputId}
-                className="text-xs text-muted-foreground"
-              >
-                {TARGET_FIELD_LABEL[active.targetField]}
-              </Label>
-              <Input
-                id={targetKeyInputId}
-                value={active.targetKey}
-                onChange={(e) => handleTargetKeyChange(e.target.value)}
-                placeholder={TARGET_FIELD_PLACEHOLDER[active.targetField]}
-                className="font-mono text-xs h-8"
-              />
-              {active.targetField === "header" && (
-                <p className="text-xs text-muted-foreground">
-                  Value injected verbatim — include any prefix (e.g.{" "}
-                  <code className="text-primary font-mono">Bearer</code>) in the
-                  extracted value if needed.
-                </p>
-              )}
-            </div>
-
-            {/* Editable URL template — only for path/url injection */}
-            {(active.targetField === "path" ||
-              active.targetField === "url") && (
-              <div className="flex flex-col gap-2">
-                <Label
-                  htmlFor={targetUrlInputId}
-                  className="text-xs text-muted-foreground"
-                >
-                  {active.targetField === "path"
-                    ? "URL template (add :param placeholders)"
-                    : "Base URL"}
-                </Label>
-                <Input
-                  id={targetUrlInputId}
-                  value={targetUrl}
-                  onChange={(e) => setTargetUrl(e.target.value)}
-                  placeholder={
-                    targetRequest?.url ?? "https://api.example.com/todos/:id"
-                  }
-                  className={`font-mono text-xs h-8 ${urlMissingPlaceholder ? "border-amber-500/60" : ""}`}
-                />
-                {active.targetField === "path" && (
-                  <p className="text-xs text-muted-foreground">
-                    Replace static segments with{" "}
-                    <code className="text-primary font-mono">:paramName</code> —
-                    e.g. change <code className="font-mono">/todos/101</code> to{" "}
-                    <code className="text-primary font-mono">/todos/:id</code>
-                  </p>
-                )}
-                {urlMissingPlaceholder && (
-                  <p className="text-xs text-amber-400">
-                    URL doesn't contain{" "}
-                    <code className="font-mono">:{active.targetKey}</code> — the
-                    value will be appended instead.
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-
-          <ArrowConfigInjectionPreviewList
-            injections={injections}
-            sourceRequestName={sourceRequest?.name}
-            buildPreview={buildInjectionPreview}
-            jsonPathToVarName={jsonPathToVarName}
-          />
         </div>
 
         {/* Footer */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { Eye, EyeOff, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { EnvAutocompleteInput } from "@/components/common/EnvAutocompleteInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -26,7 +26,7 @@ type KVTableProps = {
   enableHeaderValueMask?: boolean;
 };
 
-export function KVTable({
+export const KVTable = memo(function KVTable({
   rows,
   onChange,
   keyPlaceholder = "Key",
@@ -232,4 +232,4 @@ export function KVTable({
       </div>
     </div>
   );
-}
+});

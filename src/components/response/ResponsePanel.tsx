@@ -678,14 +678,14 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
               <Braces className="h-3.5 w-3.5" />
             </TooltipIconButton>
             <TooltipIconButton
-              label="Visualize"
+              label={t("actions.visualize")}
               onClick={handleVisualize}
               data-testid="response-visualize-btn"
             >
               <Network className="h-3.5 w-3.5" />
             </TooltipIconButton>
             <TooltipIconButton
-              label="Copy"
+              label={t("actions.copy")}
               onClick={handleCopy}
               data-testid="response-copy-btn"
             >
