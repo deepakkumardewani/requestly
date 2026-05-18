@@ -77,6 +77,9 @@ describe("SettingsPage", () => {
       screen.getByRole("heading", { name: /network & security/i }),
     ).toBeTruthy();
 
+    fireEvent.click(screen.getByTestId("nav-global"));
+    expect(screen.getByRole("heading", { name: /^global$/i })).toBeTruthy();
+
     fireEvent.click(screen.getByTestId("nav-shortcuts"));
     expect(
       screen.getByRole("heading", { name: /keyboard shortcuts/i }),
