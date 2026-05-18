@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 import { HtmlLangSetter } from "@/components/layout/HtmlLangSetter";
 import { cn } from "@/lib/utils";
@@ -17,13 +19,16 @@ export const metadata: Metadata = {
   description: "Browser-native API testing tool",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={cn(
           inter.variable,
@@ -31,16 +36,18 @@ export default function RootLayout({
           "font-sans antialiased",
         )}
       >
-        <AppProviders>
-          <HtmlLangSetter />
-          <a
-            href="#app-main"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
-          >
-            Skip to main content
-          </a>
-          {children}
-        </AppProviders>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <AppProviders>
+            <HtmlLangSetter />
+            <a
+              href="#app-main"
+              className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+            >
+              Skip to main content
+            </a>
+            {children}
+          </AppProviders>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
