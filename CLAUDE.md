@@ -3,6 +3,7 @@
 - `bun install` instead of `npm install`
 - `bun run` instead of `npm run`
 - `gh` is installed - use for all Git operations
+- **IMPORTANT**: NEVER run `npm` commands (e.g., `npm install`, `npm run`) at the root directory. This will break the project. All package operations must be run using `bun`.
 
 ## Conditional Reference Table
 
