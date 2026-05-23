@@ -6,7 +6,9 @@
     "headers": "ヘッダー",
     "preview": "プレビュー",
     "timing": "タイミング",
-    "console": "コンソール"
+    "console": "コンソール",
+    "transform": "Transform",
+    "code": "Code"
   },
   "actions": {
     "dataSchema": "データスキーマ",

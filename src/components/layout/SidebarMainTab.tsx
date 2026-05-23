@@ -1,6 +1,14 @@
 "use client";
 
-import { Globe2, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  FoldVertical,
+  Globe2,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Trash2,
+  UnfoldVertical,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
@@ -32,8 +40,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
+import { useFolderExpandStore } from "@/stores/useFolderExpandStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useStandaloneChainStore } from "@/stores/useStandaloneChainStore";
 import { useTabsStore } from "@/stores/useTabsStore";
@@ -227,6 +242,67 @@ function PinnedSection() {
   );
 }
 
+function CollectionsSectionActions() {
+  const t = useTranslations("navigation");
+  const { setIsCreatingCollection } = useUIStore();
+  const folders = useCollectionsStore((s) => s.folders);
+  const collapsedFolderIds = useFolderExpandStore((s) => s.collapsedFolderIds);
+  const toggleAll = useFolderExpandStore((s) => s.toggleAll);
+  const allFolderIds = folders.map((f) => f.id);
+  const allExpanded =
+    allFolderIds.length > 0 &&
+    allFolderIds.every((id) => !collapsedFolderIds.includes(id));
+
+  return (
+    <div className="ml-auto flex items-center gap-0.5">
+      {allFolderIds.length > 0 && (
+        <TooltipProvider delay={400}>
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label={
+                    allExpanded ? "Collapse all folders" : "Expand all folders"
+                  }
+                  className="h-5 w-5 shrink-0 pointer-events-none opacity-0 transition-opacity group-hover/accordion-header:pointer-events-auto group-hover/accordion-header:opacity-100"
+                  data-testid="toggle-all-folders-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleAll(allFolderIds);
+                  }}
+                />
+              }
+            >
+              {allExpanded ? (
+                <FoldVertical className="h-3.5 w-3.5" />
+              ) : (
+                <UnfoldVertical className="h-3.5 w-3.5" />
+              )}
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              {allExpanded ? "Collapse all folders" : "Expand all folders"}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )}
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        aria-label={t("addCollection")}
+        className="h-5 w-5 shrink-0 pointer-events-none opacity-0 transition-opacity group-hover/accordion-header:pointer-events-auto group-hover/accordion-header:opacity-100"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsCreatingCollection(true);
+        }}
+      >
+        <Plus className="h-3.5 w-3.5" />
+      </Button>
+    </div>
+  );
+}
+
 type SidebarMainTabProps = {
   isCreatingChain: boolean;
   onCreatingChainDone: () => void;
@@ -325,20 +401,7 @@ export function SidebarMainTab({
           <AccordionTrigger
             chevronLeft
             className="hover:no-underline"
-            action={
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={t("addCollection")}
-                className="ml-auto h-5 w-5 shrink-0 pointer-events-none opacity-0 transition-opacity group-hover/accordion-header:pointer-events-auto group-hover/accordion-header:opacity-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsCreatingCollection(true);
-                }}
-              >
-                <Plus className="h-3.5 w-3.5" />
-              </Button>
-            }
+            action={<CollectionsSectionActions />}
           >
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("collections")}

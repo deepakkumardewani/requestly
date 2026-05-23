@@ -3,7 +3,6 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { usePanelRef } from "react-resizable-panels";
-import { CodeGenPanel } from "@/components/request/CodeGenPanel";
 import { RequestTabs } from "@/components/request/RequestTabs";
 import { UrlBar } from "@/components/request/UrlBar";
 import { ResponsePanel } from "@/components/response/ResponsePanel";
@@ -49,10 +48,7 @@ export function RightPanel() {
 
   const requestColumn = activeTabId ? (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
-      <div className="min-h-0 flex-1">
-        <RequestTabs tabId={activeTabId} />
-      </div>
-      {activeTab ? <CodeGenPanel tab={activeTab} /> : null}
+      <RequestTabs tabId={activeTabId} />
     </div>
   ) : null;
 

@@ -14,11 +14,36 @@ const VALUE_INPUT_CLASS =
 
 const MASK_DISPLAY = "••••••••";
 
+const GRID = {
+  base: "grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_auto] gap-x-3",
+  withDesc:
+    "grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] gap-x-3",
+  withMask:
+    "grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_auto_auto] gap-x-3",
+  withDescMask:
+    "grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto_auto] gap-x-3",
+} as const;
+
+function resolveGridClass(
+  showDescription: boolean,
+  showMaskCol: boolean,
+): string {
+  if (showDescription && showMaskCol) return GRID.withDescMask;
+  if (showDescription) return GRID.withDesc;
+  if (showMaskCol) return GRID.withMask;
+  return GRID.base;
+}
+
 type KVTableProps = {
   rows: KVPair[];
   onChange: (rows: KVPair[]) => void;
+  keyLabel?: string;
+  valueLabel?: string;
+  descriptionLabel?: string;
   keyPlaceholder?: string;
   valuePlaceholder?: string;
+  descriptionPlaceholder?: string;
+  showDescription?: boolean;
   readOnly?: boolean;
   readOnlyKeys?: boolean;
   hideCheckbox?: boolean;
@@ -29,8 +54,13 @@ type KVTableProps = {
 export const KVTable = memo(function KVTable({
   rows,
   onChange,
+  keyLabel = "Key",
+  valueLabel = "Value",
+  descriptionLabel = "Description",
   keyPlaceholder = "Key",
   valuePlaceholder = "Value",
+  descriptionPlaceholder = "Description",
+  showDescription = false,
   readOnly = false,
   readOnlyKeys = false,
   hideCheckbox = false,
@@ -38,7 +68,9 @@ export const KVTable = memo(function KVTable({
 }: KVTableProps) {
   const [draftKey, setDraftKey] = useState("");
   const [draftValue, setDraftValue] = useState("");
+  const [draftDescription, setDraftDescription] = useState("");
   const draftValueRef = useRef<HTMLInputElement>(null);
+  const draftDescriptionRef = useRef<HTMLInputElement>(null);
   /** Explicit mask state per row id (undefined = use default from sensitive key list). */
   const [maskExplicit, setMaskExplicit] = useState<Record<string, boolean>>({});
 
@@ -71,13 +103,20 @@ export const KVTable = memo(function KVTable({
   }
 
   function commitDraft() {
-    if (!draftKey && !draftValue) return;
+    if (!draftKey && !draftValue && !draftDescription) return;
     onChange([
       ...rows,
-      { id: generateId(), key: draftKey, value: draftValue, enabled: true },
+      {
+        id: generateId(),
+        key: draftKey,
+        value: draftValue,
+        description: draftDescription,
+        enabled: true,
+      },
     ]);
     setDraftKey("");
     setDraftValue("");
+    setDraftDescription("");
   }
 
   function handleDraftKeyBlur(e: React.FocusEvent<HTMLInputElement>) {
@@ -86,23 +125,24 @@ export const KVTable = memo(function KVTable({
   }
 
   const showMaskCol = enableHeaderValueMask && !readOnly;
-  const gridClass = showMaskCol
-    ? "grid grid-cols-[auto_1fr_1fr_auto_auto] gap-1"
-    : "grid grid-cols-[auto_1fr_1fr_auto] gap-1";
+  const gridClass = resolveGridClass(showDescription, showMaskCol);
 
   return (
     <div className="w-full">
-      <div
-        className={`${gridClass} px-2 pb-1 text-[11px] font-medium text-foreground/75`}
-      >
-        <span className="w-4" />
-        <span>{keyPlaceholder}</span>
-        <span>{valuePlaceholder}</span>
-        {showMaskCol ? <span className="w-7 text-center">Mask</span> : null}
-        <span className="w-6" />
+      <div className="sticky top-0 z-10 border-b bg-muted/40 px-3 py-2">
+        <div
+          className={`${gridClass} text-[11px] font-semibold uppercase tracking-wide text-muted-foreground`}
+        >
+          <span className="w-4" />
+          <span>{keyLabel}</span>
+          <span>{valueLabel}</span>
+          {showDescription ? <span>{descriptionLabel}</span> : null}
+          {showMaskCol ? <span className="w-7 text-center">Mask</span> : null}
+          <span className="w-6" />
+        </div>
       </div>
 
-      <div>
+      <div className="px-1 py-1">
         {rows.map((row) => {
           const prefersMask = rowMasked(row);
           const showMaskedDisplay = prefersMask && row.value.trim().length > 0;
@@ -165,6 +205,21 @@ export const KVTable = memo(function KVTable({
                 />
               )}
 
+              {showDescription ? (
+                <Input
+                  data-testid={`row-description-${row.id}`}
+                  className={`h-9 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-1 ${
+                    !row.enabled ? "opacity-40" : ""
+                  }`}
+                  value={row.description ?? ""}
+                  placeholder={descriptionPlaceholder}
+                  readOnly={readOnly}
+                  onChange={(e) =>
+                    updateRow(row.id, { description: e.target.value })
+                  }
+                />
+              ) : null}
+
               {showMaskCol ? (
                 <button
                   type="button"
@@ -217,7 +272,15 @@ export const KVTable = memo(function KVTable({
               value={draftValue}
               placeholder={valuePlaceholder}
               onChange={(e) => setDraftValue(e.target.value)}
-              onBlur={commitDraft}
+              onBlur={(e) => {
+                if (
+                  showDescription &&
+                  e.relatedTarget === draftDescriptionRef.current
+                ) {
+                  return;
+                }
+                commitDraft();
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -225,6 +288,23 @@ export const KVTable = memo(function KVTable({
                 }
               }}
             />
+            {showDescription ? (
+              <Input
+                data-testid="draft-row-description"
+                ref={draftDescriptionRef}
+                className="h-9 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-1"
+                value={draftDescription}
+                placeholder={descriptionPlaceholder}
+                onChange={(e) => setDraftDescription(e.target.value)}
+                onBlur={commitDraft}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    commitDraft();
+                  }
+                }}
+              />
+            ) : null}
             {showMaskCol ? <span className="w-7" /> : null}
             <span className="h-5 w-5" />
           </div>

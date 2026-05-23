@@ -35,6 +35,24 @@ const DEFAULT_SETTINGS: AppSettings = {
   accentColor: { r: 52, g: 211, b: 153 },
 };
 
+function toAppSettings(s: SettingsState): AppSettings {
+  return {
+    theme: s.theme,
+    proxyUrl: s.proxyUrl,
+    sslVerify: s.sslVerify,
+    followRedirects: s.followRedirects,
+    showHealthMonitor: s.showHealthMonitor,
+    showCodeGen: s.showCodeGen,
+    codeGenLang: s.codeGenLang,
+    autoExpandExplainer: s.autoExpandExplainer,
+    locale: s.locale,
+    globalBaseUrl: s.globalBaseUrl,
+    globalHeaders: s.globalHeaders,
+    pinnedRequestIds: s.pinnedRequestIds,
+    accentColor: s.accentColor,
+  };
+}
+
 async function persistSettings(settings: AppSettings) {
   const db = getDB();
   if (!db) return;
@@ -55,22 +73,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
 
     setSetting(key, value) {
       set({ [key]: value });
-      const s = get() as SettingsState;
-      persistSettings({
-        theme: s.theme,
-        proxyUrl: s.proxyUrl,
-        sslVerify: s.sslVerify,
-        followRedirects: s.followRedirects,
-        showHealthMonitor: s.showHealthMonitor,
-        showCodeGen: s.showCodeGen,
-        codeGenLang: s.codeGenLang,
-        autoExpandExplainer: s.autoExpandExplainer,
-        locale: s.locale,
-        globalBaseUrl: s.globalBaseUrl,
-        globalHeaders: s.globalHeaders,
-        pinnedRequestIds: s.pinnedRequestIds,
-        accentColor: s.accentColor,
-      });
+      persistSettings(toAppSettings(get() as SettingsState));
     },
 
     pinRequest(requestId) {
@@ -78,14 +81,14 @@ export const useSettingsStore = create<SettingsState & SettingsActions>(
       if (s.pinnedRequestIds.includes(requestId)) return;
       const updated = [...s.pinnedRequestIds, requestId];
       set({ pinnedRequestIds: updated });
-      persistSettings({ ...s, pinnedRequestIds: updated });
+      persistSettings({ ...toAppSettings(s), pinnedRequestIds: updated });
     },
 
     unpinRequest(requestId) {
       const s = get() as SettingsState;
       const updated = s.pinnedRequestIds.filter((id) => id !== requestId);
       set({ pinnedRequestIds: updated });
-      persistSettings({ ...s, pinnedRequestIds: updated });
+      persistSettings({ ...toAppSettings(s), pinnedRequestIds: updated });
     },
 
     async hydrate() {

@@ -19,7 +19,11 @@
       "urlEncoded": "Encodé URL"
     },
     "keyPlaceholder": "Clé",
-    "valuePlaceholder": "Valeur"
+    "valuePlaceholder": "Valeur",
+    "keyLabel": "Clé",
+    "valueLabel": "Valeur",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Description"
   },
   "auth": {
     "noAuth": "Aucune authentification ne sera envoyée avec cette requête.",
@@ -48,11 +52,19 @@
     "pathParams": "Paramètres de chemin",
     "queryParams": "Paramètres de requête",
     "keyPlaceholder": "Clé",
-    "valuePlaceholder": "Valeur"
+    "valuePlaceholder": "Valeur",
+    "keyLabel": "Clé",
+    "valueLabel": "Valeur",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Description"
   },
   "headers": {
-    "headerPlaceholder": "En-tête",
-    "valuePlaceholder": "Valeur"
+    "keyLabel": "Clé",
+    "valueLabel": "Valeur",
+    "descriptionLabel": "Description",
+    "keyPlaceholder": "Clé",
+    "valuePlaceholder": "Valeur",
+    "descriptionPlaceholder": "Description"
   },
   "curl": {
     "import": "Importer cURL",

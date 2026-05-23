@@ -22,6 +22,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/common/EmptyState";
 import { StatusBadge } from "@/components/common/StatusBadge";
+import { CodeGenPanel } from "@/components/request/CodeGenPanel";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -156,7 +157,7 @@ const EMPTY_UNRESOLVED_VARS: string[] = [];
 type ViewMode = "pretty" | "raw" | "preview";
 
 const PRIMARY_TABS = ["response", "headers", "timing"] as const;
-const MORE_TABS = ["console", "tests"] as const;
+const MORE_TABS = ["console", "tests", "transform", "code"] as const;
 type PrimaryTab = (typeof PRIMARY_TABS)[number];
 type MoreTab = (typeof MORE_TABS)[number];
 
@@ -493,7 +494,7 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(response?.body ?? "");
-      toast.success(et("responseCopied"));
+      toast.success("Copied to clipboard");
     } catch {
       toast.error(et("failedToCopy"));
     }
@@ -573,17 +574,17 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
   );
 
   return (
-    <div className="flex h-full flex-col overflow-hidden">
-      {hasUnresolvedVars && (
-        <UnresolvedVarsBanner
-          vars={unresolvedVarsList}
-          onSendAnyway={handleSendAnyway}
-          onDismiss={handleDismissVarsBanner}
-          onFix={() => setEnvManagerOpen(true)}
-        />
-      )}
-      {/* Meta row */}
-      <TooltipProvider delay={250}>
+    <TooltipProvider delay={250}>
+      <div className="flex h-full flex-col overflow-hidden">
+        {hasUnresolvedVars && (
+          <UnresolvedVarsBanner
+            vars={unresolvedVarsList}
+            onSendAnyway={handleSendAnyway}
+            onDismiss={handleDismissVarsBanner}
+            onFix={() => setEnvManagerOpen(true)}
+          />
+        )}
+        {/* Meta row */}
         <div
           className="flex items-center gap-3 border-b px-3 py-1.5"
           data-testid="response-meta"
@@ -707,179 +708,240 @@ export function ResponsePanel({ tabId, onSendForce }: ResponsePanelProps) {
             </TooltipIconButton>
           </div>
         </div>
-      </TooltipProvider>
 
-      {/* AI summary banner */}
-      {summary && (
-        <div
-          className="flex items-start gap-2 border-b border-violet-500/30 bg-violet-500/10 px-3 py-2 text-xs"
-          data-testid="summary-banner"
-        >
-          <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-violet-400" />
-          <p
-            className="flex-1 text-muted-foreground"
-            data-testid="summary-text"
+        {/* AI summary banner */}
+        {summary && (
+          <div
+            className="flex items-start gap-2 border-b border-violet-500/30 bg-violet-500/10 px-3 py-2 text-xs"
+            data-testid="summary-banner"
           >
-            {summary}
-          </p>
-          <button
-            type="button"
-            onClick={() => setSummary(null)}
-            className="shrink-0 text-muted-foreground hover:text-foreground"
-            aria-label="Dismiss summary"
-            data-testid="summary-dismiss"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      )}
-
-      {/* Response tabs */}
-      <Tabs
-        value={activeResponseTab}
-        onValueChange={(v) => setActiveResponseTab(v as PrimaryTab | MoreTab)}
-        className="flex flex-col overflow-hidden"
-        style={{ flex: "1 1 0", minHeight: 0 }}
-      >
-        <TabsList className="h-8 shrink-0 rounded-none border-b bg-transparent px-3 justify-start gap-0">
-          <TabsTrigger
-            value="response"
-            data-testid="response-tab-response"
-            className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
-          >
-            {t("tabs.response")}
-          </TabsTrigger>
-          <TabsTrigger
-            value="headers"
-            data-testid="response-tab-headers"
-            className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
-          >
-            {t("tabs.headers")}
-            <span className="ml-1 text-xs text-muted-foreground">
-              ({Object.keys(response.headers).length})
-            </span>
-          </TabsTrigger>
-          <TabsTrigger
-            value="timing"
-            data-testid="response-tab-timing"
-            className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
-          >
-            {t("tabs.timing")}
-          </TabsTrigger>
-          {/* Hidden triggers so base-ui registers "console"/"tests" as valid tab values */}
-          <TabsTrigger value="console" className="sr-only" tabIndex={-1}>
-            {t("tabs.console")}
-          </TabsTrigger>
-          <TabsTrigger value="tests" className="sr-only" tabIndex={-1}>
-            Tests
-          </TabsTrigger>
-          {/* "More" dropdown for Console + Tests */}
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              data-testid="response-tab-more"
-              className={cn(
-                "flex h-7 items-center gap-1 rounded-none border-b-2 border-transparent px-3 text-xs text-muted-foreground hover:text-foreground",
-                (activeResponseTab === "console" ||
-                  activeResponseTab === "tests") &&
-                  "border-b-theme-accent text-theme-accent",
-              )}
+            <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-violet-400" />
+            <p
+              className="flex-1 text-muted-foreground"
+              data-testid="summary-text"
             >
-              More
-              {(tabLogs.length > 0 || assertionFailedCount > 0) && (
-                <span className="h-1.5 w-1.5 rounded-full bg-theme-accent" />
-              )}
-              <ChevronDown className="h-3 w-3" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="min-w-[120px]">
-              <DropdownMenuItem
-                onClick={() => setActiveResponseTab("console")}
-                data-testid="response-more-console"
-                className="gap-2 text-xs"
-              >
-                Console
-                {tabLogs.length > 0 && (
-                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-theme-accent" />
+              {summary}
+            </p>
+            <button
+              type="button"
+              onClick={() => setSummary(null)}
+              className="shrink-0 text-muted-foreground hover:text-foreground"
+              aria-label="Dismiss summary"
+              data-testid="summary-dismiss"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+
+        {/* Response tabs */}
+        <Tabs
+          value={activeResponseTab}
+          onValueChange={(v) => setActiveResponseTab(v as PrimaryTab | MoreTab)}
+          className="flex flex-col overflow-hidden"
+          style={{ flex: "1 1 0", minHeight: 0 }}
+        >
+          <TabsList className="h-8 shrink-0 rounded-none border-b bg-transparent px-3 justify-start gap-0">
+            <TabsTrigger
+              value="response"
+              data-testid="response-tab-response"
+              className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
+            >
+              {t("tabs.response")}
+            </TabsTrigger>
+            <TabsTrigger
+              value="headers"
+              data-testid="response-tab-headers"
+              className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
+            >
+              {t("tabs.headers")}
+              <span className="ml-1 text-xs text-muted-foreground">
+                ({Object.keys(response.headers).length})
+              </span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="timing"
+              data-testid="response-tab-timing"
+              className="h-7 rounded-none border-b-2 border-transparent px-3 text-xs data-[state=active]:border-b-theme-accent data-[state=active]:text-theme-accent"
+            >
+              {t("tabs.timing")}
+            </TabsTrigger>
+            {/* Hidden triggers so base-ui registers More tab values */}
+            <TabsTrigger value="console" className="sr-only" tabIndex={-1}>
+              {t("tabs.console")}
+            </TabsTrigger>
+            <TabsTrigger value="tests" className="sr-only" tabIndex={-1}>
+              Tests
+            </TabsTrigger>
+            <TabsTrigger value="transform" className="sr-only" tabIndex={-1}>
+              {t("tabs.transform")}
+            </TabsTrigger>
+            <TabsTrigger value="code" className="sr-only" tabIndex={-1}>
+              {t("tabs.code")}
+            </TabsTrigger>
+            {/* "More" dropdown for Console, Tests, Transform */}
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                data-testid="response-tab-more"
+                className={cn(
+                  "flex h-7 items-center gap-1 rounded-none border-b-2 border-transparent px-3 text-xs text-muted-foreground hover:text-foreground",
+                  (activeResponseTab === "console" ||
+                    activeResponseTab === "tests" ||
+                    activeResponseTab === "transform" ||
+                    activeResponseTab === "code") &&
+                    "border-b-theme-accent text-theme-accent",
                 )}
-              </DropdownMenuItem>
-              {activeTab?.type === "http" && (
+              >
+                More
+                {(tabLogs.length > 0 || assertionFailedCount > 0) && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-theme-accent" />
+                )}
+                <ChevronDown className="h-3 w-3" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="min-w-[120px]">
                 <DropdownMenuItem
-                  onClick={() => setActiveResponseTab("tests")}
-                  data-testid="response-more-tests"
+                  onClick={() => setActiveResponseTab("console")}
+                  data-testid="response-more-console"
                   className="gap-2 text-xs"
                 >
-                  Tests
-                  {assertionFailedCount > 0 && (
-                    <span className="ml-auto h-1.5 w-1.5 rounded-full bg-destructive" />
+                  Console
+                  {tabLogs.length > 0 && (
+                    <span className="ml-auto h-1.5 w-1.5 rounded-full bg-theme-accent" />
                   )}
-                  {assertionResults.length > 0 &&
-                    assertionFailedCount === 0 && (
-                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    )}
                 </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </TabsList>
-
-        <div className="flex-1 overflow-hidden">
-          <TabsContent value="response" className="mt-0 h-full overflow-hidden">
-            {/* View mode toggle in top-right */}
-            <div className="relative h-full">
-              <div className="absolute right-2 top-2 z-10 flex items-center rounded-md border border-border bg-background p-0.5">
-                {(["pretty", "raw", "preview"] as ViewMode[]).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setViewMode(mode)}
-                    data-testid={`view-mode-${mode}`}
-                    className={cn(
-                      "rounded px-2 py-0.5 text-[11px] capitalize transition-colors",
-                      viewMode === mode
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:text-foreground",
-                    )}
+                {activeTab?.type === "http" && (
+                  <DropdownMenuItem
+                    onClick={() => setActiveResponseTab("tests")}
+                    data-testid="response-more-tests"
+                    className="gap-2 text-xs"
                   >
-                    {mode}
-                  </button>
-                ))}
-              </div>
-              {viewMode === "pretty" && (
-                <PrettyViewer body={response.body} contentType={contentType} />
-              )}
-              {viewMode === "raw" && <RawViewer body={response.body} />}
-              {viewMode === "preview" && (
-                <PreviewFrame body={response.body} contentType={contentType} />
-              )}
-            </div>
-          </TabsContent>
-          <TabsContent value="headers" className="mt-0 h-full overflow-hidden">
-            <HeadersViewer headers={response.headers} />
-          </TabsContent>
-          <TabsContent value="timing" className="mt-0 h-full overflow-auto">
-            {response.timing ? (
-              <TimingWaterfall timing={response.timing} />
-            ) : (
-              <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                {t("timing.noData")}
-              </div>
-            )}
-          </TabsContent>
-          <TabsContent value="console" className="mt-0 h-full overflow-hidden">
-            <ConsoleViewer logs={tabLogs} />
-          </TabsContent>
-          <TabsContent value="tests" className="mt-0 h-full overflow-hidden">
-            <AssertionsTab tabId={tabId} />
-          </TabsContent>
-        </div>
-      </Tabs>
+                    Tests
+                    {assertionFailedCount > 0 && (
+                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-destructive" />
+                    )}
+                    {assertionResults.length > 0 &&
+                      assertionFailedCount === 0 && (
+                        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      )}
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                  onClick={() => setActiveResponseTab("transform")}
+                  data-testid="response-more-transform"
+                  className="gap-2 text-xs"
+                >
+                  {t("tabs.transform")}
+                </DropdownMenuItem>
+                {activeTab?.type === "http" && (
+                  <DropdownMenuItem
+                    onClick={() => setActiveResponseTab("code")}
+                    data-testid="response-more-code"
+                    className="gap-2 text-xs"
+                  >
+                    {t("tabs.code")}
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </TabsList>
 
-      <TransformPlayground
-        tabId={tabId}
-        responseBody={response.body}
-        responseStatus={response.status}
-        responseHeaders={response.headers}
-      />
-      <DataSchemaDialog responseBody={response.body} />
-    </div>
+          <div className="flex-1 overflow-hidden">
+            <TabsContent
+              value="response"
+              className="mt-0 h-full overflow-hidden"
+            >
+              {/* View mode toggle in top-right */}
+              <div className="relative h-full">
+                <div className="absolute right-2 top-2 z-10 flex items-center gap-1">
+                  <TooltipIconButton
+                    label={t("actions.copy")}
+                    onClick={() => void handleCopy()}
+                    data-testid="response-body-copy-btn"
+                    className="h-7 w-7 rounded-md border border-border bg-background"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </TooltipIconButton>
+                  <div className="flex items-center rounded-md border border-border bg-background p-0.5">
+                    {(["pretty", "raw", "preview"] as ViewMode[]).map(
+                      (mode) => (
+                        <button
+                          key={mode}
+                          type="button"
+                          onClick={() => setViewMode(mode)}
+                          data-testid={`view-mode-${mode}`}
+                          className={cn(
+                            "rounded px-2 py-0.5 text-[11px] capitalize transition-colors",
+                            viewMode === mode
+                              ? "bg-accent text-accent-foreground"
+                              : "text-muted-foreground hover:text-foreground",
+                          )}
+                        >
+                          {mode}
+                        </button>
+                      ),
+                    )}
+                  </div>
+                </div>
+                {viewMode === "pretty" && (
+                  <PrettyViewer
+                    body={response.body}
+                    contentType={contentType}
+                  />
+                )}
+                {viewMode === "raw" && <RawViewer body={response.body} />}
+                {viewMode === "preview" && (
+                  <PreviewFrame
+                    body={response.body}
+                    contentType={contentType}
+                  />
+                )}
+              </div>
+            </TabsContent>
+            <TabsContent
+              value="headers"
+              className="mt-0 h-full overflow-hidden"
+            >
+              <HeadersViewer headers={response.headers} />
+            </TabsContent>
+            <TabsContent value="timing" className="mt-0 h-full overflow-auto">
+              {response.timing ? (
+                <TimingWaterfall timing={response.timing} />
+              ) : (
+                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                  {t("timing.noData")}
+                </div>
+              )}
+            </TabsContent>
+            <TabsContent
+              value="console"
+              className="mt-0 h-full overflow-hidden"
+            >
+              <ConsoleViewer logs={tabLogs} />
+            </TabsContent>
+            <TabsContent value="tests" className="mt-0 h-full overflow-hidden">
+              <AssertionsTab tabId={tabId} />
+            </TabsContent>
+            <TabsContent
+              value="transform"
+              className="mt-0 h-full overflow-hidden"
+            >
+              <TransformPlayground
+                tabId={tabId}
+                responseBody={response.body}
+                responseStatus={response.status}
+                responseHeaders={response.headers}
+              />
+            </TabsContent>
+            {activeTab?.type === "http" && (
+              <TabsContent value="code" className="mt-0 h-full overflow-hidden">
+                <CodeGenPanel tab={activeTab} variant="tab" />
+              </TabsContent>
+            )}
+          </div>
+        </Tabs>
+
+        <DataSchemaDialog responseBody={response.body} />
+      </div>
+    </TooltipProvider>
   );
 }

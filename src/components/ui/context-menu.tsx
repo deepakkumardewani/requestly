@@ -54,6 +54,28 @@ function ContextMenuItem({
   );
 }
 
+function ContextMenuLabel({
+  className,
+  ...props
+}: ContextMenuPrimitive.GroupLabel.Props) {
+  return (
+    <ContextMenuPrimitive.GroupLabel
+      data-slot="context-menu-label"
+      className={cn(
+        "px-1.5 py-1 text-xs font-medium uppercase tracking-wide text-muted-foreground",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function ContextMenuGroup({ ...props }: ContextMenuPrimitive.Group.Props) {
+  return (
+    <ContextMenuPrimitive.Group data-slot="context-menu-group" {...props} />
+  );
+}
+
 function ContextMenuSeparator({
   className,
   ...props
@@ -73,4 +95,6 @@ export {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
+  ContextMenuLabel,
+  ContextMenuGroup,
 };

@@ -44,40 +44,30 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-async function openPlayground() {
-  const user = userEvent.setup();
-  const toggleBtn = screen.getByRole("button", { name: /transform/i });
-  await user.click(toggleBtn);
-  return user;
-}
-
 describe("TransformPlayground — AI JSONPath Helper", () => {
   beforeEach(() => resetStore());
 
   it("Ask AI button is absent when mode is JS", async () => {
     render(<TransformPlayground {...DEFAULT_PROPS} />);
-    const user = await openPlayground();
+    const user = userEvent.setup();
 
-    // Switch to JS mode
     await user.click(screen.getByRole("button", { name: "JavaScript" }));
     expect(screen.queryByTestId("jsonpath-ai-btn")).not.toBeInTheDocument();
   });
 
-  it("Ask AI button is absent when no response", async () => {
+  it("Ask AI button is absent when no response", () => {
     render(<TransformPlayground {...DEFAULT_PROPS} responseBody={null} />);
-    await openPlayground();
     expect(screen.queryByTestId("jsonpath-ai-btn")).not.toBeInTheDocument();
   });
 
-  it("Ask AI button is present in JSONPath mode with response", async () => {
+  it("Ask AI button is present in JSONPath mode with response", () => {
     render(<TransformPlayground {...DEFAULT_PROPS} />);
-    await openPlayground();
     expect(screen.getByTestId("jsonpath-ai-btn")).toBeInTheDocument();
   });
 
   it("clicking Ask AI button shows the prompt bar", async () => {
     render(<TransformPlayground {...DEFAULT_PROPS} />);
-    const user = await openPlayground();
+    const user = userEvent.setup();
 
     await user.click(screen.getByTestId("jsonpath-ai-btn"));
     expect(screen.getByTestId("jsonpath-ai-bar")).toBeInTheDocument();
@@ -86,7 +76,7 @@ describe("TransformPlayground — AI JSONPath Helper", () => {
 
   it("clicking ✕ closes the prompt bar without calling AI", async () => {
     render(<TransformPlayground {...DEFAULT_PROPS} />);
-    const user = await openPlayground();
+    const user = userEvent.setup();
 
     await user.click(screen.getByTestId("jsonpath-ai-btn"));
     await user.click(screen.getByTestId("jsonpath-ai-close-btn"));
@@ -98,7 +88,7 @@ describe("TransformPlayground — AI JSONPath Helper", () => {
   it("submitting prompt calls AI and sets code via setCode", async () => {
     mockRun.mockResolvedValueOnce({ expression: "$.email" });
     render(<TransformPlayground {...DEFAULT_PROPS} />);
-    const user = await openPlayground();
+    const user = userEvent.setup();
 
     await user.click(screen.getByTestId("jsonpath-ai-btn"));
     await user.type(screen.getByTestId("jsonpath-ai-input"), "email of the user");
@@ -113,7 +103,6 @@ describe("TransformPlayground — AI JSONPath Helper", () => {
       expect(pg.code).toBe("$.email");
     });
 
-    // bar closes after success
     expect(screen.queryByTestId("jsonpath-ai-bar")).not.toBeInTheDocument();
   });
 });

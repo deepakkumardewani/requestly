@@ -14,6 +14,7 @@ export type KVPair = {
   key: string;
   value: string;
   enabled: boolean;
+  description?: string;
   type?: "query" | "path";
 };
 

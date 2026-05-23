@@ -19,7 +19,11 @@
       "urlEncoded": "URL Encoded"
     },
     "keyPlaceholder": "Key",
-    "valuePlaceholder": "Value"
+    "valuePlaceholder": "Value",
+    "keyLabel": "Key",
+    "valueLabel": "Value",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Description"
   },
   "auth": {
     "noAuth": "No authentication will be sent with this request.",
@@ -48,11 +52,19 @@
     "pathParams": "Path Params",
     "queryParams": "Query Params",
     "keyPlaceholder": "Key",
-    "valuePlaceholder": "Value"
+    "valuePlaceholder": "Value",
+    "keyLabel": "Key",
+    "valueLabel": "Value",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Description"
   },
   "headers": {
-    "headerPlaceholder": "Header",
-    "valuePlaceholder": "Value"
+    "keyLabel": "Key",
+    "valueLabel": "Value",
+    "descriptionLabel": "Description",
+    "keyPlaceholder": "Key",
+    "valuePlaceholder": "Value",
+    "descriptionPlaceholder": "Description"
   },
   "curl": {
     "import": "Import cURL",

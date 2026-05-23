@@ -30,6 +30,14 @@ type CollectionsActions = {
     parsed: ParsedPostmanCollection,
   ) => CollectionModel;
   renameCollection: (id: string, name: string) => void;
+  createFolder: (
+    collectionId: string,
+    parentFolderId?: string | null,
+    name?: string,
+  ) => CollectionFolderModel;
+  renameFolder: (id: string, name: string) => void;
+  duplicateFolder: (id: string) => CollectionFolderModel | null;
+  deleteFolder: (id: string) => void;
   deleteCollection: (id: string) => void;
   addRequest: (
     collectionId: string,
@@ -211,6 +219,165 @@ export const useCollectionsStore = create<
     }));
     const updated = get().collections.find((c) => c.id === id);
     if (updated) persistCollection(updated);
+  },
+
+  createFolder(collectionId, parentFolderId = null, name = "New Folder") {
+    const parentKey = parentFolderId ?? null;
+    const folder: CollectionFolderModel = {
+      id: generateId(),
+      collectionId,
+      name,
+      parentFolderId: parentKey,
+      order: 0,
+    };
+    const bumpedFolders: CollectionFolderModel[] = [];
+    set((state) => ({
+      folders: [
+        ...state.folders.map((f) => {
+          if (
+            f.collectionId === collectionId &&
+            f.parentFolderId === parentKey
+          ) {
+            const bumped = { ...f, order: f.order + 1 };
+            bumpedFolders.push(bumped);
+            return bumped;
+          }
+          return f;
+        }),
+        folder,
+      ],
+    }));
+    for (const bumped of bumpedFolders) {
+      persistFolder(bumped);
+    }
+    persistFolder(folder);
+    return folder;
+  },
+
+  renameFolder(id, name) {
+    set((state) => ({
+      folders: state.folders.map((f) => (f.id === id ? { ...f, name } : f)),
+    }));
+    const updated = get().folders.find((f) => f.id === id);
+    if (updated) persistFolder(updated);
+  },
+
+  duplicateFolder(folderId) {
+    const state = get();
+    const root = state.folders.find((f) => f.id === folderId);
+    if (!root) return null;
+
+    const subtreeIds: string[] = [];
+    function collect(id: string) {
+      subtreeIds.push(id);
+      for (const child of state.folders.filter(
+        (f) => f.parentFolderId === id,
+      )) {
+        collect(child.id);
+      }
+    }
+    collect(folderId);
+
+    const idMap = new Map<string, string>();
+    const newFolders: CollectionFolderModel[] = [];
+    const bumpedFolders: CollectionFolderModel[] = [];
+
+    for (const oldId of subtreeIds) {
+      const old = state.folders.find((f) => f.id === oldId);
+      if (!old) continue;
+
+      const newId = generateId();
+      idMap.set(oldId, newId);
+      const newParentId =
+        old.id === folderId
+          ? old.parentFolderId
+          : (idMap.get(old.parentFolderId ?? "") ?? null);
+
+      newFolders.push({
+        id: newId,
+        collectionId: old.collectionId,
+        name: old.id === folderId ? `${old.name} (copy)` : old.name,
+        parentFolderId: newParentId,
+        order: old.id === folderId ? 0 : old.order,
+      });
+    }
+
+    const parentKey = root.parentFolderId;
+    const updatedExisting = state.folders.map((f) => {
+      if (
+        f.collectionId === root.collectionId &&
+        f.parentFolderId === parentKey &&
+        f.id !== folderId
+      ) {
+        const bumped = { ...f, order: f.order + 1 };
+        bumpedFolders.push(bumped);
+        return bumped;
+      }
+      return f;
+    });
+
+    const now = Date.now();
+    const newRequests = state.requests
+      .filter((r) => r.folderId && subtreeIds.includes(r.folderId))
+      .map((r, index) => ({
+        ...r,
+        id: generateId(),
+        folderId: idMap.get(r.folderId!) ?? null,
+        createdAt: now + index,
+        updatedAt: now + index,
+      }));
+
+    set({
+      folders: [...updatedExisting, ...newFolders],
+      requests: [...state.requests, ...newRequests],
+    });
+
+    for (const bumped of bumpedFolders) {
+      persistFolder(bumped);
+    }
+    for (const folder of newFolders) {
+      persistFolder(folder);
+    }
+    for (const request of newRequests) {
+      persistRequest(request);
+    }
+
+    return newFolders[0] ?? null;
+  },
+
+  deleteFolder(folderId) {
+    const state = get();
+    const subtreeIds: string[] = [];
+    function collect(id: string) {
+      subtreeIds.push(id);
+      for (const child of state.folders.filter(
+        (f) => f.parentFolderId === id,
+      )) {
+        collect(child.id);
+      }
+    }
+    collect(folderId);
+
+    const requestsToDelete = state.requests.filter(
+      (r) => r.folderId && subtreeIds.includes(r.folderId),
+    );
+
+    set((s) => ({
+      folders: s.folders.filter((f) => !subtreeIds.includes(f.id)),
+      requests: s.requests.filter(
+        (r) => !r.folderId || !subtreeIds.includes(r.folderId),
+      ),
+    }));
+
+    for (const id of subtreeIds) {
+      deleteFolderFromDB(id);
+    }
+    for (const request of requestsToDelete) {
+      deleteRequestFromDB(request.id);
+    }
+    useTabsStore
+      .getState()
+      .closeTabsForRequests(requestsToDelete.map((r) => r.id));
   },
 
   deleteCollection(id) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { SecretInput } from "@/components/common/SecretInput";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -87,10 +88,10 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
       {auth.type === "bearer" && (
         <div className="space-y-1.5">
           <Label className="text-xs">{t("auth.token")}</Label>
-          <Input
+          <SecretInput
             className="h-8 font-mono text-xs"
-            type="password"
             data-testid="auth-bearer-token"
+            toggleTestId="auth-bearer-token-toggle"
             value={auth.token}
             placeholder={t("auth.bearerPlaceholder")}
             onChange={(e) =>
@@ -120,10 +121,10 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs">{t("auth.password")}</Label>
-            <Input
+            <SecretInput
               className="h-8 text-xs"
-              type="password"
               data-testid="auth-basic-password"
+              toggleTestId="auth-basic-password-toggle"
               value={auth.password}
               placeholder={t("auth.passwordPlaceholder")}
               onChange={(e) =>
@@ -155,10 +156,10 @@ export function AuthEditor({ tabId }: AuthEditorProps) {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">{t("auth.keyValue")}</Label>
-              <Input
+              <SecretInput
                 className="h-8 font-mono text-xs"
-                type="password"
                 data-testid="auth-apikey-value"
+                toggleTestId="auth-apikey-value-toggle"
                 value={auth.value}
                 placeholder={t("auth.keyValuePlaceholder")}
                 onChange={(e) =>

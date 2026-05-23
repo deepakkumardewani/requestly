@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/select";
 import { useAI } from "@/hooks/useAI";
 import { useEnvVariableKeys } from "@/hooks/useEnvVariableKeys";
+import { resolveFormDataRows } from "@/lib/bodyFormData";
 import { useTabsStore } from "@/stores/useTabsStore";
-import type { BodyType, KVPair } from "@/types";
+import type { BodyConfig, BodyType, KVPair } from "@/types";
 
 const CodeEditor = dynamic(() => import("./CodeEditor"), { ssr: false });
 
@@ -45,16 +46,15 @@ export function BodyEditor({ tabId }: BodyEditorProps) {
 
   function handleTypeChange(type: BodyType | null) {
     if (!type) return;
-    updateTabState(tabId, {
-      body: {
-        type,
-        content: body.content,
-        formData:
-          type === "form-data" || type === "urlencoded"
-            ? (body.formData ?? [])
-            : undefined,
-      },
-    });
+    const nextBody: BodyConfig = {
+      type,
+      content: body.content,
+      formData: body.formData,
+    };
+    if (type === "form-data" || type === "urlencoded") {
+      nextBody.formData = resolveFormDataRows(body.formData, body.content);
+    }
+    updateTabState(tabId, { body: nextBody });
   }
 
   function handleFormDataChange(formData: KVPair[]) {
@@ -208,10 +208,15 @@ export function BodyEditor({ tabId }: BodyEditorProps) {
 
         {isFormType && (
           <KVTable
-            rows={body.formData ?? []}
+            rows={resolveFormDataRows(body.formData, body.content)}
             onChange={handleFormDataChange}
+            keyLabel={t("body.keyLabel")}
+            valueLabel={t("body.valueLabel")}
+            descriptionLabel={t("body.descriptionLabel")}
             keyPlaceholder={t("body.keyPlaceholder")}
             valuePlaceholder={t("body.valuePlaceholder")}
+            descriptionPlaceholder={t("body.descriptionPlaceholder")}
+            showDescription
           />
         )}
       </div>

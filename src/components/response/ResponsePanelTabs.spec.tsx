@@ -106,6 +106,8 @@ describe("ResponsePanel — tab restructure (Epic 3.1)", () => {
 
     await user.click(screen.getByTestId("response-tab-more"));
     expect(screen.getByTestId("response-more-console")).toBeInTheDocument();
+    expect(screen.getByTestId("response-more-transform")).toBeInTheDocument();
+    expect(screen.getByTestId("response-more-code")).toBeInTheDocument();
   });
 
   it("shows dot indicator on More button when console has logs", () => {

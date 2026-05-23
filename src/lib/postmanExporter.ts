@@ -268,3 +268,22 @@ export function downloadPostmanCollection(
   link.click();
   URL.revokeObjectURL(url);
 }
+
+export function downloadPostmanRequest(request: RequestModel): void {
+  const data: PostmanCollection = {
+    info: {
+      name: request.name,
+      schema: POSTMAN_SCHEMA,
+    },
+    item: [requestToPostmanItem(request)],
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const safeName = request.name.replace(/[^a-z0-9_-]/gi, "_");
+  link.href = url;
+  link.download = `${safeName}.postman_collection.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}

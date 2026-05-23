@@ -30,6 +30,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={cn(
           inter.variable,
           geistMono.variable,

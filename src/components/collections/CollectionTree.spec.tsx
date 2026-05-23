@@ -10,10 +10,15 @@ import {
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
+import { useFolderExpandStore } from "@/stores/useFolderExpandStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
 import type { CollectionModel, RequestModel } from "@/types";
 import { CollectionTree } from "./CollectionTree";
+
+function renderCollectionTree() {
+  return render(<CollectionTree />);
+}
 
 vi.mock("@/lib/idb", () => ({
   getDB: vi.fn(() => null),
@@ -23,13 +28,9 @@ vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 
-const push = vi.fn();
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push }),
-}));
-
 function resetStores() {
-  useCollectionsStore.setState({ collections: [], requests: [] });
+  useCollectionsStore.setState({ collections: [], requests: [], folders: [] });
+  useFolderExpandStore.setState({ collapsedFolderIds: [] });
   useTabsStore.setState({ tabs: [], activeTabId: null });
   useUIStore.setState({
     isCreatingCollection: false,
@@ -45,7 +46,6 @@ beforeEach(() => {
     disconnect() {}
   };
   resetStores();
-  push.mockClear();
 });
 
 afterEach(() => {
@@ -56,7 +56,7 @@ afterEach(() => {
 
 describe("CollectionTree", () => {
   it("shows empty state when there are no collections", () => {
-    render(<CollectionTree />);
+    renderCollectionTree();
     expect(screen.getByText("No collections yet")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /new collection/i }),
@@ -65,7 +65,7 @@ describe("CollectionTree", () => {
 
   it("reveals new collection input when New Collection is clicked", async () => {
     const user = userEvent.setup();
-    render(<CollectionTree />);
+    renderCollectionTree();
 
     await user.click(screen.getByRole("button", { name: /new collection/i }));
 
@@ -75,7 +75,7 @@ describe("CollectionTree", () => {
   it("creates a collection when Enter is pressed with a non-empty name", async () => {
     const user = userEvent.setup();
     useUIStore.setState({ isCreatingCollection: true });
-    render(<CollectionTree />);
+    renderCollectionTree();
 
     const input = screen.getByTestId("new-collection-name-input");
     await user.type(input, "My API{Enter}");
@@ -111,7 +111,7 @@ describe("CollectionTree", () => {
     };
     useCollectionsStore.setState({ collections: [col], requests: [req] });
 
-    render(<CollectionTree />);
+    renderCollectionTree();
 
     expect(screen.getByTestId("collection-name-col-1")).toHaveTextContent(
       "Prod",
@@ -130,32 +130,11 @@ describe("CollectionTree", () => {
     };
     useCollectionsStore.setState({ collections: [col], requests: [] });
 
-    render(<CollectionTree />);
+    renderCollectionTree();
 
     await user.click(screen.getByTestId("collection-name-col-a"));
 
     expect(await screen.findByText("No requests yet")).toBeInTheDocument();
-  });
-
-  it("opens chain view via GitBranch button", async () => {
-    const user = userEvent.setup();
-    const col: CollectionModel = {
-      id: "col-chain",
-      name: "Chain",
-      createdAt: 1,
-      updatedAt: 1,
-    };
-    useCollectionsStore.setState({ collections: [col], requests: [] });
-
-    render(<CollectionTree />);
-
-    const moreBtn = screen.getByTestId("collection-more-btn-col-chain");
-    await user.click(moreBtn);
-
-    const chainViewItem = screen.getByRole("menuitem", { name: /chain view/i });
-    await user.click(chainViewItem);
-
-    expect(push).toHaveBeenCalledWith("/chain/col-chain");
   });
 
   it("opens rename flow from collection dropdown and commits on blur", async () => {
@@ -168,7 +147,7 @@ describe("CollectionTree", () => {
     };
     useCollectionsStore.setState({ collections: [col], requests: [] });
 
-    render(<CollectionTree />);
+    renderCollectionTree();
 
     await user.click(screen.getByTestId("collection-more-btn-col-r"));
     await user.click(screen.getByTestId("collection-rename-btn"));
@@ -194,7 +173,7 @@ describe("CollectionTree", () => {
     };
     useCollectionsStore.setState({ collections: [col], requests: [] });
 
-    render(<CollectionTree />);
+    renderCollectionTree();
 
     await user.click(screen.getByTestId("collection-more-btn-col-del"));
     await user.click(screen.getByTestId("collection-delete-btn"));

@@ -2,6 +2,7 @@
 
 import { Check, ChevronDown, ChevronRight, Copy } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import type { CodeEditorLanguage } from "@/components/request/CodeEditor";
 import CodeEditor from "@/components/request/CodeEditor";
 import { Button } from "@/components/ui/button";
@@ -140,14 +141,21 @@ function CopyButton({ onCopy, copied }: CopyButtonProps) {
 
 type CodeGenPanelProps = {
   tab: TabState;
+  variant?: "dock" | "tab";
 };
 
-export function CodeGenPanel({ tab }: CodeGenPanelProps) {
+export function CodeGenPanel({ tab, variant = "dock" }: CodeGenPanelProps) {
   if (tab.type !== "http") return null;
-  return <CodeGenPanelHttp tab={tab} />;
+  return <CodeGenPanelHttp tab={tab} variant={variant} />;
 }
 
-function CodeGenPanelHttp({ tab }: { tab: HttpTab }) {
+function CodeGenPanelHttp({
+  tab,
+  variant = "dock",
+}: {
+  tab: HttpTab;
+  variant?: "dock" | "tab";
+}) {
   const { showCodeGen, codeGenLang, setSetting } = useSettingsStore();
   const { environments, activeEnvId } = useEnvironmentsStore();
 
@@ -187,21 +195,99 @@ function CodeGenPanelHttp({ tab }: { tab: HttpTab }) {
     };
   }, []);
 
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(snippet).catch((err) => {
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(snippet);
+      if (variant === "tab") {
+        toast.success("Copied to clipboard");
+        return;
+      }
+      setCopied(true);
+      if (copyResetRef.current !== null) {
+        clearTimeout(copyResetRef.current);
+      }
+      copyResetRef.current = setTimeout(() => {
+        copyResetRef.current = null;
+        setCopied(false);
+      }, COPY_RESET_DELAY_MS);
+    } catch (err) {
       console.error("Clipboard write failed", err);
-    });
-    setCopied(true);
-    if (copyResetRef.current !== null) {
-      clearTimeout(copyResetRef.current);
+      toast.error("Failed to copy");
     }
-    copyResetRef.current = setTimeout(() => {
-      copyResetRef.current = null;
-      setCopied(false);
-    }, COPY_RESET_DELAY_MS);
-  }, [snippet]);
+  }, [snippet, variant]);
 
-  const isExpanded = showCodeGen;
+  const isExpanded = variant === "tab" ? true : showCodeGen;
+
+  const toolbar = (
+    <>
+      <Select
+        value={activeLang}
+        onValueChange={(v) => handleLangChange(v as Language)}
+      >
+        <SelectTrigger
+          className="h-7 w-28 border-none px-2 text-xs shadow-none focus:ring-0"
+          data-testid="code-gen-lang-select"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {LANGUAGES.map((lang) => (
+            <SelectItem key={lang} value={lang} className="text-xs">
+              {lang}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <div className="ml-auto flex items-center gap-3">
+        <div className="flex items-center gap-1.5">
+          <Switch
+            id={variant === "tab" ? "resolve-vars-tab" : "resolve-vars"}
+            checked={resolveVars}
+            onCheckedChange={setResolveVars}
+            className="h-4 w-7"
+          />
+          <Label
+            htmlFor={variant === "tab" ? "resolve-vars-tab" : "resolve-vars"}
+            className="cursor-pointer text-xs text-muted-foreground"
+          >
+            {resolveVars && activeEnv
+              ? `Resolving: ${activeEnv.name}`
+              : "Resolve variables"}
+          </Label>
+        </div>
+        <CopyButton onCopy={() => void handleCopy()} copied={copied} />
+      </div>
+    </>
+  );
+
+  if (variant === "tab") {
+    return (
+      <div
+        className="flex h-full flex-col overflow-hidden"
+        data-testid="code-gen-panel"
+      >
+        <div
+          className="flex items-center gap-2 border-b px-3 py-1.5"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <span className="shrink-0 text-xs font-medium text-muted-foreground">
+            Code
+          </span>
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            {toolbar}
+          </div>
+        </div>
+        <div className="min-h-0 flex-1">
+          <CodeEditor
+            key={activeLang}
+            value={snippet}
+            language={EDITOR_LANGUAGE_MAP[activeLang]}
+            readOnly
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="border-t bg-background">
@@ -272,7 +358,7 @@ function CodeGenPanelHttp({ tab }: { tab: HttpTab }) {
                   : "Resolve variables"}
               </Label>
             </div>
-            <CopyButton onCopy={handleCopy} copied={copied} />
+            <CopyButton onCopy={() => void handleCopy()} copied={copied} />
           </div>
         )}
       </div>

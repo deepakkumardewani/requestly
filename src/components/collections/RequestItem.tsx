@@ -1,32 +1,45 @@
 "use client";
 
 import {
+  Code2,
   Copy,
-  MapPin,
-  MapPinOff,
+  Download,
   MoreHorizontal,
   Pencil,
+  Pin,
+  PinOff,
+  Terminal,
   Trash2,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { toast } from "sonner";
 import { HealthDot } from "@/components/collections/HealthDot";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { MethodBadge } from "@/components/common/MethodBadge";
+import { CodeGenDialog } from "@/components/request/CodeGenDialog";
 import {
   ContextMenu,
   ContextMenuContent,
+  ContextMenuGroup,
   ContextMenuItem,
+  ContextMenuLabel,
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { generateCurl } from "@/lib/curlGenerator";
+import { downloadPostmanRequest } from "@/lib/postmanExporter";
+import { requestModelToHttpTab } from "@/lib/requestModelToTab";
 import { generateId } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
@@ -39,15 +52,15 @@ type RequestItemProps = {
 };
 
 export function RequestItem({ request, isActive }: RequestItemProps) {
+  const t = useTranslations("common");
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(request.name);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [codeGenOpen, setCodeGenOpen] = useState(false);
 
   const openTabForRequest = useTabsStore((s) =>
     s.tabs.find((t) => t.requestId === request.id),
   );
-  // Selecting actions individually: they're stable function references so
-  // these selectors never trigger a re-render when tab state changes.
   const openTab = useTabsStore((s) => s.openTab);
   const setActiveTab = useTabsStore((s) => s.setActiveTab);
   const updateTabState = useTabsStore((s) => s.updateTabState);
@@ -60,6 +73,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
   const unpinRequest = useSettingsStore((s) => s.unpinRequest);
 
   const isPinned = pinnedRequestIds.includes(request.id);
+  const codeGenTab = requestModelToHttpTab(request);
 
   function handleOpen() {
     if (isEditing) return;
@@ -90,7 +104,6 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
     const trimmed = editName.trim();
     if (trimmed && trimmed !== request.name) {
       updateRequest(request.id, { name: trimmed });
-      // Sync the name on any open tab that references this request
       if (openTabForRequest) {
         updateTabState(openTabForRequest.tabId, {
           name: trimmed,
@@ -120,6 +133,98 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
     };
     addRequest(request.collectionId, duplicateTab, request.folderId);
   }
+
+  async function handleCopyAsCurl() {
+    const curl = generateCurl(codeGenTab);
+    try {
+      await navigator.clipboard.writeText(curl);
+      toast.success("cURL copied to clipboard");
+    } catch {
+      toast.error("Failed to copy to clipboard");
+    }
+  }
+
+  function handleGenerateCode() {
+    setCodeGenOpen(true);
+  }
+
+  function handleExportPostman() {
+    downloadPostmanRequest(request);
+  }
+
+  const exportItems = (
+    <>
+      <DropdownMenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          handleGenerateCode();
+        }}
+      >
+        <Code2 className="mr-2 h-3.5 w-3.5" />
+        Generate Code
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          void handleCopyAsCurl();
+        }}
+      >
+        <Terminal className="mr-2 h-3.5 w-3.5" />
+        {t("copyAsCurl")}
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          handleExportPostman();
+        }}
+      >
+        <Download className="mr-2 h-3.5 w-3.5" />
+        Export as Postman
+      </DropdownMenuItem>
+    </>
+  );
+
+  const actionItems = (
+    <>
+      <DropdownMenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          isPinned ? unpinRequest(request.id) : pinRequest(request.id);
+        }}
+      >
+        {isPinned ? (
+          <>
+            <PinOff className="mr-2 h-3.5 w-3.5" />
+            Unpin
+          </>
+        ) : (
+          <>
+            <Pin className="mr-2 h-3.5 w-3.5" />
+            Pin to top
+          </>
+        )}
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          handleDuplicate();
+        }}
+      >
+        <Copy className="mr-2 h-3.5 w-3.5" />
+        Duplicate
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        data-testid="request-rename-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsEditing(true);
+        }}
+      >
+        <Pencil className="mr-2 h-3.5 w-3.5" />
+        Rename
+      </DropdownMenuItem>
+    </>
+  );
 
   return (
     <ContextMenu>
@@ -161,6 +266,13 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
             <HealthDot method={request.method} url={request.url} />
           )}
 
+          {isPinned && (
+            <Pin
+              className="h-3 w-3 shrink-0 text-muted-foreground"
+              aria-label="Pinned"
+            />
+          )}
+
           <DropdownMenu>
             <DropdownMenuTrigger
               className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-foreground/10 dark:hover:bg-white/20"
@@ -169,44 +281,16 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
             >
               <MoreHorizontal className="h-3 w-3" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                data-testid="request-rename-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsEditing(true);
-                }}
-              >
-                <Pencil className="mr-2 h-3.5 w-3.5" />
-                Rename
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDuplicate();
-                }}
-              >
-                <Copy className="mr-2 h-3.5 w-3.5" />
-                Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  isPinned ? unpinRequest(request.id) : pinRequest(request.id);
-                }}
-              >
-                {isPinned ? (
-                  <>
-                    <MapPinOff className="mr-2 h-3.5 w-3.5" />
-                    Unpin
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="mr-2 h-3.5 w-3.5" />
-                    Pin to top
-                  </>
-                )}
-              </DropdownMenuItem>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Export</DropdownMenuLabel>
+                {exportItems}
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                {actionItems}
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
@@ -223,35 +307,54 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
           </DropdownMenu>
         </div>
       </ContextMenuTrigger>
-      <ContextMenuContent>
-        <ContextMenuItem onClick={() => setIsEditing(true)}>
-          <Pencil className="mr-2 h-3.5 w-3.5" />
-          Rename
-        </ContextMenuItem>
-        <ContextMenuItem onClick={handleDuplicate}>
-          <Copy className="mr-2 h-3.5 w-3.5" />
-          Duplicate
-        </ContextMenuItem>
-        <ContextMenuItem
-          onClick={() =>
-            isPinned ? unpinRequest(request.id) : pinRequest(request.id)
-          }
-        >
-          {isPinned ? (
-            <>
-              <MapPinOff className="mr-2 h-3.5 w-3.5" />
-              Unpin
-            </>
-          ) : (
-            <>
-              <MapPin className="mr-2 h-3.5 w-3.5" />
-              Pin to top
-            </>
-          )}
-        </ContextMenuItem>
+      <ContextMenuContent className="w-48">
+        <ContextMenuGroup>
+          <ContextMenuLabel>Export</ContextMenuLabel>
+          <ContextMenuItem onClick={handleGenerateCode}>
+            <Code2 className="mr-2 h-3.5 w-3.5" />
+            Generate Code
+          </ContextMenuItem>
+          <ContextMenuItem onClick={() => void handleCopyAsCurl()}>
+            <Terminal className="mr-2 h-3.5 w-3.5" />
+            {t("copyAsCurl")}
+          </ContextMenuItem>
+          <ContextMenuItem onClick={handleExportPostman}>
+            <Download className="mr-2 h-3.5 w-3.5" />
+            Export as Postman
+          </ContextMenuItem>
+        </ContextMenuGroup>
+        <ContextMenuSeparator />
+        <ContextMenuGroup>
+          <ContextMenuLabel>Actions</ContextMenuLabel>
+          <ContextMenuItem
+            onClick={() =>
+              isPinned ? unpinRequest(request.id) : pinRequest(request.id)
+            }
+          >
+            {isPinned ? (
+              <>
+                <PinOff className="mr-2 h-3.5 w-3.5" />
+                Unpin
+              </>
+            ) : (
+              <>
+                <Pin className="mr-2 h-3.5 w-3.5" />
+                Pin to top
+              </>
+            )}
+          </ContextMenuItem>
+          <ContextMenuItem onClick={handleDuplicate}>
+            <Copy className="mr-2 h-3.5 w-3.5" />
+            Duplicate
+          </ContextMenuItem>
+          <ContextMenuItem onClick={() => setIsEditing(true)}>
+            <Pencil className="mr-2 h-3.5 w-3.5" />
+            Rename
+          </ContextMenuItem>
+        </ContextMenuGroup>
         <ContextMenuSeparator />
         <ContextMenuItem
-          className="text-destructive focus:text-destructive"
+          variant="destructive"
           onClick={() => setConfirmDeleteOpen(true)}
         >
           <Trash2 className="mr-2 h-3.5 w-3.5" />
@@ -265,6 +368,12 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
         title="Delete the request?"
         description={`"${request.name}" will be permanently deleted.`}
         onConfirm={() => deleteRequest(request.id)}
+      />
+
+      <CodeGenDialog
+        open={codeGenOpen}
+        onOpenChange={setCodeGenOpen}
+        tab={codeGenTab}
       />
     </ContextMenu>
   );

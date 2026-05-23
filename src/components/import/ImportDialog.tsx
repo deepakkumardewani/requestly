@@ -1,7 +1,16 @@
 "use client";
 
-import { load as loadYaml } from "js-yaml";
-import { ExternalLink, FileJson, Upload } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Braces,
+  FileJson,
+  FileUp,
+  Moon,
+  ScanSearch,
+  Terminal,
+  Upload,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,54 +22,141 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { CurlParseError, parseCurl } from "@/lib/curlParser";
-import { isInsomniaExport, parseInsomnia } from "@/lib/insomniaParser";
 import {
-  isProbablyOpenApiDoc,
-  OpenApiParseError,
-  parseOpenApi,
-} from "@/lib/openapiParser";
-import {
-  isPostmanCollection,
-  PostmanParseError,
-  parsePostmanCollection,
-} from "@/lib/postmanParser";
+  IMPORT_FORMAT_LABELS,
+  type ImportScanResult,
+  type ImportScanSuccess,
+  SUPPORTED_IMPORT_FORMATS,
+  scanCurlText,
+  scanFileContent,
+} from "@/lib/importScanner";
 import { generateId } from "@/lib/utils";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
-
-type DropState = "idle" | "dragging" | "processing";
 
 type ImportDialogProps = {
   open: boolean;
   onClose: () => void;
 };
 
-const HELP_LINKS = [
-  {
-    label: "How to copy as cURL",
-    href: "https://everything.curl.dev/cmdline/copyas.html",
-  },
-  {
-    label: "Export from Insomnia",
-    href: "https://developer.konghq.com/how-to/import-an-api-spec-as-a-document/#export-data",
-  },
-  {
-    label: "Export from Postman",
-    href: "https://learning.postman.com/docs/getting-started/importing-and-exporting/importing-and-exporting-overview#exporting-postman-data",
-  },
-];
+type InputTab = "file" | "curl";
+type DialogStep = "input" | "review";
+type ScanState = "idle" | "scanning";
 
-function isRecord(x: unknown): x is Record<string, unknown> {
-  return typeof x === "object" && x !== null && !Array.isArray(x);
+const FORMAT_ICONS = {
+  postman: FileJson,
+  insomnia: Moon,
+  openapi: Braces,
+  swagger: Braces,
+  curl: Terminal,
+} as const;
+
+function resetInputState() {
+  return {
+    step: "input" as DialogStep,
+    inputTab: "file" as InputTab,
+    pendingFile: null as { name: string; text: string } | null,
+    curlInput: "",
+    scanState: "idle" as ScanState,
+    scanError: null as string | null,
+    scanResult: null as ImportScanSuccess | null,
+  };
+}
+
+function SupportedFormats() {
+  return (
+    <div className="space-y-2">
+      <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        Supported formats
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {SUPPORTED_IMPORT_FORMATS.map((format) => {
+          const Icon = FORMAT_ICONS[format.id];
+          return (
+            <div
+              key={format.id}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-muted/30 px-2 py-1"
+              title={format.hint}
+            >
+              <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-xs font-medium">{format.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function TrustWarning() {
+  return (
+    <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
+      <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
+      Make sure you trust the import source before continuing.
+    </p>
+  );
+}
+
+function ImportReviewSummary({ scan }: { scan: ImportScanSuccess }) {
+  const formatLabel = IMPORT_FORMAT_LABELS[scan.format];
+
+  return (
+    <div className="rounded-lg border border-border bg-muted/20 p-4 space-y-3">
+      <div className="flex items-start gap-2">
+        <FileJson className="mt-0.5 h-4 w-4 shrink-0 text-theme-accent" />
+        <div className="min-w-0 space-y-1">
+          <p className="text-sm font-medium leading-snug">
+            {formatLabel} resources from{" "}
+            <span className="font-mono text-xs">{scan.sourceLabel}</span>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Review the summary below, then import when ready.
+          </p>
+        </div>
+      </div>
+
+      <ul className="space-y-1 text-sm">
+        <li>
+          {scan.summary.requestCount} request
+          {scan.summary.requestCount === 1 ? "" : "s"}
+        </li>
+        {scan.summary.folderCount > 0 && (
+          <li>
+            {scan.summary.folderCount} folder
+            {scan.summary.folderCount === 1 ? "" : "s"}
+          </li>
+        )}
+        {scan.format === "insomnia" && scan.summary.collectionCount > 1 && (
+          <li>{scan.summary.collectionCount} collections</li>
+        )}
+        {scan.format !== "curl" && (
+          <li>
+            Collection:{" "}
+            <span className="font-medium">{scan.summary.primaryName}</span>
+          </li>
+        )}
+        {scan.summary.additionalNames.length > 0 && (
+          <li className="text-xs text-muted-foreground">
+            Also: {scan.summary.additionalNames.join(", ")}
+          </li>
+        )}
+        {scan.format === "curl" && (
+          <li>
+            Opens as a new tab:{" "}
+            <span className="font-mono text-xs">
+              {scan.summary.primaryName}
+            </span>
+          </li>
+        )}
+      </ul>
+    </div>
+  );
 }
 
 export function ImportDialog({ open, onClose }: ImportDialogProps) {
-  const [dropState, setDropState] = useState<DropState>("idle");
-  const [curlInput, setCurlInput] = useState("");
-  const [curlError, setCurlError] = useState<string | null>(null);
-  const [openApiPaste, setOpenApiPaste] = useState("");
+  const [state, setState] = useState(resetInputState);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { createCollection, addRequest, importParsedPostmanCollection } =
@@ -68,147 +164,114 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
   const openTab = useTabsStore((s) => s.openTab);
 
   function handleClose() {
-    setCurlInput("");
-    setCurlError(null);
-    setOpenApiPaste("");
-    setDropState("idle");
+    setState(resetInputState());
     onClose();
   }
 
-  function importOpenApiText(text: string, label: string) {
-    const { collectionName, requests } = parseOpenApi(text);
-    const collection = createCollection(collectionName);
-    for (const req of requests) {
-      addRequest(collection.id, {
-        tabId: generateId(),
-        requestId: null,
-        isDirty: false,
-        ...req,
-      });
-    }
-    toast.success(
-      `Imported "${label}" — ${requests.length} request${requests.length === 1 ? "" : "s"}`,
-    );
+  function handleBackToInput() {
+    setState((prev) => ({
+      ...prev,
+      step: "input",
+      scanState: "idle",
+      scanError: null,
+      scanResult: null,
+    }));
   }
 
-  function handleOpenApiPasteImport() {
-    if (!openApiPaste.trim()) return;
-    try {
-      importOpenApiText(openApiPaste.trim(), "OpenAPI");
-      handleClose();
-    } catch (err) {
-      toast.error(
-        err instanceof OpenApiParseError
-          ? err.message
-          : "Failed to parse OpenAPI document",
-      );
-    }
-  }
-
-  function handleCurlImport() {
-    if (!curlInput.trim()) return;
-    setCurlError(null);
-    try {
-      const parsed = parseCurl(curlInput);
-      openTab({
-        type: "http",
-        name: `${parsed.method} request`,
-        method: parsed.method,
-        url: parsed.url,
-        headers: parsed.headers,
-        body: parsed.body,
-        auth: parsed.auth,
-      });
-      toast.success("cURL imported — opened in new tab");
-      handleClose();
-    } catch (err) {
-      const msg =
-        err instanceof CurlParseError
-          ? err.message
-          : "Failed to parse cURL command";
-      setCurlError(msg);
-    }
-  }
-
-  function handleFileUpload(file: File) {
-    setDropState("processing");
+  function queueFile(file: File) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        let parsed: unknown;
-        try {
-          parsed = JSON.parse(text) as unknown;
-        } catch {
-          try {
-            parsed = loadYaml(text) as unknown;
-          } catch (yamlErr) {
-            setDropState("idle");
-            toast.error(
-              yamlErr instanceof Error ? yamlErr.message : "Invalid YAML/JSON",
-            );
-            return;
-          }
-        }
-
-        if (isRecord(parsed) && isInsomniaExport(parsed)) {
-          importFileData(parsed, file.name);
-          handleClose();
-          setDropState("idle");
-          return;
-        }
-
-        if (isRecord(parsed) && isProbablyOpenApiDoc(parsed)) {
-          try {
-            importOpenApiText(text, file.name);
-          } catch (err) {
-            toast.error(
-              err instanceof OpenApiParseError
-                ? err.message
-                : "Failed to import OpenAPI",
-            );
-          }
-          handleClose();
-          setDropState("idle");
-          return;
-        }
-
-        if (isRecord(parsed) && isPostmanCollection(parsed)) {
-          try {
-            importPostmanCollection(parsed);
-            toast.success(`Imported "${file.name}" successfully`);
-            handleClose();
-          } catch (err) {
-            toast.error(
-              err instanceof PostmanParseError
-                ? err.message
-                : "Failed to import Postman collection",
-            );
-          }
-          setDropState("idle");
-          return;
-        }
-
-        setDropState("idle");
-        toast.error(
-          "Unrecognized format. Supported: OpenAPI 3 / Swagger 2, Postman v2.1, Insomnia v4",
-        );
-      } catch (err) {
-        setDropState("idle");
-        toast.error(
-          err instanceof Error ? err.message : "Failed to import file",
-        );
-      }
+      const text = e.target?.result;
+      if (typeof text !== "string") return;
+      setState((prev) => ({
+        ...prev,
+        pendingFile: { name: file.name, text },
+        scanError: null,
+        scanResult: null,
+        step: "input",
+      }));
     };
     reader.readAsText(file);
   }
 
-  function importFileData(data: Record<string, unknown>, fileName: string) {
-    if (isInsomniaExport(data)) {
-      const collections = parseInsomnia(data);
-      for (const col of collections) {
-        const collection = createCollection(col.name);
-        for (const req of col.requests) {
+  function runScan(scanFn: () => ImportScanResult) {
+    setState((prev) => ({ ...prev, scanState: "scanning", scanError: null }));
+    const result = scanFn();
+    if (!result.ok) {
+      setState((prev) => ({
+        ...prev,
+        scanState: "idle",
+        scanError: result.error,
+        scanResult: null,
+      }));
+      return;
+    }
+    setState((prev) => ({
+      ...prev,
+      scanState: "idle",
+      scanError: null,
+      scanResult: result,
+      step: "review",
+    }));
+  }
+
+  function handleScan() {
+    if (state.inputTab === "file") {
+      if (!state.pendingFile) {
+        setState((prev) => ({
+          ...prev,
+          scanError: "Choose a file to scan first.",
+        }));
+        return;
+      }
+      runScan(() =>
+        scanFileContent(state.pendingFile!.text, state.pendingFile!.name),
+      );
+      return;
+    }
+
+    if (state.inputTab === "curl") {
+      if (!state.curlInput.trim()) {
+        setState((prev) => ({
+          ...prev,
+          scanError: "Paste a cURL command to scan.",
+        }));
+        return;
+      }
+      runScan(() => scanCurlText(state.curlInput));
+    }
+  }
+
+  function handleImport() {
+    const scan = state.scanResult;
+    if (!scan) return;
+
+    switch (scan.payload.format) {
+      case "postman":
+        importParsedPostmanCollection(scan.payload.data);
+        toast.success(
+          `Imported "${scan.sourceLabel}" — ${scan.summary.requestCount} request${scan.summary.requestCount === 1 ? "" : "s"}`,
+        );
+        break;
+      case "insomnia":
+        for (const col of scan.payload.collections) {
+          const collection = createCollection(col.name);
+          for (const req of col.requests) {
+            addRequest(collection.id, {
+              tabId: generateId(),
+              requestId: null,
+              isDirty: false,
+              ...req,
+            });
+          }
+        }
+        toast.success(
+          `Imported "${scan.sourceLabel}" — ${scan.summary.requestCount} request${scan.summary.requestCount === 1 ? "" : "s"}`,
+        );
+        break;
+      case "openapi": {
+        const collection = createCollection(scan.payload.collectionName);
+        for (const req of scan.payload.requests) {
           addRequest(collection.id, {
             tabId: generateId(),
             requestId: null,
@@ -216,160 +279,209 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
             ...req,
           });
         }
+        toast.success(
+          `Imported "${scan.sourceLabel}" — ${scan.summary.requestCount} request${scan.summary.requestCount === 1 ? "" : "s"}`,
+        );
+        break;
       }
-      const total = collections.reduce((sum, c) => sum + c.requests.length, 0);
-      toast.success(
-        `Imported "${fileName}" — ${total} request${total === 1 ? "" : "s"} in ${collections.length} collection${collections.length === 1 ? "" : "s"}`,
-      );
-      return;
+      case "curl": {
+        const parsed = scan.payload.parsed;
+        openTab({
+          type: "http",
+          name: `${parsed.method} request`,
+          method: parsed.method,
+          url: parsed.url,
+          headers: parsed.headers,
+          body: parsed.body,
+          auth: parsed.auth,
+        });
+        toast.success("cURL imported — opened in new tab");
+        break;
+      }
     }
 
-    if (isPostmanCollection(data)) {
-      importPostmanCollection(data);
-      toast.success(`Imported "${fileName}" successfully`);
-      return;
-    }
-
-    throw new Error(
-      "Unrecognized format. Supported: OpenAPI 3 / Swagger 2, Postman Collection v2.1, Insomnia v4 export",
-    );
+    handleClose();
   }
 
-  function importPostmanCollection(data: Record<string, unknown>) {
-    const parsed = parsePostmanCollection(data);
-    importParsedPostmanCollection(parsed);
-  }
+  const canScan =
+    state.scanState !== "scanning" &&
+    ((state.inputTab === "file" && state.pendingFile !== null) ||
+      (state.inputTab === "curl" && state.curlInput.trim().length > 0));
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="sm:max-w-xl flex flex-col h-[620px]">
+      <DialogContent className="sm:max-w-xl flex flex-col max-h-[85vh]">
         <DialogHeader>
-          <DialogTitle>Import</DialogTitle>
+          <DialogTitle>
+            {state.step === "review" ? "Review import" : "Import"}
+          </DialogTitle>
           <DialogDescription>
-            Paste cURL or OpenAPI (YAML/JSON), or drop a collection / spec file.
+            {state.step === "review"
+              ? "Confirm what will be imported into your workspace."
+              : "Scan a file or pasted content before importing."}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-3 flex-1 min-h-0">
-          {/* cURL input at top */}
-          <div className="space-y-1.5">
-            <Textarea
-              className="min-h-[80px] max-h-[120px] font-mono text-xs resize-none break-all overflow-wrap-anywhere"
-              placeholder={`Paste cURL command here…\ncurl -X GET 'https://api.example.com/v1/users' -H 'Authorization: Bearer TOKEN'`}
-              value={curlInput}
-              onChange={(e) => {
-                setCurlInput(e.target.value);
-                setCurlError(null);
-              }}
-            />
-            {curlError && (
-              <p className="text-xs text-destructive">{curlError}</p>
-            )}
-            {curlInput.trim() && (
-              <Button
-                size="sm"
-                className="gap-1.5 bg-theme-accent/10 text-theme-accent hover:bg-theme-accent/20"
-                onClick={handleCurlImport}
-              >
-                Import cURL
-              </Button>
-            )}
+        {state.step === "review" && state.scanResult ? (
+          <div className="flex flex-col gap-4 min-h-0">
+            <ImportReviewSummary scan={state.scanResult} />
+            <TrustWarning />
           </div>
-
-          <div className="space-y-1.5">
-            <Textarea
-              className="min-h-[72px] max-h-[100px] font-mono text-xs resize-none break-all overflow-wrap-anywhere"
-              placeholder="Paste OpenAPI 3 or Swagger 2 (YAML or JSON)…"
-              value={openApiPaste}
-              onChange={(e) => setOpenApiPaste(e.target.value)}
-            />
-            {openApiPaste.trim() && (
-              <Button
-                size="sm"
-                variant="secondary"
-                className="gap-1.5"
-                onClick={handleOpenApiPasteImport}
-              >
-                Import OpenAPI
-              </Button>
-            )}
-          </div>
-
-          {/* File drop zone */}
-          <div
-            className={`flex flex-1 flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
-              dropState === "dragging"
-                ? "border-theme-accent bg-theme-accent/5"
-                : "border-border hover:border-theme-accent/40"
-            }`}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDropState("dragging");
-            }}
-            onDragLeave={() => setDropState("idle")}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDropState("idle");
-              const file = e.dataTransfer.files[0];
-              if (file) handleFileUpload(file);
-            }}
-          >
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-              {dropState === "processing" ? (
-                <FileJson className="h-4 w-4 text-muted-foreground animate-pulse" />
-              ) : (
-                <Upload className="h-4 w-4 text-muted-foreground" />
-              )}
-            </div>
-            <p className="text-sm font-medium">
-              {dropState === "processing" ? "Processing…" : "Drop file here"}
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              OpenAPI / Swagger YAML or JSON, Postman v2.1, Insomnia v4 JSON
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3"
-              disabled={dropState === "processing"}
-              onClick={() => fileInputRef.current?.click()}
+        ) : (
+          <div className="flex flex-col gap-4 min-h-0">
+            <Tabs
+              value={state.inputTab}
+              onValueChange={(value) =>
+                setState((prev) => ({
+                  ...prev,
+                  inputTab: value as InputTab,
+                  scanError: null,
+                }))
+              }
             >
-              Choose file
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
-              accept=".json,.yaml,.yml,application/json,text/yaml"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) handleFileUpload(file);
-                e.target.value = "";
-              }}
-            />
-          </div>
+              <TabsList className="w-full">
+                <TabsTrigger value="file" className="flex-1 gap-1.5">
+                  <Upload className="h-3.5 w-3.5" />
+                  File
+                </TabsTrigger>
+                <TabsTrigger value="curl" className="flex-1 gap-1.5">
+                  <Terminal className="h-3.5 w-3.5" />
+                  cURL
+                </TabsTrigger>
+              </TabsList>
 
-          {/* Help links — inline, no dropdown */}
-          <div className="flex flex-wrap gap-x-4 gap-y-1">
-            {HELP_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+              <TabsContent value="file" className="mt-3">
+                <div
+                  className={`flex min-h-[180px] flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+                    state.pendingFile
+                      ? "border-theme-accent/40 bg-theme-accent/5"
+                      : "border-border hover:border-theme-accent/40"
+                  }`}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file) queueFile(file);
+                  }}
+                >
+                  {state.pendingFile ? (
+                    <>
+                      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                        <FileJson className="h-4 w-4 text-theme-accent" />
+                      </div>
+                      <p className="text-sm font-medium">
+                        {state.pendingFile.name}
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="mt-2 h-7 text-xs"
+                        onClick={() =>
+                          setState((prev) => ({
+                            ...prev,
+                            pendingFile: null,
+                            scanError: null,
+                          }))
+                        }
+                      >
+                        Choose a different file
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                        <Upload className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                      <p className="text-sm font-medium">
+                        Drag and drop or{" "}
+                        <button
+                          type="button"
+                          className="text-theme-accent hover:underline"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          choose a file
+                        </button>
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Postman, Insomnia, OpenAPI, or Swagger
+                      </p>
+                    </>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    accept=".json,.yaml,.yml,application/json,text/yaml"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) queueFile(file);
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="curl" className="mt-3 space-y-2">
+                <Textarea
+                  className="min-h-[180px] font-mono text-xs resize-none break-all"
+                  placeholder={`Paste cURL command…\ncurl -X GET 'https://api.example.com/v1/users' -H 'Authorization: Bearer TOKEN'`}
+                  value={state.curlInput}
+                  onChange={(e) =>
+                    setState((prev) => ({
+                      ...prev,
+                      curlInput: e.target.value,
+                      scanError: null,
+                    }))
+                  }
+                />
+              </TabsContent>
+            </Tabs>
+
+            {state.scanError && (
+              <p className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+                {state.scanError}
+              </p>
+            )}
+
+            <TrustWarning />
+            <SupportedFormats />
+          </div>
+        )}
+
+        <DialogFooter className="gap-2 sm:justify-between">
+          {state.step === "review" ? (
+            <>
+              <Button
+                variant="ghost"
+                className="gap-1.5"
+                onClick={handleBackToInput}
               >
-                <ExternalLink className="h-3 w-3 shrink-0" />
-                {link.label}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
-            Cancel
-          </Button>
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Back
+              </Button>
+              <Button
+                className="gap-1.5 bg-theme-accent text-[#0d1117] hover:bg-theme-accent/90"
+                onClick={handleImport}
+              >
+                <FileUp className="h-3.5 w-3.5" />
+                Import
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button
+                className="gap-1.5 bg-theme-accent text-[#0d1117] hover:bg-theme-accent/90"
+                disabled={!canScan}
+                onClick={handleScan}
+              >
+                <ScanSearch className="h-3.5 w-3.5" />
+                {state.scanState === "scanning" ? "Scanning…" : "Scan"}
+              </Button>
+            </>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

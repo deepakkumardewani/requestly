@@ -81,8 +81,13 @@ export function HeadersEditor({ tabId }: HeadersEditorProps) {
         <KVTable
           rows={tab.headers}
           onChange={handleChange}
-          keyPlaceholder={t("headers.headerPlaceholder")}
+          keyLabel={t("headers.keyLabel")}
+          valueLabel={t("headers.valueLabel")}
+          descriptionLabel={t("headers.descriptionLabel")}
+          keyPlaceholder={t("headers.keyPlaceholder")}
           valuePlaceholder={t("headers.valuePlaceholder")}
+          descriptionPlaceholder={t("headers.descriptionPlaceholder")}
+          showDescription
           enableHeaderValueMask
         />
       </div>

@@ -3,13 +3,12 @@
 import {
   Download,
   FolderOpen,
-  GitBranch,
+  FolderPlus,
   MoreHorizontal,
   Pencil,
   Plus,
   Trash2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { EmptyState } from "@/components/common/EmptyState";
@@ -48,6 +47,7 @@ export function CollectionTree() {
     folders,
     requests,
     createCollection,
+    createFolder,
     renameCollection,
     deleteCollection,
   } = useCollectionsStore();
@@ -63,7 +63,7 @@ export function CollectionTree() {
   const [editName, setEditName] = useState("");
   const [newCollectionName, setNewCollectionName] = useState("");
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  const router = useRouter();
+  const [renamingFolderId, setRenamingFolderId] = useState<string | null>(null);
   const newCollectionInputRef = useRef<HTMLInputElement>(null);
 
   // autoFocus won't work when the accordion is animating open (overflow:hidden).
@@ -182,6 +182,15 @@ export function CollectionTree() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
+                            onClick={() => {
+                              const created = createFolder(collection.id);
+                              setRenamingFolderId(created.id);
+                            }}
+                          >
+                            <FolderPlus className="mr-2 h-3.5 w-3.5" />
+                            New Folder
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
                             data-testid="collection-rename-btn"
                             onClick={() => {
                               setEditName(collection.name);
@@ -190,14 +199,6 @@ export function CollectionTree() {
                           >
                             <Pencil className="mr-2 h-3.5 w-3.5" />
                             Rename
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              router.push(`/chain/${collection.id}`)
-                            }
-                          >
-                            <GitBranch className="mr-2 h-3.5 w-3.5 " />
-                            Chain View
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>
@@ -272,18 +273,21 @@ export function CollectionTree() {
                 <ContextMenuContent>
                   <ContextMenuItem
                     onClick={() => {
+                      const created = createFolder(collection.id);
+                      setRenamingFolderId(created.id);
+                    }}
+                  >
+                    <FolderPlus className="mr-2 h-3.5 w-3.5" />
+                    New Folder
+                  </ContextMenuItem>
+                  <ContextMenuItem
+                    onClick={() => {
                       setEditName(collection.name);
                       setEditingId(collection.id);
                     }}
                   >
                     <Pencil className="mr-2 h-3.5 w-3.5" />
                     Rename
-                  </ContextMenuItem>
-                  <ContextMenuItem
-                    onClick={() => router.push(`/chain/${collection.id}`)}
-                  >
-                    <GitBranch className="mr-2 h-3.5 w-3.5" />
-                    Chain View
                   </ContextMenuItem>
                   <ContextMenuItem
                     onClick={() =>
@@ -317,6 +321,9 @@ export function CollectionTree() {
                   )}
                   requests={collectionRequests}
                   activeRequestId={activeRequestId}
+                  renamingFolderId={renamingFolderId}
+                  onStartRename={setRenamingFolderId}
+                  onRenamingDone={() => setRenamingFolderId(null)}
                 />
               </AccordionContent>
             </AccordionItem>

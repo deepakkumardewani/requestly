@@ -6,7 +6,9 @@
     "headers": "Headers",
     "preview": "preview",
     "timing": "Timing",
-    "console": "Console"
+    "console": "Console",
+    "transform": "Transform",
+    "code": "Code"
   },
   "actions": {
     "dataSchema": "Data Schema",

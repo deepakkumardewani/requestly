@@ -31,16 +31,21 @@ afterEach(() => {
 });
 
 describe("ImportDialog", () => {
-  it("imports valid cURL into a new tab and closes", async () => {
+  it("scans and imports valid cURL into a new tab", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
 
     render(<ImportDialog open onClose={onClose} />);
 
+    await user.click(screen.getByRole("tab", { name: /cURL/i }));
+
     const textarea = screen.getByPlaceholderText(/Paste cURL command/i);
     await user.type(textarea, "curl https://api.example.com/items");
 
-    await user.click(screen.getByRole("button", { name: /Import cURL/i }));
+    await user.click(screen.getByRole("button", { name: /^Scan$/i }));
+    expect(await screen.findByText(/Review import/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /^Import$/i }));
 
     await waitFor(() => {
       expect(useTabsStore.getState().tabs.length).toBe(1);
@@ -52,7 +57,7 @@ describe("ImportDialog", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("shows cURL parse error when parseCurl throws", async () => {
+  it("shows cURL parse error after scan when parseCurl throws", async () => {
     const user = userEvent.setup();
     vi.spyOn(curlParser, "parseCurl").mockImplementation(() => {
       throw new curlParser.CurlParseError("bad curl");
@@ -60,30 +65,25 @@ describe("ImportDialog", () => {
 
     render(<ImportDialog open onClose={vi.fn()} />);
 
+    await user.click(screen.getByRole("tab", { name: /cURL/i }));
     const textarea = screen.getByPlaceholderText(/Paste cURL command/i);
     await user.type(textarea, "x");
 
-    await user.click(screen.getByRole("button", { name: /Import cURL/i }));
+    await user.click(screen.getByRole("button", { name: /^Scan$/i }));
 
     expect(await screen.findByText("bad curl")).toBeInTheDocument();
   });
 
-  it("import button only appears when cURL field is non-empty", async () => {
+  it("Scan button stays disabled until file or text is provided", async () => {
     const user = userEvent.setup();
     render(<ImportDialog open onClose={vi.fn()} />);
 
-    expect(
-      screen.queryByRole("button", { name: /Import cURL/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^Scan$/i })).toBeDisabled();
 
-    await user.type(
-      screen.getByPlaceholderText(/Paste cURL command/i),
-      "curl x",
-    );
+    await user.click(screen.getByRole("tab", { name: /cURL/i }));
+    await user.type(screen.getByPlaceholderText(/Paste cURL command/i), "curl x");
 
-    expect(
-      screen.getByRole("button", { name: /Import cURL/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^Scan$/i })).toBeEnabled();
   });
 
   it("Cancel invokes onClose", async () => {
@@ -92,13 +92,12 @@ describe("ImportDialog", () => {
 
     render(<ImportDialog open onClose={onClose} />);
 
-    await user.type(screen.getByPlaceholderText(/Paste cURL command/i), "x");
     await user.click(screen.getByRole("button", { name: /^Cancel$/i }));
 
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("drops Postman JSON file and creates collection", async () => {
+  it("scans Postman JSON file then imports on confirm", async () => {
     const postmanJson = JSON.stringify({
       info: {
         name: "API",
@@ -128,12 +127,22 @@ describe("ImportDialog", () => {
     }
     vi.stubGlobal("FileReader", MockFileReader);
 
+    const user = userEvent.setup();
     render(<ImportDialog open onClose={vi.fn()} />);
 
-    const zone = screen.getByText("Drop file here").closest("div")!;
+    const zone = screen.getByText(/Drag and drop/i).closest("div")!;
     fireEvent.drop(zone, {
       dataTransfer: { files: [new File([postmanJson], "c.json")] },
     });
+
+    await waitFor(() => {
+      expect(screen.getByText("c.json")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: /^Scan$/i }));
+    expect(await screen.findByText(/1 request/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /^Import$/i }));
 
     await waitFor(() => {
       expect(useCollectionsStore.getState().collections).toHaveLength(1);
@@ -142,7 +151,7 @@ describe("ImportDialog", () => {
     vi.unstubAllGlobals();
   });
 
-  it("toast error on unrecognized JSON file", async () => {
+  it("shows scan error on unrecognized JSON file", async () => {
     const bad = '{"not":"postman"}';
 
     class MockFileReader {
@@ -156,16 +165,24 @@ describe("ImportDialog", () => {
     }
     vi.stubGlobal("FileReader", MockFileReader);
 
+    const user = userEvent.setup();
     render(<ImportDialog open onClose={vi.fn()} />);
 
-    const zone = screen.getByText("Drop file here").closest("div")!;
+    const zone = screen.getByText(/Drag and drop/i).closest("div")!;
     fireEvent.drop(zone, {
       dataTransfer: { files: [new File([bad], "x.json")] },
     });
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalled();
+      expect(screen.getByText("x.json")).toBeInTheDocument();
     });
+
+    await user.click(screen.getByRole("button", { name: /^Scan$/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Unrecognized format/i)).toBeInTheDocument();
+    });
+    expect(toast.error).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
   });
 });

@@ -19,7 +19,11 @@
       "urlEncoded": "URLエンコード"
     },
     "keyPlaceholder": "キー",
-    "valuePlaceholder": "値"
+    "valuePlaceholder": "値",
+    "keyLabel": "キー",
+    "valueLabel": "値",
+    "descriptionLabel": "説明",
+    "descriptionPlaceholder": "説明"
   },
   "auth": {
     "noAuth": "このリクエストには認証が送信されません。",
@@ -48,11 +52,19 @@
     "pathParams": "パスパラメータ",
     "queryParams": "クエリパラメータ",
     "keyPlaceholder": "キー",
-    "valuePlaceholder": "値"
+    "valuePlaceholder": "値",
+    "keyLabel": "キー",
+    "valueLabel": "値",
+    "descriptionLabel": "説明",
+    "descriptionPlaceholder": "説明"
   },
   "headers": {
-    "headerPlaceholder": "ヘッダー",
-    "valuePlaceholder": "値"
+    "keyLabel": "キー",
+    "valueLabel": "値",
+    "descriptionLabel": "説明",
+    "keyPlaceholder": "キー",
+    "valuePlaceholder": "値",
+    "descriptionPlaceholder": "説明"
   },
   "curl": {
     "import": "cURLをインポート",
