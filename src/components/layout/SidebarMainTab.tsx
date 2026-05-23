@@ -324,23 +324,25 @@ export function SidebarMainTab({
         <AccordionItem value="collections" className="border-b border-border">
           <AccordionTrigger
             chevronLeft
-            className="px-3 py-2.5 hover:no-underline hover:bg-muted/50"
+            className="hover:no-underline"
+            action={
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("addCollection")}
+                className="ml-auto h-5 w-5 shrink-0 pointer-events-none opacity-0 transition-opacity group-hover/accordion-header:pointer-events-auto group-hover/accordion-header:opacity-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsCreatingCollection(true);
+                }}
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </Button>
+            }
           >
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("collections")}
             </span>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("addCollection")}
-              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsCreatingCollection(true);
-              }}
-            >
-              <Plus className="h-3.5 w-3.5" />
-            </Button>
           </AccordionTrigger>
           <AccordionContent className="pb-0">
             <div className="pl-3 pr-1">
@@ -353,23 +355,25 @@ export function SidebarMainTab({
         <AccordionItem value="environments" className="border-b border-border">
           <AccordionTrigger
             chevronLeft
-            className="px-3 py-2.5 hover:no-underline hover:bg-muted/50"
+            className="hover:no-underline"
+            action={
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("addEnvironment")}
+                className="ml-auto h-5 w-5 shrink-0 pointer-events-none opacity-0 transition-opacity group-hover/accordion-header:pointer-events-auto group-hover/accordion-header:opacity-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsCreatingEnv(true);
+                }}
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </Button>
+            }
           >
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("environments")}
             </span>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("addEnvironment")}
-              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsCreatingEnv(true);
-              }}
-            >
-              <Plus className="h-3.5 w-3.5" />
-            </Button>
           </AccordionTrigger>
           <AccordionContent className="pb-0">
             <div className="pl-3 pr-1">
@@ -386,23 +390,25 @@ export function SidebarMainTab({
         >
           <AccordionTrigger
             chevronLeft
-            className="px-3 py-2.5 hover:no-underline hover:bg-muted/50"
+            className="hover:no-underline"
+            action={
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("newChainAria")}
+                className="ml-auto h-5 w-5 shrink-0 pointer-events-none opacity-0 transition-opacity group-hover/accordion-header:pointer-events-auto group-hover/accordion-header:opacity-100"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onNewChain();
+                }}
+              >
+                <Plus className="h-3.5 w-3.5" />
+              </Button>
+            }
           >
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("chains")}
             </span>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("newChainAria")}
-              className="ml-auto h-5 w-5 pointer-events-none opacity-0 transition-opacity group-hover/accordion-trigger:pointer-events-auto group-hover/accordion-trigger:opacity-100"
-              onClick={(e) => {
-                e.stopPropagation();
-                onNewChain();
-              }}
-            >
-              <Plus className="h-3.5 w-3.5" />
-            </Button>
           </AccordionTrigger>
           <AccordionContent className="pb-0">
             <div className="pl-3 pr-1">

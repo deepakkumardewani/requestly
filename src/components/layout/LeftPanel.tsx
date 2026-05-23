@@ -89,6 +89,7 @@ export function LeftPanel() {
                       variant="ghost"
                       size="icon-sm"
                       aria-label={t("jsonCompare")}
+                      nativeButton={false}
                       render={
                         <Link
                           href="/json-visualize"

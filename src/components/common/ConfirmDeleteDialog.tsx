@@ -37,10 +37,12 @@ export function ConfirmDeleteDialog({
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+        <AlertDialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <AlertDialogCancel className="w-full sm:w-auto">
+            {t("cancel")}
+          </AlertDialogCancel>
           <AlertDialogAction
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="w-full whitespace-nowrap px-4 sm:w-auto bg-destructive text-destructive-foreground hover:bg-destructive/90"
             onClick={onConfirm}
           >
             {confirmLabel}

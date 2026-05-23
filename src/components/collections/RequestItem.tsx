@@ -118,7 +118,7 @@ export function RequestItem({ request, isActive }: RequestItemProps) {
       postScript: request.postScript,
       timeoutMs: request.timeoutMs,
     };
-    addRequest(request.collectionId, duplicateTab);
+    addRequest(request.collectionId, duplicateTab, request.folderId);
   }
 
   return (

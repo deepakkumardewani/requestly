@@ -40,11 +40,12 @@ import { downloadPostmanCollection } from "@/lib/postmanExporter";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useTabsStore } from "@/stores/useTabsStore";
 import { useUIStore } from "@/stores/useUIStore";
-import { VirtualizedRequestList } from "./VirtualizedRequestList";
+import { CollectionRequestTree } from "./CollectionRequestTree";
 
 export function CollectionTree() {
   const {
     collections,
+    folders,
     requests,
     createCollection,
     renameCollection,
@@ -167,55 +168,13 @@ export function CollectionTree() {
             >
               <ContextMenu>
                 <ContextMenuTrigger>
-                  <div className="group flex items-center rounded px-2 hover:bg-muted cursor-pointer">
-                    <AccordionTrigger
-                      chevronLeft
-                      className="flex-1 py-1.5 hover:no-underline"
-                    >
-                      <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                        <FolderOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                        {editingId === collection.id ? (
-                          <Input
-                            autoFocus
-                            className="h-5 py-0 text-xs"
-                            value={editName}
-                            data-testid="collection-rename-input"
-                            onClick={(e) => e.stopPropagation()}
-                            onChange={(e) => setEditName(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") {
-                                renameCollection(
-                                  collection.id,
-                                  editName.trim() || collection.name,
-                                );
-                                setEditingId(null);
-                              }
-                              if (e.key === "Escape") setEditingId(null);
-                            }}
-                            onBlur={() => {
-                              renameCollection(
-                                collection.id,
-                                editName.trim() || collection.name,
-                              );
-                              setEditingId(null);
-                            }}
-                          />
-                        ) : (
-                          <span
-                            className="text-sm font-medium text-foreground"
-                            data-testid={`collection-name-${collection.id}`}
-                          >
-                            {collection.name}
-                          </span>
-                        )}
-                        <span className="text-xs text-muted-foreground">
-                          {collectionRequests.length}
-                        </span>
-                      </div>
-                      {/* Action buttons — stopPropagation keeps trigger from toggling */}
+                  <AccordionTrigger
+                    chevronLeft
+                    className="flex-1 rounded px-2 py-1.5 hover:bg-muted hover:no-underline cursor-pointer"
+                    action={
                       <DropdownMenu>
                         <DropdownMenuTrigger
-                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto hover:bg-foreground/10 dark:hover:bg-white/20"
+                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 pointer-events-none transition-opacity group-hover/accordion-header:opacity-100 group-hover/accordion-header:pointer-events-auto hover:bg-foreground/10 dark:hover:bg-white/20"
                           onClick={(e) => e.stopPropagation()}
                           data-testid={`collection-more-btn-${collection.id}`}
                         >
@@ -245,6 +204,10 @@ export function CollectionTree() {
                               downloadPostmanCollection(
                                 collection,
                                 collectionRequests,
+                                folders.filter(
+                                  (folder) =>
+                                    folder.collectionId === collection.id,
+                                ),
                               )
                             }
                           >
@@ -262,8 +225,49 @@ export function CollectionTree() {
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </AccordionTrigger>
-                  </div>
+                    }
+                  >
+                    <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                      <FolderOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      {editingId === collection.id ? (
+                        <Input
+                          autoFocus
+                          className="h-5 py-0 text-xs"
+                          value={editName}
+                          data-testid="collection-rename-input"
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => setEditName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              renameCollection(
+                                collection.id,
+                                editName.trim() || collection.name,
+                              );
+                              setEditingId(null);
+                            }
+                            if (e.key === "Escape") setEditingId(null);
+                          }}
+                          onBlur={() => {
+                            renameCollection(
+                              collection.id,
+                              editName.trim() || collection.name,
+                            );
+                            setEditingId(null);
+                          }}
+                        />
+                      ) : (
+                        <span
+                          className="text-sm font-medium text-foreground"
+                          data-testid={`collection-name-${collection.id}`}
+                        >
+                          {collection.name}
+                        </span>
+                      )}
+                      <span className="text-xs text-muted-foreground">
+                        {collectionRequests.length}
+                      </span>
+                    </div>
+                  </AccordionTrigger>
                 </ContextMenuTrigger>
                 <ContextMenuContent>
                   <ContextMenuItem
@@ -283,7 +287,13 @@ export function CollectionTree() {
                   </ContextMenuItem>
                   <ContextMenuItem
                     onClick={() =>
-                      downloadPostmanCollection(collection, collectionRequests)
+                      downloadPostmanCollection(
+                        collection,
+                        collectionRequests,
+                        folders.filter(
+                          (folder) => folder.collectionId === collection.id,
+                        ),
+                      )
                     }
                   >
                     <Download className="mr-2 h-3.5 w-3.5" />
@@ -301,16 +311,13 @@ export function CollectionTree() {
               </ContextMenu>
 
               <AccordionContent className="pb-1 pl-3 pr-1">
-                {collectionRequests.length === 0 ? (
-                  <p className="py-1 text-center text-xs text-muted-foreground">
-                    No requests yet
-                  </p>
-                ) : (
-                  <VirtualizedRequestList
-                    requests={collectionRequests}
-                    activeRequestId={activeRequestId}
-                  />
-                )}
+                <CollectionRequestTree
+                  folders={folders.filter(
+                    (folder) => folder.collectionId === collection.id,
+                  )}
+                  requests={collectionRequests}
+                  activeRequestId={activeRequestId}
+                />
               </AccordionContent>
             </AccordionItem>
           );

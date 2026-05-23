@@ -1,6 +1,7 @@
 import { type IDBPDatabase, openDB } from "idb";
 import type {
   AppSettings,
+  CollectionFolderModel,
   CollectionModel,
   EnvironmentModel,
   HistoryEntry,
@@ -10,12 +11,17 @@ import type {
 import type { ChainConfig, StandaloneChain } from "@/types/chain";
 import { IDB_DB_NAME } from "./constants";
 
-const IDB_VERSION = 3;
+const IDB_VERSION = 4;
 
 type RequestlyDB = {
   collections: {
     key: string;
     value: CollectionModel;
+  };
+  folders: {
+    key: string;
+    value: CollectionFolderModel;
+    indexes: { "by-collection": string };
   };
   requests: {
     key: string;
@@ -66,6 +72,13 @@ export function getDB(): Promise<IDBPDatabase<RequestlyDB>> | null {
             keyPath: "id",
           });
           requestsStore.createIndex("by-collection", "collectionId");
+        }
+
+        if (!db.objectStoreNames.contains("folders")) {
+          const foldersStore = db.createObjectStore("folders", {
+            keyPath: "id",
+          });
+          foldersStore.createIndex("by-collection", "collectionId");
         }
 
         if (!db.objectStoreNames.contains("environments")) {

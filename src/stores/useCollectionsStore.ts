@@ -3,12 +3,19 @@
 import { toast } from "sonner";
 import { create } from "zustand";
 import { getDB } from "@/lib/idb";
+import type { ParsedPostmanCollection } from "@/lib/postmanParser";
 import { generateId } from "@/lib/utils";
 import { useTabsStore } from "@/stores/useTabsStore";
-import type { CollectionModel, HttpTab, RequestModel } from "@/types";
+import type {
+  CollectionFolderModel,
+  CollectionModel,
+  HttpTab,
+  RequestModel,
+} from "@/types";
 
 type CollectionsState = {
   collections: CollectionModel[];
+  folders: CollectionFolderModel[];
   requests: RequestModel[];
 };
 
@@ -17,10 +24,18 @@ type CollectionsActions = {
   bulkImportCollection: (
     collection: CollectionModel,
     requests: RequestModel[],
+    folders?: CollectionFolderModel[],
   ) => void;
+  importParsedPostmanCollection: (
+    parsed: ParsedPostmanCollection,
+  ) => CollectionModel;
   renameCollection: (id: string, name: string) => void;
   deleteCollection: (id: string) => void;
-  addRequest: (collectionId: string, tab: HttpTab) => RequestModel;
+  addRequest: (
+    collectionId: string,
+    tab: HttpTab,
+    folderId?: string | null,
+  ) => RequestModel;
   updateRequest: (id: string, patch: Partial<RequestModel>) => void;
   deleteRequest: (id: string) => void;
   moveRequest: (requestId: string, targetCollectionId: string) => void;
@@ -68,6 +83,32 @@ async function deleteCollectionFromDB(id: string) {
   }
 }
 
+async function persistFolder(folder: CollectionFolderModel) {
+  const db = getDB();
+  if (!db) return;
+  try {
+    const instance = await db;
+    await instance.put("folders", folder);
+  } catch (error) {
+    toast.error("Failed to save folder", {
+      description: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+}
+
+async function deleteFolderFromDB(id: string) {
+  const db = getDB();
+  if (!db) return;
+  try {
+    const instance = await db;
+    await instance.delete("folders", id);
+  } catch (error) {
+    toast.error("Failed to delete folder", {
+      description: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+}
+
 async function deleteRequestFromDB(id: string) {
   const db = getDB();
   if (!db) return;
@@ -85,6 +126,7 @@ export const useCollectionsStore = create<
   CollectionsState & CollectionsActions
 >((set, get) => ({
   collections: [],
+  folders: [],
   requests: [],
 
   createCollection(name) {
@@ -99,15 +141,66 @@ export const useCollectionsStore = create<
     return collection;
   },
 
-  bulkImportCollection(collection, requests) {
+  bulkImportCollection(collection, requests, folders = []) {
     set((state) => ({
       collections: [...state.collections, collection],
+      folders: [...state.folders, ...folders],
       requests: [...state.requests, ...requests],
     }));
     persistCollection(collection);
+    for (const folder of folders) {
+      persistFolder(folder);
+    }
     for (const request of requests) {
       persistRequest(request);
     }
+  },
+
+  importParsedPostmanCollection(parsed) {
+    const now = Date.now();
+    const collection: CollectionModel = {
+      id: generateId(),
+      name: parsed.name,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    const folderIdByTempId = new Map<string, string>();
+    const folders: CollectionFolderModel[] = parsed.folders.map((folder) => {
+      const id = generateId();
+      folderIdByTempId.set(folder.tempId, id);
+      return {
+        id,
+        collectionId: collection.id,
+        name: folder.name,
+        parentFolderId: folder.parentTempId
+          ? (folderIdByTempId.get(folder.parentTempId) ?? null)
+          : null,
+        order: folder.order,
+      };
+    });
+
+    const requests: RequestModel[] = parsed.requests.map((req, index) => ({
+      id: generateId(),
+      collectionId: collection.id,
+      folderId: req.folderTempId
+        ? (folderIdByTempId.get(req.folderTempId) ?? null)
+        : null,
+      name: req.name,
+      method: req.method,
+      url: req.url,
+      params: req.params,
+      headers: req.headers,
+      auth: req.auth,
+      body: req.body,
+      preScript: "",
+      postScript: "",
+      createdAt: now + index,
+      updatedAt: now + index,
+    }));
+
+    get().bulkImportCollection(collection, requests, folders);
+    return collection;
   },
 
   renameCollection(id, name) {
@@ -124,11 +217,16 @@ export const useCollectionsStore = create<
     const requestsToDelete = get().requests.filter(
       (r) => r.collectionId === id,
     );
+    const foldersToDelete = get().folders.filter((f) => f.collectionId === id);
     set((state) => ({
       collections: state.collections.filter((c) => c.id !== id),
+      folders: state.folders.filter((f) => f.collectionId !== id),
       requests: state.requests.filter((r) => r.collectionId !== id),
     }));
     deleteCollectionFromDB(id);
+    for (const folder of foldersToDelete) {
+      deleteFolderFromDB(folder.id);
+    }
     for (const r of requestsToDelete) {
       deleteRequestFromDB(r.id);
     }
@@ -137,10 +235,11 @@ export const useCollectionsStore = create<
       .closeTabsForRequests(requestsToDelete.map((r) => r.id));
   },
 
-  addRequest(collectionId, tab) {
+  addRequest(collectionId, tab, folderId = null) {
     const request: RequestModel = {
       id: generateId(),
       collectionId,
+      folderId,
       name: tab.name,
       method: tab.method,
       url: tab.url,
@@ -194,11 +293,12 @@ export const useCollectionsStore = create<
     if (!db) return;
     try {
       const instance = await db;
-      const [collections, requests] = await Promise.all([
+      const [collections, folders, requests] = await Promise.all([
         instance.getAll("collections"),
+        instance.getAll("folders"),
         instance.getAll("requests"),
       ]);
-      set({ collections, requests });
+      set({ collections, folders, requests });
     } catch (error) {
       toast.error("Failed to load collections", {
         description: error instanceof Error ? error.message : "Unknown error",

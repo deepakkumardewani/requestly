@@ -1,6 +1,7 @@
 import type {
   AuthConfig,
   BodyConfig,
+  CollectionFolderModel,
   CollectionModel,
   KVPair,
   RequestModel,
@@ -53,13 +54,18 @@ type PostmanItem = {
   };
 };
 
+type PostmanFolderItem = {
+  name: string;
+  item: Array<PostmanFolderItem | PostmanItem>;
+};
+
 type PostmanCollection = {
   info: {
     name: string;
     schema: string;
     description?: string;
   };
-  item: PostmanItem[];
+  item: Array<PostmanFolderItem | PostmanItem>;
 };
 
 const POSTMAN_SCHEMA =
@@ -204,9 +210,35 @@ function requestToPostmanItem(req: RequestModel): PostmanItem {
   };
 }
 
+function buildPostmanItems(
+  parentFolderId: string | null,
+  folders: CollectionFolderModel[],
+  requests: RequestModel[],
+): Array<PostmanFolderItem | PostmanItem> {
+  const items: Array<PostmanFolderItem | PostmanItem> = [];
+
+  for (const folder of folders
+    .filter((entry) => entry.parentFolderId === parentFolderId)
+    .sort((a, b) => a.order - b.order)) {
+    items.push({
+      name: folder.name,
+      item: buildPostmanItems(folder.id, folders, requests),
+    });
+  }
+
+  for (const request of requests
+    .filter((entry) => (entry.folderId ?? null) === parentFolderId)
+    .sort((a, b) => a.createdAt - b.createdAt)) {
+    items.push(requestToPostmanItem(request));
+  }
+
+  return items;
+}
+
 export function exportToPostmanCollection(
   collection: CollectionModel,
   requests: RequestModel[],
+  folders: CollectionFolderModel[] = [],
 ): PostmanCollection {
   return {
     info: {
@@ -216,15 +248,16 @@ export function exportToPostmanCollection(
         ? { description: collection.description }
         : {}),
     },
-    item: requests.map(requestToPostmanItem),
+    item: buildPostmanItems(null, folders, requests),
   };
 }
 
 export function downloadPostmanCollection(
   collection: CollectionModel,
   requests: RequestModel[],
+  folders: CollectionFolderModel[] = [],
 ): void {
-  const data = exportToPostmanCollection(collection, requests);
+  const data = exportToPostmanCollection(collection, requests, folders);
   const json = JSON.stringify(data, null, 2);
   const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
