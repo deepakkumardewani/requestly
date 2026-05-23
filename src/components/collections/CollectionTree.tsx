@@ -12,7 +12,6 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { EmptyState } from "@/components/common/EmptyState";
-import { SampleRequestCards } from "@/components/common/SampleRequestCards";
 import {
   Accordion,
   AccordionContent,
@@ -124,7 +123,6 @@ export function CollectionTree() {
             onBlur={() => setIsCreatingCollection(false)}
           />
         )}
-        <SampleRequestCards />
       </div>
     );
   }
