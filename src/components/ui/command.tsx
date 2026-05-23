@@ -3,6 +3,7 @@
 import { Command as CommandPrimitive } from "cmdk";
 import { CheckIcon, SearchIcon } from "lucide-react";
 import type * as React from "react";
+import { useId } from "react";
 import {
   Dialog,
   DialogContent,
@@ -43,12 +44,11 @@ function CommandDialog({
   showCloseButton?: boolean;
   children: React.ReactNode;
 }) {
+  const titleId = useId();
+  const descriptionId = useId();
+
   return (
     <Dialog {...props}>
-      <DialogHeader className="sr-only">
-        <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
-      </DialogHeader>
       <DialogContent
         className={cn(
           "top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0",
@@ -56,6 +56,12 @@ function CommandDialog({
         )}
         showCloseButton={showCloseButton}
       >
+        <DialogHeader className="sr-only">
+          <DialogTitle id={titleId}>{title}</DialogTitle>
+          <DialogDescription id={descriptionId}>
+            {description}
+          </DialogDescription>
+        </DialogHeader>
         <Command>{children}</Command>
       </DialogContent>
     </Dialog>

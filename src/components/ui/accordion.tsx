@@ -2,6 +2,7 @@
 
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 function Accordion({ className, ...props }: AccordionPrimitive.Root.Props) {
@@ -28,8 +29,12 @@ function AccordionTrigger({
   className,
   children,
   chevronLeft = false,
+  action,
   ...props
-}: AccordionPrimitive.Trigger.Props & { chevronLeft?: boolean }) {
+}: AccordionPrimitive.Trigger.Props & {
+  chevronLeft?: boolean;
+  action?: React.ReactNode;
+}) {
   const chevronIcons = (
     <>
       <ChevronDownIcon
@@ -43,23 +48,37 @@ function AccordionTrigger({
     </>
   );
 
+  const triggerClassName = cn(
+    "group/accordion-trigger relative flex flex-1 items-center justify-start gap-1.5 rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
+    chevronLeft
+      ? "**:data-[slot=accordion-trigger-icon]:mr-0"
+      : "**:data-[slot=accordion-trigger-icon]:ml-auto",
+    action
+      ? "flex-1 px-0 py-0 hover:bg-transparent hover:no-underline"
+      : className,
+  );
+
   return (
-    <AccordionPrimitive.Header className="flex w-full">
+    <AccordionPrimitive.Header
+      className={cn(
+        "flex w-full",
+        action &&
+          cn(
+            "group/accordion-header items-center px-3 py-2.5 hover:bg-muted/50",
+            className,
+          ),
+      )}
+    >
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
-        className={cn(
-          "group/accordion-trigger relative flex flex-1 items-center justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-all outline-none hover:underline focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:after:border-ring aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-muted-foreground",
-          chevronLeft
-            ? "**:data-[slot=accordion-trigger-icon]:mr-1.5"
-            : "**:data-[slot=accordion-trigger-icon]:ml-auto",
-          className,
-        )}
+        className={triggerClassName}
         {...props}
       >
         {chevronLeft && chevronIcons}
         {children}
         {!chevronLeft && chevronIcons}
       </AccordionPrimitive.Trigger>
+      {action}
     </AccordionPrimitive.Header>
   );
 }
