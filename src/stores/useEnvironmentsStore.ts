@@ -11,6 +11,7 @@ const ACTIVE_ENV_STORAGE_KEY = "requestly_active_env_id";
 type EnvironmentsState = {
   environments: EnvironmentModel[];
   activeEnvId: string | null;
+  hydrated: boolean;
 };
 
 type EnvironmentsActions = {
@@ -63,6 +64,7 @@ export const useEnvironmentsStore = create<
 >((set, get) => ({
   environments: [],
   activeEnvId: null,
+  hydrated: false,
 
   createEnv(name) {
     const env: EnvironmentModel = {
@@ -188,8 +190,12 @@ export const useEnvironmentsStore = create<
   },
 
   async hydrate() {
+    set({ hydrated: false });
     const db = getDB();
-    if (!db) return;
+    if (!db) {
+      set({ hydrated: true });
+      return;
+    }
     try {
       const instance = await db;
       const environments = await instance.getAll("environments");
@@ -199,11 +205,12 @@ export const useEnvironmentsStore = create<
         storedEnvId && environments.some((e) => e.id === storedEnvId)
           ? storedEnvId
           : null;
-      set({ environments, activeEnvId });
+      set({ environments, activeEnvId, hydrated: true });
     } catch (error) {
       toast.error("Failed to load environments", {
         description: error instanceof Error ? error.message : "Unknown error",
       });
+      set({ hydrated: true });
     }
   },
 }));

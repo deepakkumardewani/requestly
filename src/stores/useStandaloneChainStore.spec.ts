@@ -31,7 +31,7 @@ function edge(id: string, src: string, tgt: string): ChainEdge {
 
 describe("useStandaloneChainStore", () => {
   beforeEach(() => {
-    useStandaloneChainStore.setState({ chains: {} });
+    useStandaloneChainStore.setState({ chains: {}, hydrated: false });
     vi.mocked(getDB).mockReturnValue(null);
     vi.clearAllMocks();
   });

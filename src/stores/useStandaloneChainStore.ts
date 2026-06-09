@@ -18,6 +18,7 @@ import { migrateEdge } from "@/types/chain";
 
 type StandaloneChainState = {
   chains: Record<string, StandaloneChain>;
+  hydrated: boolean;
 };
 
 type StandaloneChainActions = {
@@ -105,10 +106,15 @@ export const useStandaloneChainStore = create<
   StandaloneChainState & StandaloneChainActions
 >((set) => ({
   chains: {},
+  hydrated: false,
 
   async hydrate() {
+    set({ hydrated: false });
     const db = getDB();
-    if (!db) return;
+    if (!db) {
+      set({ hydrated: true });
+      return;
+    }
     try {
       const instance = await db;
       const all = await instance.getAll("chains");
@@ -119,11 +125,12 @@ export const useStandaloneChainStore = create<
           edges: (chain.edges ?? []).map(migrateEdge),
         };
       }
-      set({ chains: map });
+      set({ chains: map, hydrated: true });
     } catch (error) {
       toast.error("Failed to load chains", {
         description: error instanceof Error ? error.message : "Unknown error",
       });
+      set({ hydrated: true });
     }
   },
 

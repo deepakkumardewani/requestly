@@ -45,6 +45,7 @@ export function CollectionTree() {
     collections,
     folders,
     requests,
+    hydrated,
     createCollection,
     createFolder,
     renameCollection,
@@ -72,6 +73,10 @@ export function CollectionTree() {
     const timer = setTimeout(() => newCollectionInputRef.current?.focus(), 150);
     return () => clearTimeout(timer);
   }, [isCreatingCollection]);
+
+  if (!hydrated) {
+    return null;
+  }
 
   if (collections.length === 0) {
     return (

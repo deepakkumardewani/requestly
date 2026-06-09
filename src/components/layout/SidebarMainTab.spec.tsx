@@ -33,7 +33,11 @@ function resetStores() {
     envManagerFocusEnvId: null,
     keyboardShortcutsOpen: false,
   });
-  useEnvironmentsStore.setState({ environments: [], activeEnvId: null });
+  useEnvironmentsStore.setState({
+    environments: [],
+    activeEnvId: null,
+    hydrated: true,
+  });
 }
 
 afterEach(() => {
