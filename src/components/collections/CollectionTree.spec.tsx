@@ -29,7 +29,12 @@ vi.mock("sonner", () => ({
 }));
 
 function resetStores() {
-  useCollectionsStore.setState({ collections: [], requests: [], folders: [] });
+  useCollectionsStore.setState({
+    collections: [],
+    requests: [],
+    folders: [],
+    hydrated: true,
+  });
   useFolderExpandStore.setState({ collapsedFolderIds: [] });
   useTabsStore.setState({ tabs: [], activeTabId: null });
   useUIStore.setState({

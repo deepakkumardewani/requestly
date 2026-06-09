@@ -16,7 +16,7 @@ vi.mock("next/navigation", () => ({
 
 describe("ChainList", () => {
   beforeEach(() => {
-    useStandaloneChainStore.setState({ chains: {} });
+    useStandaloneChainStore.setState({ chains: {}, hydrated: true });
     push.mockClear();
   });
 
@@ -27,7 +27,7 @@ describe("ChainList", () => {
   it("shows empty state when there are no chains", () => {
     render(<ChainList isCreating={false} onCreatingDone={vi.fn()} />);
 
-    expect(screen.getByText("No chains")).toBeInTheDocument();
+    expect(screen.getByText("navigation.noChains")).toBeInTheDocument();
   });
 
   it("lists chain names when chains exist", () => {

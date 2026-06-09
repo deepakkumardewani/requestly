@@ -17,6 +17,7 @@ type CollectionsState = {
   collections: CollectionModel[];
   folders: CollectionFolderModel[];
   requests: RequestModel[];
+  hydrated: boolean;
 };
 
 type CollectionsActions = {
@@ -136,6 +137,7 @@ export const useCollectionsStore = create<
   collections: [],
   folders: [],
   requests: [],
+  hydrated: false,
 
   createCollection(name) {
     const collection: CollectionModel = {
@@ -318,11 +320,14 @@ export const useCollectionsStore = create<
 
     const now = Date.now();
     const newRequests = state.requests
-      .filter((r) => r.folderId && subtreeIds.includes(r.folderId))
+      .filter(
+        (r): r is RequestModel & { folderId: string } =>
+          typeof r.folderId === "string" && subtreeIds.includes(r.folderId),
+      )
       .map((r, index) => ({
         ...r,
         id: generateId(),
-        folderId: idMap.get(r.folderId!) ?? null,
+        folderId: idMap.get(r.folderId) ?? null,
         createdAt: now + index,
         updatedAt: now + index,
       }));
@@ -456,8 +461,12 @@ export const useCollectionsStore = create<
   },
 
   async hydrate() {
+    set({ hydrated: false });
     const db = getDB();
-    if (!db) return;
+    if (!db) {
+      set({ hydrated: true });
+      return;
+    }
     try {
       const instance = await db;
       const [collections, folders, requests] = await Promise.all([
@@ -465,11 +474,12 @@ export const useCollectionsStore = create<
         instance.getAll("folders"),
         instance.getAll("requests"),
       ]);
-      set({ collections, folders, requests });
+      set({ collections, folders, requests, hydrated: true });
     } catch (error) {
       toast.error("Failed to load collections", {
         description: error instanceof Error ? error.message : "Unknown error",
       });
+      set({ hydrated: true });
     }
   },
 

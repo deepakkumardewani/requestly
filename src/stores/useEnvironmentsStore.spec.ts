@@ -32,7 +32,11 @@ describe("useEnvironmentsStore", () => {
   const ls = memoryStorage();
 
   beforeEach(() => {
-    useEnvironmentsStore.setState({ environments: [], activeEnvId: null });
+    useEnvironmentsStore.setState({
+      environments: [],
+      activeEnvId: null,
+      hydrated: false,
+    });
     ls._map.clear();
     vi.stubGlobal("localStorage", ls);
     vi.mocked(getDB).mockReturnValue(null);

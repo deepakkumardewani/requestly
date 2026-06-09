@@ -22,7 +22,7 @@ type ChainListProps = {
 
 export function ChainList({ isCreating, onCreatingDone }: ChainListProps) {
   const t = useTranslations();
-  const { chains, createChain, renameChain, deleteChain } =
+  const { chains, hydrated, createChain, renameChain, deleteChain } =
     useStandaloneChainStore();
   const router = useRouter();
 
@@ -40,6 +40,10 @@ export function ChainList({ isCreating, onCreatingDone }: ChainListProps) {
   const chainList = Object.values(chains).sort(
     (a, b) => b.createdAt - a.createdAt,
   );
+
+  if (!hydrated && !isCreating) {
+    return null;
+  }
 
   const handleCreateConfirm = () => {
     const name = newChainName.trim();

@@ -56,8 +56,14 @@ import { useUIStore } from "@/stores/useUIStore";
 
 function EnvSidebarList() {
   const t = useTranslations();
-  const { environments, activeEnvId, setActiveEnv, createEnv, deleteEnv } =
-    useEnvironmentsStore();
+  const {
+    environments,
+    activeEnvId,
+    hydrated,
+    setActiveEnv,
+    createEnv,
+    deleteEnv,
+  } = useEnvironmentsStore();
   const { setEnvManagerOpen, isCreatingEnv, setIsCreatingEnv } = useUIStore();
   const [newEnvName, setNewEnvName] = useState("");
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
@@ -78,6 +84,10 @@ function EnvSidebarList() {
   const pendingEnvName = environments.find(
     (e) => e.id === pendingDeleteId,
   )?.name;
+
+  if (!hydrated && !isCreatingEnv) {
+    return null;
+  }
 
   return (
     <div className="space-y-0.5 py-1">
@@ -315,12 +325,8 @@ export function SidebarMainTab({
   onNewChain,
 }: SidebarMainTabProps) {
   const t = useTranslations("navigation");
-  const {
-    setIsCreatingCollection,
-    setIsCreatingEnv,
-    isCreatingCollection,
-    isCreatingEnv,
-  } = useUIStore();
+  const { setIsCreatingEnv, isCreatingCollection, isCreatingEnv } =
+    useUIStore();
   const { hydrate: hydrateStandaloneChains } = useStandaloneChainStore();
 
   // Hydrate standalone chains so the ChainList is populated on any page
