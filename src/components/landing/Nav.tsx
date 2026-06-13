@@ -35,7 +35,7 @@ export function Nav() {
       )}
     >
       <nav
-        className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
+        className="relative mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Main navigation"
       >
         {/* Logo + wordmark */}
@@ -55,7 +55,7 @@ export function Nav() {
         </Link>
 
         {/* Desktop links */}
-        <ul className="hidden items-center gap-6 md:flex">
+        <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.label}>
               <a
@@ -72,7 +72,7 @@ export function Nav() {
         </ul>
 
         {/* GitHub + CTA */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <a
             href={GITHUB_URL}
             target="_blank"
