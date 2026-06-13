@@ -6,6 +6,7 @@ export { CardSwap } from "./CardSwap";
 export { ClickSpark } from "./ClickSpark";
 export { GlareHover } from "./GlareHover";
 export { LogoLoop } from "./LogoLoop";
+export { Masonry } from "./Masonry";
 export { RotatingText } from "./RotatingText";
 export { ShinyText } from "./ShinyText";
 export { TextType } from "./TextType";
