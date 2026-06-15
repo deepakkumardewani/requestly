@@ -4,11 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { CTA_INTERACTIVE, LINK_INTERACTIVE } from "./interactionStyles";
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
   { label: "Compare", href: "#compare" },
-  { label: "How it works", href: "#how-it-works" },
 ] as const;
 
 const GITHUB_URL = "https://github.com/deepakkumardewani/requestly";
@@ -30,7 +30,7 @@ export function Nav() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-200",
         condensed
-          ? "border-b border-border/50 bg-background/90 py-2 shadow-sm backdrop-blur-md"
+          ? "border-b border-border/50 bg-background py-2 shadow-sm"
           : "bg-transparent py-4",
       )}
     >
@@ -41,7 +41,7 @@ export function Nav() {
         {/* Logo + wordmark */}
         <Link
           href="/"
-          className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+          className="flex min-w-0 items-center gap-2 font-display text-base font-bold tracking-tight text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded sm:text-lg"
         >
           <Image
             src="/logo.png"
@@ -63,7 +63,10 @@ export function Nav() {
                 {...("external" in link && link.external
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
-                className="rounded text-sm font-medium text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className={cn(
+                  LINK_INTERACTIVE,
+                  "px-1 py-0.5 text-sm font-medium text-muted-foreground hover:translate-y-[-1px] active:translate-y-0",
+                )}
               >
                 {link.label}
               </a>
@@ -72,12 +75,15 @@ export function Nav() {
         </ul>
 
         {/* GitHub + CTA */}
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           <a
             href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded p-1.5 text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={cn(
+              LINK_INTERACTIVE,
+              "hidden p-1.5 text-muted-foreground hover:scale-110 active:scale-95 sm:inline-flex",
+            )}
           >
             <span className="sr-only">Requestr on GitHub</span>
             <svg
@@ -92,15 +98,21 @@ export function Nav() {
           </a>
           <Link
             href="/app"
-            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-150 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={cn(
+              CTA_INTERACTIVE,
+              "rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 active:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:px-4 sm:py-2 sm:text-sm",
+            )}
           >
-            Go to app
+            Try it now
           </Link>
 
           {/* Mobile menu toggle */}
           <button
             type="button"
-            className="ml-1 rounded p-1.5 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:hidden"
+            className={cn(
+              LINK_INTERACTIVE,
+              "ml-1 p-1.5 text-muted-foreground hover:scale-110 active:scale-95 md:hidden",
+            )}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((o) => !o)}
@@ -142,7 +154,7 @@ export function Nav() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="border-t border-border/50 bg-background/95 px-4 pb-4 pt-2 backdrop-blur-md md:hidden">
+        <div className="border-t border-border/50 bg-background px-4 pb-4 pt-2 md:hidden">
           <ul className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <li key={link.label}>
@@ -152,12 +164,29 @@ export function Nav() {
                     ? { target: "_blank", rel: "noopener noreferrer" }
                     : {})}
                   onClick={() => setMenuOpen(false)}
-                  className="block rounded px-2 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className={cn(
+                    LINK_INTERACTIVE,
+                    "block px-2 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:translate-x-0.5 active:translate-x-0",
+                  )}
                 >
                   {link.label}
                 </a>
               </li>
             ))}
+            <li>
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMenuOpen(false)}
+                className={cn(
+                  LINK_INTERACTIVE,
+                  "block px-2 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:translate-x-0.5 active:translate-x-0",
+                )}
+              >
+                GitHub
+              </a>
+            </li>
           </ul>
         </div>
       )}
