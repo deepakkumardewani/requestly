@@ -8,12 +8,14 @@
 
 ## Conditional Reference Table
 
-| Task                                      | Reference                                           |
-| ----------------------------------------- | --------------------------------------------------- |
-| Naming conventions, code style            | `.claude/skills/code-style/SKILL.md`                |
-| TypeScript best practices, error handling | `.claude/skills/typescript-best-practices/SKILL.md` |
-| Shadcn usage                              | `.claude/skills/shadcn/SKILL.md`                    |
-| Component Rules                           | `.claude/skills/component-rules/SKILL.md`           |
+| Task                   | Reference                                        |
+| ---------------------- | ------------------------------------------------ |
+| Shadcn usage           | `~/.claude/skills/shadcn/SKILL.md`               |
+| Shadcn Component Rules | `.claude/skills/shadcn-component-rules/SKILL.md` |
+
+## Testing Rules
+
+- **No tests for `src/components/reactbits/`**: Do not write test files (`.spec.tsx`) for any component under `src/components/reactbits/`. These are UI-only ports and do not require unit tests.
 
 ---
 
