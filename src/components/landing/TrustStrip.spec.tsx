@@ -1,38 +1,29 @@
 /** @vitest-environment happy-dom */
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { TrustStrip } from "./TrustStrip";
-
-function mockReducedMotion(matches: boolean) {
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: vi.fn().mockReturnValue({
-      matches,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    }),
-  });
-}
 
 describe("TrustStrip", () => {
   afterEach(() => {
     cleanup();
-    vi.restoreAllMocks();
   });
 
-  it("renders benefit phrases in two opposing marquee rows", () => {
-    mockReducedMotion(false);
-    const { container } = render(<TrustStrip />);
-    const rows = container.querySelectorAll("section > div");
-    expect(rows.length).toBe(2);
-    expect(screen.getAllByText(/No install/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Privacy-first/).length).toBeGreaterThan(0);
-  });
-
-  it("renders static legible text under reduced motion", () => {
-    mockReducedMotion(true);
+  it("renders the config manifest with benefit signals", () => {
     render(<TrustStrip />);
-    expect(screen.getAllByText(/Local-first/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Open in a tab/).length).toBeGreaterThan(0);
+    expect(screen.getByText("requestr.manifest")).toBeInTheDocument();
+    expect(screen.getByText("No install")).toBeInTheDocument();
+    expect(screen.getByText("Privacy-first")).toBeInTheDocument();
+    expect(screen.getByText("Zero setup")).toBeInTheDocument();
+    expect(screen.getByText(/your requests never leave this tab/)).toBeInTheDocument();
+  });
+
+  it("shows manifest keys as developer-native config values", () => {
+    render(<TrustStrip />);
+    expect(screen.getByText("install")).toBeInTheDocument();
+    expect(screen.getByText("account")).toBeInTheDocument();
+    expect(screen.getByText("setup_time")).toBeInTheDocument();
+    expect(screen.getByText("data_location")).toBeInTheDocument();
+    expect(screen.getByText("0ms")).toBeInTheDocument();
+    expect(screen.getByText('"browser-only"')).toBeInTheDocument();
   });
 });
