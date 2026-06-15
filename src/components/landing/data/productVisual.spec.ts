@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  getMaxResponseLineCount,
+  MAX_RESPONSE_LINE_COUNT,
   PRODUCT_METHODS,
   PRODUCT_REQUESTS,
   statusBadgeClass,
@@ -22,6 +24,11 @@ describe("productVisual data", () => {
   it("uses varied status codes across responses", () => {
     const getStatuses = PRODUCT_REQUESTS.GET.responses.map((r) => r.status);
     expect(new Set(getStatuses).size).toBeGreaterThan(1);
+  });
+
+  it("tracks the tallest mock response for fixed panel height", () => {
+    expect(getMaxResponseLineCount()).toBe(MAX_RESPONSE_LINE_COUNT);
+    expect(MAX_RESPONSE_LINE_COUNT).toBeGreaterThanOrEqual(3);
   });
 });
 

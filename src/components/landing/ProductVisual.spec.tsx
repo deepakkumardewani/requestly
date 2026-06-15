@@ -65,13 +65,14 @@ describe("ProductVisual", () => {
     expect(screen.getByText("[]")).toBeInTheDocument();
   });
 
-  it("shows loading state before revealing the next response", async () => {
+  it("shows loading overlay without hiding the current response", async () => {
     vi.useFakeTimers();
     mockReducedMotion(false);
     render(<ProductVisual />);
 
     fireEvent.click(screen.getByRole("button", { name: "Send" }));
-    expect(screen.getByText(/Sending/)).toBeInTheDocument();
+    expect(screen.getByText(/Waiting for response/)).toBeInTheDocument();
+    expect(screen.getByText("200 OK")).toBeInTheDocument();
 
     await act(async () => {
       vi.advanceTimersByTime(700);
@@ -79,5 +80,33 @@ describe("ProductVisual", () => {
 
     expect(screen.getByText(/"Bob"/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Send" })).toBeInTheDocument();
+  });
+
+  it("keeps response panel height stable when switching tabs", () => {
+    mockReducedMotion(true);
+    const { container } = render(<ProductVisual />);
+    const panel = container.querySelector('[data-testid="response-panel"]') as HTMLElement;
+    const initialHeight = panel.offsetHeight;
+
+    fireEvent.click(screen.getByRole("tab", { name: /POST/i }));
+    expect(panel.offsetHeight).toBe(initialHeight);
+
+    fireEvent.click(screen.getByRole("tab", { name: /DELETE/i }));
+    expect(panel.offsetHeight).toBe(initialHeight);
+  });
+
+  it("keeps response panel height stable when cycling short responses", () => {
+    mockReducedMotion(true);
+    const { container } = render(<ProductVisual />);
+    const panel = container.querySelector('[data-testid="response-panel"]') as HTMLElement;
+    const initialHeight = panel.offsetHeight;
+    const send = screen.getByRole("button", { name: "Send" });
+
+    for (let i = 0; i < 3; i++) {
+      fireEvent.click(send);
+    }
+
+    expect(screen.getByText("[]")).toBeInTheDocument();
+    expect(panel.offsetHeight).toBe(initialHeight);
   });
 });

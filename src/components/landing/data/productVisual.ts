@@ -36,14 +36,28 @@ export const METHOD_TEXT: Record<ProductMethod, string> = {
   DELETE: "text-red-400",
 };
 
+export const METHOD_TAB_HOVER: Record<ProductMethod, string> = {
+  GET: "hover:bg-emerald-500/10 hover:border-emerald-500/25",
+  POST: "hover:bg-blue-500/10 hover:border-blue-500/25",
+  DELETE: "hover:bg-red-500/10 hover:border-red-500/25",
+};
+
 export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
   GET: {
     method: "GET",
     label: "users",
     path: "/users",
     headers: [
-      { key: "Authorization", value: "Bearer ••••••••••", valueClass: "text-emerald-400/70" },
-      { key: "Accept", value: "application/json", valueClass: "text-blue-400/70" },
+      {
+        key: "Authorization",
+        value: "Bearer ••••••••••",
+        valueClass: "text-emerald-400/70",
+      },
+      {
+        key: "Accept",
+        value: "application/json",
+        valueClass: "text-blue-400/70",
+      },
     ],
     responses: [
       {
@@ -156,7 +170,10 @@ export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
             parts: [
               { text: '"error"', className: "text-blue-400/80" },
               { text: ": " },
-              { text: '"users collection not found"', className: "text-emerald-400/80" },
+              {
+                text: '"users collection not found"',
+                className: "text-emerald-400/80",
+              },
             ],
           },
           { indent: 0, parts: [{ text: "}" }] },
@@ -177,8 +194,16 @@ export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
     label: "auth/login",
     path: "/auth/login",
     headers: [
-      { key: "Content-Type", value: "application/json", valueClass: "text-blue-400/70" },
-      { key: "Accept", value: "application/json", valueClass: "text-blue-400/70" },
+      {
+        key: "Content-Type",
+        value: "application/json",
+        valueClass: "text-blue-400/70",
+      },
+      {
+        key: "Accept",
+        value: "application/json",
+        valueClass: "text-blue-400/70",
+      },
     ],
     responses: [
       {
@@ -194,7 +219,10 @@ export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
             parts: [
               { text: '"token"', className: "text-blue-400/80" },
               { text: ": " },
-              { text: '"eyJhbGciOiJIUzI1NiJ9…"', className: "text-emerald-400/80" },
+              {
+                text: '"eyJhbGciOiJIUzI1NiJ9…"',
+                className: "text-emerald-400/80",
+              },
               { text: "," },
             ],
           },
@@ -269,7 +297,10 @@ export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
             parts: [
               { text: '"email"', className: "text-blue-400/80" },
               { text: ": " },
-              { text: '"must be a valid address"', className: "text-red-400/80" },
+              {
+                text: '"must be a valid address"',
+                className: "text-red-400/80",
+              },
             ],
           },
           { indent: 0, parts: [{ text: "}" }] },
@@ -282,8 +313,16 @@ export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
     label: "items/42",
     path: "/items/42",
     headers: [
-      { key: "Authorization", value: "Bearer ••••••••••", valueClass: "text-emerald-400/70" },
-      { key: "Accept", value: "application/json", valueClass: "text-blue-400/70" },
+      {
+        key: "Authorization",
+        value: "Bearer ••••••••••",
+        valueClass: "text-emerald-400/70",
+      },
+      {
+        key: "Accept",
+        value: "application/json",
+        valueClass: "text-blue-400/70",
+      },
     ],
     responses: [
       {
@@ -339,7 +378,14 @@ export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
         timingMs: 41,
         sizeKb: 0,
         loadingMs: 580,
-        lines: [{ indent: 0, parts: [{ text: "// empty body", className: "text-muted-foreground/50" }] }],
+        lines: [
+          {
+            indent: 0,
+            parts: [
+              { text: "// empty body", className: "text-muted-foreground/50" },
+            ],
+          },
+        ],
       },
       {
         status: 409,
@@ -354,7 +400,10 @@ export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
             parts: [
               { text: '"error"', className: "text-blue-400/80" },
               { text: ": " },
-              { text: '"item is referenced elsewhere"', className: "text-red-400/80" },
+              {
+                text: '"item is referenced elsewhere"',
+                className: "text-red-400/80",
+              },
             ],
           },
           { indent: 0, parts: [{ text: "}" }] },
@@ -365,7 +414,28 @@ export const PRODUCT_REQUESTS: Record<ProductMethod, ProductRequestConfig> = {
 };
 
 export function statusBadgeClass(status: number): string {
-  if (status >= 200 && status < 300) return "bg-emerald-500/20 text-emerald-400 border-emerald-500/25";
-  if (status >= 400 && status < 500) return "bg-red-500/20 text-red-400 border-red-500/25";
+  if (status >= 200 && status < 300)
+    return "bg-emerald-500/20 text-emerald-400 border-emerald-500/25";
+  if (status >= 400 && status < 500)
+    return "bg-red-500/20 text-red-400 border-red-500/25";
   return "bg-amber-500/20 text-amber-400 border-amber-500/25";
 }
+
+/** Tallest mock response — used to reserve fixed panel height in ProductVisual */
+export function getMaxResponseLineCount(): number {
+  let max = 0;
+  for (const method of PRODUCT_METHODS) {
+    for (const response of PRODUCT_REQUESTS[method].responses) {
+      max = Math.max(max, response.lines.length);
+    }
+  }
+  return max;
+}
+
+export const MAX_RESPONSE_LINE_COUNT = getMaxResponseLineCount();
+
+/** Status row + JSON body area inside the response panel (excludes panel padding) */
+export const RESPONSE_CONTENT_MIN_HEIGHT = `calc(1.75rem + ${MAX_RESPONSE_LINE_COUNT} * 1.25rem)`;
+
+/** Full response panel including p-3 padding */
+export const RESPONSE_PANEL_MIN_HEIGHT = `calc(1.5rem + ${RESPONSE_CONTENT_MIN_HEIGHT})`;
