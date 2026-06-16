@@ -2,28 +2,166 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CTA_INTERACTIVE, LINK_INTERACTIVE } from "./interactionStyles";
 
+const SECTION_IDS = ["hero", "features", "compare"] as const;
+
 const NAV_LINKS = [
-  { label: "Features", href: "#features" },
-  { label: "Compare", href: "#compare" },
+  { label: "Home", sectionId: "hero" as const },
+  { label: "Features", sectionId: "features" as const },
+  { label: "Compare", sectionId: "compare" as const },
 ] as const;
 
 const GITHUB_URL = "https://github.com/deepakkumardewani/requestly";
 
+function sectionHash(sectionId: string) {
+  return `#${sectionId}`;
+}
+
+function navHref(pathname: string, sectionId: string) {
+  const hash = sectionHash(sectionId);
+  return pathname === "/" ? hash : `/${hash}`;
+}
+
+function scrollToSection(sectionId: string) {
+  if (sectionId === "hero") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+}
+
+function NavUnderline() {
+  return (
+    <span
+      aria-hidden="true"
+      className="absolute inset-x-0 -bottom-0.5 h-px rounded-full bg-foreground/40 motion-safe:animate-[panel-in_180ms_ease-out_both]"
+    />
+  );
+}
+
+interface NavItemProps {
+  label: string;
+  sectionId: string;
+  isActive: boolean;
+  pathname: string;
+  onNavigate: () => void;
+  className?: string;
+}
+
+function NavItem({
+  label,
+  sectionId,
+  isActive,
+  pathname,
+  onNavigate,
+  className,
+}: NavItemProps) {
+  const href = navHref(pathname, sectionId);
+  const linkClassName = cn(
+    LINK_INTERACTIVE,
+    "relative px-1 py-0.5 text-sm font-medium hover:translate-y-[-1px] active:translate-y-0",
+    isActive ? "text-foreground" : "text-muted-foreground",
+    className,
+  );
+
+  if (pathname === "/") {
+    return (
+      <a
+        href={href}
+        aria-current={isActive ? "true" : undefined}
+        className={linkClassName}
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToSection(sectionId);
+          onNavigate();
+        }}
+      >
+        {label}
+        {isActive && <NavUnderline />}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className={linkClassName}
+      onClick={onNavigate}
+      aria-current={isActive ? "true" : undefined}
+    >
+      {label}
+      {isActive && <NavUnderline />}
+    </Link>
+  );
+}
+
 export function Nav() {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
   const [condensed, setCondensed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(
+    isHomePage ? sectionHash("hero") : null,
+  );
 
   useEffect(() => {
-    const handler = () => {
-      setCondensed(window.scrollY > 48);
-    };
+    const handler = () => setCondensed(window.scrollY > 48);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
+
+  useEffect(() => {
+    if (!isHomePage) {
+      setActiveSection(null);
+      return;
+    }
+
+    const visible = new Map<string, number>();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const id = entry.target.id;
+          if (entry.isIntersecting) {
+            visible.set(id, entry.intersectionRatio);
+          } else {
+            visible.delete(id);
+          }
+        }
+
+        let nextActive: string | null = null;
+        let maxRatio = 0;
+        for (const id of SECTION_IDS) {
+          const ratio = visible.get(id);
+          if (ratio !== undefined && ratio >= maxRatio) {
+            maxRatio = ratio;
+            nextActive = sectionHash(id);
+          }
+        }
+
+        if (nextActive) {
+          setActiveSection(nextActive);
+        }
+      },
+      {
+        rootMargin: "-20% 0px -55% 0px",
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+      },
+    );
+
+    for (const id of SECTION_IDS) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+
+    return () => observer.disconnect();
+  }, [isHomePage]);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <header
@@ -38,10 +176,9 @@ export function Nav() {
         className="relative mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
         aria-label="Main navigation"
       >
-        {/* Logo + wordmark */}
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-2 font-display text-base font-bold tracking-tight text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded sm:text-lg"
+          className="flex min-w-0 items-center gap-2 rounded font-display text-base font-bold tracking-tight text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-lg"
         >
           <Image
             src="/logo.png"
@@ -54,27 +191,20 @@ export function Nav() {
           Requestr
         </Link>
 
-        {/* Desktop links */}
         <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
             <li key={link.label}>
-              <a
-                href={link.href}
-                {...("external" in link && link.external
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-                className={cn(
-                  LINK_INTERACTIVE,
-                  "px-1 py-0.5 text-sm font-medium text-muted-foreground hover:translate-y-[-1px] active:translate-y-0",
-                )}
-              >
-                {link.label}
-              </a>
+              <NavItem
+                label={link.label}
+                sectionId={link.sectionId}
+                isActive={activeSection === sectionHash(link.sectionId)}
+                pathname={pathname}
+                onNavigate={closeMenu}
+              />
             </li>
           ))}
         </ul>
 
-        {/* GitHub + CTA */}
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           <a
             href={GITHUB_URL}
@@ -103,10 +233,9 @@ export function Nav() {
               "rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 active:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:px-4 sm:py-2 sm:text-sm",
             )}
           >
-            Try it now
+            Go to App
           </Link>
 
-          {/* Mobile menu toggle */}
           <button
             type="button"
             className={cn(
@@ -152,25 +281,19 @@ export function Nav() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
       {menuOpen && (
-        <div className="border-t border-border/50 bg-background px-4 pb-4 pt-2 md:hidden">
+        <div className="border-t border-border/50 bg-background px-4 pb-4 pt-2 md:hidden motion-safe:animate-[menu-in_200ms_ease-out_both]">
           <ul className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <li key={link.label}>
-                <a
-                  href={link.href}
-                  {...("external" in link && link.external
-                    ? { target: "_blank", rel: "noopener noreferrer" }
-                    : {})}
-                  onClick={() => setMenuOpen(false)}
-                  className={cn(
-                    LINK_INTERACTIVE,
-                    "block px-2 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:translate-x-0.5 active:translate-x-0",
-                  )}
-                >
-                  {link.label}
-                </a>
+                <NavItem
+                  label={link.label}
+                  sectionId={link.sectionId}
+                  isActive={activeSection === sectionHash(link.sectionId)}
+                  pathname={pathname}
+                  onNavigate={closeMenu}
+                  className="block px-2 py-2 hover:bg-muted hover:translate-x-0.5 active:translate-x-0"
+                />
               </li>
             ))}
             <li>
@@ -178,7 +301,7 @@ export function Nav() {
                 href={GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
                 className={cn(
                   LINK_INTERACTIVE,
                   "block px-2 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:translate-x-0.5 active:translate-x-0",

@@ -8,16 +8,22 @@ describe("FeatureShowcase", () => {
     cleanup();
   });
 
-  it("renders the features grid without variant labels", () => {
+  it("renders hero feature titles", () => {
     render(<FeatureShowcase />);
-    expect(screen.queryByText(/Variant A/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Variant B/i)).not.toBeInTheDocument();
-    expect(screen.getByText("Multi-tab workspace")).toBeInTheDocument();
+    expect(screen.getByText("Transform Playground")).toBeInTheDocument();
+    expect(screen.getByText("JSON Compare")).toBeInTheDocument();
+    expect(screen.getByText("Shareable request links")).toBeInTheDocument();
   });
 
-  it("renders all feature titles once", () => {
+  it("links to the full features page", () => {
     render(<FeatureShowcase />);
-    expect(screen.getAllByText("Collections")).toHaveLength(1);
-    expect(screen.getAllByText("Response viewer")).toHaveLength(1);
+    const links = screen.getAllByRole("link", { name: /see all features|explore all features/i });
+    expect(links.length).toBeGreaterThan(0);
+    expect(links[0]).toHaveAttribute("href", "/features");
+  });
+
+  it("does not render non-hero workspace features", () => {
+    render(<FeatureShowcase />);
+    expect(screen.queryByText("Command palette")).not.toBeInTheDocument();
   });
 });

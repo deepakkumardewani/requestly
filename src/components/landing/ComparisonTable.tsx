@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedContent, CardSwap } from "@/components/reactbits";
+import { AnimatedContent, BlurText, CardSwap } from "@/components/reactbits";
 import { cn } from "@/lib/utils";
 import {
   COMPARISON_ROWS,
@@ -153,7 +153,7 @@ function ComparisonMobileCards() {
 
 export function ComparisonTable() {
   return (
-    <section id="compare" className="py-16 sm:py-24 bg-muted/20">
+    <section id="compare" className="py-16 sm:py-24 bg-muted/20 scroll-mt-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <AnimatedContent direction="up">
           <div className="mb-12 flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
@@ -162,11 +162,19 @@ export function ComparisonTable() {
                 Compare
               </p>
               <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                How Requestr compares
+                <BlurText
+                  text="How Requestr compares"
+                  as="span"
+                  duration={0.45}
+                />
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Zero-setup, browser-native API testing — side by side with
-                desktop clients.
+                <BlurText
+                  text="Zero-setup, browser-native API testing — side by side with desktop clients."
+                  as="span"
+                  duration={0.4}
+                  delay={0.1}
+                />
               </p>
             </div>
 

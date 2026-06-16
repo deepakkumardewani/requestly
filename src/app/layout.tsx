@@ -34,7 +34,11 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html
+      lang={locale}
+      suppressHydrationWarning
+      className="motion-safe:scroll-smooth"
+    >
       <body
         suppressHydrationWarning
         className={cn(

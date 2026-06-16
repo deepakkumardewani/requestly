@@ -169,7 +169,7 @@ export function ProductVisual() {
   }
 
   return (
-    <div className="group/visual relative w-full max-w-full overflow-hidden">
+    <div className="group/visual relative w-full max-w-full overflow-visible pt-4 pr-5 pb-5 pl-4 sm:pt-5 sm:pr-6 sm:pb-6 sm:pl-5">
       <div
         className={cn(
           "rounded-xl border border-border bg-card shadow-2xl overflow-hidden transition-all duration-200",
@@ -195,18 +195,12 @@ export function ProductVisual() {
               />
             ))}
           </div>
-          <button
-            type="button"
-            aria-label="Add request tab"
-            className={cn(
-              "rounded px-1.5 py-0.5 text-muted-foreground/60 text-xs font-mono transition-all duration-150",
-              "hover:text-muted-foreground hover:bg-muted/40",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              !reduced && INTERACTIVE_SCALE,
-            )}
+          <span
+            aria-hidden="true"
+            className="rounded px-1.5 py-0.5 text-muted-foreground/30 text-xs font-mono select-none"
           >
             +
-          </button>
+          </span>
         </div>
 
         <div className="space-y-3 p-3 sm:space-y-3 sm:p-4">
@@ -262,9 +256,11 @@ export function ProductVisual() {
           </div>
 
           <div
+            key={`headers-${activeMethod}`}
             className={cn(
               "rounded-md border border-border bg-background/30 p-2.5 space-y-1.5 transition-colors duration-150",
               "hover:border-border/70 hover:bg-background/40",
+              "motion-safe:animate-[panel-in_180ms_ease-out_both]",
             )}
           >
             <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-1">
@@ -303,10 +299,13 @@ export function ProductVisual() {
           >
             {displayedResponse ? (
               <div
+                key={`${activeMethod}-${responseIndex}`}
                 style={{ minHeight: RESPONSE_CONTENT_MIN_HEIGHT }}
                 className={cn(
                   "flex flex-col transition-opacity duration-200",
-                  isLoading && "opacity-40",
+                  isLoading
+                    ? "opacity-40"
+                    : "motion-safe:animate-[panel-in_220ms_ease-out_both]",
                 )}
               >
                 <div className="mb-2 flex shrink-0 items-center gap-2">
@@ -314,7 +313,9 @@ export function ProductVisual() {
                     className={cn(
                       "rounded px-1.5 py-0.5 text-[10px] font-bold border transition-transform duration-150",
                       statusBadgeClass(displayedResponse.status),
-                      !reduced && "hover:scale-105",
+                      !reduced &&
+                        !isLoading &&
+                        "motion-safe:animate-[badge-pop_200ms_cubic-bezier(.2,.8,.3,1.2)_both]",
                     )}
                   >
                     {displayedResponse.status} {displayedResponse.statusLabel}
