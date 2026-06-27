@@ -118,7 +118,7 @@ Requestr is a single Next.js app. The **client** owns all user data and UI state
 ┌──────────────────────── Next.js server (Vercel) ────────────────────┐
 │                                                                     │
 │   /api/proxy   ──►  relays HTTP request, bypassing browser CORS     │
-│   /api/ai      ──►  DeepSeek via the AI SDK                         │
+│   /api/ai      ──►  the AI SDK                         │
 │   /api/share   ──►  stores encrypted share payloads ──► Upstash     │
 │                                                          Redis      │
 └──────────┬──────────────────────────────────────────────────────────┘
@@ -144,7 +144,6 @@ Requestr is a single Next.js app. The **client** owns all user data and UI state
 
 **Next phase**
 
-- [ ] `requestr-agent` CLI to reach `localhost` and private-network APIs
 - [ ] HAR file import
 - [ ] Automated, scheduled test runs with reporting
 - [ ] Optional cloud sync and team workspaces with shared collections
