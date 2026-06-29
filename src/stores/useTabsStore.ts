@@ -2,6 +2,7 @@
 
 import { toast } from "sonner";
 import { create } from "zustand";
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import { getDB } from "@/lib/idb";
 import { generateId } from "@/lib/utils";
 import type {
@@ -191,6 +192,8 @@ export const useTabsStore = create<TabsState & TabsActions>((set, get) => ({
       activeTabId: newTab.tabId,
     }));
     persistTabs(get().tabs);
+    track(AnalyticsEvent.TAB_OPENED, { type: newTab.type });
+    increment("tabs_opened");
   },
 
   closeTab(tabId) {

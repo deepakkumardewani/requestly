@@ -1,4 +1,5 @@
 import { JSONPath } from "jsonpath-plus";
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import { evaluateAllAssertions } from "@/lib/chainAssertions";
 import {
   buildVarValues,
@@ -501,4 +502,10 @@ export async function runChain(
       onUpdate(nodeId, "failed", { extractedValues, error });
     }
   }
+
+  track(AnalyticsEvent.CHAIN_EXECUTED, {
+    request_count: requests.length,
+    node_count: order.length,
+  });
+  increment("chains_executed");
 }

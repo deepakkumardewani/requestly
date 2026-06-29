@@ -2,6 +2,7 @@
 
 import { io, type Socket } from "socket.io-client";
 import { create } from "zustand";
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import { MAX_WS_LOG_ENTRIES } from "@/lib/constants";
 import { generateId } from "@/lib/utils";
 import { useTabsStore } from "@/stores/useTabsStore";
@@ -126,6 +127,8 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
             [tabId]: { isConnected: true, isConnecting: false, error: null },
           },
         }));
+        track(AnalyticsEvent.WS_CONNECTION_OPENED, { type: "websocket" });
+        increment("ws_connections_opened");
       };
 
       ws.onerror = () => {
@@ -163,6 +166,8 @@ export const useConnectionStore = create<ConnectionStore>((set, get) => ({
           [tabId]: { isConnected: true, isConnecting: false, error: null },
         },
       }));
+      track(AnalyticsEvent.WS_CONNECTION_OPENED, { type: "socketio" });
+      increment("ws_connections_opened");
     });
 
     socket.on("connect_error", (err: Error) => {

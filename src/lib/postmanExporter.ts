@@ -1,3 +1,4 @@
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import type {
   AuthConfig,
   BodyConfig,
@@ -267,6 +268,8 @@ export function downloadPostmanCollection(
   link.download = `${safeName}.postman_collection.json`;
   link.click();
   URL.revokeObjectURL(url);
+  track(AnalyticsEvent.DATA_EXPORTED, { format: "postman_collection" });
+  increment("exports_done");
 }
 
 export function downloadPostmanRequest(request: RequestModel): void {
@@ -286,4 +289,6 @@ export function downloadPostmanRequest(request: RequestModel): void {
   link.download = `${safeName}.postman_collection.json`;
   link.click();
   URL.revokeObjectURL(url);
+  track(AnalyticsEvent.DATA_EXPORTED, { format: "postman_request" });
+  increment("exports_done");
 }

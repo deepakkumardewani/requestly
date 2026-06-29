@@ -1,3 +1,4 @@
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import type { HistoryEntry } from "@/types";
 
 type ExportFormat = "csv" | "json";
@@ -67,6 +68,9 @@ export function downloadFile(
   anchor.download = filename;
   anchor.click();
   URL.revokeObjectURL(url);
+  const format = mimeType === "text/csv" ? "csv" : "json";
+  track(AnalyticsEvent.DATA_EXPORTED, { format });
+  increment("exports_done");
 }
 
 /** Returns a timestamped filename, e.g. `requestly-history-2026-05-02.csv` */

@@ -7,6 +7,8 @@ import { Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useThemeAccent } from "@/hooks/useThemeAccent";
+import { identify, initAnalytics, setOnce } from "@/lib/analytics";
+import { getAnonUserId } from "@/lib/anonUser";
 import { useCollectionsStore } from "@/stores/useCollectionsStore";
 import { useEnvironmentsStore } from "@/stores/useEnvironmentsStore";
 import { useHistoryStore } from "@/stores/useHistoryStore";
@@ -53,6 +55,19 @@ function CronitorTracker() {
   return null;
 }
 
+function MixpanelTracker() {
+  useEffect(() => {
+    initAnalytics();
+    const userId = getAnonUserId();
+    if (userId) {
+      identify(userId);
+      setOnce({ first_seen: new Date().toISOString(), platform: "web" });
+    }
+  }, []);
+
+  return null;
+}
+
 type AppProvidersProps = {
   children: React.ReactNode;
 };
@@ -64,6 +79,7 @@ export function AppProviders({ children }: AppProvidersProps) {
         <LocaleWrapper>
           <Suspense fallback={null}>
             <CronitorTracker />
+            <MixpanelTracker />
           </Suspense>
           <StoreHydrator />
           <ThemeAccentApplier />

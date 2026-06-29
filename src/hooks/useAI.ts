@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 
 type AIState<T> = {
   loading: boolean;
@@ -39,7 +40,10 @@ export function useAI<T>(action: string): AIState<T> {
           );
         }
 
-        return (await res.json()) as T;
+        const result = (await res.json()) as T;
+        track(AnalyticsEvent.AI_REQUEST_SENT, { action });
+        increment("ai_requests_sent");
+        return result;
       } catch (err) {
         const message =
           err instanceof Error ? err.message : "Something went wrong";

@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import {
   IMPORT_FORMAT_LABELS,
   type ImportScanResult,
@@ -289,6 +290,11 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
       }
     }
 
+    track(AnalyticsEvent.DATA_IMPORTED, {
+      source: scan.sourceLabel,
+      format: scan.format,
+    });
+    increment("imports_done");
     handleClose();
   }
 

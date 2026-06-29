@@ -2,6 +2,7 @@
 
 import { toast } from "sonner";
 import { create } from "zustand";
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import { getDB } from "@/lib/idb";
 import type { ParsedPostmanCollection } from "@/lib/postmanParser";
 import { generateId } from "@/lib/utils";
@@ -148,6 +149,8 @@ export const useCollectionsStore = create<
     };
     set((state) => ({ collections: [...state.collections, collection] }));
     persistCollection(collection);
+    track(AnalyticsEvent.COLLECTION_CREATED);
+    increment("collections_created");
     return collection;
   },
 
@@ -405,6 +408,7 @@ export const useCollectionsStore = create<
     useTabsStore
       .getState()
       .closeTabsForRequests(requestsToDelete.map((r) => r.id));
+    track(AnalyticsEvent.COLLECTION_DELETED);
   },
 
   addRequest(collectionId, tab, folderId = null) {

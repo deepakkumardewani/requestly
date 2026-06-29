@@ -2,6 +2,7 @@
 
 import { toast } from "sonner";
 import { create } from "zustand";
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import { getDB } from "@/lib/idb";
 import { generateId, interpolateVariables } from "@/lib/utils";
 import type { EnvironmentModel } from "@/types";
@@ -76,6 +77,8 @@ export const useEnvironmentsStore = create<
     };
     set((state) => ({ environments: [...state.environments, env] }));
     persistEnv(env);
+    track(AnalyticsEvent.ENVIRONMENT_CREATED);
+    increment("environments_created");
     return env;
   },
 

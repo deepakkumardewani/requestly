@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import { decryptPayload, encryptPayload } from "@/lib/crypto";
 import {
   alignLocalStateWithServerRateLimit,
@@ -187,6 +188,8 @@ export async function createShareLink(
       return { ok: false, error: "failed" };
     }
     recordLocalShareSuccess();
+    track(AnalyticsEvent.SHARE_LINK_CREATED);
+    increment("share_links_created");
     return {
       ok: true,
       url: `${win.location.origin}/?s=${encodeURIComponent(id)}#${keyB64}`,

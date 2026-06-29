@@ -1,3 +1,4 @@
+import { AnalyticsEvent, increment, track } from "@/lib/analytics";
 import { DEFAULT_REQUEST_TIMEOUT_MS } from "@/lib/constants";
 import { parseTimingHeaders } from "@/lib/timingParser";
 import type {
@@ -183,19 +184,43 @@ export async function runRequest(
     url = `${url}${separator}${encodeURIComponent(request.auth.key)}=${encodeURIComponent(request.auth.value)}`;
   }
 
-  return executeProxy(
-    {
-      url,
+  const startTime = performance.now();
+
+  try {
+    const result = await executeProxy(
+      {
+        url,
+        method: request.method,
+        headers,
+        body: body ?? undefined,
+        sslVerify: request.sslVerify ?? true,
+        followRedirects: request.followRedirects ?? true,
+        timeoutMs: request.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
+      },
+      { url: request.url, method: request.method },
+      signal,
+    );
+
+    track(AnalyticsEvent.REQUEST_SENT, {
       method: request.method,
-      headers,
-      body: body ?? undefined,
-      sslVerify: request.sslVerify ?? true,
-      followRedirects: request.followRedirects ?? true,
-      timeoutMs: request.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
-    },
-    { url: request.url, method: request.method },
-    signal,
-  );
+      status: result.status,
+      duration_ms: Math.round(result.duration),
+      type: "http",
+    });
+    increment("requests_sent");
+
+    return result;
+  } catch (error) {
+    const reqError = error as { type?: string };
+    track(AnalyticsEvent.REQUEST_SENT, {
+      method: request.method,
+      status: reqError.type === "proxy" ? 502 : 0,
+      duration_ms: Math.round(performance.now() - startTime),
+      type: "http",
+    });
+    increment("requests_sent");
+    throw error;
+  }
 }
 
 export type GraphQLResolvedRequest = {
@@ -264,17 +289,41 @@ export async function runGraphQLRequest(
     url = `${url}${separator}${encodeURIComponent(request.auth.key)}=${encodeURIComponent(request.auth.value)}`;
   }
 
-  return executeProxy(
-    {
-      url,
+  const startTime = performance.now();
+
+  try {
+    const result = await executeProxy(
+      {
+        url,
+        method: "POST",
+        headers: headerRecord,
+        body: bodyString,
+        sslVerify: request.sslVerify ?? true,
+        followRedirects: request.followRedirects ?? true,
+        timeoutMs: request.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
+      },
+      { url: request.url, method: "POST" },
+      signal,
+    );
+
+    track(AnalyticsEvent.REQUEST_SENT, {
       method: "POST",
-      headers: headerRecord,
-      body: bodyString,
-      sslVerify: request.sslVerify ?? true,
-      followRedirects: request.followRedirects ?? true,
-      timeoutMs: request.timeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
-    },
-    { url: request.url, method: "POST" },
-    signal,
-  );
+      status: result.status,
+      duration_ms: Math.round(result.duration),
+      type: "graphql",
+    });
+    increment("requests_sent");
+
+    return result;
+  } catch (error) {
+    const reqError = error as { type?: string };
+    track(AnalyticsEvent.REQUEST_SENT, {
+      method: "POST",
+      status: reqError.type === "proxy" ? 502 : 0,
+      duration_ms: Math.round(performance.now() - startTime),
+      type: "graphql",
+    });
+    increment("requests_sent");
+    throw error;
+  }
 }
